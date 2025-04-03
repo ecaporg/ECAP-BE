@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: bl_pg_local
+    image: postgres
+    environment:
+      - POSTGRES_USER=bl_pg_user
+      - POSTGRES_PASSWORD=bl_pg_password
+      - POSTGRES_DB=bl_pg_local_db
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - 4848:5432
+    restart: unless-stopped
+  postgres_test:
+    container_name: bl_pg_test
+    image: postgres
+    ports:
+      - 4949:5432
+    volumes:
+      - /var/lib/bl_pg_test_db:/data/
+    environment:
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_USER=test_user
+      - POSTGRES_DB=bl_pg_test_db
+volumes:
+    postgres:
