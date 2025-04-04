@@ -1,5 +1,4 @@
 import { useContainer } from 'class-validator';
-import { resolve } from 'path';
 
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -12,22 +11,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(resolve('./public'));
-  app.setBaseViewsDir(resolve('./views'));
-  app.setViewEngine('hbs');
 
-  app.setGlobalPrefix('api', {
-    exclude: [
-      { path: 'auth/email/confirm-email', method: RequestMethod.GET },
-      {
-        path: 'auth/restore-password',
-        method: RequestMethod.GET,
-      },
-    ],
-  });
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('Nest auth boilerplate')
+    .setTitle('ECAP API')
     .setDescription('Documentation for endpoints')
     .setVersion('1.0')
     .addBearerAuth()

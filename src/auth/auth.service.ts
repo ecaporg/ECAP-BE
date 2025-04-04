@@ -1,15 +1,16 @@
 import * as argon2 from 'argon2';
 import { CreateUserDTO } from 'src/users/dtos/create-user.dto';
 
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import {
-  BadRequestException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common/exceptions';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from '../core/exceptions/application.exception';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 
@@ -96,7 +97,7 @@ export class AuthService {
     const user = await this.userService.findUserById(userId);
 
     if (!user || !user.refreshToken) {
-      throw new ForbiddenException('Access Denied (User info not found)');
+      throw new ForbiddenException('Access denied (user info not found)');
     }
 
     const refreshTokenMatches = await argon2.verify(
@@ -104,7 +105,7 @@ export class AuthService {
       refreshToken,
     );
     if (!refreshTokenMatches) {
-      throw new ForbiddenException('Access Denied');
+      throw new ForbiddenException('Access denied (invalid refresh token)');
     }
 
     const authUser = await this.getAuthUser(user);
@@ -199,21 +200,21 @@ export class AuthService {
 
     await this.userService.updatePassword(userId, hashedPassword);
 
-    return true;
+    return { success: true };
   }
 
   private async getAuthUser(user: UserEntity): Promise<IAuthUser> {
+    const { id, firstname, lastname, email, isActive, emailVerified } = user;
     const rolesResponse = await this.userService.getUserRoles(user.id);
-
     const roles = rolesResponse.map((role) => role.name);
 
     return {
-      id: user.id,
-      email: user.email,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      isActive: user.isActive,
-      emailVerified: user.emailVerified,
+      id,
+      firstname,
+      lastname,
+      email,
+      isActive,
+      emailVerified: emailVerified || false,
       roles,
     };
   }
