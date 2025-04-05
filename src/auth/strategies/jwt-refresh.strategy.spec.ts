@@ -1,11 +1,12 @@
 import { Request } from 'express';
 import { DataSource } from 'typeorm';
 
-import { ForbiddenException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ForbiddenException } from '@/core';
 
 import { mockEmailService } from '../../test-utils/auth-service.mock';
 import { mockConfigService } from '../../test-utils/config-service.mock';

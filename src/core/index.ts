@@ -28,8 +28,10 @@ export * from './decorators/current-user.decorator';
 export * from './decorators/roles.decorator';
 
 // Guards
-export * from './guards/roles.guard';
+export * from './guards/role.guard';
 
 // Utils
 export * from './utils/pagination.utils';
-export * from './utils/password.utils';
+
+// DTOs
+export * from './dto/error-response.dto';

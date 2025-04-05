@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import {
-  BadRequestException,
-  UnauthorizedException,
-} from '@nestjs/common/exceptions';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
+
+import { BadRequestException, UnauthorizedException } from '@/core';
 
 import { UsersService } from '../users/users.service';
 

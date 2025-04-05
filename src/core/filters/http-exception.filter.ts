@@ -9,6 +9,8 @@ import {
   Logger,
 } from '@nestjs/common';
 
+import { ErrorResponseDto } from '../dto/error-response.dto';
+
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
@@ -28,21 +30,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
-    const errorResponse = {
-      statusCode: status,
+    const errorResponse: ErrorResponseDto = {
       timestamp: new Date().toISOString(),
-      path: request.url,
-      method: request.method,
-      message: typeof message === 'object' ? message : { message },
+      ...((typeof message === 'object'
+        ? message
+        : { message }) as ErrorResponseDto),
     };
 
-    // Log error details
+    // Log error for server monitoring
     this.logger.error(
-      `${request.method} ${request.url}`,
-      exception instanceof Error ? exception.stack : String(exception),
+      `${request.method} ${request.url} - ${status}`,
+      exception.stack,
     );
 
-    // Send formatted response
     response.status(status).json(errorResponse);
   }
 }

@@ -1,12 +1,12 @@
 import { useContainer } from 'class-validator';
 
-import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AuthModule } from './auth/auth.module';
+import { ErrorResponseDto } from './core/dto/error-response.dto';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -23,22 +23,15 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config, {
     include: [AuthModule],
+    extraModels: [ErrorResponseDto],
   });
   SwaggerModule.setup('api/docs', app, document);
-
-  // enable validation globally
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-    }),
-  );
 
   // enable DI for class-validator
   useContainer(app.select(AuthModule), { fallbackOnErrors: true });
 
   const configService = app.get(ConfigService);
 
-  await app.listen(configService.get('APP_PORT'));
+  await app.listen(configService.get('PORT'));
 }
 bootstrap();

@@ -10,7 +10,8 @@ import {
   ForbiddenException,
   NotFoundException,
   UnauthorizedException,
-} from '../core/exceptions/application.exception';
+} from '@/core';
+
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 

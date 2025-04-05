@@ -15,7 +15,6 @@ import { UserEntity } from '../users/entities/user.entity';
 import { UserRoleEntity } from '../users/entities/user-role.entity';
 import { UsersService } from '../users/users.service';
 
-import envFixtures from './fixtures/env.fixtures';
 import usersFixtures from './fixtures/users.fixtures';
 import { AuthEmailService } from './auth-email.service';
 
@@ -42,16 +41,16 @@ describe('AuthEmailService', () => {
         ConfigModule,
         MailerModule.forRoot({
           transport: {
-            host: envFixtures.MAIL_HOST,
+            host: process.env.MAIL_HOST,
             port: 587,
             secure: false,
             auth: {
-              user: envFixtures.MAIL_USER,
-              pass: envFixtures.MAIL_PASSWORD,
+              user: process.env.MAIL_USER,
+              pass: process.env.MAIL_PASSWORD,
             },
           },
           defaults: {
-            from: `"No Reply" <${envFixtures.MAIL_HOST}>`,
+            from: `"No Reply" <${process.env.MAIL_HOST}>`,
           },
           template: {
             dir: 'templates-fake-path',

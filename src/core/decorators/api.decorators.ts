@@ -2,7 +2,6 @@ import { applyDecorators, Type } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
-  ApiExtraModels,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -11,123 +10,175 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
+import { ErrorResponseDto } from '../dto/error-response.dto';
+
 /**
- * Standard swagger response decorator for paginated results
+ * Interface for API responses options
  */
-export const ApiPaginatedResponse = <TModel extends Type<any>>(
-  model: TModel,
-) => {
-  return applyDecorators(
-    ApiExtraModels(model),
-    ApiOkResponse({
-      schema: {
-        allOf: [
-          {
-            properties: {
-              data: {
-                type: 'array',
-                items: { $ref: getSchemaPath(model) },
-              },
-              meta: {
-                type: 'object',
-                properties: {
-                  totalItems: {
-                    type: 'number',
-                    example: 100,
-                  },
-                  itemCount: {
-                    type: 'number',
-                    example: 10,
-                  },
-                  itemsPerPage: {
-                    type: 'number',
-                    example: 10,
-                  },
-                  totalPages: {
-                    type: 'number',
-                    example: 10,
-                  },
-                  currentPage: {
-                    type: 'number',
-                    example: 1,
-                  },
-                },
-              },
+interface ApiResponseOptions {
+  type?: Type<any>;
+  isArray?: boolean;
+  description?: string;
+}
+
+/**
+ * Custom decorator for API response with data property wrapper
+ */
+export const ApiDataResponse = (options: ApiResponseOptions) => {
+  const { type, isArray = false, description } = options;
+
+  if (!type) {
+    return ApiOkResponse({
+      description: description || 'Successful operation',
+    });
+  }
+
+  return ApiOkResponse({
+    description: description || 'Successful operation',
+    schema: {
+      properties: {
+        data: isArray
+          ? {
+              type: 'array',
+              items: { $ref: getSchemaPath(type) },
+            }
+          : {
+              $ref: getSchemaPath(type),
+            },
+      },
+    },
+  });
+};
+
+/**
+ * Custom decorator for API response with pagination
+ */
+const ApiPaginatedResponse = (type: Type<any>, description?: string) => {
+  return ApiOkResponse({
+    description: description || 'Successful paginated response',
+    schema: {
+      properties: {
+        data: {
+          type: 'array',
+          items: { $ref: getSchemaPath(type) },
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            total: {
+              type: 'number',
+              example: 100,
+            },
+            page: {
+              type: 'number',
+              example: 1,
+            },
+            limit: {
+              type: 'number',
+              example: 10,
+            },
+            pages: {
+              type: 'number',
+              example: 10,
             },
           },
-        ],
+        },
       },
+    },
+  });
+};
+
+/**
+ * Standard swagger response decorator for single item response
+ */
+export const ApiSingleResponse = (type: Type<any>, description?: string) => {
+  return applyDecorators(
+    ApiDataResponse({
+      type,
+      description: description || 'Successful operation',
     }),
+    ApiErrorResponses(),
   );
 };
 
 /**
- * Standard swagger response decorator for single item
+ * Standard swagger response decorator for created resource
  */
-export const ApiResponse = <TModel extends Type<any>>(
-  model: TModel,
-  status: 'ok' | 'created' = 'ok',
+export const ApiCreatedDataResponse = (
+  type: Type<any>,
+  description?: string,
 ) => {
-  const decorators = [
-    ApiExtraModels(model),
-    status === 'ok'
-      ? ApiOkResponse({
-          schema: {
-            allOf: [
-              {
-                properties: {
-                  data: { $ref: getSchemaPath(model) },
-                  meta: {
-                    type: 'object',
-                    properties: {
-                      timestamp: {
-                        type: 'string',
-                        format: 'date-time',
-                      },
-                    },
-                  },
-                },
-              },
-            ],
+  return applyDecorators(
+    ApiCreatedResponse({
+      description: description || 'Resource created successfully',
+      schema: {
+        properties: {
+          data: {
+            $ref: getSchemaPath(type),
           },
-        })
-      : ApiCreatedResponse({
-          schema: {
-            allOf: [
-              {
-                properties: {
-                  data: { $ref: getSchemaPath(model) },
-                  meta: {
-                    type: 'object',
-                    properties: {
-                      timestamp: {
-                        type: 'string',
-                        format: 'date-time',
-                      },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        }),
-  ];
+        },
+      },
+    }),
+    ApiErrorResponses(),
+  );
+};
 
-  return applyDecorators(...decorators);
+/**
+ * Standard swagger response decorator for array responses
+ */
+export const ApiArrayResponse = (type: Type<any>, description?: string) => {
+  return applyDecorators(
+    ApiDataResponse({
+      type,
+      isArray: true,
+      description: description || 'Array of items',
+    }),
+    ApiErrorResponses(),
+  );
+};
+
+/**
+ * Standard swagger response decorator for paginated responses
+ */
+export const ApiPaginatedDataResponse = (
+  type: Type<any>,
+  description?: string,
+) => {
+  return applyDecorators(
+    ApiPaginatedResponse(type, description),
+    ApiErrorResponses(),
+  );
 };
 
 /**
  * Standard swagger response decorator for all standard error responses
  */
 export const ApiErrorResponses = () => {
+  const errorSchema = {
+    $ref: getSchemaPath(ErrorResponseDto),
+  };
+
   return applyDecorators(
-    ApiBadRequestResponse({ description: 'Bad Request - Validation failed' }),
+    ApiBadRequestResponse({
+      description: 'Bad Request - Validation failed',
+      schema: errorSchema,
+    }),
     ApiUnauthorizedResponse({
       description: 'Unauthorized - JWT token invalid or expired',
+      schema: errorSchema,
     }),
-    ApiForbiddenResponse({ description: 'Forbidden - Not enough permissions' }),
-    ApiNotFoundResponse({ description: 'Not Found - Resource not found' }),
-    ApiInternalServerErrorResponse({ description: 'Internal Server Error' }),
+    ApiForbiddenResponse({
+      description: 'Forbidden - Not enough permissions',
+      schema: errorSchema,
+    }),
+    ApiNotFoundResponse({
+      description: 'Not Found - Resource not found',
+      schema: errorSchema,
+    }),
+    ApiInternalServerErrorResponse({
+      description: 'Internal Server Error',
+      schema: errorSchema,
+    }),
   );
 };
 
@@ -138,7 +189,9 @@ export const ApiCrudResponse = <TModel extends Type<any>>(
   model: TModel,
   status: 'ok' | 'created' = 'ok',
 ) => {
-  return applyDecorators(ApiResponse(model, status), ApiErrorResponses());
+  return status === 'created'
+    ? applyDecorators(ApiCreatedDataResponse(model), ApiErrorResponses())
+    : applyDecorators(ApiSingleResponse(model), ApiErrorResponses());
 };
 
 /**
@@ -147,5 +200,5 @@ export const ApiCrudResponse = <TModel extends Type<any>>(
 export const ApiPaginatedCrudResponse = <TModel extends Type<any>>(
   model: TModel,
 ) => {
-  return applyDecorators(ApiPaginatedResponse(model), ApiErrorResponses());
+  return applyDecorators(ApiPaginatedDataResponse(model), ApiErrorResponses());
 };

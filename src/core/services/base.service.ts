@@ -5,7 +5,8 @@ import {
   Repository,
 } from 'typeorm';
 
-import { NotFoundException } from '../exceptions/application.exception';
+import { NotFoundException } from '@/core';
+
 import { GenericEntity } from '../generic-entity';
 import {
   createOrderCondition,
