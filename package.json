@@ -22,7 +22,7 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "m:generate": "npm run typeorm -- migration:generate -d typeorm.config.ts",
     "m:run": "npm run typeorm -- migration:run -d typeorm.config.ts",
-    "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts",
+    "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.4.0",
