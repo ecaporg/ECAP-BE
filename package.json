@@ -11,7 +11,6 @@
     "start": "nest start",
     "dev": "nest start --watch",
     "debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "types": "tsc --noEmit",
     "test": "jest --runInBand --forceExit",
@@ -24,7 +23,6 @@
     "m:generate": "npm run typeorm -- migration:generate -d typeorm.config.ts",
     "m:run": "npm run typeorm -- migration:run -d typeorm.config.ts",
     "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts",
-    "vercel-build": "npm run build && npm run start:prod"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.4.0",
