@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/main.ts",
+      "src": "dist/src/main.js",
       "use": "@vercel/node",
       "config": {
         "buildCommand": "npm run vercel-build"
@@ -11,7 +11,7 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "dist/**",
       "dest": "dist/src/main.js"
     }
   ]
