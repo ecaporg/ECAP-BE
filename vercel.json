@@ -2,10 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist",
+      "src": "package.json",
       "use": "@vercel/node",
       "config": {
-        "buildCommand": "npm run vercel-build"
+        "includeFiles": ["dist/**"]
       }
     }
   ],
