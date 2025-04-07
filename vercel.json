@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "dist",
-  "framework": "node",
+  "builds": [
+    {
+      "src": "src/main.ts",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/main.js",
+      "dest": "src/main.ts",
       "methods": [
         "GET",
         "POST",
@@ -16,8 +19,5 @@
         "OPTIONS"
       ]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 } 
