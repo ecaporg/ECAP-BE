@@ -1,4 +1,6 @@
 import { useContainer } from 'class-validator';
+// Register path aliases for runtime
+import moduleAlias from 'module-alias';
 
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -8,6 +10,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthModule } from './auth/auth.module';
 import { ErrorResponseDto } from './core/dto/error-response.dto';
 import { AppModule } from './app.module';
+
+// For module aliases
+import 'module-alias/register';
+moduleAlias.addAliases({
+  '@': __dirname,
+  '@/core': __dirname + '/core',
+});
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

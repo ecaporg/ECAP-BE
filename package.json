@@ -22,7 +22,9 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "m:generate": "npm run typeorm -- migration:generate -d typeorm.config.ts",
     "m:run": "npm run typeorm -- migration:run -d typeorm.config.ts",
-    "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts"
+    "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts",
+    "vercel-build": "npm run build && npm run start:prod",
+    "start:prod": "node -r module-alias/register dist/src/main.js"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.4.0",
@@ -53,7 +55,12 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "module-alias": "^2.2.3"
+  },
+  "_moduleAliases": {
+    "@": "dist/src",
+    "@/core": "dist/src/core"
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
