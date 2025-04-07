@@ -121,12 +121,12 @@ export class AuthService {
   async getTokens(authUser: IAuthUser): Promise<AuthTokensDTO> {
     const accessTokenResponse = this.jwtService.signAsync(authUser, {
       secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_EXPIRES'),
+      expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'),
     });
 
     const refreshTokenResponse = this.jwtService.signAsync(authUser, {
       secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES'),
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
     });
 
     const [accessToken, refreshToken] = await Promise.all([
