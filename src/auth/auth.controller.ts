@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -17,6 +17,7 @@ import { LoginResponseDTO } from './dtos/login-response.dto';
 import { PasswordDTO } from './dtos/password.dto';
 import { ResetPasswordDTO } from './dtos/reset-password.dto';
 import { SignInDTO } from './dtos/sign-in.dto';
+import { IAuthRequest } from './types/auth-request';
 import { IAuthUser } from './types/auth-user';
 import { AuthService } from './auth.service';
 
@@ -91,12 +92,13 @@ export class AuthController {
     return this.authService.changePassword(userId, password);
   }
 
-  // @ApiBearerAuth()
-  // @UseGuards(AuthGuard('jwt'))
-  // @Post('logout')
-  // logOut(@Req() { user }: IAuthRequest) {
-  //   return this.authService.logOut(user.id);
-  // }
+  @ApiBearerAuth()
+  @AccountVerified('jwt')
+  @Get('me')
+  @ApiOperation({ summary: 'Get current user' })
+  getMe(@CurrentUser() user: IAuthUser) {
+    return user;
+  }
 
   // @ApiBearerAuth()
   // @AccountVerified('jwt')

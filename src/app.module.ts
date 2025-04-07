@@ -23,7 +23,7 @@ import { AppService } from './app.service';
         type: 'postgres',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         url: configService.get('POSTGRES_URL'),
-        synchronize: true,
+        synchronize: false,
         dropSchema: false,
       }),
       inject: [ConfigService],
