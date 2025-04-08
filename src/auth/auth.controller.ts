@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -18,7 +19,7 @@ import { PasswordDTO } from './dtos/password.dto';
 import { ResetPasswordDTO } from './dtos/reset-password.dto';
 import { SignInDTO } from './dtos/sign-in.dto';
 import { IAuthRequest } from './types/auth-request';
-import { IAuthUser } from './types/auth-user';
+import { AuthUser, IAuthUser } from './types/auth-user';
 import { AuthService } from './auth.service';
 
 @ApiTags('Authentication')
@@ -33,7 +34,7 @@ export class AuthController {
   // }
   @Post('sign-up')
   @ApiOperation({ summary: 'Register a new user' })
-  // @ApiCrudResponse(IAuthUser, 'created')
+  @ApiCrudResponse(AuthUser, 'created')
   signUp(@Body() createUserDto: CreateUserDTO): Promise<IAuthUser> {
     return this.authService.signUp(createUserDto);
   }
@@ -93,9 +94,10 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @AccountVerified('jwt')
+  @UseGuards(AuthGuard('jwt'))
   @Get('me')
   @ApiOperation({ summary: 'Get current user' })
+  @ApiCrudResponse(AuthUser)
   getMe(@CurrentUser() user: IAuthUser) {
     return user;
   }

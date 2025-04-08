@@ -94,7 +94,7 @@ export class AuthEmailService {
     throw new BadRequestException('Invalid token payload');
   }
 
-  async verifyEmailToken(token: string): Promise<Omit<IAuthUser, 'roles'>> {
+  async verifyEmailToken(token: string): Promise<IAuthUser> {
     const email = this.validateConfirmEmailToken(token);
 
     const user = await this.usersService.findUserByEmail(email);
@@ -112,6 +112,7 @@ export class AuthEmailService {
       lastname: user.lastname,
       isActive: user.isActive,
       emailVerified: true,
+      role: user.role,
     };
   }
 

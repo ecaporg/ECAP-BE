@@ -1,8 +1,6 @@
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 
 import { GenericEntity } from '../../core/generic-entity';
-
-import { UserRoleEntity } from './user-role.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends GenericEntity {
@@ -29,6 +27,6 @@ export class UserEntity extends GenericEntity {
   @Column({ nullable: true })
   refreshToken?: string;
 
-  @OneToMany(() => UserRoleEntity, (userRole) => userRole.user)
-  userRoles: UserRoleEntity[];
+  @Column({ nullable: true })
+  role?: string;
 }

@@ -205,9 +205,8 @@ export class AuthService {
   }
 
   private async getAuthUser(user: UserEntity): Promise<IAuthUser> {
-    const { id, firstname, lastname, email, isActive, emailVerified } = user;
-    const rolesResponse = await this.userService.getUserRoles(user.id);
-    const roles = rolesResponse.map((role) => role.name);
+    const { id, firstname, lastname, email, isActive, emailVerified, role } =
+      user;
 
     return {
       id,
@@ -216,7 +215,7 @@ export class AuthService {
       email,
       isActive,
       emailVerified: emailVerified || false,
-      roles,
+      role,
     };
   }
 

@@ -14,10 +14,10 @@ export class RoleGuard implements CanActivate {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     const user = context.switchToHttp().getRequest<IAuthRequest>().user;
 
-    return this.mathRoles(user.roles, roles);
+    return this.mathRoles(user.role, roles);
   }
 
-  private mathRoles(userRoles: string[], roles: string[]): boolean {
-    return roles.some((role) => userRoles.includes(role));
+  private mathRoles(userRole: string, roles: string[]): boolean {
+    return roles.some((role) => userRole.includes(role));
   }
 }

@@ -38,9 +38,9 @@ export class AuthUserDTO {
   emailVerified: boolean;
 
   @ApiProperty({
-    description: 'User roles',
-    type: [String],
-    example: ['user'],
+    description: 'User role',
+    type: String,
+    example: 'admin',
   })
-  roles: string[];
+  role: string;
 }
