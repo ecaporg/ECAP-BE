@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
 import { DatedGenericEntity } from '../../core/generic-entity';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -8,10 +8,10 @@ import { SchoolEntity } from './school.entity';
 @Entity({ name: 'directors' })
 export class DirectorEntity extends DatedGenericEntity {
   @PrimaryColumn()
-  user_id: number;
-
-  @PrimaryColumn()
   school_id: number;
+
+  @Column()
+  user_id: number;
 
   @OneToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
