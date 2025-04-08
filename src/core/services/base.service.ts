@@ -7,7 +7,7 @@ import {
 
 import { NotFoundException } from '@/core';
 
-import { GenericEntity } from '../generic-entity';
+import { DatedGenericEntity } from '../generic-entity';
 import {
   createOrderCondition,
   createSearchCondition,
@@ -33,8 +33,59 @@ export interface PaginatedResult<T> {
   };
 }
 
-export class BaseService<T extends GenericEntity> {
-  constructor(protected readonly repository: Repository<T>) {}
+export type EntityId = string | number;
+
+export type EntityKey<T> = EntityId | Partial<T>;
+
+export type BaseServiceOptions<IDKey> = {
+  primaryKeys?: IDKey[];
+  defaultRelations?: string[];
+};
+
+export class BaseService<
+  T extends DatedGenericEntity,
+  IDKey extends keyof T = any,
+> {
+  protected readonly primaryKeys: IDKey[];
+  protected defaultRelations: string[];
+
+  constructor(
+    protected readonly repository: Repository<T>,
+    options: BaseServiceOptions<IDKey> = {},
+  ) {
+    this.primaryKeys = Array.isArray(options.primaryKeys)
+      ? options.primaryKeys
+      : ['id' as IDKey];
+
+    this.defaultRelations = options.defaultRelations || [];
+  }
+
+  protected createWhereCondition(id: EntityKey<T>): FindOptionsWhere<T> {
+    const where = {} as FindOptionsWhere<T>;
+
+    if (
+      this.primaryKeys.length === 1 &&
+      (typeof id === 'string' || typeof id === 'number')
+    ) {
+      where[this.primaryKeys[0] as any] = id;
+      return where;
+    }
+
+    if (typeof id !== 'object' || id === null) {
+      throw new Error(
+        `Expected object with keys: ${this.primaryKeys.join(', ')}`,
+      );
+    }
+
+    for (const key of this.primaryKeys) {
+      if (!(key in id)) {
+        throw new Error(`Missing key part: ${String(key)}`);
+      }
+      where[key as any] = (id as any)[key];
+    }
+
+    return where;
+  }
 
   async findAll(options?: PaginationOptions): Promise<PaginatedResult<T>> {
     const page = options?.page || 1;
@@ -48,6 +99,7 @@ export class BaseService<T extends GenericEntity> {
       skip: (page - 1) * limit,
       take: limit,
       order: createOrderCondition(sortBy, sortDirection),
+      relations: this.defaultRelations,
     };
 
     if (search && searchFields.length > 0) {
@@ -73,24 +125,34 @@ export class BaseService<T extends GenericEntity> {
     };
   }
 
-  async findOne(id: number): Promise<T> {
+  async findOne(id: EntityKey<T>): Promise<T> {
+    const where = this.createWhereCondition(id);
     const entity = await this.repository.findOne({
-      where: { id } as unknown as FindOptionsWhere<T>,
+      where,
+      relations: this.defaultRelations,
     });
 
     if (!entity) {
-      throw new NotFoundException(`Entity with id ${id} not found`);
+      throw new NotFoundException(
+        `Entity with ${String(this.primaryKeys)} ${id} not found`,
+      );
     }
 
     return entity;
   }
 
   async findBy(options: FindManyOptions<T>): Promise<T[]> {
-    return this.repository.find(options);
+    return this.repository.find({
+      relations: this.defaultRelations,
+      ...options,
+    });
   }
 
   async findOneBy(options: FindOptionsWhere<T>): Promise<T> {
-    const entity = await this.repository.findOne({ where: options });
+    const entity = await this.repository.findOne({
+      where: options,
+      relations: this.defaultRelations,
+    });
 
     if (!entity) {
       throw new NotFoundException('Entity not found');
@@ -104,21 +166,28 @@ export class BaseService<T extends GenericEntity> {
     return this.repository.save(entity);
   }
 
-  async update(id: number, data: DeepPartial<T>): Promise<T> {
+  async update(id: EntityKey<T>, data: DeepPartial<T>): Promise<T> {
     const entity = await this.findOne(id);
     const updated = this.repository.merge(entity, data);
     return this.repository.save(updated);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: EntityKey<T>): Promise<void> {
     const entity = await this.findOne(id);
     await this.repository.remove(entity);
   }
 
-  async exists(id: number): Promise<boolean> {
-    const count = await this.repository.count({
-      where: { id } as unknown as FindOptionsWhere<T>,
-    });
+  async exists(id: EntityKey<T>): Promise<boolean> {
+    const where = this.createWhereCondition(id);
+    const count = await this.repository.count({ where });
     return count > 0;
+  }
+
+  setDefaultRelations(relations: string[]) {
+    this.defaultRelations = relations;
+  }
+
+  getDefaultRelations(): string[] {
+    return this.defaultRelations;
   }
 }

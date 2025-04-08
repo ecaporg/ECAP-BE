@@ -4,13 +4,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export abstract class GenericEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export abstract class DatedGenericEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
   @CreateDateColumn()
   createdAt: Date;
+}
+export abstract class GenericEntity extends DatedGenericEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 }

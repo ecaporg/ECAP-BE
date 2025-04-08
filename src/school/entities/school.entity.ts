@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 
 import { GenericEntity } from '../../core/generic-entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 
+import { DirectorEntity } from './director.entity';
 import { SemesterEntity } from './semester.entity';
 import { StaffEntity } from './staff.entity';
 import { TrackEntity } from './track.entity';
@@ -23,4 +24,7 @@ export class SchoolEntity extends GenericEntity {
 
   @OneToMany(() => StaffEntity, (staff) => staff.school)
   staff: StaffEntity[];
+
+  @OneToOne(() => DirectorEntity, (director) => director.school)
+  director: DirectorEntity;
 }

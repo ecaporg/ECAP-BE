@@ -1,17 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { DirectorEntity } from './entities/director.entity';
 import { SchoolEntity } from './entities/school.entity';
 import { SemesterEntity } from './entities/semester.entity';
-import {
-  AdminEntity,
-  DirectorEntity,
-  TeacherEntity,
-} from './entities/staff.entity';
+import { AdminEntity, TeacherEntity } from './entities/staff.entity';
 import { SubjectEntity } from './entities/subject.entity';
 import { TrackEntity } from './entities/track.entity';
 import { TrackCalendarEntity } from './entities/track-calendar.entity';
 import { TrackLearningPeriodEntity } from './entities/track-learning-period.entity';
+import { DirectorService } from './services/director.service';
 import { SchoolService } from './services/school.service';
 import { SemesterService } from './services/semester.service';
 import { StaffService } from './services/staff.service';
@@ -42,6 +40,7 @@ import { TrackLearningPeriodService } from './services/track-learning-period.ser
     TrackLearningPeriodService,
     SemesterService,
     StaffService,
+    DirectorService,
   ],
   exports: [
     SchoolService,
@@ -51,6 +50,7 @@ import { TrackLearningPeriodService } from './services/track-learning-period.ser
     TrackLearningPeriodService,
     SemesterService,
     StaffService,
+    DirectorService,
   ],
 })
 export class SchoolModule {}

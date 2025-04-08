@@ -5,22 +5,20 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  TableInheritance,
+  PrimaryColumn,
 } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
+import { DatedGenericEntity } from '../../core/generic-entity';
 import { SampleEntity } from '../../students/entities/sample.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
 import { SchoolEntity } from './school.entity';
 
-@Entity()
-@TableInheritance({ column: { type: 'varchar', name: 'type' }, pattern: 'STI' })
-export abstract class StaffEntity extends GenericEntity {
-  @Column()
+export abstract class StaffEntity extends DatedGenericEntity {
+  @PrimaryColumn()
   user_id: number;
 
-  @Column()
+  @PrimaryColumn()
   school_id: number;
 
   @Index()
@@ -39,9 +37,6 @@ export class TeacherEntity extends StaffEntity {
   @OneToMany(() => SampleEntity, (sample) => sample.teacher)
   samples: SampleEntity[];
 }
-
-@Entity({ name: 'directors' })
-export class DirectorEntity extends StaffEntity {}
 
 @Entity({ name: 'admins' })
 export class AdminEntity extends StaffEntity {}
