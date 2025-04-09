@@ -6,6 +6,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
@@ -24,7 +25,7 @@ interface ApiResponseOptions {
 /**
  * Custom decorator for API response with data property wrapper
  */
-export const ApiDataResponse = (options: ApiResponseOptions) => {
+const ApiDataResponse = (options: ApiResponseOptions) => {
   const { type, isArray = false, description } = options;
 
   if (!type) {
@@ -51,9 +52,9 @@ export const ApiDataResponse = (options: ApiResponseOptions) => {
 };
 
 /**
- * Custom decorator for API response with pagination
+ * Custom decorator for API response with pagination without error responses
  */
-const ApiPaginatedResponse = (type: Type<any>, description?: string) => {
+export const ApiPaginatedResponse = (type: Type<any>, description?: string) => {
   return ApiOkResponse({
     description: description || 'Successful paginated response',
     schema: {
@@ -89,16 +90,13 @@ const ApiPaginatedResponse = (type: Type<any>, description?: string) => {
 };
 
 /**
- * Standard swagger response decorator for single item response
+ * Standard swagger response decorator for single item response without error responses
  */
 export const ApiSingleResponse = (type: Type<any>, description?: string) => {
-  return applyDecorators(
-    ApiDataResponse({
-      type,
-      description: description || 'Successful operation',
-    }),
-    ApiErrorResponses(),
-  );
+  return ApiDataResponse({
+    type,
+    description: description || 'Successful operation',
+  });
 };
 
 /**
@@ -108,46 +106,27 @@ export const ApiCreatedDataResponse = (
   type: Type<any>,
   description?: string,
 ) => {
-  return applyDecorators(
-    ApiCreatedResponse({
-      description: description || 'Resource created successfully',
-      schema: {
-        properties: {
-          data: {
-            $ref: getSchemaPath(type),
-          },
+  return ApiCreatedResponse({
+    description: description || 'Resource created successfully',
+    schema: {
+      properties: {
+        data: {
+          $ref: getSchemaPath(type),
         },
       },
-    }),
-    ApiErrorResponses(),
-  );
+    },
+  });
 };
 
 /**
- * Standard swagger response decorator for array responses
+ * Standard swagger response decorator for array responses without error responses
  */
 export const ApiArrayResponse = (type: Type<any>, description?: string) => {
-  return applyDecorators(
-    ApiDataResponse({
-      type,
-      isArray: true,
-      description: description || 'Array of items',
-    }),
-    ApiErrorResponses(),
-  );
-};
-
-/**
- * Standard swagger response decorator for paginated responses
- */
-export const ApiPaginatedDataResponse = (
-  type: Type<any>,
-  description?: string,
-) => {
-  return applyDecorators(
-    ApiPaginatedResponse(type, description),
-    ApiErrorResponses(),
-  );
+  return ApiDataResponse({
+    type,
+    isArray: true,
+    description: description || 'Array of items',
+  });
 };
 
 /**
@@ -183,7 +162,7 @@ export const ApiErrorResponses = () => {
 };
 
 /**
- * Combined standard API responses for CRUD operations
+ * Combined standard API responses for CRUD operations with error responses
  */
 export const ApiCrudResponse = <TModel extends Type<any>>(
   model: TModel,
@@ -195,10 +174,45 @@ export const ApiCrudResponse = <TModel extends Type<any>>(
 };
 
 /**
- * Combined standard API responses for paginated results
+ * Combined standard API responses for paginated results with error responses
  */
 export const ApiPaginatedCrudResponse = <TModel extends Type<any>>(
   model: TModel,
 ) => {
-  return applyDecorators(ApiPaginatedDataResponse(model), ApiErrorResponses());
+  return applyDecorators(ApiPaginatedResponse(model), ApiErrorResponses());
+};
+
+export const ApiPaginationQueries = () => {
+  return applyDecorators(
+    ApiQuery({
+      name: 'page',
+      required: false,
+      type: Number,
+      description: 'Page number',
+    }),
+    ApiQuery({
+      name: 'limit',
+      required: false,
+      type: Number,
+      description: 'Number of items per page',
+    }),
+    ApiQuery({
+      name: 'sortBy',
+      required: false,
+      type: [String],
+      description: 'Sort by field',
+    }),
+    ApiQuery({
+      name: 'sortDirection',
+      required: false,
+      enum: ['ASC', 'DESC'],
+      description: 'Sort direction',
+    }),
+    ApiQuery({
+      name: 'search',
+      required: false,
+      type: String,
+      description: 'Search query',
+    }),
+  );
 };
