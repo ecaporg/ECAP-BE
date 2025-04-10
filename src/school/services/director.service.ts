@@ -7,14 +7,13 @@ import { BaseService } from '../../core/services/base.service';
 import { DirectorEntity } from '../entities/director.entity';
 
 @Injectable()
-export class DirectorService extends BaseService<DirectorEntity, 'school_id'> {
+export class DirectorService extends BaseService<DirectorEntity> {
   constructor(
     @InjectRepository(DirectorEntity)
     private readonly directorRepository: Repository<DirectorEntity>,
   ) {
     super(directorRepository, {
-      primaryKeys: ['school_id'],
-      defaultRelations: ['user', 'school'],
+      defaultRelations: ['user', 'school', 'academy'],
     });
   }
 
@@ -24,13 +23,21 @@ export class DirectorService extends BaseService<DirectorEntity, 'school_id'> {
     });
   }
 
+  async findByAcademyId(academyId: number): Promise<DirectorEntity[]> {
+    return this.findBy({
+      where: { academy_id: academyId },
+    });
+  }
+
   async appointDirector(
     schoolId: number,
     userId: number,
+    academyId: number,
   ): Promise<DirectorEntity> {
     return this.create({
       school_id: schoolId,
       user_id: userId,
+      academy_id: academyId,
     });
   }
 

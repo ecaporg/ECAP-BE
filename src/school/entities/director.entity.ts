@@ -1,17 +1,21 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
-import { DatedGenericEntity } from '../../core/generic-entity';
+import { GenericEntity } from '../../core/generic-entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
+import { AcademyEntity } from './academy.entity';
 import { SchoolEntity } from './school.entity';
 
 @Entity({ name: 'directors' })
-export class DirectorEntity extends DatedGenericEntity {
-  @PrimaryColumn()
+export class DirectorEntity extends GenericEntity {
+  @Column()
   school_id: number;
 
   @Column()
   user_id: number;
+
+  @Column()
+  academy_id: number;
 
   @OneToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
@@ -20,4 +24,8 @@ export class DirectorEntity extends DatedGenericEntity {
   @OneToOne(() => SchoolEntity)
   @JoinColumn({ name: 'school_id' })
   school: SchoolEntity;
+
+  @ManyToOne(() => AcademyEntity)
+  @JoinColumn({ name: 'academy_id' })
+  academy: AcademyEntity;
 }

@@ -17,7 +17,7 @@ export class StaffService {
   >;
   private readonly adminService: BaseService<
     AdminEntity,
-    'user_id' | 'school_id'
+    'user_id' | 'tenant_id'
   >;
 
   constructor(
@@ -37,9 +37,14 @@ export class StaffService {
       'user_id' | 'school_id'
     >(teacherRepository, options);
 
-    this.adminService = new BaseService<AdminEntity, 'user_id' | 'school_id'>(
+    const adminOptions: BaseServiceOptions<'user_id' | 'tenant_id'> = {
+      primaryKeys: ['user_id', 'tenant_id'],
+      defaultRelations: ['user', 'tenant'],
+    };
+
+    this.adminService = new BaseService<AdminEntity, 'user_id' | 'tenant_id'>(
       adminRepository,
-      options,
+      adminOptions,
     );
   }
 
@@ -67,9 +72,9 @@ export class StaffService {
   }
 
   // Методи для адміністраторів
-  async findAdminsBySchoolId(schoolId: number): Promise<AdminEntity[]> {
+  async findAdminsByTenantId(tenantId: number): Promise<AdminEntity[]> {
     return this.adminService.findBy({
-      where: { school_id: schoolId },
+      where: { tenant_id: tenantId },
     });
   }
 
@@ -79,10 +84,10 @@ export class StaffService {
     });
   }
 
-  async createAdmin(userId: number, schoolId: number): Promise<AdminEntity> {
+  async createAdmin(userId: number, tenantId: number): Promise<AdminEntity> {
     return this.adminService.create({
       user_id: userId,
-      school_id: schoolId,
+      tenant_id: tenantId,
     });
   }
 }

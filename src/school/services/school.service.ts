@@ -12,6 +12,8 @@ export class SchoolService extends BaseService<SchoolEntity> {
     @InjectRepository(SchoolEntity)
     private schoolRepository: Repository<SchoolEntity>,
   ) {
-    super(schoolRepository);
+    super(schoolRepository, {
+      defaultRelations: ['tenant', 'academy', 'director'],
+    });
   }
 }

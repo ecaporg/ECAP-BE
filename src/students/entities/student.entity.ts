@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { GenericEntity } from '../../core/generic-entity';
+import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
@@ -21,8 +22,8 @@ export class StudentEntity extends GenericEntity {
   @Column()
   user_id: number;
 
-  @Column({ length: 50 })
-  academy: string;
+  @Column({ nullable: true })
+  academy_id: number;
 
   @Column({ length: 50 })
   grade: string;
@@ -36,6 +37,10 @@ export class StudentEntity extends GenericEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
+
+  @ManyToOne(() => AcademyEntity)
+  @JoinColumn({ name: 'academy_id' })
+  academy: AcademyEntity;
 
   @OneToMany(() => SampleEntity, (sample) => sample.student)
   samples: SampleEntity[];
