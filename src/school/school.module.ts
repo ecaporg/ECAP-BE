@@ -5,22 +5,33 @@ import { StaffModule } from '@/staff/staff.module';
 import { StudentsModule } from '@/students/students.module';
 import { TrackModule } from '@/track/track.module';
 
+import { AcademyEntity } from './entities/academy.entity';
 import { SchoolEntity } from './entities/school.entity';
 import { SemesterEntity } from './entities/semester.entity';
+import { TenantEntity } from './entities/tenant.entity';
+import { AcademyService } from './services/academy.service';
 import { SchoolService } from './services/school.service';
 import { SemesterService } from './services/semester.service';
+import { TenantService } from './services/tenant.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SchoolEntity, SemesterEntity]),
+    TypeOrmModule.forFeature([
+      SchoolEntity,
+      SemesterEntity,
+      TenantEntity,
+      AcademyEntity,
+    ]),
     StudentsModule,
     StaffModule,
     TrackModule,
   ],
-  providers: [SchoolService, SemesterService],
+  providers: [SchoolService, SemesterService, TenantService, AcademyService],
   exports: [
     SchoolService,
     SemesterService,
+    TenantService,
+    AcademyService,
     StudentsModule,
     StaffModule,
     TrackModule,

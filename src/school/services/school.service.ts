@@ -14,7 +14,7 @@ export class SchoolService extends BaseService<SchoolEntity> {
     private schoolRepository: Repository<SchoolEntity>,
   ) {
     super(schoolRepository, {
-      defaultRelations: ['tenant', 'academy', 'director'],
+      defaultRelations: ['tenant', 'director'],
     });
   }
 }
