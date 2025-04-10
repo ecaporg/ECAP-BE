@@ -87,7 +87,10 @@ export class BaseService<
     return where;
   }
 
-  async findAll(options?: PaginationOptions): Promise<PaginatedResult<T>> {
+  async findAll(
+    options?: PaginationOptions,
+    relations?: string[],
+  ): Promise<PaginatedResult<T>> {
     const page = options?.page || 1;
     const limit = options?.limit || 15;
     const sortBy = options?.sortBy || ['createdAt'];
@@ -99,7 +102,7 @@ export class BaseService<
       skip: (page - 1) * limit,
       take: limit,
       order: createOrderCondition(sortBy, sortDirection),
-      relations: this.defaultRelations,
+      relations: relations || this.defaultRelations,
     };
 
     if (search && searchFields.length > 0) {
@@ -125,11 +128,11 @@ export class BaseService<
     };
   }
 
-  async findOne(id: EntityKey<T>): Promise<T> {
+  async findOne(id: EntityKey<T>, relations?: string[]): Promise<T> {
     const where = this.createWhereCondition(id);
     const entity = await this.repository.findOne({
       where,
-      relations: this.defaultRelations,
+      relations: relations || this.defaultRelations,
     });
 
     if (!entity) {
@@ -148,10 +151,13 @@ export class BaseService<
     });
   }
 
-  async findOneBy(options: FindOptionsWhere<T>): Promise<T> {
+  async findOneBy(
+    options: FindOptionsWhere<T>,
+    relations?: string[],
+  ): Promise<T> {
     const entity = await this.repository.findOne({
       where: options,
-      relations: this.defaultRelations,
+      relations: relations || this.defaultRelations,
     });
 
     if (!entity) {
@@ -181,13 +187,5 @@ export class BaseService<
     const where = this.createWhereCondition(id);
     const count = await this.repository.count({ where });
     return count > 0;
-  }
-
-  setDefaultRelations(relations: string[]) {
-    this.defaultRelations = relations;
-  }
-
-  getDefaultRelations(): string[] {
-    return this.defaultRelations;
   }
 }
