@@ -11,9 +11,8 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@/core';
-
-import { UserEntity } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
+import { UserEntity } from '@/users/entities/user.entity';
+import { UsersService } from '@/users/users.service';
 
 import { AuthTokensDTO } from './dtos/auth-tokens.dto';
 import { ChangeEmailPasswordDTO } from './dtos/change-email.dto';

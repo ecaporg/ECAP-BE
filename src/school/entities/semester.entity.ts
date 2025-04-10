@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
+import { GenericEntity } from '@/core/generic-entity';
 
 import { SchoolEntity } from './school.entity';
 
@@ -13,10 +13,10 @@ export class SemesterEntity extends GenericEntity {
   name: string;
 
   @Column()
-  startDate: Date;
+  start_date: Date;
 
   @Column()
-  endDate: Date;
+  end_date: Date;
 
   @ManyToOne(() => SchoolEntity, (school) => school.semesters)
   @JoinColumn({ name: 'school_id' })

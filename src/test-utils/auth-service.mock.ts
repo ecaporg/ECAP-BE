@@ -1,4 +1,4 @@
-import { AuthEmailService } from '../auth/auth-email.service';
+import { AuthEmailService } from '@/auth/auth-email.service';
 
 export const mockEmailService = () => {
   const authEmailService = {

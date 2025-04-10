@@ -2,13 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthModule } from './auth/auth.module';
-import { CoreModule } from './core/core.module';
-import { SchoolModule } from './school/school.module';
-import { StudentsModule } from './students/students.module';
-import { UsersModule } from './users/users.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from '@/app.controller';
+import { AppService } from '@/app.service';
+import { AuthModule } from '@/auth/auth.module';
+import { CoreModule } from '@/core/core.module';
+import { SchoolModule } from '@/school/school.module';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
   imports: [
@@ -16,7 +15,6 @@ import { AppService } from './app.service';
     AuthModule,
     UsersModule,
     SchoolModule,
-    StudentsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,

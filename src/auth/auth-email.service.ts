@@ -4,8 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 
 import { BadRequestException, UnauthorizedException } from '@/core';
-
-import { UsersService } from '../users/users.service';
+import { UsersService } from '@/users/users.service';
 
 import { ChangeEmailDTO } from './dtos/change-email.dto';
 import { IAuthUser } from './types/auth-user';

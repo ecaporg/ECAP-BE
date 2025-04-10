@@ -1,8 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
-import { TeacherEntity } from '../../school/entities/staff.entity';
-import { SubjectEntity } from '../../school/entities/subject.entity';
+import { GenericEntity } from '@/core/generic-entity';
+import { TeacherEntity } from '@/staff/entities/staff.entity';
+import { SubjectEntity } from '@/track/entities/subject.entity';
+import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
 import { StudentEntity } from './student.entity';
 
@@ -23,6 +24,9 @@ export class SampleEntity extends GenericEntity {
   @Column({ length: 50 })
   status: string;
 
+  @Column()
+  learning_period_id: number;
+
   @ManyToOne(() => StudentEntity, (student) => student.samples)
   @JoinColumn({ name: 'student_id' })
   student: StudentEntity;
@@ -34,4 +38,8 @@ export class SampleEntity extends GenericEntity {
   @ManyToOne(() => TeacherEntity, (teacher) => teacher.samples)
   @JoinColumn({ name: 'teacher_id' })
   teacher: TeacherEntity;
+
+  @ManyToOne(() => TrackLearningPeriodEntity, (period) => period.samples)
+  @JoinColumn({ name: 'learning_period_id' })
+  learningPeriod: TrackLearningPeriodEntity;
 }

@@ -1,10 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
-import { UserEntity } from '../../users/entities/user.entity';
-
-import { AcademyEntity } from './academy.entity';
-import { SchoolEntity } from './school.entity';
+import { GenericEntity } from '@/core/generic-entity';
+import { AcademyEntity } from '@/school/entities/academy.entity';
+import { SchoolEntity } from '@/school/entities/school.entity';
+import { UserEntity } from '@/users/entities/user.entity';
 
 @Entity({ name: 'directors' })
 export class DirectorEntity extends GenericEntity {

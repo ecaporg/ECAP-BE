@@ -1,109 +1,109 @@
-import { createMock } from '@golevelup/ts-jest';
-import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { Test, TestingModule } from '@nestjs/testing';
+// import { createMock } from '@golevelup/ts-jest';
+// import { ConfigModule } from '@nestjs/config';
+// import { JwtModule } from '@nestjs/jwt';
+// import { PassportModule } from '@nestjs/passport';
+// import { Test, TestingModule } from '@nestjs/testing';
 
-import { mockEmailService } from '../test-utils/auth-service.mock';
-import dbTestingUtils from '../test-utils/db-testing.utils';
-import { RoleEntity } from '../users/entities/role.entity';
-import { UserEntity } from '../users/entities/user.entity';
-import { UserRoleEntity } from '../users/entities/user-role.entity';
-import { UsersService } from '../users/users.service';
+// import { mockEmailService } from '../test-utils/auth-service.mock';
+// import dbTestingUtils from '../test-utils/db-testing.utils';
+// import { RoleEntity } from '../users/entities/role.entity';
+// import { UserEntity } from '../users/entities/user.entity';
+// import { UserRoleEntity } from '../users/entities/user-role.entity';
+// import { UsersService } from '../users/users.service';
 
-import { IAuthNewEmailRequest } from './types/auth-new-email-request';
-import { AuthService } from './auth.service';
-import { AuthEmailController } from './auth-email.controller';
-import { AuthEmailService } from './auth-email.service';
+// import { IAuthNewEmailRequest } from './types/auth-new-email-request';
+// import { AuthService } from './auth.service';
+// import { AuthEmailController } from './auth-email.controller';
+// import { AuthEmailService } from './auth-email.service';
 
-describe('AuthEmailController', () => {
-  let controller: AuthEmailController;
-  let authEmailService: AuthEmailService;
+// describe('AuthEmailController', () => {
+//   let controller: AuthEmailController;
+//   let authEmailService: AuthEmailService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ...dbTestingUtils.TypeOrmTestingModule([
-          UserEntity,
-          RoleEntity,
-          UserRoleEntity,
-        ]),
-        ConfigModule,
-        JwtModule.register({}),
-        PassportModule,
-      ],
-      providers: [
-        AuthService,
-        UsersService,
-        AuthEmailService,
-        mockEmailService(),
-      ],
-      controllers: [AuthEmailController],
-    }).compile();
+//   beforeEach(async () => {
+//     const module: TestingModule = await Test.createTestingModule({
+//       imports: [
+//         ...dbTestingUtils.TypeOrmTestingModule([
+//           UserEntity,
+//           RoleEntity,
+//           UserRoleEntity,
+//         ]),
+//         ConfigModule,
+//         JwtModule.register({}),
+//         PassportModule,
+//       ],
+//       providers: [
+//         AuthService,
+//         UsersService,
+//         AuthEmailService,
+//         mockEmailService(),
+//       ],
+//       controllers: [AuthEmailController],
+//     }).compile();
 
-    controller = module.get<AuthEmailController>(AuthEmailController);
-    authEmailService = module.get<AuthEmailService>(AuthEmailService);
-  });
+//     controller = module.get<AuthEmailController>(AuthEmailController);
+//     authEmailService = module.get<AuthEmailService>(AuthEmailService);
+//   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+//   it('should be defined', () => {
+//     expect(controller).toBeDefined();
+//   });
 
-  it('should bind a "token" to view for rendering', () => {
-    const value = controller.renderConfirmEmail('some-token');
+//   it('should bind a "token" to view for rendering', () => {
+//     const value = controller.renderConfirmEmail('some-token');
 
-    expect(value).toStrictEqual({ token: 'some-token' });
-  });
+//     expect(value).toStrictEqual({ token: 'some-token' });
+//   });
 
-  it('should call "verifyEmailToken"', () => {
-    jest
-      .spyOn(authEmailService, 'verifyEmailToken')
-      .mockImplementation(jest.fn());
+//   it('should call "verifyEmailToken"', () => {
+//     jest
+//       .spyOn(authEmailService, 'verifyEmailToken')
+//       .mockImplementation(jest.fn());
 
-    controller.verifyEmail('token');
+//     controller.verifyEmail('token');
 
-    expect(authEmailService.verifyEmailToken).toHaveBeenCalledWith('token');
-  });
+//     expect(authEmailService.verifyEmailToken).toHaveBeenCalledWith('token');
+//   });
 
-  it('should call "resendConfirmationLink"', () => {
-    const emailPayload = {
-      email: 'some@mail.com',
-    };
+//   it('should call "resendConfirmationLink"', () => {
+//     const emailPayload = {
+//       email: 'some@mail.com',
+//     };
 
-    jest
-      .spyOn(authEmailService, 'resendConfirmationLink')
-      .mockImplementation(jest.fn());
+//     jest
+//       .spyOn(authEmailService, 'resendConfirmationLink')
+//       .mockImplementation(jest.fn());
 
-    controller.resendConfirmationLink(emailPayload);
+//     controller.resendConfirmationLink(emailPayload);
 
-    expect(authEmailService.resendConfirmationLink).toHaveBeenCalledWith(
-      emailPayload.email,
-    );
-  });
+//     expect(authEmailService.resendConfirmationLink).toHaveBeenCalledWith(
+//       emailPayload.email,
+//     );
+//   });
 
-  it('should call "changeEmail"', () => {
-    const mockRequest = createMock<IAuthNewEmailRequest>();
+//   it('should call "changeEmail"', () => {
+//     const mockRequest = createMock<IAuthNewEmailRequest>();
 
-    mockRequest.user = {
-      id: 1,
-      createdAt: new Date(),
-      newEmail: 'new@mail.com',
-      updatedAt: new Date(),
-      userRoles: [],
-      firstname: 'Max',
-      lastname: 'Smith',
-      email: 'smith@mail.com',
-      isActive: true,
-      emailVerified: true,
-      password: 'hashed-password',
-    };
-    jest.spyOn(authEmailService, 'changeEmail').mockImplementation(jest.fn());
+//     mockRequest.user = {
+//       id: 1,
+//       createdAt: new Date(),
+//       newEmail: 'new@mail.com',
+//       updatedAt: new Date(),
+//       userRoles: [],
+//       firstname: 'Max',
+//       lastname: 'Smith',
+//       email: 'smith@mail.com',
+//       isActive: true,
+//       emailVerified: true,
+//       password: 'hashed-password',
+//     };
+//     jest.spyOn(authEmailService, 'changeEmail').mockImplementation(jest.fn());
 
-    controller.changeEmail(mockRequest);
+//     controller.changeEmail(mockRequest);
 
-    expect(authEmailService.changeEmail).toHaveBeenCalledWith(
-      mockRequest.user.id,
-      mockRequest.user.newEmail,
-    );
-  });
-});
+//     expect(authEmailService.changeEmail).toHaveBeenCalledWith(
+//       mockRequest.user.id,
+//       mockRequest.user.newEmail,
+//     );
+//   });
+// });

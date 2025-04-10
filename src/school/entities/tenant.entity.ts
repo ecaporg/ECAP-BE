@@ -1,10 +1,11 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
+import { GenericEntity } from '@/core/generic-entity';
+import { AdminEntity } from '@/staff/entities/staff.entity';
+import { TrackEntity } from '@/track/entities/track.entity';
 
 import { AcademyEntity } from './academy.entity';
 import { SchoolEntity } from './school.entity';
-import { AdminEntity } from './staff.entity';
 
 @Entity({ name: 'tenants' })
 export class TenantEntity extends GenericEntity {
@@ -19,4 +20,7 @@ export class TenantEntity extends GenericEntity {
 
   @OneToMany(() => AcademyEntity, (academy) => academy.tenant)
   academies: AcademyEntity[];
+
+  @OneToMany(() => TrackEntity, (track) => track.tenant)
+  tracks: TrackEntity[];
 }

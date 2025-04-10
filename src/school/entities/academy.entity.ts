@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
+import { GenericEntity } from '@/core/generic-entity';
 
 import { TenantEntity } from './tenant.entity';
 

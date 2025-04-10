@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
+import { GenericEntity } from '@/core/generic-entity';
+import { SampleEntity } from '@/students/entities/sample.entity';
 
 import { TrackEntity } from './track.entity';
 
@@ -13,10 +14,13 @@ export class TrackLearningPeriodEntity extends GenericEntity {
   name: string;
 
   @Column()
-  startDate: Date;
+  start_date: Date;
 
   @Column()
-  endDate: Date;
+  end_date: Date;
+
+  @OneToMany(() => SampleEntity, (sample) => sample.learningPeriod)
+  samples: SampleEntity[];
 
   @ManyToOne(() => TrackEntity, (track) => track.learningPeriods)
   @JoinColumn({ name: 'track_id' })

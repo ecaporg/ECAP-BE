@@ -19,7 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky install .husky",
-    "typeorm": "typeorm-ts-node-commonjs",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "m:generate": "npm run typeorm -- migration:generate -d typeorm.config.ts",
     "m:run": "npm run typeorm -- migration:run -d typeorm.config.ts",
     "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts",
@@ -55,8 +55,7 @@
     "typeorm": "^0.3.20"
   },
   "_moduleAliases": {
-    "@": "dist/src",
-    "@/core": "dist/src/core"
+    "@": "dist/src"
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",

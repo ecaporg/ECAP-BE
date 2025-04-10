@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
+import { GenericEntity } from '@/core/generic-entity';
+import { TenantEntity } from '@/school/entities/tenant.entity';
 
-import { SchoolEntity } from './school.entity';
 import { SubjectEntity } from './subject.entity';
 import { TrackCalendarEntity } from './track-calendar.entity';
 import { TrackLearningPeriodEntity } from './track-learning-period.entity';
@@ -10,20 +10,20 @@ import { TrackLearningPeriodEntity } from './track-learning-period.entity';
 @Entity({ name: 'tracks' })
 export class TrackEntity extends GenericEntity {
   @Column()
-  school_id: number;
+  tenant_id: number;
 
   @Column({ length: 50 })
   name: string;
 
   @Column()
-  startDate: Date;
+  start_date: Date;
 
   @Column()
-  endDate: Date;
+  end_date: Date;
 
-  @ManyToOne(() => SchoolEntity, (school) => school.tracks)
-  @JoinColumn({ name: 'school_id' })
-  school: SchoolEntity;
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.tracks)
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: TenantEntity;
 
   @OneToMany(() => TrackCalendarEntity, (calendar) => calendar.track)
   calendar: TrackCalendarEntity[];

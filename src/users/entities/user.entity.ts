@@ -1,6 +1,8 @@
 import { Column, Entity, Index } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
+import { GenericEntity } from '@/core/generic-entity';
+
+import { RolesEnum } from '../enums/roles.enum';
 
 @Entity({ name: 'users' })
 export class UserEntity extends GenericEntity {
@@ -27,6 +29,6 @@ export class UserEntity extends GenericEntity {
   @Column({ nullable: true })
   refreshToken?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, enum: RolesEnum })
   role?: string;
 }

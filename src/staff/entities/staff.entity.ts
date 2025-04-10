@@ -1,5 +1,4 @@
 import {
-  Column,
   Entity,
   Index,
   JoinColumn,
@@ -8,12 +7,11 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-import { DatedGenericEntity } from '../../core/generic-entity';
-import { SampleEntity } from '../../students/entities/sample.entity';
-import { UserEntity } from '../../users/entities/user.entity';
-
-import { SchoolEntity } from './school.entity';
-import { TenantEntity } from './tenant.entity';
+import { DatedGenericEntity } from '@/core/generic-entity';
+import { SchoolEntity } from '@/school/entities/school.entity';
+import { TenantEntity } from '@/school/entities/tenant.entity';
+import { SampleEntity } from '@/students/entities/sample.entity';
+import { UserEntity } from '@/users/entities/user.entity';
 
 export abstract class StaffEntity extends DatedGenericEntity {
   @PrimaryColumn()

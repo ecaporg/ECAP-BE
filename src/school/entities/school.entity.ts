@@ -7,14 +7,13 @@ import {
   OneToOne,
 } from 'typeorm';
 
-import { GenericEntity } from '../../core/generic-entity';
-import { StudentEntity } from '../../students/entities/student.entity';
+import { GenericEntity } from '@/core/generic-entity';
+import { DirectorEntity } from '@/staff/entities/director.entity';
+import { TeacherEntity } from '@/staff/entities/staff.entity';
+import { StudentEntity } from '@/students/entities/student.entity';
 
-import { DirectorEntity } from './director.entity';
 import { SemesterEntity } from './semester.entity';
-import { AdminEntity, TeacherEntity } from './staff.entity';
 import { TenantEntity } from './tenant.entity';
-import { TrackEntity } from './track.entity';
 
 @Entity({ name: 'schools' })
 export class SchoolEntity extends GenericEntity {
@@ -27,9 +26,6 @@ export class SchoolEntity extends GenericEntity {
   @ManyToOne(() => TenantEntity, (tenant) => tenant.schools)
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
-
-  @OneToMany(() => TrackEntity, (track) => track.school)
-  tracks: TrackEntity[];
 
   @OneToMany(() => SemesterEntity, (semester) => semester.school)
   semesters: SemesterEntity[];

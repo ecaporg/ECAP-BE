@@ -3,11 +3,8 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import {
-  BaseService,
-  BaseServiceOptions,
-} from '../../core/services/base.service';
-import { AdminEntity, TeacherEntity } from '../entities/staff.entity';
+import { BaseService, BaseServiceOptions } from '@/core/services/base.service';
+import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
 
 @Injectable()
 export class StaffService {
