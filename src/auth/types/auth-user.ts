@@ -1,3 +1,5 @@
+import { RolesEnum } from '@/users/enums/roles.enum';
+
 export interface IAuthUser {
   id: number;
   firstname: string;
@@ -5,7 +7,7 @@ export interface IAuthUser {
   email: string;
   isActive: boolean;
   emailVerified: boolean;
-  role: string;
+  role: RolesEnum;
 }
 
 export interface IAuthUserRefreshToken extends IAuthUser {
@@ -19,5 +21,5 @@ export class AuthUser implements IAuthUser {
   email: string;
   isActive: boolean;
   emailVerified: boolean;
-  role: string;
+  role: RolesEnum;
 }

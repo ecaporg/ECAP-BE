@@ -19,7 +19,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AuthModule } from './auth/auth.module';
-import { ErrorResponseDto } from './core/dto/error-response.dto';
+import { SWAGGER_API_MODELS } from './core/config/swagger.models';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -36,7 +36,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config, {
     include: [AuthModule],
-    extraModels: [ErrorResponseDto],
+    extraModels: SWAGGER_API_MODELS,
   });
   SwaggerModule.setup('api/docs', app, document);
 

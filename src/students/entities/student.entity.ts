@@ -10,6 +10,7 @@ import {
 import { GenericEntity } from '@/core/generic-entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
+import { TrackEntity } from '@/track/entities/track.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
 import { SampleEntity } from './sample.entity';
@@ -24,6 +25,9 @@ export class StudentEntity extends GenericEntity {
 
   @Column({ nullable: true })
   academy_id: number;
+
+  @Column({ nullable: true })
+  track_id: number;
 
   @Column({ length: 50 })
   grade: string;
@@ -44,4 +48,8 @@ export class StudentEntity extends GenericEntity {
 
   @OneToMany(() => SampleEntity, (sample) => sample.student)
   samples: SampleEntity[];
+
+  @ManyToOne(() => TrackEntity, (track) => track.students)
+  @JoinColumn({ name: 'track_id' })
+  track: TrackEntity;
 }

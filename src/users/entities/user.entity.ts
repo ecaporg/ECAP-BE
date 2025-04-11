@@ -30,5 +30,5 @@ export class UserEntity extends GenericEntity {
   refreshToken?: string;
 
   @Column({ nullable: true, enum: RolesEnum })
-  role?: string;
+  role?: RolesEnum;
 }

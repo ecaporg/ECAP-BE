@@ -5,6 +5,7 @@ import { StaffModule } from '@/staff/staff.module';
 import { StudentsModule } from '@/students/students.module';
 import { TrackModule } from '@/track/track.module';
 
+import { FilterController } from './controllers/test.controller';
 import { AcademyEntity } from './entities/academy.entity';
 import { SchoolEntity } from './entities/school.entity';
 import { SemesterEntity } from './entities/semester.entity';
@@ -26,6 +27,7 @@ import { TenantService } from './services/tenant.service';
     StaffModule,
     TrackModule,
   ],
+  controllers: [FilterController],
   providers: [SchoolService, SemesterService, TenantService, AcademyService],
   exports: [
     SchoolService,

@@ -13,13 +13,14 @@ import {
   createSearchCondition,
 } from '../utils/pagination.utils';
 
-export interface PaginationOptions {
+export interface PaginationOptions<T = any> {
   page?: number;
   limit?: number;
   sortBy?: string[];
   sortDirection?: ('ASC' | 'DESC')[];
   search?: string;
   searchFields?: string[];
+  filters?: FindOptionsWhere<T>;
 }
 
 export interface PaginatedResult<T> {
@@ -88,7 +89,7 @@ export class BaseService<
   }
 
   async findAll(
-    options?: PaginationOptions,
+    options?: PaginationOptions<T>,
     relations?: string[],
   ): Promise<PaginatedResult<T>> {
     const page = options?.page || 1;
@@ -97,11 +98,13 @@ export class BaseService<
     const sortDirection = options?.sortDirection || ['DESC'];
     const search = options?.search || '';
     const searchFields = options?.searchFields || [];
+    const filters = options?.filters || {};
 
     const query: FindManyOptions<T> = {
       skip: (page - 1) * limit,
       take: limit,
       order: createOrderCondition(sortBy, sortDirection),
+      where: filters,
       relations: relations || this.defaultRelations,
     };
 
@@ -111,7 +114,10 @@ export class BaseService<
         searchFields,
       );
 
-      query.where = searchConditions;
+      query.where = {
+        ...query.where,
+        ...searchConditions,
+      };
     }
 
     const [items, totalItems] = await this.repository.findAndCount(query);

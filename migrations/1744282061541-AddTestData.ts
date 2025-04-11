@@ -10,6 +10,7 @@ import { StudentEntity } from '../src/students/entities/student.entity';
 import { SubjectEntity } from '../src/track/entities/subject.entity';
 import { TrackEntity } from '../src/track/entities/track.entity';
 import { UserEntity } from '../src/users/entities/user.entity';
+import { RolesEnum } from '@/users/enums/roles.enum';
 
 export class AddTestData1744271139400 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -43,7 +44,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
         emailVerified: true,
         createdAt: new Date(),
         updatedAt: new Date(),
-        role: 'STUDENT',
+        role: RolesEnum.STUDENT,
       });
       users.push(user);
     }
@@ -108,7 +109,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
       lastname: 'Admin',
       isActive: true,
       emailVerified: true,
-      role: 'SUPER_ADMIN',
+      role: RolesEnum.SUPER_ADMIN,
     });
   }
 

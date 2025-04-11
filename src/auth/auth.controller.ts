@@ -47,7 +47,6 @@ export class AuthController {
     return this.authService.signIn(user);
   }
 
-  @ApiBearerAuth()
   @AccountVerified('jwt-refresh')
   @Post('refresh-token')
   @ApiOperation({ summary: 'Refresh authentication tokens' })

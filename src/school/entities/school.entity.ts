@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { DirectorEntity } from '@/staff/entities/director.entity';
@@ -36,6 +29,6 @@ export class SchoolEntity extends GenericEntity {
   @OneToMany(() => TeacherEntity, (teacher) => teacher.school)
   teachers: TeacherEntity[];
 
-  @OneToOne(() => DirectorEntity, (director) => director.school)
-  director: DirectorEntity;
+  @OneToMany(() => DirectorEntity, (director) => director.school)
+  directors: DirectorEntity[];
 }

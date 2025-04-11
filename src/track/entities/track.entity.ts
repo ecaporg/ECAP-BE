@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { TenantEntity } from '@/school/entities/tenant.entity';
+import { StudentEntity } from '@/students/entities/student.entity';
 
 import { SubjectEntity } from './subject.entity';
 import { TrackCalendarEntity } from './track-calendar.entity';
@@ -33,4 +34,7 @@ export class TrackEntity extends GenericEntity {
 
   @OneToMany(() => TrackLearningPeriodEntity, (period) => period.track)
   learningPeriods: TrackLearningPeriodEntity[];
+
+  @OneToMany(() => StudentEntity, (student) => student.track)
+  students: StudentEntity[];
 }

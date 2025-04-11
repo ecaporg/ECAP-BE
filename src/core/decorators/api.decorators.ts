@@ -182,6 +182,9 @@ export const ApiPaginatedCrudResponse = <TModel extends Type<any>>(
   return applyDecorators(ApiPaginatedResponse(model), ApiErrorResponses());
 };
 
+/**
+ * Standard swagger response decorator for pagination queries
+ */
 export const ApiPaginationQueries = () => {
   return applyDecorators(
     ApiQuery({
@@ -206,7 +209,8 @@ export const ApiPaginationQueries = () => {
       name: 'sortDirection',
       required: false,
       enum: ['ASC', 'DESC'],
-      description: 'Sort direction',
+      isArray: true,
+      description: 'Sort direction for each sortBy field',
     }),
     ApiQuery({
       name: 'search',

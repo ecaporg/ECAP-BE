@@ -1,5 +1,4 @@
-import { Request } from 'express';
-
+import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../services/base.service';
 
 /**
@@ -8,11 +7,13 @@ import { PaginationOptions } from '../services/base.service';
  * @param searchFields Array of fields to search in
  * @returns Pagination options object
  */
-export function extractPaginationOptions(
-  request: Request,
+export function extractPaginationOptions<T extends BaseFilterDto>(
+  options: T,
   searchFields?: string[],
 ): PaginationOptions {
-  const { page, limit, sortBy, sortDirection, search } = request.query;
+  const { page, limit, sortBy, sortDirection, search, ...filters } = options;
+
+  console.log(options, filters);
 
   // Handle sortBy parameter, which can be a string or an array
   let sortByArray: string[] = [];
@@ -23,11 +24,11 @@ export function extractPaginationOptions(
   }
 
   // Handle sortDirection parameter, which can be a string or an array
-  let sortDirectionArray: ('ASC' | 'DESC')[] = [];
+  let sortDirectionArray: SortDirectionEnum[] = [];
   if (sortDirection) {
     sortDirectionArray = Array.isArray(sortDirection)
-      ? sortDirection.map((item) => item as 'ASC' | 'DESC')
-      : [sortDirection as 'ASC' | 'DESC'];
+      ? sortDirection.map((item) => item as SortDirectionEnum)
+      : [sortDirection as SortDirectionEnum];
   }
 
   let searchFieldsArray: string[] = [];
@@ -37,35 +38,19 @@ export function extractPaginationOptions(
       : [searchFields as string];
   }
 
+  const filtersObject = Object.fromEntries(
+    Object.entries(filters).map(([key, value]) => [key, value as string]),
+  );
+
   return {
-    page: page ? parseInt(page as string, 10) : 1,
-    limit: limit ? parseInt(limit as string, 10) : 15,
+    page: page ? page : 1,
+    limit: limit ? limit : 15,
     sortBy: sortByArray,
     sortDirection: sortDirectionArray,
     search: search as string,
     searchFields: searchFieldsArray,
+    filters: filtersObject,
   };
-}
-
-/**
- * Create a filter object from request query parameters
- * @param request Express request object
- * @param allowedFilters Array of allowed filter keys
- * @returns Object with filter values
- */
-export function extractFilters(
-  request: Request,
-  allowedFilters: string[],
-): Record<string, any> {
-  const filters: Record<string, any> = {};
-
-  for (const key of allowedFilters) {
-    if (request.query[key] !== undefined) {
-      filters[key] = request.query[key];
-    }
-  }
-
-  return filters;
 }
 
 /**

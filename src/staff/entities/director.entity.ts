@@ -20,7 +20,7 @@ export class DirectorEntity extends GenericEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @OneToOne(() => SchoolEntity)
+  @ManyToOne(() => SchoolEntity, (school) => school.directors)
   @JoinColumn({ name: 'school_id' })
   school: SchoolEntity;
 
