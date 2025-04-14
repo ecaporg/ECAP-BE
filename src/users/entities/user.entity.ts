@@ -1,4 +1,4 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
 
@@ -18,11 +18,9 @@ export class UserEntity extends GenericEntity {
   @Column()
   password: string;
 
-  @Index()
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
-  @Index()
   @Column({ type: 'boolean', default: false })
   emailVerified: boolean;
 

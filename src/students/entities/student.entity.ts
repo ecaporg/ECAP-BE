@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
@@ -32,12 +25,10 @@ export class StudentEntity extends GenericEntity {
   @Column({ length: 50 })
   grade: string;
 
-  @Index()
   @ManyToOne(() => SchoolEntity, (school) => school.students)
   @JoinColumn({ name: 'school_id' })
   school: SchoolEntity;
 
-  @Index()
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;

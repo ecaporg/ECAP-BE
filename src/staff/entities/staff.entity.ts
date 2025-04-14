@@ -1,6 +1,5 @@
 import {
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -17,7 +16,6 @@ export abstract class StaffEntity extends DatedGenericEntity {
   @PrimaryColumn()
   user_id: number;
 
-  @Index()
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
@@ -28,7 +26,6 @@ export class TeacherEntity extends StaffEntity {
   @PrimaryColumn()
   school_id: number;
 
-  @Index()
   @ManyToOne(() => SchoolEntity)
   @JoinColumn({ name: 'school_id' })
   school: SchoolEntity;
@@ -42,7 +39,6 @@ export class AdminEntity extends StaffEntity {
   @PrimaryColumn()
   tenant_id: number;
 
-  @Index()
   @ManyToOne(() => TenantEntity, (tenant) => tenant.admins)
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
