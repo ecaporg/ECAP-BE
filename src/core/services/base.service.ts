@@ -105,8 +105,8 @@ export class BaseService<
       skip: (page - 1) * limit,
       take: limit,
       order: createOrderCondition(sortBy, sortDirection),
-      where: filters,
       relations: relations || this.defaultRelations,
+      where: filters,
     };
 
     if (search && searchFields.length > 0) {
@@ -141,8 +141,8 @@ export class BaseService<
   ): Promise<T> {
     const where = this.createWhereCondition(id);
     const entity = await this.repository.findOne({
-      where,
       relations: relations || this.defaultRelations,
+      where,
     });
 
     if (!entity) {
@@ -166,8 +166,8 @@ export class BaseService<
     relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],
   ): Promise<T> {
     const entity = await this.repository.findOne({
-      where: options,
       relations: relations || this.defaultRelations,
+      where: options,
     });
 
     if (!entity) {

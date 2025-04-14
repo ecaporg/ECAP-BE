@@ -1,4 +1,4 @@
-import { FindOperator, FindOptionsWhere } from 'typeorm';
+import { Equal } from 'typeorm';
 
 import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../services/base.service';
@@ -51,9 +51,9 @@ export function extractPaginationOptions<T extends BaseFilterDto>(
         current = current[part];
       }
 
-      current[parts[parts.length - 1]] = value;
+      current[parts[parts.length - 1]] = Equal(value);
     } else {
-      filtersObject[key] = value;
+      filtersObject[key] = Equal(value);
     }
   }
 

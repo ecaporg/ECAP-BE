@@ -37,5 +37,5 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   @Type(() => Boolean)
   @IsOptional()
   @IsBoolean()
-  'learning_periods.completed'?: boolean;
+  'assignment_periods.completed'?: boolean;
 }

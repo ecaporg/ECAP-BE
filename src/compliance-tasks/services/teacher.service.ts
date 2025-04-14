@@ -20,8 +20,8 @@ export class TeacherComplianceTaskService {
   ) {}
 
   async getStudents(filterDTO: StudentsTableFilterDto, user: IAuthUser) {
-    // filterDTO['assignment_periods.learning_period_id'] =
-    //   filterDTO.learning_period_id;
+    filterDTO['assignment_periods.learning_period_id'] =
+      filterDTO.learning_period_id;
     delete filterDTO.learning_period_id;
     if (user.role === RolesEnum.TEACHER) {
       filterDTO['teacher_id'] = user.id;
@@ -30,6 +30,9 @@ export class TeacherComplianceTaskService {
     const paginationOptions = extractPaginationOptions(filterDTO);
     console.log('Pagination options:', paginationOptions);
     console.log('Filter DTO:', filterDTO);
+
+    const test = await this.assignmentService.getTest();
+    console.log(test);
 
     const subjectAssignments = await this.assignmentService.findAll(
       paginationOptions,
