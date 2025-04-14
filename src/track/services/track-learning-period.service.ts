@@ -13,13 +13,8 @@ export class TrackLearningPeriodService extends BaseService<TrackLearningPeriodE
     @InjectRepository(TrackLearningPeriodEntity)
     private trackLearningPeriodRepository: Repository<TrackLearningPeriodEntity>,
   ) {
-    super(trackLearningPeriodRepository);
-  }
-
-  async findByTrackId(trackId: number): Promise<TrackLearningPeriodEntity[]> {
-    return this.repository.find({
-      where: { track_id: trackId },
-      relations: ['track'],
+    super(trackLearningPeriodRepository, {
+      defaultRelations: ['academic_year', 'track'],
     });
   }
 }

@@ -1,7 +1,8 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Authentication - email')
 export class ChangeEmailDTO {
   @IsEmail()
   email: string;
@@ -10,6 +11,7 @@ export class ChangeEmailDTO {
   newEmail: string;
 }
 
+@ApiTags('Authentication - email')
 export class ChangeEmailPasswordDTO {
   @ApiProperty({
     type: String,

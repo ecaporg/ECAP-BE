@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
-import { SampleEntity } from '@/students/entities/sample.entity';
+import { AssignmentEntity } from '@/school/entities/subject-assignment.entity';
 
 import { TrackEntity } from './track.entity';
 
@@ -17,6 +17,6 @@ export class SubjectEntity extends GenericEntity {
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
 
-  @OneToMany(() => SampleEntity, (sample) => sample.subject)
-  samples: SampleEntity[];
+  @OneToMany(() => AssignmentEntity, (assignment) => assignment.subject)
+  assignments: AssignmentEntity[];
 }

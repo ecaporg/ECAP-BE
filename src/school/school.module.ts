@@ -5,14 +5,23 @@ import { StaffModule } from '@/staff/staff.module';
 import { StudentsModule } from '@/students/students.module';
 import { TrackModule } from '@/track/track.module';
 
-import { FilterController } from './controllers/test.controller';
+import { AcademicYearEntity } from './entities/academic-year.entity';
 import { AcademyEntity } from './entities/academy.entity';
 import { SchoolEntity } from './entities/school.entity';
 import { SemesterEntity } from './entities/semester.entity';
+import {
+  AssignmentEntity,
+  AssignmentPeriodEntity,
+} from './entities/subject-assignment.entity';
 import { TenantEntity } from './entities/tenant.entity';
+import { AcademicYearService } from './services/academic-year.service';
 import { AcademyService } from './services/academy.service';
 import { SchoolService } from './services/school.service';
 import { SemesterService } from './services/semester.service';
+import {
+  AssignmentPeriodService,
+  AssignmentService,
+} from './services/subject-assignment.service';
 import { TenantService } from './services/tenant.service';
 
 @Module({
@@ -22,13 +31,23 @@ import { TenantService } from './services/tenant.service';
       SemesterEntity,
       TenantEntity,
       AcademyEntity,
+      AcademicYearEntity,
+      AssignmentEntity,
+      AssignmentPeriodEntity,
     ]),
     StudentsModule,
     StaffModule,
     TrackModule,
   ],
-  controllers: [FilterController],
-  providers: [SchoolService, SemesterService, TenantService, AcademyService],
+  providers: [
+    SchoolService,
+    SemesterService,
+    TenantService,
+    AcademyService,
+    AcademicYearService,
+    AssignmentService,
+    AssignmentPeriodService,
+  ],
   exports: [
     SchoolService,
     SemesterService,
@@ -36,6 +55,9 @@ import { TenantService } from './services/tenant.service';
     AcademyService,
     StudentsModule,
     StaffModule,
+    AcademicYearService,
+    AssignmentService,
+    AssignmentPeriodService,
     TrackModule,
   ],
 })

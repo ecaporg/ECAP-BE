@@ -6,6 +6,7 @@ import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 
 import { SemesterEntity } from './semester.entity';
+import { AssignmentEntity } from './subject-assignment.entity';
 import { TenantEntity } from './tenant.entity';
 
 @Entity({ name: 'schools' })
@@ -31,4 +32,7 @@ export class SchoolEntity extends GenericEntity {
 
   @OneToMany(() => DirectorEntity, (director) => director.school)
   directors: DirectorEntity[];
+
+  @OneToMany(() => AssignmentEntity, (assignment) => assignment.school)
+  assignments: AssignmentEntity[];
 }

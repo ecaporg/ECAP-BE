@@ -1,10 +1,7 @@
-// Імпортуємо module-alias спочатку і реєструємо аліаси
-// Тепер можемо використовувати moduleAlias
 import * as moduleAlias from 'module-alias';
 
 import 'module-alias/register';
 
-// Додаємо аліаси
 moduleAlias.addAliases({
   '@': __dirname,
   '@/core': __dirname + '/core',
@@ -32,15 +29,14 @@ async function bootstrap() {
     .setDescription('Documentation for endpoints')
     .setVersion('1.0')
     .addBearerAuth()
+    .addTag('v1', 'API Version 1.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
-    include: [AuthModule],
     extraModels: SWAGGER_API_MODELS,
   });
   SwaggerModule.setup('api/docs', app, document);
 
-  // enable DI for class-validator
   useContainer(app.select(AuthModule), { fallbackOnErrors: true });
 
   const configService = app.get(ConfigService);

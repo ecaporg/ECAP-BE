@@ -15,25 +15,4 @@ export class SampleService extends BaseService<SampleEntity> {
   ) {
     super(sampleRepository);
   }
-
-  async findByStudentId(studentId: number): Promise<SampleEntity[]> {
-    return this.repository.find({
-      where: { student_id: studentId },
-      relations: ['student', 'subject', 'teacher'],
-    });
-  }
-
-  async findBySubjectId(subjectId: number): Promise<SampleEntity[]> {
-    return this.repository.find({
-      where: { subject_id: subjectId },
-      relations: ['student', 'subject', 'teacher'],
-    });
-  }
-
-  async findByTeacherId(teacherId: number): Promise<SampleEntity[]> {
-    return this.repository.find({
-      where: { teacher_id: teacherId },
-      relations: ['student', 'subject', 'teacher'],
-    });
-  }
 }

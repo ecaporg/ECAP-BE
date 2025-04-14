@@ -1,3 +1,4 @@
+import { FindOperator, FindOptionsWhere } from 'typeorm';
 import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../services/base.service';
 

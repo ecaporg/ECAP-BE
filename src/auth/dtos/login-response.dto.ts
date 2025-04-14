@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { IAuthUser } from '../types/auth-user';
 
+@ApiTags('Authentication')
 export class LoginResponseDTO {
   @ApiProperty({
     description: 'JWT access token for authentication',

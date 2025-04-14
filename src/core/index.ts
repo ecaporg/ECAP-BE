@@ -35,4 +35,4 @@ export * from './utils/pagination.utils';
 
 // DTOs
 export * from './dto/error-response.dto';
-
+export * from './dto/base-filter.dto';

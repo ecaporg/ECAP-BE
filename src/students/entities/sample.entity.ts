@@ -1,23 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
+import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
-import { SubjectEntity } from '@/track/entities/subject.entity';
-import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
-
-import { StudentEntity } from './student.entity';
 
 @Entity({ name: 'samples' })
 export class SampleEntity extends GenericEntity {
-  @Column()
-  student_id: number;
-
-  @Column()
-  subject_id: number;
-
-  @Column()
-  teacher_id: number;
-
   @Column({ length: 50 })
   assignment_title: string;
 
@@ -25,21 +13,24 @@ export class SampleEntity extends GenericEntity {
   status: string;
 
   @Column()
-  learning_period_id: number;
+  user_id: number;
 
-  @ManyToOne(() => StudentEntity, (student) => student.samples)
-  @JoinColumn({ name: 'student_id' })
-  student: StudentEntity;
+  @Column()
+  school_id: number;
 
-  @ManyToOne(() => SubjectEntity, (subject) => subject.samples)
-  @JoinColumn({ name: 'subject_id' })
-  subject: SubjectEntity;
+  @Column()
+  assignment_period_id: number;
+
+  @OneToMany(
+    () => AssignmentPeriodEntity,
+    (assignment_period) => assignment_period.samples,
+  )
+  assignment_period: AssignmentPeriodEntity;
 
   @ManyToOne(() => TeacherEntity, (teacher) => teacher.samples)
-  @JoinColumn({ name: 'teacher_id' })
-  teacher: TeacherEntity;
-
-  @ManyToOne(() => TrackLearningPeriodEntity, (period) => period.samples)
-  @JoinColumn({ name: 'learning_period_id' })
-  learningPeriod: TrackLearningPeriodEntity;
+  @JoinColumn([
+    { name: 'user_id', referencedColumnName: 'user_id' },
+    { name: 'school_id', referencedColumnName: 'school_id' },
+  ])
+  done_by_teacher: TeacherEntity;
 }

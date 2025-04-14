@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
 import { AuthModule } from '@/auth/auth.module';
+import { ComplianceTasksModule } from '@/compliance-tasks/compliance-tasks.module';
 import { CoreModule } from '@/core/core.module';
 import { SchoolModule } from '@/school/school.module';
 import { UsersModule } from '@/users/users.module';
@@ -15,6 +16,7 @@ import { UsersModule } from '@/users/users.module';
     AuthModule,
     UsersModule,
     SchoolModule,
+    ComplianceTasksModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
@@ -27,6 +29,8 @@ import { UsersModule } from '@/users/users.module';
         url: configService.get('POSTGRES_URL'),
         synchronize: false,
         dropSchema: false,
+        logging: true,
+        logger: 'advanced-console',
       }),
       inject: [ConfigService],
     }),

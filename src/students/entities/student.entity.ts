@@ -37,9 +37,6 @@ export class StudentEntity extends GenericEntity {
   @JoinColumn({ name: 'academy_id' })
   academy: AcademyEntity;
 
-  @OneToMany(() => SampleEntity, (sample) => sample.student)
-  samples: SampleEntity[];
-
   @ManyToOne(() => TrackEntity, (track) => track.students)
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;

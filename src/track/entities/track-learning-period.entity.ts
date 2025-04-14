@@ -1,7 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
-import { SampleEntity } from '@/students/entities/sample.entity';
+import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
+import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
 
 import { TrackEntity } from './track.entity';
 
@@ -19,10 +20,23 @@ export class TrackLearningPeriodEntity extends GenericEntity {
   @Column()
   end_date: Date;
 
-  @OneToMany(() => SampleEntity, (sample) => sample.learningPeriod)
-  samples: SampleEntity[];
+  @Column()
+  academic_year_id: number;
 
   @ManyToOne(() => TrackEntity, (track) => track.learningPeriods)
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
+
+  @ManyToOne(
+    () => AcademicYearEntity,
+    (academicYear) => academicYear.learningPeriods,
+  )
+  @JoinColumn({ name: 'academic_year_id' })
+  academicYear: AcademicYearEntity;
+
+  @OneToMany(
+    () => AssignmentPeriodEntity,
+    (assignment_period) => assignment_period.learning_period,
+  )
+  assignment_periods: AssignmentPeriodEntity[];
 }
