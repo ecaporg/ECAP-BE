@@ -14,7 +14,14 @@ export class TenantService extends BaseService<TenantEntity> {
     private tenantRepository: Repository<TenantEntity>,
   ) {
     super(tenantRepository, {
-      defaultRelations: ['schools', 'academies', 'tracks', 'admins'],
+      defaultRelations: {
+        academies: true,
+        admins: true,
+        tracks: {
+          learningPeriods: true,
+        },
+        schools: true,
+      },
     });
   }
 }

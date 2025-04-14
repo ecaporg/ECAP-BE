@@ -1,11 +1,14 @@
+import { FindOptionsWhere, LessThan } from 'typeorm';
+
 import { Injectable } from '@nestjs/common';
 
 import { IAuthUser } from '@/auth/types/auth-user';
 import { extractPaginationOptions } from '@/core/utils/pagination.utils';
+import { TenantEntity } from '@/school/entities/tenant.entity';
 import { AcademicYearService } from '@/school/services/academic-year.service';
 import { AssignmentService } from '@/school/services/subject-assignment.service';
+import { TenantService } from '@/school/services/tenant.service';
 import { StudentService } from '@/students/services/student.service';
-import { TrackLearningPeriodService } from '@/track/services/track-learning-period.service';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { StudentsTableFilterDto } from '../dto/filters.dto';
@@ -16,7 +19,7 @@ export class TeacherComplianceTaskService {
     private readonly studentService: StudentService,
     private readonly assignmentService: AssignmentService,
     private readonly academicYearService: AcademicYearService,
-    private readonly learningPeriodService: TrackLearningPeriodService,
+    private readonly tenantService: TenantService,
   ) {}
 
   async getStudents(filterDTO: StudentsTableFilterDto, user: IAuthUser) {
@@ -28,11 +31,7 @@ export class TeacherComplianceTaskService {
     }
 
     const paginationOptions = extractPaginationOptions(filterDTO);
-    console.log('Pagination options:', paginationOptions);
-    console.log('Filter DTO:', filterDTO);
 
-    const test = await this.assignmentService.getTest();
-    console.log(test);
 
     const subjectAssignments = await this.assignmentService.findAll(
       paginationOptions,
@@ -42,12 +41,43 @@ export class TeacherComplianceTaskService {
         assignment_periods: {
           learning_period: true,
           samples: true,
-          student: true,
+          student: {
+            academy: true,
+            track: true,
+            school: true,
+            user: true,
+          },
         },
       },
     );
-    console.log(subjectAssignments);
 
     return subjectAssignments;
+  }
+
+  async getFilters(user: IAuthUser) {
+    const query = this.getTenantQuery(user);
+    const tenant = await this.tenantService.findOneBy(query);
+    console.log(tenant);
+    return tenant;
+  }
+
+  private getTenantQuery(user: IAuthUser) {
+    const query: FindOptionsWhere<TenantEntity> = {
+      tracks: {
+        start_date: LessThan(new Date()),
+      },
+    };
+    if (user.role === RolesEnum.TEACHER) {
+      query.schools = { teachers: { user } };
+    } else if (user.role === RolesEnum.ADMIN) {
+      query.admins = { user };
+    } else if (user.role === RolesEnum.DIRECTOR) {
+      query.schools = { directors: { user } };
+    } else {
+      // TODO: remove comment after testing
+      // throw new BadRequestException('User role not found');
+      query.id = 1;
+    }
+    return query;
   }
 }

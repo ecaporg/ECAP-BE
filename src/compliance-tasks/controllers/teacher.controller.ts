@@ -37,4 +37,9 @@ export class TeacherComplianceTaskController {
   ) {
     return this.teacherComplianceTaskService.getStudents(filters, user);
   }
+
+  @Get('filters')
+  async getFilters(@CurrentUser() user: IAuthUser) {
+    return this.teacherComplianceTaskService.getFilters(user);
+  }
 }
