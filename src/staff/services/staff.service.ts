@@ -24,17 +24,21 @@ export class StaffService {
     @InjectRepository(AdminEntity)
     private adminRepository: Repository<AdminEntity>,
   ) {
-    const options: BaseServiceOptions<'user_id' | 'school_id'> = {
-      primaryKeys: ['user_id', 'school_id'],
-      defaultRelations: ['user', 'school'],
-    };
+    const options: BaseServiceOptions<TeacherEntity, 'user_id' | 'school_id'> =
+      {
+        primaryKeys: ['user_id', 'school_id'],
+        defaultRelations: ['user', 'school'],
+      };
 
     this.teacherService = new BaseService<
       TeacherEntity,
       'user_id' | 'school_id'
     >(teacherRepository, options);
 
-    const adminOptions: BaseServiceOptions<'user_id' | 'tenant_id'> = {
+    const adminOptions: BaseServiceOptions<
+      AdminEntity,
+      'user_id' | 'tenant_id'
+    > = {
       primaryKeys: ['user_id', 'tenant_id'],
       defaultRelations: ['user', 'tenant'],
     };

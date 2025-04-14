@@ -1,13 +1,15 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 import { EmailVerifiedGuard } from '../../auth/guards/email-verified.guard';
 import { RolesEnum } from '../../users/enums/roles.enum';
-import { RoleGuard } from '../guards/role.guard';
+import { RoleGuard, ROLES_KEY } from '../guards/role.guard';
 
 export function Roles(...roles: RolesEnum[]) {
-  SetMetadata('roles', roles);
   return applyDecorators(
+    SetMetadata(ROLES_KEY, roles),
     UseGuards(AuthGuard('jwt'), EmailVerifiedGuard, RoleGuard),
+    ApiBearerAuth(),
   );
 }

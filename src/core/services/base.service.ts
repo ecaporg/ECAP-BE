@@ -1,6 +1,7 @@
 import {
   DeepPartial,
   FindManyOptions,
+  FindOptionsRelations,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
@@ -38,9 +39,9 @@ export type EntityId = string | number;
 
 export type EntityKey<T> = EntityId | Partial<T>;
 
-export type BaseServiceOptions<IDKey> = {
+export type BaseServiceOptions<T, IDKey> = {
   primaryKeys?: IDKey[];
-  defaultRelations?: string[];
+  defaultRelations?: FindOptionsRelations<T> | string[];
 };
 
 export class BaseService<
@@ -48,11 +49,11 @@ export class BaseService<
   IDKey extends keyof T = any,
 > {
   protected readonly primaryKeys: IDKey[];
-  protected defaultRelations: string[];
+  protected defaultRelations: FindOptionsRelations<T> | string[];
 
   constructor(
     protected readonly repository: Repository<T>,
-    options: BaseServiceOptions<IDKey> = {},
+    options: BaseServiceOptions<T, IDKey> = {},
   ) {
     this.primaryKeys = Array.isArray(options.primaryKeys)
       ? options.primaryKeys
@@ -90,7 +91,7 @@ export class BaseService<
 
   async findAll(
     options?: PaginationOptions<T>,
-    relations?: string[],
+    relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],
   ): Promise<PaginatedResult<T>> {
     const page = options?.page || 1;
     const limit = options?.limit || 15;
@@ -134,7 +135,10 @@ export class BaseService<
     };
   }
 
-  async findOne(id: EntityKey<T>, relations?: string[]): Promise<T> {
+  async findOne(
+    id: EntityKey<T>,
+    relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],
+  ): Promise<T> {
     const where = this.createWhereCondition(id);
     const entity = await this.repository.findOne({
       where,
@@ -159,7 +163,7 @@ export class BaseService<
 
   async findOneBy(
     options: FindOptionsWhere<T>,
-    relations?: string[],
+    relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],
   ): Promise<T> {
     const entity = await this.repository.findOne({
       where: options,

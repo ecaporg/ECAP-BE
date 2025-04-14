@@ -12,9 +12,6 @@ import { SchoolEntity } from './school.entity';
 @Entity('assignments')
 export class AssignmentEntity extends GenericEntity {
   @Column()
-  student_id: number;
-
-  @Column()
   school_id: number;
 
   @Column()
@@ -24,10 +21,6 @@ export class AssignmentEntity extends GenericEntity {
 
   @Column()
   academic_year_id: number;
-
-  @ManyToOne(() => StudentEntity)
-  @JoinColumn({ name: 'student_id' })
-  student: StudentEntity;
 
   @ManyToOne(() => SchoolEntity)
   @JoinColumn({ name: 'school_id' })
@@ -61,6 +54,9 @@ export class AssignmentPeriodEntity extends GenericEntity {
   subject_assignment_id: number;
 
   @Column()
+  student_id: number;
+
+  @Column()
   learning_period_id: number;
 
   @Column()
@@ -74,7 +70,10 @@ export class AssignmentPeriodEntity extends GenericEntity {
   @JoinColumn({ name: 'subject_assignment_id' })
   assignment: AssignmentEntity;
 
+  @ManyToOne(() => StudentEntity)
+  @JoinColumn({ name: 'student_id' })
+  student: StudentEntity;
+
   @OneToMany(() => SampleEntity, (sample) => sample.assignment_period)
-  @JoinColumn({ name: 'assignment_period_id' })
   samples: SampleEntity[];
 }

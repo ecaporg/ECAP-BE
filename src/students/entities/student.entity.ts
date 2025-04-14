@@ -3,10 +3,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { GenericEntity } from '@/core/generic-entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
+import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 import { UserEntity } from '@/users/entities/user.entity';
-
-import { SampleEntity } from './sample.entity';
 
 @Entity({ name: 'students' })
 export class StudentEntity extends GenericEntity {
@@ -40,4 +39,10 @@ export class StudentEntity extends GenericEntity {
   @ManyToOne(() => TrackEntity, (track) => track.students)
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
+
+  @OneToMany(
+    () => AssignmentPeriodEntity,
+    (assignment_period) => assignment_period.student,
+  )
+  assignment_periods: AssignmentPeriodEntity[];
 }

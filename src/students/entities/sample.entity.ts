@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
@@ -21,10 +21,11 @@ export class SampleEntity extends GenericEntity {
   @Column()
   assignment_period_id: number;
 
-  @OneToMany(
+  @ManyToOne(
     () => AssignmentPeriodEntity,
     (assignment_period) => assignment_period.samples,
   )
+  @JoinColumn({ name: 'assignment_period_id' })
   assignment_period: AssignmentPeriodEntity;
 
   @ManyToOne(() => TeacherEntity, (teacher) => teacher.samples)

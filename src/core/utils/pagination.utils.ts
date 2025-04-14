@@ -1,4 +1,5 @@
 import { FindOperator, FindOptionsWhere } from 'typeorm';
+
 import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../services/base.service';
 
@@ -14,9 +15,6 @@ export function extractPaginationOptions<T extends BaseFilterDto>(
 ): PaginationOptions {
   const { page, limit, sortBy, sortDirection, search, ...filters } = options;
 
-  console.log(options, filters);
-
-  // Handle sortBy parameter, which can be a string or an array
   let sortByArray: string[] = [];
   if (sortBy) {
     sortByArray = Array.isArray(sortBy)
@@ -24,7 +22,6 @@ export function extractPaginationOptions<T extends BaseFilterDto>(
       : [sortBy as string];
   }
 
-  // Handle sortDirection parameter, which can be a string or an array
   let sortDirectionArray: SortDirectionEnum[] = [];
   if (sortDirection) {
     sortDirectionArray = Array.isArray(sortDirection)
@@ -39,9 +36,26 @@ export function extractPaginationOptions<T extends BaseFilterDto>(
       : [searchFields as string];
   }
 
-  const filtersObject = Object.fromEntries(
-    Object.entries(filters).map(([key, value]) => [key, value as string]),
-  );
+  const filtersObject: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (key.includes('.')) {
+      const parts = key.split('.');
+
+      let current = filtersObject;
+      for (let i = 0; i < parts.length - 1; i++) {
+        const part = parts[i];
+        if (!current[part]) {
+          current[part] = {};
+        }
+        current = current[part];
+      }
+
+      current[parts[parts.length - 1]] = value;
+    } else {
+      filtersObject[key] = value;
+    }
+  }
 
   return {
     page: page ? page : 1,
