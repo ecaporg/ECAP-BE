@@ -55,9 +55,9 @@ export class AddTestData1744271139400 implements MigrationInterface {
     ]);
 
     // Create 100 random users (more for pagination testing)
-    const users = [];
+    let users = [];
     for (let i = 0; i < 100; i++) {
-      const user = await queryRunner.manager.save(UserEntity, {
+      users.push({
         email: `user${i}@test.com`,
         password: await argon2.hash('password'),
         firstname: `User${i}`,
@@ -77,8 +77,8 @@ export class AddTestData1744271139400 implements MigrationInterface {
                   ? RolesEnum.DIRECTOR
                   : RolesEnum.STUDENT,
       });
-      users.push(user);
     }
+    users = await queryRunner.manager.save(UserEntity, users);
 
     // Assign directors
     for (let i = 0; i < 5; i++) {
@@ -128,37 +128,36 @@ export class AddTestData1744271139400 implements MigrationInterface {
     ]);
 
     // Assign students
-    const students = [];
+    let students = [];
     for (let i = 0; i < 75; i++) {
-      const student = await queryRunner.manager.save(StudentEntity, {
+      students.push({
         user: users[i + 25], // Using users 25-99 for students
         school: schools[i % schools.length],
         academy: academies[i % academies.length],
         grade: `Grade ${(i % 12) + 1}`,
         track: tracks[i % tracks.length],
       });
-      students.push(student);
     }
+    students = await queryRunner.manager.save(StudentEntity, students);
 
     // Create subjects for each track
-    const subjects = [];
+    let subjects = [];
     for (const track of tracks) {
       for (let i = 0; i < 5; i++) {
-        const subject = await queryRunner.manager.save(SubjectEntity, {
+        subjects.push({
           name: `Subject ${i + 1} for ${track.name}`,
           track,
         });
-        subjects.push(subject);
       }
     }
+    subjects = await queryRunner.manager.save(SubjectEntity, subjects);
 
     // Create learning periods for each academic year
-    const learningPeriods = [];
+    let learningPeriods = [];
     for (const academicYear of academicYears) {
       for (const track of tracks) {
-        const learningPeriod = await queryRunner.manager.save(
-          TrackLearningPeriodEntity,
-          [
+        learningPeriods.push(
+          ...[
             {
               name: `Period 1`,
               academic_year_id: academicYear.id,
@@ -189,29 +188,33 @@ export class AddTestData1744271139400 implements MigrationInterface {
             },
           ],
         );
-        learningPeriods.push(...learningPeriod);
       }
     }
 
+    learningPeriods = await queryRunner.manager.save(
+      TrackLearningPeriodEntity,
+      learningPeriods,
+    );
+
     // Create assignments
-    const assignments = [];
+    let assignments = [];
     for (let i = 0; i < 50; i++) {
       const teacher = teachers[i % teachers.length];
       const subject = subjects[i % subjects.length];
 
       for (const academicYear of academicYears) {
-        const assignment = await queryRunner.manager.save(AssignmentEntity, {
+        assignments.push({
           school_id: teacher.school_id,
           teacher_id: teacher.user_id,
           subject,
           academic_year: academicYear,
         });
-        assignments.push(assignment);
       }
     }
+    assignments = await queryRunner.manager.save(AssignmentEntity, assignments);
 
     // Create assignment periods
-    const assignmentPeriods = [] as AssignmentPeriodEntity[];
+    let assignmentPeriods = [];
     for (const assignment of assignments) {
       // Assign to all learning periods in the current academic year
       const student = students[Math.floor(Math.random() * students.length)];
@@ -226,20 +229,21 @@ export class AddTestData1744271139400 implements MigrationInterface {
       }
 
       for (const learningPeriod of filteredLearningPeriods) {
-        const assignmentPeriod = await queryRunner.manager.save(
-          AssignmentPeriodEntity,
-          {
-            assignment,
-            student,
-            learning_period: learningPeriod,
-            completed: Math.random() > 0.3,
-          },
-        );
-        assignmentPeriods.push(assignmentPeriod);
+        assignmentPeriods.push({
+          assignment,
+          student,
+          learning_period: learningPeriod,
+          completed: Math.random() > 0.3,
+        });
       }
     }
+    assignmentPeriods = await queryRunner.manager.save(
+      AssignmentPeriodEntity,
+      assignmentPeriods,
+    );
 
     // Create samples for students
+    let samples = [];
     for (const assignmentPeriod of assignmentPeriods) {
       const isCompleted = Math.random() > 0.7 || assignmentPeriod.completed;
       const user_id = isCompleted
@@ -248,31 +252,33 @@ export class AddTestData1744271139400 implements MigrationInterface {
       const school_id = isCompleted
         ? assignmentPeriod.assignment.school_id
         : null;
-      await queryRunner.manager.save(SampleEntity, [
-        {
-          assignment_title: `Sample`,
-          status: assignmentPeriod.completed ? 'COMPLETED' : 'PENDING',
-          assignment_period_id: assignmentPeriod.id,
-          user_id: assignmentPeriod.completed ? user_id : null,
-          school_id: assignmentPeriod.completed ? school_id : null,
-        },
-        {
-          assignment_title: `Sample 2`,
-          status: isCompleted ? 'COMPLETED' : 'PENDING',
-          assignment_period_id: assignmentPeriod.id,
-          user_id,
-          school_id,
-        },
-        {
-          assignment_title: `Sample 3`,
-          status: isCompleted ? 'COMPLETED' : 'PENDING',
-          assignment_period_id: assignmentPeriod.id,
-          user_id,
-          school_id,
-        },
-      ]);
+      samples.push(
+        ...[
+          {
+            assignment_title: `Sample`,
+            status: assignmentPeriod.completed ? 'COMPLETED' : 'PENDING',
+            assignment_period_id: assignmentPeriod.id,
+            user_id: assignmentPeriod.completed ? user_id : null,
+            school_id: assignmentPeriod.completed ? school_id : null,
+          },
+          {
+            assignment_title: `Sample 2`,
+            status: isCompleted ? 'COMPLETED' : 'PENDING',
+            assignment_period_id: assignmentPeriod.id,
+            user_id,
+            school_id,
+          },
+          {
+            assignment_title: `Sample 3`,
+            status: isCompleted ? 'COMPLETED' : 'PENDING',
+            assignment_period_id: assignmentPeriod.id,
+            user_id,
+            school_id,
+          },
+        ],
+      );
     }
-
+    samples = await queryRunner.manager.save(SampleEntity, samples);
     // Create semesters
     for (const academicYear of academicYears) {
       await queryRunner.manager.save(SemesterEntity, [
