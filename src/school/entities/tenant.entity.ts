@@ -6,6 +6,7 @@ import { TrackEntity } from '@/track/entities/track.entity';
 
 import { AcademyEntity } from './academy.entity';
 import { SchoolEntity } from './school.entity';
+import { SemesterEntity } from './semester.entity';
 
 @Entity({ name: 'tenants' })
 export class TenantEntity extends GenericEntity {
@@ -23,4 +24,7 @@ export class TenantEntity extends GenericEntity {
 
   @OneToMany(() => TrackEntity, (track) => track.tenant)
   tracks: TrackEntity[];
+
+  @OneToMany(() => SemesterEntity, (semester) => semester.tenant)
+  semesters: SemesterEntity[];
 }

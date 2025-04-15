@@ -5,7 +5,6 @@ import { DirectorEntity } from '@/staff/entities/director.entity';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 
-import { SemesterEntity } from './semester.entity';
 import { AssignmentEntity } from './subject-assignment.entity';
 import { TenantEntity } from './tenant.entity';
 
@@ -20,9 +19,6 @@ export class SchoolEntity extends GenericEntity {
   @ManyToOne(() => TenantEntity, (tenant) => tenant.schools)
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
-
-  @OneToMany(() => SemesterEntity, (semester) => semester.school)
-  semesters: SemesterEntity[];
 
   @OneToMany(() => StudentEntity, (student) => student.school)
   students: StudentEntity[];

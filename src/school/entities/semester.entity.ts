@@ -3,12 +3,12 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { GenericEntity } from '@/core/generic-entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
-import { SchoolEntity } from './school.entity';
+import { TenantEntity } from './tenant.entity';
 
 @Entity({ name: 'semesters' })
 export class SemesterEntity extends GenericEntity {
   @Column()
-  school_id: number;
+  tenant_id: number;
 
   @Column()
   academic_year_id: number;
@@ -22,9 +22,9 @@ export class SemesterEntity extends GenericEntity {
   @Column()
   end_date: Date;
 
-  @ManyToOne(() => SchoolEntity, (school) => school.semesters)
-  @JoinColumn({ name: 'school_id' })
-  school: SchoolEntity;
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.semesters)
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: TenantEntity;
 
   @ManyToOne(() => AcademicYearEntity, (academicYear) => academicYear.semesters)
   @JoinColumn({ name: 'academic_year_id' })

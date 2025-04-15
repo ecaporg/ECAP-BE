@@ -1,6 +1,7 @@
 import * as argon2 from 'argon2';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
+import { SemesterEntity } from '@/school/entities/semester.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { AcademicYearEntity } from '../src/school/entities/academic-year.entity';
@@ -153,18 +154,41 @@ export class AddTestData1744271139400 implements MigrationInterface {
     // Create learning periods for each academic year
     const learningPeriods = [];
     for (const academicYear of academicYears) {
-      for (let i = 0; i < 4; i++) {
+      for (const track of tracks) {
         const learningPeriod = await queryRunner.manager.save(
           TrackLearningPeriodEntity,
-          {
-            name: `Period ${i + 1} for ${academicYear.from}-${academicYear.to}`,
-            academic_year_id: academicYear.id,
-            track: tracks[i % tracks.length],
-            start_date: new Date(academicYear.from, i * 3, 1),
-            end_date: new Date(academicYear.from, (i + 1) * 3, 0),
-          },
+          [
+            {
+              name: `Period 1`,
+              academic_year_id: academicYear.id,
+              track: track,
+              start_date: new Date(academicYear.from, 8, 1),
+              end_date: new Date(academicYear.from, 10, 0),
+            },
+            {
+              name: `Period 2`,
+              academic_year_id: academicYear.id,
+              track: track,
+              start_date: new Date(academicYear.from, 10, 1),
+              end_date: new Date(academicYear.to, 0, 1),
+            },
+            {
+              name: `Period 3`,
+              academic_year_id: academicYear.id,
+              track: track,
+              start_date: new Date(academicYear.to, 0, 2),
+              end_date: new Date(academicYear.to, 3, 0),
+            },
+            {
+              name: `Period 4`,
+              academic_year_id: academicYear.id,
+              track: track,
+              start_date: new Date(academicYear.to, 3, 1),
+              end_date: new Date(academicYear.to, 6, 0),
+            },
+          ],
         );
-        learningPeriods.push(learningPeriod);
+        learningPeriods.push(learningPeriod.flat());
       }
     }
 
@@ -173,39 +197,42 @@ export class AddTestData1744271139400 implements MigrationInterface {
     for (let i = 0; i < 50; i++) {
       const teacher = teachers[i % teachers.length];
       const subject = subjects[i % subjects.length];
-      const school = schools[i % schools.length];
 
-      const assignment = await queryRunner.manager.save(AssignmentEntity, {
-        name: `Assignment ${i + 1}`,
-        description: `Description for Assignment ${i + 1}`,
-        hours: Math.floor(Math.random() * 10) + 1,
-        credits: Math.floor(Math.random() * 5) + 1,
-        school_id: school.id,
-        teacher_id: teacher.user_id,
-        subject_id: subject.id,
-        academic_year_id: academicYears[2].id, // Current academic year
-      });
-      assignments.push(assignment);
+      for (const academicYear of academicYears) {
+        const assignment = await queryRunner.manager.save(AssignmentEntity, {
+          school_id: teacher.school_id,
+          teacher_id: teacher.user_id,
+          subject_id: subject.id,
+          academic_year_id: academicYear.id, // Current academic year
+        });
+        assignments.push(assignment);
+      }
     }
 
     // Create assignment periods
     const assignmentPeriods = [];
     for (const assignment of assignments) {
       // Assign to all learning periods in the current academic year
-      for (let i = 8; i < 12; i++) {
-        // Learning periods 9-12 are for the current academic year
-        const student = students[Math.floor(Math.random() * students.length)];
+      const student = students[Math.floor(Math.random() * students.length)];
+      const filteredLearningPeriods = learningPeriods.filter(
+        (lp) => lp.academic_year_id === assignment.academic_year_id,
+      );
 
+      // Перевіряємо, чи є періоди навчання для цього академічного року
+      if (filteredLearningPeriods.length === 0) {
+        console.log(
+          `Попередження: немає періодів навчання для академічного року ${assignment.academic_year_id}`,
+        );
+        continue;
+      }
+
+      for (const learningPeriod of filteredLearningPeriods) {
         const assignmentPeriod = await queryRunner.manager.save(
           AssignmentPeriodEntity,
           {
-            name: `Period ${i - 7} for Assignment ${assignment.id}`,
-            description: `Description for Period ${i - 7}`,
-            start_date: new Date(academicYears[2].from, (i - 8) * 3, 1),
-            end_date: new Date(academicYears[2].from, (i - 7) * 3, 0),
             subject_assignment_id: assignment.id,
             student_id: student.id,
-            learning_period_id: learningPeriods[i].id,
+            learning_period_id: learningPeriod.id,
             completed: Math.random() > 0.3, // 70% chance of being completed
           },
         );
@@ -216,6 +243,15 @@ export class AddTestData1744271139400 implements MigrationInterface {
     // Create samples for students
     for (let i = 0; i < 200; i++) {
       const teacher = teachers[i % teachers.length];
+
+      // Перевіряємо, чи є періоди завдань
+      if (assignmentPeriods.length === 0) {
+        console.log(
+          'Попередження: немає періодів завдань для створення зразків',
+        );
+        break;
+      }
+
       const assignmentPeriod = assignmentPeriods[i % assignmentPeriods.length];
 
       await queryRunner.manager.save(SampleEntity, {
@@ -229,6 +265,26 @@ export class AddTestData1744271139400 implements MigrationInterface {
         ), // Random date within last 90 days
         updated_at: new Date(),
       });
+    }
+
+    // Create semesters
+    for (const academicYear of academicYears) {
+      await queryRunner.manager.save(SemesterEntity, [
+        {
+          name: 'Semester 1',
+          academic_year_id: academicYear.id,
+          start_date: new Date(academicYear.from, 8, 1),
+          end_date: new Date(academicYear.from, 11, 0),
+          tenant,
+        },
+        {
+          name: 'Semester 2',
+          academic_year_id: academicYear.id,
+          start_date: new Date(academicYear.to, 0, 1),
+          end_date: new Date(academicYear.to, 7, 31),
+          tenant,
+        },
+      ]);
     }
 
     // Create admin user

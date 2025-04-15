@@ -29,7 +29,7 @@ import { UsersModule } from '@/users/users.module';
         url: configService.get('POSTGRES_URL'),
         synchronize: false,
         dropSchema: false,
-        logging: true,
+        logging: false,
         logger: 'advanced-console',
       }),
       inject: [ConfigService],

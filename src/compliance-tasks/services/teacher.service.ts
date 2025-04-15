@@ -1,4 +1,11 @@
-import { FindOptionsWhere, LessThan } from 'typeorm';
+import {
+  FindOptionsWhere,
+  In,
+  LessThan,
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+} from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
@@ -32,7 +39,6 @@ export class TeacherComplianceTaskService {
 
     const paginationOptions = extractPaginationOptions(filterDTO);
 
-
     const subjectAssignments = await this.assignmentService.findAll(
       paginationOptions,
       {
@@ -55,18 +61,28 @@ export class TeacherComplianceTaskService {
   }
 
   async getFilters(user: IAuthUser) {
-    const query = this.getTenantQuery(user);
+    const query = await this.getTenantQuery(user);
     const tenant = await this.tenantService.findOneBy(query);
-    console.log(tenant);
     return tenant;
   }
 
-  private getTenantQuery(user: IAuthUser) {
+  private async getTenantQuery(user: IAuthUser) {
+    const academicYears =
+      await this.academicYearService.findCurrentAcademicYears();
+    console.log(JSON.stringify(academicYears, null, 2));
     const query: FindOptionsWhere<TenantEntity> = {
       tracks: {
-        start_date: LessThan(new Date()),
+        learningPeriods: {
+          academicYear: {
+            id: In(academicYears.map((academicYear) => academicYear.id)),
+            learningPeriods: {
+              start_date: LessThanOrEqual(new Date()),
+            },
+          },
+        },
       },
     };
+
     if (user.role === RolesEnum.TEACHER) {
       query.schools = { teachers: { user } };
     } else if (user.role === RolesEnum.ADMIN) {

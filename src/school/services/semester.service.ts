@@ -15,11 +15,4 @@ export class SemesterService extends BaseService<SemesterEntity> {
   ) {
     super(semesterRepository);
   }
-
-  async findBySchoolId(schoolId: number): Promise<SemesterEntity[]> {
-    return this.repository.find({
-      where: { school_id: schoolId },
-      relations: ['school'],
-    });
-  }
 }

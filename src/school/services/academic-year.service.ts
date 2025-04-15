@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,21 +16,17 @@ export class AcademicYearService extends BaseService<AcademicYearEntity> {
     super(academicYearRepository);
   }
 
-  async findByYearRange(
-    from: number,
-    to: number,
-  ): Promise<AcademicYearEntity[]> {
-    return await this.academicYearRepository.find({
-      where: { from, to },
-      relations: ['semesters', 'learningPeriods'],
+  async findCurrentAcademicYears(date?: Date) {
+    const currentDate = date || new Date();
+    const academicYears = await this.academicYearRepository.find({
+      where: {
+        semesters: {
+          start_date: LessThanOrEqual(currentDate),
+          end_date: MoreThanOrEqual(currentDate),
+        },
+      },
+      relations: ['semesters'],
     });
-  }
-
-  async getCurrentAcademicYear(): Promise<AcademicYearEntity> {
-    const currentYear = new Date().getFullYear();
-    return await this.academicYearRepository.findOne({
-      where: { from: currentYear },
-      relations: ['semesters', 'learningPeriods'],
-    });
+    return academicYears;
   }
 }
