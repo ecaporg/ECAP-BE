@@ -1,4 +1,4 @@
-import { Equal } from 'typeorm';
+import { Equal, In } from 'typeorm';
 
 import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../services/base.service';
@@ -51,9 +51,17 @@ export function extractPaginationOptions<T extends BaseFilterDto>(
         current = current[part];
       }
 
-      current[parts[parts.length - 1]] = Equal(value);
+      if (Array.isArray(value)) {
+        current[parts[parts.length - 1]] = In(value);
+      } else {
+        current[parts[parts.length - 1]] = Equal(value);
+      }
     } else {
-      filtersObject[key] = Equal(value);
+      if (Array.isArray(value)) {
+        filtersObject[key] = In(value);
+      } else {
+        filtersObject[key] = Equal(value);
+      }
     }
   }
 

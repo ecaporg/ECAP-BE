@@ -14,7 +14,7 @@ export class DbV41744703551750 implements MigrationInterface {
       `CREATE TABLE "directors" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "school_id" integer NOT NULL, "user_id" integer NOT NULL, "academy_id" integer NOT NULL, CONSTRAINT "REL_a49091e4f464b19d5428d21fc1" UNIQUE ("user_id"), CONSTRAINT "PK_a9ae28f00c93801aa034a2c1773" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "samples" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "assignment_title" character varying(50) NOT NULL, "status" character varying(50) NOT NULL, "user_id" integer NOT NULL, "school_id" integer NOT NULL, "assignment_period_id" integer NOT NULL, CONSTRAINT "PK_d68b5b3bd25a6851b033fb63444" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "samples" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "assignment_title" character varying(50) NOT NULL, "status" character varying(50) NOT NULL, "user_id" integer, "school_id" integer, "assignment_period_id" integer NOT NULL, CONSTRAINT "PK_d68b5b3bd25a6851b033fb63444" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "subjects" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "track_id" integer NOT NULL, "name" character varying(50) NOT NULL, CONSTRAINT "PK_1a023685ac2b051b4e557b0b280" PRIMARY KEY ("id"))`,

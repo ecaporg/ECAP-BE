@@ -99,18 +99,6 @@ export class AddTestData1744271139400 implements MigrationInterface {
       teachers.push(teacher);
     }
 
-    // Assign students
-    const students = [];
-    for (let i = 0; i < 75; i++) {
-      const student = await queryRunner.manager.save(StudentEntity, {
-        user: users[i + 25], // Using users 25-99 for students
-        school: schools[i % schools.length],
-        academy: academies[i % academies.length],
-        grade: `Grade ${(i % 12) + 1}`,
-      });
-      students.push(student);
-    }
-
     // Create tracks
     const tracks = await queryRunner.manager.save(TrackEntity, [
       {
@@ -138,6 +126,19 @@ export class AddTestData1744271139400 implements MigrationInterface {
         end_date: new Date(),
       },
     ]);
+
+    // Assign students
+    const students = [];
+    for (let i = 0; i < 75; i++) {
+      const student = await queryRunner.manager.save(StudentEntity, {
+        user: users[i + 25], // Using users 25-99 for students
+        school: schools[i % schools.length],
+        academy: academies[i % academies.length],
+        grade: `Grade ${(i % 12) + 1}`,
+        track: tracks[i % tracks.length],
+      });
+      students.push(student);
+    }
 
     // Create subjects for each track
     const subjects = [];
@@ -188,7 +189,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
             },
           ],
         );
-        learningPeriods.push(learningPeriod.flat());
+        learningPeriods.push(...learningPeriod);
       }
     }
 
@@ -202,38 +203,36 @@ export class AddTestData1744271139400 implements MigrationInterface {
         const assignment = await queryRunner.manager.save(AssignmentEntity, {
           school_id: teacher.school_id,
           teacher_id: teacher.user_id,
-          subject_id: subject.id,
-          academic_year_id: academicYear.id, // Current academic year
+          subject,
+          academic_year: academicYear,
         });
         assignments.push(assignment);
       }
     }
 
     // Create assignment periods
-    const assignmentPeriods = [];
+    const assignmentPeriods = [] as AssignmentPeriodEntity[];
     for (const assignment of assignments) {
       // Assign to all learning periods in the current academic year
       const student = students[Math.floor(Math.random() * students.length)];
       const filteredLearningPeriods = learningPeriods.filter(
-        (lp) => lp.academic_year_id === assignment.academic_year_id,
+        (lp) => lp.academic_year_id == assignment.academic_year_id,
       );
 
-      // Перевіряємо, чи є періоди навчання для цього академічного року
       if (filteredLearningPeriods.length === 0) {
-        console.log(
-          `Попередження: немає періодів навчання для академічного року ${assignment.academic_year_id}`,
+        throw new Error(
+          `No learning periods found for assignment ${assignment.id}`,
         );
-        continue;
       }
 
       for (const learningPeriod of filteredLearningPeriods) {
         const assignmentPeriod = await queryRunner.manager.save(
           AssignmentPeriodEntity,
           {
-            subject_assignment_id: assignment.id,
-            student_id: student.id,
-            learning_period_id: learningPeriod.id,
-            completed: Math.random() > 0.3, // 70% chance of being completed
+            assignment,
+            student,
+            learning_period: learningPeriod,
+            completed: Math.random() > 0.3,
           },
         );
         assignmentPeriods.push(assignmentPeriod);
@@ -241,30 +240,37 @@ export class AddTestData1744271139400 implements MigrationInterface {
     }
 
     // Create samples for students
-    for (let i = 0; i < 200; i++) {
-      const teacher = teachers[i % teachers.length];
-
-      // Перевіряємо, чи є періоди завдань
-      if (assignmentPeriods.length === 0) {
-        console.log(
-          'Попередження: немає періодів завдань для створення зразків',
-        );
-        break;
-      }
-
-      const assignmentPeriod = assignmentPeriods[i % assignmentPeriods.length];
-
-      await queryRunner.manager.save(SampleEntity, {
-        assignment_title: `Sample ${i + 1}`,
-        status: Math.random() > 0.3 ? 'COMPLETED' : 'PENDING', // 70% chance of being completed
-        user_id: teacher.user_id,
-        school_id: teacher.school_id,
-        assignment_period_id: assignmentPeriod.id,
-        created_at: new Date(
-          Date.now() - Math.floor(Math.random() * 90) * 24 * 60 * 60 * 1000,
-        ), // Random date within last 90 days
-        updated_at: new Date(),
-      });
+    for (const assignmentPeriod of assignmentPeriods) {
+      const isCompleted = Math.random() > 0.7 || assignmentPeriod.completed;
+      const user_id = isCompleted
+        ? assignmentPeriod.assignment.teacher_id
+        : null;
+      const school_id = isCompleted
+        ? assignmentPeriod.assignment.school_id
+        : null;
+      await queryRunner.manager.save(SampleEntity, [
+        {
+          assignment_title: `Sample`,
+          status: assignmentPeriod.completed ? 'COMPLETED' : 'PENDING',
+          assignment_period_id: assignmentPeriod.id,
+          user_id: assignmentPeriod.completed ? user_id : null,
+          school_id: assignmentPeriod.completed ? school_id : null,
+        },
+        {
+          assignment_title: `Sample 2`,
+          status: isCompleted ? 'COMPLETED' : 'PENDING',
+          assignment_period_id: assignmentPeriod.id,
+          user_id,
+          school_id,
+        },
+        {
+          assignment_title: `Sample 3`,
+          status: isCompleted ? 'COMPLETED' : 'PENDING',
+          assignment_period_id: assignmentPeriod.id,
+          user_id,
+          school_id,
+        },
+      ]);
     }
 
     // Create semesters
@@ -300,26 +306,54 @@ export class AddTestData1744271139400 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // truncate all tables
-    await queryRunner.manager.query('TRUNCATE TABLE "tenants" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "schools" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "academies" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "users" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "directors" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "teachers" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "students" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "tracks" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "subjects" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "track_calendar" CASCADE');
+    // truncate all tables and reset sequences
     await queryRunner.manager.query(
-      'TRUNCATE TABLE "track_learning_periods" CASCADE',
+      'TRUNCATE TABLE "tenants" RESTART IDENTITY CASCADE',
     );
-    await queryRunner.manager.query('TRUNCATE TABLE "samples" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "semesters" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "academic_years" CASCADE');
-    await queryRunner.manager.query('TRUNCATE TABLE "assignments" CASCADE');
     await queryRunner.manager.query(
-      'TRUNCATE TABLE "assignment_periods" CASCADE',
+      'TRUNCATE TABLE "schools" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "academies" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "users" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "directors" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "teachers" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "students" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "tracks" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "subjects" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "track_calendar" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "track_learning_periods" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "samples" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "semesters" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "academic_years" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "assignments" RESTART IDENTITY CASCADE',
+    );
+    await queryRunner.manager.query(
+      'TRUNCATE TABLE "assignment_periods" RESTART IDENTITY CASCADE',
     );
   }
 }

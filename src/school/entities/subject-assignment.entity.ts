@@ -16,6 +16,7 @@ export class AssignmentEntity extends GenericEntity {
 
   @Column()
   teacher_id: number;
+
   @Column()
   subject_id: number;
 

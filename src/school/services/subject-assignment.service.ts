@@ -1,4 +1,4 @@
-import { Equal, In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,21 +17,6 @@ export class AssignmentService extends BaseService<AssignmentEntity> {
     private readonly assignmentRepository: Repository<AssignmentEntity>,
   ) {
     super(assignmentRepository);
-  }
-
-  async getTest() {
-    const assignments = await this.assignmentRepository.find({
-      where: {
-        id: Equal(1),
-        assignment_periods: {
-          learning_period: {
-            id: Equal(1),
-          },
-        },
-      },
-    });
-
-    return assignments;
   }
 }
 

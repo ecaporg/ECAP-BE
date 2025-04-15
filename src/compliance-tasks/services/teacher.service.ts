@@ -1,11 +1,4 @@
-import {
-  FindOptionsWhere,
-  In,
-  LessThan,
-  LessThanOrEqual,
-  MoreThan,
-  MoreThanOrEqual,
-} from 'typeorm';
+import { FindOptionsWhere, In, LessThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
@@ -30,9 +23,6 @@ export class TeacherComplianceTaskService {
   ) {}
 
   async getStudents(filterDTO: StudentsTableFilterDto, user: IAuthUser) {
-    filterDTO['assignment_periods.learning_period_id'] =
-      filterDTO.learning_period_id;
-    delete filterDTO.learning_period_id;
     if (user.role === RolesEnum.TEACHER) {
       filterDTO['teacher_id'] = user.id;
     }
@@ -45,18 +35,16 @@ export class TeacherComplianceTaskService {
         subject: true,
         teacher: true,
         assignment_periods: {
-          learning_period: true,
           samples: true,
           student: {
-            academy: true,
             track: true,
+            academy: true,
             school: true,
             user: true,
           },
         },
       },
     );
-
     return subjectAssignments;
   }
 
@@ -69,7 +57,6 @@ export class TeacherComplianceTaskService {
   private async getTenantQuery(user: IAuthUser) {
     const academicYears =
       await this.academicYearService.findCurrentAcademicYears();
-    console.log(JSON.stringify(academicYears, null, 2));
     const query: FindOptionsWhere<TenantEntity> = {
       tracks: {
         learningPeriods: {

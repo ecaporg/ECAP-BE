@@ -12,10 +12,10 @@ export class SampleEntity extends GenericEntity {
   @Column({ length: 50 })
   status: string;
 
-  @Column()
+  @Column({ nullable: true })
   user_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   school_id: number;
 
   @Column()
