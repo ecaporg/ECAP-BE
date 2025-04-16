@@ -223,7 +223,9 @@ export class AddTestData1744271139400 implements MigrationInterface {
       const student =
         filteredStudents[Math.floor(Math.random() * filteredStudents.length)];
       const filteredLearningPeriods = learningPeriods.filter(
-        (lp) => lp.academic_year_id == assignment.academic_year_id,
+        (lp) =>
+          lp.academic_year_id == assignment.academic_year_id &&
+          lp.track_id == assignment.subject.track_id,
       );
 
       if (filteredLearningPeriods.length === 0) {
