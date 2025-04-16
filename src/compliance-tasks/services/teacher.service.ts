@@ -6,7 +6,10 @@ import { IAuthUser } from '@/auth/types/auth-user';
 import { extractPaginationOptions } from '@/core/utils/pagination.utils';
 import { TenantEntity } from '@/school/entities/tenant.entity';
 import { AcademicYearService } from '@/school/services/academic-year.service';
-import { AssignmentService } from '@/school/services/subject-assignment.service';
+import {
+  AssignmentPeriodService,
+  AssignmentService,
+} from '@/school/services/subject-assignment.service';
 import { TenantService } from '@/school/services/tenant.service';
 import { StudentService } from '@/students/services/student.service';
 import { RolesEnum } from '@/users/enums/roles.enum';
@@ -18,34 +21,32 @@ export class TeacherComplianceTaskService {
   constructor(
     private readonly studentService: StudentService,
     private readonly assignmentService: AssignmentService,
+    private readonly assignmentPeriodService: AssignmentPeriodService,
     private readonly academicYearService: AcademicYearService,
     private readonly tenantService: TenantService,
   ) {}
 
   async getStudents(filterDTO: StudentsTableFilterDto, user: IAuthUser) {
-    if (user.role === RolesEnum.TEACHER) {
-      filterDTO['teacher_id'] = user.id;
+    if (user.role == RolesEnum.TEACHER) {
+      filterDTO['assignment.teacher_id'] = user.id;
     }
 
     const paginationOptions = extractPaginationOptions(filterDTO);
+    console.log(JSON.stringify(paginationOptions, null, 2));
 
-    const subjectAssignments = await this.assignmentService.findAll(
+    const assignmentPeriods = await this.assignmentPeriodService.findAll(
       paginationOptions,
       {
-        subject: true,
-        teacher: true,
-        assignment_periods: {
-          samples: true,
-          student: {
-            track: true,
-            academy: true,
-            school: true,
-            user: true,
-          },
+        samples: true,
+        student: {
+          track: true,
+          academy: true,
+          school: true,
+          user: true,
         },
       },
     );
-    return subjectAssignments;
+    return assignmentPeriods;
   }
 
   async getFilters(user: IAuthUser) {

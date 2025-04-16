@@ -34,7 +34,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment_periods.learning_period_id': number[];
+  'learning_period_id': number[];
 
   @ApiProperty({
     required: false,
@@ -43,7 +43,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment_periods.student.academy_id'?: number[];
+  'student.academy_id'?: number[];
 
   @ApiProperty({
     required: false,
@@ -52,7 +52,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'school_id'?: number[];
+  'assignment.school_id'?: number[];
 
   @ApiProperty({
     required: false,
@@ -61,7 +61,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment_periods.student.track_id'?: number[];
+  'student.track_id'?: number[];
 
   @ApiProperty({
     required: false,
@@ -70,7 +70,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(String)
   @IsString({ each: true })
-  'assignment_periods.student.grade'?: string[];
+  'student.grade'?: string[];
 
   @ApiProperty({
     required: false,
@@ -79,5 +79,5 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Boolean)
   @IsBoolean({ each: true })
-  'assignment_periods.completed'?: boolean[];
+  'completed'?: boolean[];
 }

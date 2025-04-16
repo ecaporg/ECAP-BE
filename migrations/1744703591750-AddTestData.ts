@@ -217,7 +217,11 @@ export class AddTestData1744271139400 implements MigrationInterface {
     let assignmentPeriods = [];
     for (const assignment of assignments) {
       // Assign to all learning periods in the current academic year
-      const student = students[Math.floor(Math.random() * students.length)];
+      const filteredStudents = students.filter(
+        (student) => student.school_id == assignment.school_id,
+      );
+      const student =
+        filteredStudents[Math.floor(Math.random() * filteredStudents.length)];
       const filteredLearningPeriods = learningPeriods.filter(
         (lp) => lp.academic_year_id == assignment.academic_year_id,
       );
