@@ -27,7 +27,7 @@ export class SubjectEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Samples associated with this subject',
-    type: () => [SampleEntity],
+    type: () => [{}],
   })
   @OneToMany(() => SampleEntity, (sample) => sample.subject)
   samples: SampleEntity[];

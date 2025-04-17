@@ -31,7 +31,7 @@ export class DirectorEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'School associated with this director',
-    type: () => SchoolEntity,
+    type: () => Object,
   })
   @ManyToOne(() => SchoolEntity, (school) => school.directors)
   @JoinColumn({ name: 'school_id' })
@@ -39,7 +39,7 @@ export class DirectorEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Academy associated with this director',
-    type: () => AcademyEntity,
+    type: () => Object,
   })
   @ManyToOne(() => AcademyEntity)
   @JoinColumn({ name: 'academy_id' })

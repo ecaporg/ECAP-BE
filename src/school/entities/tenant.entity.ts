@@ -18,35 +18,35 @@ export class TenantEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Schools associated with this tenant',
-    type: () => [SchoolEntity],
+    type: () => [{}],
   })
   @OneToMany(() => SchoolEntity, (school) => school.tenant)
   schools: SchoolEntity[];
 
   @ApiProperty({
     description: 'Admins associated with this tenant',
-    type: () => [AdminEntity],
+    type: () => [{}],
   })
   @OneToMany(() => AdminEntity, (admin) => admin.tenant)
   admins: AdminEntity[];
 
   @ApiProperty({
     description: 'Academies associated with this tenant',
-    type: () => [AcademyEntity],
+    type: () => [{}],
   })
   @OneToMany(() => AcademyEntity, (academy) => academy.tenant)
   academies: AcademyEntity[];
 
   @ApiProperty({
     description: 'Tracks associated with this tenant',
-    type: () => [TrackEntity],
+    type: () => [{}],
   })
   @OneToMany(() => TrackEntity, (track) => track.tenant)
   tracks: TrackEntity[];
 
   @ApiProperty({
     description: 'Semesters associated with this tenant',
-    type: () => [SemesterEntity],
+    type: () => [{}],
   })
   @OneToMany(() => SemesterEntity, (semester) => semester.tenant)
   semesters: SemesterEntity[];

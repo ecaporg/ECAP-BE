@@ -26,14 +26,14 @@ export class AcademicYearEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Semesters in this academic year',
-    type: () => [SemesterEntity],
+    type: () => [{}],
   })
   @OneToMany(() => SemesterEntity, (semester) => semester.academic_year)
   semesters: SemesterEntity[];
 
   @ApiProperty({
     description: 'Learning periods in this academic year',
-    type: () => [TrackLearningPeriodEntity],
+    type: () => [{}],
   })
   @OneToMany(
     () => TrackLearningPeriodEntity,
@@ -43,7 +43,7 @@ export class AcademicYearEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Assignments in this academic year',
-    type: () => [AssignmentEntity],
+    type: () => [{}],
   })
   @OneToMany(() => AssignmentEntity, (assignment) => assignment.academic_year)
   assignments: AssignmentEntity[];

@@ -51,7 +51,7 @@ export class SampleEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Assignment period associated with this sample',
-    type: () => AssignmentPeriodEntity,
+    type: () => Object,
   })
   @ManyToOne(
     () => AssignmentPeriodEntity,
@@ -62,7 +62,7 @@ export class SampleEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Teacher who created this sample',
-    type: () => TeacherEntity,
+    type: () => Object,
   })
   @ManyToOne(() => TeacherEntity, (teacher) => teacher.samples)
   @JoinColumn([

@@ -38,28 +38,28 @@ export class TrackEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Calendar entries for this track',
-    type: () => [TrackCalendarEntity],
+    type: () => [{}],
   })
   @OneToMany(() => TrackCalendarEntity, (calendar) => calendar.track)
   calendar: TrackCalendarEntity[];
 
   @ApiProperty({
     description: 'Subjects in this track',
-    type: () => [SubjectEntity],
+    type: () => [{}],
   })
   @OneToMany(() => SubjectEntity, (subject) => subject.track)
   subjects: SubjectEntity[];
 
   @ApiProperty({
     description: 'Learning periods in this track',
-    type: () => [TrackLearningPeriodEntity],
+    type: () => [{}],
   })
   @OneToMany(() => TrackLearningPeriodEntity, (period) => period.track)
   learningPeriods: TrackLearningPeriodEntity[];
 
   @ApiProperty({
     description: 'Students enrolled in this track',
-    type: () => [StudentEntity],
+    type: () => [{}],
   })
   @OneToMany(() => StudentEntity, (student) => student.track)
   students: StudentEntity[];

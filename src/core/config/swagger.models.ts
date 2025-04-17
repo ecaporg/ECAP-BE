@@ -8,7 +8,6 @@ import { PasswordDTO } from '@/auth/dtos/password.dto';
 import { ResetPasswordDTO } from '@/auth/dtos/reset-password.dto';
 import { SignInDTO } from '@/auth/dtos/sign-in.dto';
 import { AuthUser } from '@/auth/types/auth-user';
-import { FiltersResponseDto } from '@/compliance-tasks/dto/response';
 import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
 // School entities
 import { AcademyEntity } from '@/school/entities/academy.entity';
@@ -55,7 +54,6 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   PasswordDTO,
   ResetPasswordDTO,
   SignInDTO,
-  FiltersResponseDto,
 
   // Users
   CreateUserDTO,
@@ -85,17 +83,4 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   // Students
   SampleEntity,
   StudentEntity,
-
-  // Add more models here as needed, organized by module
-  // School
-  // ...
-
-  // Students
-  // ...
-
-  // Staff
-  // ...
-
-  // Track
-  // ...
 ];

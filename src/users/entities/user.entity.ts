@@ -11,7 +11,7 @@ import { RolesEnum } from '../enums/roles.enum';
 
 @Entity({ name: 'users' })
 export class UserEntity extends GenericEntity {
-  @ApiProperty({ description: 'User email address', unique: true })
+  @ApiProperty({ description: 'User email address', uniqueItems: true })
   @Column({ unique: true })
   email: string;
 
@@ -51,28 +51,28 @@ export class UserEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Student profiles associated with this user',
-    type: () => [StudentEntity],
+    type: () => [{}],
   })
   @OneToMany(() => StudentEntity, (student) => student.user)
   students: StudentEntity[];
 
   @ApiProperty({
     description: 'Teacher profiles associated with this user',
-    type: () => [TeacherEntity],
+    type: () => [{}],
   })
   @OneToMany(() => TeacherEntity, (teacher) => teacher.user)
   teachers: TeacherEntity[];
 
   @ApiProperty({
     description: 'Director profiles associated with this user',
-    type: () => [DirectorEntity],
+    type: () => [{}],
   })
   @OneToMany(() => DirectorEntity, (director) => director.user)
   directors: DirectorEntity[];
 
   @ApiProperty({
     description: 'Admin profiles associated with this user',
-    type: () => [AdminEntity],
+    type: () => [{}],
   })
   @OneToMany(() => AdminEntity, (admin) => admin.user)
   admins: AdminEntity[];

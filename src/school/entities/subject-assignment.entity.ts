@@ -29,7 +29,7 @@ export class AssignmentEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'School associated with this assignment',
-    type: () => SchoolEntity,
+    type: () => Object,
   })
   @ManyToOne(() => SchoolEntity)
   @JoinColumn({ name: 'school_id' })
@@ -37,7 +37,7 @@ export class AssignmentEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Teacher associated with this assignment',
-    type: () => TeacherEntity,
+    type: () => Object,
   })
   @ManyToOne(() => TeacherEntity)
   @JoinColumn([
@@ -56,7 +56,7 @@ export class AssignmentEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Assignment periods associated with this assignment',
-    type: () => [AssignmentPeriodEntity],
+    type: () => [{}],
   })
   @OneToMany(
     () => AssignmentPeriodEntity,
@@ -97,7 +97,7 @@ export class AssignmentPeriodEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Assignment associated with this period',
-    type: () => AssignmentEntity,
+    type: () => Object,
   })
   @ManyToOne(() => AssignmentEntity)
   @JoinColumn({ name: 'subject_assignment_id' })
@@ -113,7 +113,7 @@ export class AssignmentPeriodEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Samples associated with this period',
-    type: () => [SampleEntity],
+    type: () => [{}],
   })
   @OneToMany(() => SampleEntity, (sample) => sample.assignment_period)
   samples: SampleEntity[];

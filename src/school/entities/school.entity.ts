@@ -22,7 +22,7 @@ export class SchoolEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Tenant associated with this school',
-    type: () => TenantEntity,
+    type: () => Object,
   })
   @ManyToOne(() => TenantEntity, (tenant) => tenant.schools)
   @JoinColumn({ name: 'tenant_id' })
@@ -30,28 +30,28 @@ export class SchoolEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Students enrolled in this school',
-    type: () => [StudentEntity],
+    type: () => [{}],
   })
   @OneToMany(() => StudentEntity, (student) => student.school)
   students: StudentEntity[];
 
   @ApiProperty({
     description: 'Teachers working in this school',
-    type: () => [TeacherEntity],
+    type: () => [{}],
   })
   @OneToMany(() => TeacherEntity, (teacher) => teacher.school)
   teachers: TeacherEntity[];
 
   @ApiProperty({
     description: 'Directors of this school',
-    type: () => [DirectorEntity],
+    type: () => [{}],
   })
   @OneToMany(() => DirectorEntity, (director) => director.school)
   directors: DirectorEntity[];
 
   @ApiProperty({
     description: 'Subject assignments in this school',
-    type: () => [AssignmentEntity],
+    type: () => [{}],
   })
   @OneToMany(() => AssignmentEntity, (assignment) => assignment.school)
   assignments: AssignmentEntity[];

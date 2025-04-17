@@ -37,7 +37,7 @@ export class TeacherEntity extends StaffEntity {
 
   @ApiProperty({
     description: 'School associated with this teacher',
-    type: () => SchoolEntity,
+    type: () => Object,
   })
   @ManyToOne(() => SchoolEntity)
   @JoinColumn({ name: 'school_id' })
@@ -45,14 +45,14 @@ export class TeacherEntity extends StaffEntity {
 
   @ApiProperty({
     description: 'Samples created by this teacher',
-    type: () => [SampleEntity],
+    type: () => [{}],
   })
   @OneToMany(() => SampleEntity, (sample) => sample.done_by_teacher)
   samples: SampleEntity[];
 
   @ApiProperty({
     description: 'Assignments for this teacher',
-    type: () => [AssignmentEntity],
+    type: () => [{}],
   })
   @OneToMany(() => AssignmentEntity, (assignment) => assignment.teacher)
   assignments: AssignmentEntity[];

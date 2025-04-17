@@ -33,7 +33,7 @@ export class SemesterEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Tenant associated with this semester',
-    type: () => TenantEntity,
+    type: () => Object,
   })
   @ManyToOne(() => TenantEntity, (tenant) => tenant.semesters)
   @JoinColumn({ name: 'tenant_id' })

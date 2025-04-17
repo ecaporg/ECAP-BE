@@ -34,7 +34,7 @@ export class TrackLearningPeriodEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Track associated with this learning period',
-    type: () => TrackEntity,
+    type: () => Object,
   })
   @ManyToOne(() => TrackEntity, (track) => track.learningPeriods)
   @JoinColumn({ name: 'track_id' })
@@ -53,7 +53,7 @@ export class TrackLearningPeriodEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Assignment periods in this learning period',
-    type: () => [AssignmentPeriodEntity],
+    type: () => [{}],
   })
   @OneToMany(
     () => AssignmentPeriodEntity,

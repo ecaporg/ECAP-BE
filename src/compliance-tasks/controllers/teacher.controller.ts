@@ -14,7 +14,6 @@ import { TenantEntity } from '@/school/entities/tenant.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { StudentsTableFilterDto } from '../dto/filters.dto';
-import { FiltersResponseDto } from '../dto/response';
 import { TeacherComplianceTaskService } from '../services/teacher.service';
 
 @ApiTags('Teacher Compliance Tasks')
@@ -43,7 +42,7 @@ export class TeacherComplianceTaskController {
   @Get('filters')
   @ApiOperation({ summary: 'Get available filters for students table' })
   @ApiErrorResponses()
-  @ApiCrudResponse(FiltersResponseDto)
+  @ApiCrudResponse(TenantEntity)
   async getFilters(@CurrentUser() user: IAuthUser) {
     return this.teacherComplianceTaskService.getFilters(user);
   }
