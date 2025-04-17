@@ -6,7 +6,7 @@ import { TenantEntity } from './tenant.entity';
 
 @Entity({ name: 'academies' })
 export class AcademyEntity extends GenericEntity {
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   name: string;
 
   @ManyToOne(() => TenantEntity, (tenant) => tenant.academies)

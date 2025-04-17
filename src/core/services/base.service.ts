@@ -198,4 +198,39 @@ export class BaseService<
     const count = await this.repository.count({ where });
     return count > 0;
   }
+
+  getDefaultQuery(
+    options?: PaginationOptions<T>,
+    relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],
+  ): FindManyOptions<T> {
+    const page = options?.page || 1;
+    const limit = options?.limit || 15;
+    const sortBy = options?.sortBy || ['createdAt'];
+    const sortDirection = options?.sortDirection || ['DESC'];
+    const search = options?.search || '';
+    const searchFields = options?.searchFields || [];
+    const filters = options?.filters || {};
+
+    const query: FindManyOptions<T> = {
+      skip: (page - 1) * limit,
+      take: limit,
+      order: createOrderCondition(sortBy, sortDirection),
+      relations: relations || this.defaultRelations,
+      where: filters,
+    };
+
+    if (search && searchFields.length > 0) {
+      const searchConditions: FindOptionsWhere<T> = createSearchCondition(
+        search,
+        searchFields,
+      );
+
+      query.where = {
+        ...query.where,
+        ...searchConditions,
+      };
+    }
+
+    return query;
+  }
 }

@@ -200,13 +200,11 @@ export class AddTestData1744271139400 implements MigrationInterface {
     let assignments = [];
     for (let i = 0; i < 50; i++) {
       const teacher = teachers[i % teachers.length];
-      const subject = subjects[i % subjects.length];
 
       for (const academicYear of academicYears) {
         assignments.push({
           school_id: teacher.school_id,
           teacher_id: teacher.user_id,
-          subject,
           academic_year: academicYear,
         });
       }
@@ -222,15 +220,21 @@ export class AddTestData1744271139400 implements MigrationInterface {
       );
       const student =
         filteredStudents[Math.floor(Math.random() * filteredStudents.length)];
+      const track = tracks[student.track_id % tracks.length];
       const filteredLearningPeriods = learningPeriods.filter(
         (lp) =>
           lp.academic_year_id == assignment.academic_year_id &&
-          lp.track_id == assignment.subject.track_id,
+          lp.track_id == track.id,
       );
 
-      if (filteredLearningPeriods.length === 0) {
+      if (
+        filteredLearningPeriods.length === 0 ||
+        filteredLearningPeriods.length !== 4
+      ) {
         throw new Error(
-          `No learning periods found for assignment ${assignment.id}`,
+          `No learning periods found for assignment ${assignment.id} ${JSON.stringify(
+            filteredLearningPeriods,
+          )}`,
         );
       }
 
@@ -252,6 +256,21 @@ export class AddTestData1744271139400 implements MigrationInterface {
     let samples = [];
     for (const assignmentPeriod of assignmentPeriods) {
       const isCompleted = Math.random() > 0.7 || assignmentPeriod.completed;
+      const filteredSubjects = subjects.filter(
+        (subject) =>
+          subject.track_id == assignmentPeriod.learning_period.track_id,
+      );
+      if (filteredSubjects.length !== 5) {
+        throw new Error(
+          `No subjects found for assignment period ${assignmentPeriod.id} ${JSON.stringify(
+            filteredSubjects,
+          )}`,
+        );
+      }
+      const subject =
+        filteredSubjects[
+          assignmentPeriod.student.user_id % filteredSubjects.length
+        ];
       const user_id = isCompleted
         ? assignmentPeriod.assignment.teacher_id
         : null;
@@ -266,6 +285,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
             assignment_period_id: assignmentPeriod.id,
             user_id: assignmentPeriod.completed ? user_id : null,
             school_id: assignmentPeriod.completed ? school_id : null,
+            subject_id: subject.id,
           },
           {
             assignment_title: `Sample 2`,
@@ -273,6 +293,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
             assignment_period_id: assignmentPeriod.id,
             user_id,
             school_id,
+            subject_id: subject.id,
           },
           {
             assignment_title: `Sample 3`,
@@ -280,6 +301,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
             assignment_period_id: assignmentPeriod.id,
             user_id,
             school_id,
+            subject_id: subject.id,
           },
         ],
       );
@@ -369,3 +391,84 @@ export class AddTestData1744271139400 implements MigrationInterface {
     );
   }
 }
+
+/*
+
+
+1. Super Admin:
+- Email (unique)
+- First name
+- Last name
+- Password
+
+2. Schools :
+- School name (up to 50 characters)
+
+
+3. Academies :
+- Academy name (up to 50 characters)
+
+5. Track :
+- Track name (up to 50 characters)
+- Start date (example: 2024-08-01)
+- End date (example: 2024-11-30)
+
+6. Subjects :
+- Subject name (up to 50 characters)
+- Which track it belongs to
+
+7. Academic Year (academic_year):
+- year/year (example: 2024/2025)
+
+8. Semesters :
+- start date (example: 2024-08-01)
+- end date (example: 2024-11-30)
+
+9. Learning Periods:
+- name (example: Learning Period 1)
+- start date (example: 2024-08-01)
+- end date (example: 2024-11-30)
+- which track it belongs to (example: Track A)
+
+10. Track Calendar :
+- if you have a text format - it's great, but if you don't have it, I will try extract it from the pdf
+
+11. Students :
+- Email (unique)
+- First name
+- Last name
+- Password
+- School
+- Academy
+- Track
+- Grade (up to 50 characters)
+
+12. Teachers:
+- Email (unique)
+- First name
+- Last name
+- Password
+- School
+
+13. Directors:
+- Email (unique)
+- First name
+- Last name
+- Password
+- School
+
+14. Administrators:
+- Email (unique)
+- First name
+- Last name
+- Password
+- In which schools they work (example: School A, School B, School C)
+
+
+15. Relations between teachers, students and subjects (This entity should represent which subject is taught by a specific teacher and which students are enrolled in that subject):
+- School (example: School A, School B, School C)
+- Teacher email (example: teacher@test.com)
+- Subject (The subject name should be provided, and if the subject belongs to a specific track, the associated track should also be indicated)
+- Academic Year (example: 2024/2025)
+- List of students (example: student@test.com, student2@test.com, student3@test.com)
+*/

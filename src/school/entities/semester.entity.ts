@@ -13,7 +13,7 @@ export class SemesterEntity extends GenericEntity {
   @Column()
   academic_year_id: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   name: string;
 
   @Column()

@@ -10,7 +10,7 @@ import { SemesterEntity } from './semester.entity';
 
 @Entity({ name: 'tenants' })
 export class TenantEntity extends GenericEntity {
-  @Column({ length: 50, nullable: true, default: null })
+  @Column({ length: 250, nullable: true, default: null })
   name: string;
 
   @OneToMany(() => SchoolEntity, (school) => school.tenant)

@@ -10,7 +10,7 @@ export class TrackCalendarEntity {
   @PrimaryColumn()
   date: Date;
 
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   type: string;
 
   @ManyToOne(() => TrackEntity, (track) => track.calendar)

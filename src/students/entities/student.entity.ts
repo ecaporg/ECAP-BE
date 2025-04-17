@@ -21,7 +21,7 @@ export class StudentEntity extends GenericEntity {
   @Column({ nullable: true })
   track_id: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   grade: string;
 
   @ManyToOne(() => SchoolEntity, (school) => school.students)

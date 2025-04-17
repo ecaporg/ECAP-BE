@@ -11,7 +11,7 @@ export class TrackLearningPeriodEntity extends GenericEntity {
   @Column()
   track_id: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   name: string;
 
   @Column()

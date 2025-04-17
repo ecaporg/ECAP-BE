@@ -4,7 +4,6 @@ import { GenericEntity } from '@/core/generic-entity';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { SampleEntity } from '@/students/entities/sample.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
-import { SubjectEntity } from '@/track/entities/subject.entity';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
@@ -16,9 +15,6 @@ export class AssignmentEntity extends GenericEntity {
 
   @Column()
   teacher_id: number;
-
-  @Column()
-  subject_id: number;
 
   @Column()
   academic_year_id: number;
@@ -33,10 +29,6 @@ export class AssignmentEntity extends GenericEntity {
     { name: 'school_id', referencedColumnName: 'school_id' },
   ])
   teacher: TeacherEntity;
-
-  @ManyToOne(() => SubjectEntity)
-  @JoinColumn({ name: 'subject_id' })
-  subject: SubjectEntity;
 
   @ManyToOne(() => AcademicYearEntity)
   @JoinColumn({ name: 'academic_year_id' })

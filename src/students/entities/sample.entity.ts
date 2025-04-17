@@ -3,13 +3,14 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { GenericEntity } from '@/core/generic-entity';
 import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
+import { SubjectEntity } from '@/track/entities/subject.entity';
 
 @Entity({ name: 'samples' })
 export class SampleEntity extends GenericEntity {
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   assignment_title: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   status: string;
 
   @Column({ nullable: true })
@@ -20,6 +21,13 @@ export class SampleEntity extends GenericEntity {
 
   @Column()
   assignment_period_id: number;
+
+  @Column()
+  subject_id: number;
+
+  @ManyToOne(() => SubjectEntity, (subject) => subject.samples)
+  @JoinColumn({ name: 'subject_id' })
+  subject: SubjectEntity;
 
   @ManyToOne(
     () => AssignmentPeriodEntity,

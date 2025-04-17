@@ -10,7 +10,7 @@ import { TenantEntity } from './tenant.entity';
 
 @Entity({ name: 'schools' })
 export class SchoolEntity extends GenericEntity {
-  @Column({ length: 50 })
+  @Column({ length: 250 })
   name: string;
 
   @Column()

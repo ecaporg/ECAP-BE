@@ -32,11 +32,11 @@ export class TeacherComplianceTaskService {
     }
 
     const paginationOptions = extractPaginationOptions(filterDTO);
-    console.log(JSON.stringify(paginationOptions, null, 2));
 
     const assignmentPeriods = await this.assignmentPeriodService.findAll(
       paginationOptions,
       {
+        assignment: true,
         samples: true,
         student: {
           track: true,
