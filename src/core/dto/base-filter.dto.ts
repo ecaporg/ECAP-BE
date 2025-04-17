@@ -54,7 +54,7 @@ export class BaseFilterDto {
   )
   sortDirection?: SortDirectionEnum[] = [SortDirectionEnum.ASC];
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, description: 'Search query' })
   @IsOptional()
   @IsString()
   search?: string;

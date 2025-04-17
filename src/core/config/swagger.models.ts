@@ -8,9 +8,33 @@ import { PasswordDTO } from '@/auth/dtos/password.dto';
 import { ResetPasswordDTO } from '@/auth/dtos/reset-password.dto';
 import { SignInDTO } from '@/auth/dtos/sign-in.dto';
 import { AuthUser } from '@/auth/types/auth-user';
+import { FiltersResponseDto } from '@/compliance-tasks/dto/response';
+import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
+// School entities
+import { AcademyEntity } from '@/school/entities/academy.entity';
+import { SchoolEntity } from '@/school/entities/school.entity';
+import { SemesterEntity } from '@/school/entities/semester.entity';
+import {
+  AssignmentEntity,
+  AssignmentPeriodEntity,
+} from '@/school/entities/subject-assignment.entity';
+import { TenantEntity } from '@/school/entities/tenant.entity';
+// Staff entities
+import { DirectorEntity } from '@/staff/entities/director.entity';
+import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
+// Student entities
+import { SampleEntity } from '@/students/entities/sample.entity';
+import { StudentEntity } from '@/students/entities/student.entity';
+// Track entities
+import { SubjectEntity } from '@/track/entities/subject.entity';
+import { TrackEntity } from '@/track/entities/track.entity';
+import { TrackCalendarEntity } from '@/track/entities/track-calendar.entity';
+import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 // User models
 import { CreateUserDTO } from '@/users/dtos/create-user.dto';
 import { UpdateUserDTO } from '@/users/dtos/update-user.dto';
+// User entities
+import { UserEntity } from '@/users/entities/user.entity';
 
 // Core models
 import { ErrorResponseDto } from '../dto/error-response.dto';
@@ -31,10 +55,36 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   PasswordDTO,
   ResetPasswordDTO,
   SignInDTO,
+  FiltersResponseDto,
 
   // Users
   CreateUserDTO,
   UpdateUserDTO,
+  UserEntity,
+
+  // School
+  AcademyEntity,
+  AcademicYearEntity,
+  SchoolEntity,
+  SemesterEntity,
+  AssignmentEntity,
+  AssignmentPeriodEntity,
+  TenantEntity,
+
+  // Track
+  SubjectEntity,
+  TrackCalendarEntity,
+  TrackLearningPeriodEntity,
+  TrackEntity,
+
+  // Staff
+  DirectorEntity,
+  AdminEntity,
+  TeacherEntity,
+
+  // Students
+  SampleEntity,
+  StudentEntity,
 
   // Add more models here as needed, organized by module
   // School
