@@ -37,7 +37,6 @@ export class TeacherComplianceTaskService {
       await this.assignmentPeriodService.findAllWithCompletedCount(
         paginationOptions,
         {
-          assignment: true,
           samples: true,
           student: {
             track: true,
@@ -51,7 +50,23 @@ export class TeacherComplianceTaskService {
   }
 
   async getStudentSamples(filterDTO: StudentSamplesFilterDto) {
-    return this.getStudents(filterDTO as any);
+    const paginationOptions = extractPaginationOptions(filterDTO);
+
+    const assignmentPeriods = await this.assignmentPeriodService.findAll(
+      paginationOptions,
+      {
+        samples: {
+          subject: true,
+          done_by_teacher: {
+            user: true,
+          },
+        },
+        student: {
+          user: true,
+        },
+      },
+    );
+    return assignmentPeriods;
   }
 
   async getFilters(user: IAuthUser) {
