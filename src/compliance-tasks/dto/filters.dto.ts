@@ -77,9 +77,18 @@ export class StudentsTableFilterDto extends BaseFilterDto {
     description: 'Filter by sample status',
     type: [Boolean],
   })
-  @IdDecorator(Boolean)
+  @IdDecorator((value: string) => value === 'true')
   @IsBoolean({ each: true })
   'completed'?: boolean[];
+
+  @ApiProperty({
+    required: false,
+    description: 'Filter by teacher ID',
+    type: [Number],
+  })
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'assignment.teacher_id'?: number;
 }
 
 export class StudentSamplesFilterDto extends BaseFilterDto {

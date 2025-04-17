@@ -51,6 +51,8 @@ export class TeacherComplianceTaskController {
 
   @Get('student-samples')
   @UseInterceptors(TeacherFilterInterceptor)
+  @ApiOperation({ summary: 'Get table with student samples' })
+  @ApiPaginatedCrudResponse(AssignmentPeriodEntity)
   async getStudentSamples(@Query() filters: StudentSamplesFilterDto) {
     return this.teacherComplianceTaskService.getStudentSamples(filters);
   }
