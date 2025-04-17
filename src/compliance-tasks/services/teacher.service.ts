@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FindOptionsWhere, In, LessThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -14,7 +15,10 @@ import { TenantService } from '@/school/services/tenant.service';
 import { StudentService } from '@/students/services/student.service';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
-import { StudentsTableFilterDto } from '../dto/filters.dto';
+import {
+  StudentSamplesFilterDto,
+  StudentsTableFilterDto,
+} from '../dto/filters.dto';
 
 @Injectable()
 export class TeacherComplianceTaskService {
@@ -26,27 +30,28 @@ export class TeacherComplianceTaskService {
     private readonly tenantService: TenantService,
   ) {}
 
-  async getStudents(filterDTO: StudentsTableFilterDto, user: IAuthUser) {
-    if (user.role == RolesEnum.TEACHER) {
-      filterDTO['assignment.teacher_id'] = user.id;
-    }
-
+  async getStudents(filterDTO: StudentsTableFilterDto) {
     const paginationOptions = extractPaginationOptions(filterDTO);
 
-    const assignmentPeriods = await this.assignmentPeriodService.findAll(
-      paginationOptions,
-      {
-        assignment: true,
-        samples: true,
-        student: {
-          track: true,
-          academy: true,
-          school: true,
-          user: true,
+    const assignmentPeriods =
+      await this.assignmentPeriodService.findAllWithCompletedCount(
+        paginationOptions,
+        {
+          assignment: true,
+          samples: true,
+          student: {
+            track: true,
+            academy: true,
+            school: true,
+            user: true,
+          },
         },
-      },
-    );
+      );
     return assignmentPeriods;
+  }
+
+  async getStudentSamples(filterDTO: StudentSamplesFilterDto) {
+    return this.getStudents(filterDTO as any);
   }
 
   async getFilters(user: IAuthUser) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IAuthUser } from '@/auth/types/auth-user';
@@ -13,7 +13,11 @@ import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.ent
 import { TenantEntity } from '@/school/entities/tenant.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
-import { StudentsTableFilterDto } from '../dto/filters.dto';
+import {
+  StudentSamplesFilterDto,
+  StudentsTableFilterDto,
+} from '../dto/filters.dto';
+import { TeacherFilterInterceptor } from '../interceptors/teacher-filter.interceptor';
 import { TeacherComplianceTaskService } from '../services/teacher.service';
 
 @ApiTags('Teacher Compliance Tasks')
@@ -30,13 +34,11 @@ export class TeacherComplianceTaskController {
   ) {}
 
   @Get()
+  @UseInterceptors(TeacherFilterInterceptor)
   @ApiOperation({ summary: 'Get table with students' })
   @ApiPaginatedCrudResponse(AssignmentPeriodEntity)
-  async getStudents(
-    @CurrentUser() user: IAuthUser,
-    @Query() filters: StudentsTableFilterDto,
-  ) {
-    return this.teacherComplianceTaskService.getStudents(filters, user);
+  async getStudents(@Query() filters: StudentsTableFilterDto) {
+    return this.teacherComplianceTaskService.getStudents(filters);
   }
 
   @Get('filters')
@@ -45,5 +47,11 @@ export class TeacherComplianceTaskController {
   @ApiCrudResponse(TenantEntity)
   async getFilters(@CurrentUser() user: IAuthUser) {
     return this.teacherComplianceTaskService.getFilters(user);
+  }
+
+  @Get('student-samples')
+  @UseInterceptors(TeacherFilterInterceptor)
+  async getStudentSamples(@Query() filters: StudentSamplesFilterDto) {
+    return this.teacherComplianceTaskService.getStudentSamples(filters);
   }
 }
