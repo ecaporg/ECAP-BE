@@ -127,4 +127,13 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'student_id'?: number[];
+
+  @ApiProperty({
+    required: false,
+    description: 'Filter by done by ID',
+    type: [Number],
+  })
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'samples.done_by_id'?: number[];
 }

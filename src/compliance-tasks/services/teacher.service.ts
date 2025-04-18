@@ -70,6 +70,7 @@ export class TeacherComplianceTaskService {
   async getFilters(user: IAuthUser) {
     const query = await this.getTenantQuery(user);
     const tenant = await this.tenantService.findOneBy(query);
+    console.log(JSON.stringify({ query, tenant }, null, 2));
     return tenant;
   }
 
@@ -81,20 +82,14 @@ export class TeacherComplianceTaskService {
         learningPeriods: {
           academicYear: {
             id: In(academicYears.map((academicYear) => academicYear.id)),
-            learningPeriods: {
-              start_date: LessThanOrEqual(new Date()),
-            },
           },
+          start_date: LessThanOrEqual(new Date()),
         },
       },
     };
 
     if (user.role === RolesEnum.TEACHER) {
-      query.tracks = {
-        learningPeriods: {
-          assignment_periods: { assignment: { teacher_id: user.id } },
-        },
-      };
+      query.schools = { assignments: { teacher: { user } } };
     } else if (user.role === RolesEnum.ADMIN) {
       query.admins = { user };
     } else if (user.role === RolesEnum.DIRECTOR) {
