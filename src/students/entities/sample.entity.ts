@@ -7,6 +7,15 @@ import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.ent
 import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { SubjectEntity } from '@/track/entities/subject.entity';
 
+export enum SampleStatus {
+  COMPLETED = 'COMPLETED',
+  FLAGGED_TO_ADMIN = 'FLAGGED_TO_ADMIN',
+  PENDING = 'PENDING',
+  ERRORS_FOUND = 'ERRORS_FOUND',
+  MISSING_SAMPLE = 'MISSING_SAMPLE',
+  REASON_REJECTED = 'REASON_REJECTED',
+}
+
 @Entity({ name: 'samples' })
 export class SampleEntity extends GenericEntity {
   @ApiProperty({ description: 'Assignment title', maxLength: 250 })
@@ -14,8 +23,8 @@ export class SampleEntity extends GenericEntity {
   assignment_title: string;
 
   @ApiProperty({ description: 'Sample status', maxLength: 250 })
-  @Column({ length: 250 })
-  status: string;
+  @Column({ length: 250, type: 'enum', enum: SampleStatus })
+  status: SampleStatus;
 
   @ApiProperty({
     description: 'User ID of the teacher who created this sample',
