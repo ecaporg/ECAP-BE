@@ -1,8 +1,16 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core/generic-entity';
+import { DatedGenericEntity } from '@/core/generic-entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
@@ -10,14 +18,14 @@ import { TrackEntity } from '@/track/entities/track.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
 @Entity({ name: 'students' })
-export class StudentEntity extends GenericEntity {
+export class StudentEntity extends DatedGenericEntity {
   @ApiProperty({ description: 'School ID associated with this student' })
   @Column()
   school_id: number;
 
   @ApiProperty({ description: 'User ID associated with this student' })
-  @Column()
-  user_id: number;
+  @PrimaryColumn()
+  id: number;
 
   @ApiProperty({
     description: 'Academy ID associated with this student',
@@ -49,8 +57,8 @@ export class StudentEntity extends GenericEntity {
     description: 'User associated with this student',
     type: () => UserEntity,
   })
-  @ManyToOne(() => UserEntity)
-  @JoinColumn({ name: 'user_id' })
+  @OneToOne(() => UserEntity)
+  @JoinColumn({ name: 'id' })
   user: UserEntity;
 
   @ApiProperty({

@@ -95,7 +95,7 @@ export class BaseService<
   ): Promise<PaginatedResult<T>> {
     const page = options?.page || 1;
     const limit = options?.limit || 15;
-    const sortBy = options?.sortBy || ['createdAt'];
+    const sortBy = options?.sortBy?.length ? options.sortBy : ['createdAt'];
     const sortDirection = options?.sortDirection || ['DESC'];
     const search = options?.search || '';
     const searchFields = options?.searchFields || [];

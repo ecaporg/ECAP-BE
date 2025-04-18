@@ -4,7 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { DirectorEntity } from '@/staff/entities/director.entity';
-import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 
 import { AssignmentEntity } from './subject-assignment.entity';
@@ -34,13 +33,6 @@ export class SchoolEntity extends GenericEntity {
   })
   @OneToMany(() => StudentEntity, (student) => student.school)
   students: StudentEntity[];
-
-  @ApiProperty({
-    description: 'Teachers working in this school',
-    type: () => [{}],
-  })
-  @OneToMany(() => TeacherEntity, (teacher) => teacher.school)
-  teachers: TeacherEntity[];
 
   @ApiProperty({
     description: 'Directors of this school',

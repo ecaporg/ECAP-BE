@@ -4,8 +4,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
-import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { SubjectEntity } from '@/track/entities/subject.entity';
+import { UserEntity } from '@/users/entities/user.entity';
 
 export enum SampleStatus {
   COMPLETED = 'COMPLETED',
@@ -31,18 +31,11 @@ export class SampleEntity extends GenericEntity {
   status: SampleStatus;
 
   @ApiProperty({
-    description: 'User ID of the teacher who created this sample',
+    description: 'User ID of the user who set completed status of this sample',
     nullable: true,
   })
   @Column({ nullable: true })
-  user_id: number;
-
-  @ApiProperty({
-    description: 'School ID where this sample was created',
-    nullable: true,
-  })
-  @Column({ nullable: true })
-  school_id: number;
+  done_by_id: number;
 
   @ApiProperty({
     description: 'Assignment period ID associated with this sample',
@@ -74,13 +67,10 @@ export class SampleEntity extends GenericEntity {
   assignment_period: AssignmentPeriodEntity;
 
   @ApiProperty({
-    description: 'Teacher who created this sample',
+    description: 'User who set completed status of this sample',
     type: () => Object,
   })
-  @ManyToOne(() => TeacherEntity, (teacher) => teacher.samples)
-  @JoinColumn([
-    { name: 'user_id', referencedColumnName: 'user_id' },
-    { name: 'school_id', referencedColumnName: 'school_id' },
-  ])
-  done_by_teacher: TeacherEntity;
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'done_by_id' })
+  done_by: UserEntity;
 }

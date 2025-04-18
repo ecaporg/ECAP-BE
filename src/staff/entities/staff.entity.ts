@@ -3,53 +3,33 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryColumn,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { DatedGenericEntity } from '@/core/generic-entity';
-import { SchoolEntity } from '@/school/entities/school.entity';
 import { AssignmentEntity } from '@/school/entities/subject-assignment.entity';
 import { TenantEntity } from '@/school/entities/tenant.entity';
-import { SampleEntity } from '@/students/entities/sample.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
 export abstract class StaffEntity extends DatedGenericEntity {
   @ApiProperty({ description: 'User ID associated with this staff member' })
   @PrimaryColumn()
-  user_id: number;
+  id: number;
 
   @ApiProperty({
     description: 'User associated with this staff member',
     type: () => UserEntity,
   })
-  @ManyToOne(() => UserEntity)
-  @JoinColumn({ name: 'user_id' })
+  @OneToOne(() => UserEntity)
+  @JoinColumn({ name: 'id' })
   user: UserEntity;
 }
 
 @Entity({ name: 'teachers' })
 export class TeacherEntity extends StaffEntity {
-  @ApiProperty({ description: 'School ID associated with this teacher' })
-  @PrimaryColumn()
-  school_id: number;
-
-  @ApiProperty({
-    description: 'School associated with this teacher',
-    type: () => Object,
-  })
-  @ManyToOne(() => SchoolEntity)
-  @JoinColumn({ name: 'school_id' })
-  school: SchoolEntity;
-
-  @ApiProperty({
-    description: 'Samples created by this teacher',
-    type: () => [{}],
-  })
-  @OneToMany(() => SampleEntity, (sample) => sample.done_by_teacher)
-  samples: SampleEntity[];
-
   @ApiProperty({
     description: 'Assignments for this teacher',
     type: () => [{}],

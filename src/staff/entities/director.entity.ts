@@ -1,21 +1,28 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core/generic-entity';
+import { DatedGenericEntity } from '@/core/generic-entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
 @Entity({ name: 'directors' })
-export class DirectorEntity extends GenericEntity {
+export class DirectorEntity extends DatedGenericEntity {
   @ApiProperty({ description: 'School ID associated with this director' })
   @Column()
   school_id: number;
 
   @ApiProperty({ description: 'User ID associated with this director' })
-  @Column()
-  user_id: number;
+  @PrimaryColumn()
+  id: number;
 
   @ApiProperty({ description: 'Academy ID associated with this director' })
   @Column()
@@ -26,7 +33,7 @@ export class DirectorEntity extends GenericEntity {
     type: () => UserEntity,
   })
   @OneToOne(() => UserEntity)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'id' })
   user: UserEntity;
 
   @ApiProperty({
@@ -41,7 +48,7 @@ export class DirectorEntity extends GenericEntity {
     description: 'Academy associated with this director',
     type: () => Object,
   })
-  @ManyToOne(() => AcademyEntity)
+  @ManyToOne(() => AcademyEntity, (academy) => academy.directors)
   @JoinColumn({ name: 'academy_id' })
   academy: AcademyEntity;
 }

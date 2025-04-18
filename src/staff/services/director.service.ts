@@ -18,12 +18,6 @@ export class DirectorService extends BaseService<DirectorEntity> {
     });
   }
 
-  async findByUserId(userId: number): Promise<DirectorEntity[]> {
-    return this.findBy({
-      where: { user_id: userId },
-    });
-  }
-
   async findByAcademyId(academyId: number): Promise<DirectorEntity[]> {
     return this.findBy({
       where: { academy_id: academyId },
@@ -37,18 +31,9 @@ export class DirectorService extends BaseService<DirectorEntity> {
   ): Promise<DirectorEntity> {
     return this.create({
       school_id: schoolId,
-      user_id: userId,
+      id: userId,
       academy_id: academyId,
     });
-  }
-
-  async isDirectorOf(userId: number, schoolId: number): Promise<boolean> {
-    try {
-      const director = await this.findOne(schoolId);
-      return director.user_id === userId;
-    } catch (error) {
-      return false;
-    }
   }
 
   async removeDirector(schoolId: number): Promise<void> {

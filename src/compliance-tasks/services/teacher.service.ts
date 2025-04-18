@@ -32,7 +32,7 @@ export class TeacherComplianceTaskService {
 
   async getStudents(filterDTO: StudentsTableFilterDto) {
     const paginationOptions = extractPaginationOptions(filterDTO);
-
+    console.log(JSON.stringify({ paginationOptions, filterDTO }, null, 2));
     const assignmentPeriods =
       await this.assignmentPeriodService.findAllWithCompletedCount(
         paginationOptions,
@@ -51,15 +51,13 @@ export class TeacherComplianceTaskService {
 
   async getStudentSamples(filterDTO: StudentSamplesFilterDto) {
     const paginationOptions = extractPaginationOptions(filterDTO);
-
+    console.log(JSON.stringify({ paginationOptions, filterDTO }, null, 2));
     const assignmentPeriods = await this.assignmentPeriodService.findAll(
       paginationOptions,
       {
         samples: {
           subject: true,
-          done_by_teacher: {
-            user: true,
-          },
+          done_by: true,
         },
         student: {
           user: true,
@@ -92,7 +90,11 @@ export class TeacherComplianceTaskService {
     };
 
     if (user.role === RolesEnum.TEACHER) {
-      query.schools = { teachers: { user } };
+      query.tracks = {
+        learningPeriods: {
+          assignment_periods: { assignment: { teacher_id: user.id } },
+        },
+      };
     } else if (user.role === RolesEnum.ADMIN) {
       query.admins = { user };
     } else if (user.role === RolesEnum.DIRECTOR) {

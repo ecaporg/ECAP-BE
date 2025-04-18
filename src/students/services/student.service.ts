@@ -22,11 +22,4 @@ export class StudentService extends BaseService<StudentEntity> {
       relations: ['school', 'user'],
     });
   }
-
-  async findByUserId(userId: number): Promise<StudentEntity[]> {
-    return this.repository.find({
-      where: { user_id: userId },
-      relations: ['school', 'user'],
-    });
-  }
 }

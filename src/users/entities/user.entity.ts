@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -53,27 +53,27 @@ export class UserEntity extends GenericEntity {
     description: 'Student profiles associated with this user',
     type: () => [{}],
   })
-  @OneToMany(() => StudentEntity, (student) => student.user)
-  students: StudentEntity[];
+  @OneToOne(() => StudentEntity, (student) => student.user)
+  student: StudentEntity;
 
   @ApiProperty({
     description: 'Teacher profiles associated with this user',
     type: () => [{}],
   })
-  @OneToMany(() => TeacherEntity, (teacher) => teacher.user)
-  teachers: TeacherEntity[];
+  @OneToOne(() => TeacherEntity, (teacher) => teacher.user)
+  teacher: TeacherEntity;
 
   @ApiProperty({
     description: 'Director profiles associated with this user',
     type: () => [{}],
   })
-  @OneToMany(() => DirectorEntity, (director) => director.user)
-  directors: DirectorEntity[];
+  @OneToOne(() => DirectorEntity, (director) => director.user)
+  director: DirectorEntity;
 
   @ApiProperty({
     description: 'Admin profiles associated with this user',
     type: () => [{}],
   })
-  @OneToMany(() => AdminEntity, (admin) => admin.user)
-  admins: AdminEntity[];
+  @OneToOne(() => AdminEntity, (admin) => admin.user)
+  admin: AdminEntity;
 }

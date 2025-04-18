@@ -8,14 +8,8 @@ import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
 
 @Injectable()
 export class StaffService {
-  private readonly teacherService: BaseService<
-    TeacherEntity,
-    'user_id' | 'school_id'
-  >;
-  private readonly adminService: BaseService<
-    AdminEntity,
-    'user_id' | 'tenant_id'
-  >;
+  private readonly teacherService: BaseService<TeacherEntity>;
+  private readonly adminService: BaseService<AdminEntity>;
 
   constructor(
     @InjectRepository(TeacherEntity)
@@ -24,51 +18,28 @@ export class StaffService {
     @InjectRepository(AdminEntity)
     private adminRepository: Repository<AdminEntity>,
   ) {
-    const options: BaseServiceOptions<TeacherEntity, 'user_id' | 'school_id'> =
-      {
-        primaryKeys: ['user_id', 'school_id'],
-        defaultRelations: ['user', 'school'],
-      };
+    const options: BaseServiceOptions<TeacherEntity, 'id'> = {
+      defaultRelations: ['user'],
+    };
 
-    this.teacherService = new BaseService<
-      TeacherEntity,
-      'user_id' | 'school_id'
-    >(teacherRepository, options);
+    this.teacherService = new BaseService<TeacherEntity, 'id'>(
+      teacherRepository,
+      options,
+    );
 
-    const adminOptions: BaseServiceOptions<
-      AdminEntity,
-      'user_id' | 'tenant_id'
-    > = {
-      primaryKeys: ['user_id', 'tenant_id'],
+    const adminOptions: BaseServiceOptions<AdminEntity, 'id'> = {
       defaultRelations: ['user', 'tenant'],
     };
 
-    this.adminService = new BaseService<AdminEntity, 'user_id' | 'tenant_id'>(
+    this.adminService = new BaseService<AdminEntity, 'id'>(
       adminRepository,
       adminOptions,
     );
   }
 
-  // Методи для вчителів
-  async findTeachersBySchoolId(schoolId: number): Promise<TeacherEntity[]> {
-    return this.teacherService.findBy({
-      where: { school_id: schoolId },
-    });
-  }
-
-  async findTeachersByUserId(userId: number): Promise<TeacherEntity[]> {
-    return this.teacherService.findBy({
-      where: { user_id: userId },
-    });
-  }
-
-  async createTeacher(
-    userId: number,
-    schoolId: number,
-  ): Promise<TeacherEntity> {
+  async createTeacher(userId: number): Promise<TeacherEntity> {
     return this.teacherService.create({
-      user_id: userId,
-      school_id: schoolId,
+      id: userId,
     });
   }
 
@@ -79,15 +50,9 @@ export class StaffService {
     });
   }
 
-  async findAdminsByUserId(userId: number): Promise<AdminEntity[]> {
-    return this.adminService.findBy({
-      where: { user_id: userId },
-    });
-  }
-
   async createAdmin(userId: number, tenantId: number): Promise<AdminEntity> {
     return this.adminService.create({
-      user_id: userId,
+      id: userId,
       tenant_id: tenantId,
     });
   }

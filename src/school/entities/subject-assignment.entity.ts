@@ -40,10 +40,7 @@ export class AssignmentEntity extends GenericEntity {
     type: () => Object,
   })
   @ManyToOne(() => TeacherEntity)
-  @JoinColumn([
-    { name: 'teacher_id', referencedColumnName: 'user_id' },
-    { name: 'school_id', referencedColumnName: 'school_id' },
-  ])
+  @JoinColumn({ name: 'teacher_id' })
   teacher: TeacherEntity;
 
   @ApiProperty({
