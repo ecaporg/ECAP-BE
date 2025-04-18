@@ -22,8 +22,12 @@ export class SampleEntity extends GenericEntity {
   @Column({ length: 250 })
   assignment_title: string;
 
-  @ApiProperty({ description: 'Sample status', maxLength: 250 })
-  @Column({ length: 250, type: 'enum', enum: SampleStatus })
+  @ApiProperty({
+    description: 'Sample status',
+    maxLength: 250,
+    enum: SampleStatus,
+  })
+  @Column({ type: 'enum', enum: SampleStatus })
   status: SampleStatus;
 
   @ApiProperty({
