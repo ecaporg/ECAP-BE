@@ -70,7 +70,7 @@ export class TeacherComplianceTaskService {
   async getFilters(user: IAuthUser) {
     const query = await this.getTenantQuery(user);
     const tenant = await this.tenantService.findOneBy(query);
-    console.log(JSON.stringify({ query, tenant }, null, 2));
+    console.log(JSON.stringify({ query }, null, 2));
     return tenant;
   }
 

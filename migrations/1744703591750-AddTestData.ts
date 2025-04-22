@@ -276,12 +276,14 @@ export class AddTestData1744271139400 implements MigrationInterface {
             track_index % index == 0 && as.academic_year_id == academicYear.id,
         );
 
-        let assignmentPeriods = [];
+        const assignmentPeriods = [];
         for (const assignment of filtered_assignments) {
           // Assign to all learning periods in the current academic year
           const local_assignmentPeriods = [];
           const filteredStudents = students.filter(
-            (student) => student.track_id == track.id,
+            (student) =>
+              student.track_id == track.id &&
+              student.school_id == assignment.school_id,
           );
           for (const student of filteredStudents) {
             for (const learningPeriod of learningPeriods) {
@@ -293,9 +295,11 @@ export class AddTestData1744271139400 implements MigrationInterface {
               } as AssignmentPeriodEntity);
             }
           }
-          assignmentPeriods = await queryRunner.manager.save(
-            AssignmentPeriodEntity,
-            local_assignmentPeriods,
+          assignmentPeriods.push(
+            ...(await queryRunner.manager.save(
+              AssignmentPeriodEntity,
+              local_assignmentPeriods,
+            )),
           );
         }
 
@@ -333,7 +337,9 @@ export class AddTestData1744271139400 implements MigrationInterface {
             );
           }
         }
-        samples = await queryRunner.manager.save(SampleEntity, samples);
+        samples = await queryRunner.manager.save(SampleEntity, samples, {
+          chunk: 1000,
+        });
       }
     }
 
