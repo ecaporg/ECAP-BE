@@ -52,6 +52,14 @@ export class SampleController {
   @ApiCrudResponse(SampleEntity)
   async findOne(@Param('id') id: EntityId): Promise<SampleEntity> {
     return this.sampleService.findOne(id, {
+      assignment_period: {
+        learning_period: {
+          track: true,
+        },
+        student: {
+          user: true,
+        },
+      },
       done_by: true,
       subject: true,
     });
