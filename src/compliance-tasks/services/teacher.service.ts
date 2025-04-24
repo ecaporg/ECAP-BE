@@ -62,6 +62,9 @@ export class TeacherComplianceTaskService {
             student: {
               user: true,
             },
+            learning_period: {
+              track: true,
+            },
           },
         },
       },
