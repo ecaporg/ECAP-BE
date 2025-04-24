@@ -21,7 +21,7 @@ import { TeacherFilterInterceptor } from '../interceptors/teacher-filter.interce
 import { TeacherComplianceTaskService } from '../services/teacher.service';
 
 @ApiTags('Teacher Compliance Tasks')
-@Controller('teacher-compliance-tasks')
+@Controller('students-table')
 @Roles(
   RolesEnum.ADMIN,
   RolesEnum.TEACHER,
@@ -49,7 +49,7 @@ export class TeacherComplianceTaskController {
     return this.teacherComplianceTaskService.getFilters(user);
   }
 
-  @Get('student-samples')
+  @Get('subjects')
   @UseInterceptors(TeacherFilterInterceptor)
   @ApiOperation({ summary: 'Get table with student samples' })
   @ApiPaginatedCrudResponse(AssignmentPeriodEntity)

@@ -23,6 +23,10 @@ import { DirectorEntity } from '@/staff/entities/director.entity';
 import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
 // Student entities
 import { SampleEntity } from '@/students/entities/sample.entity';
+import {
+  SampleFlagErrorEntity,
+  SampleFlagMissingWorkEntity,
+} from '@/students/entities/sample-flag.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 // Track entities
 import { SubjectEntity } from '@/track/entities/subject.entity';
@@ -83,4 +87,6 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   // Students
   SampleEntity,
   StudentEntity,
+  SampleFlagErrorEntity,
+  SampleFlagMissingWorkEntity,
 ];

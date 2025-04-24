@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -6,6 +6,11 @@ import { GenericEntity } from '@/core/generic-entity';
 import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
 import { SubjectEntity } from '@/track/entities/subject.entity';
 import { UserEntity } from '@/users/entities/user.entity';
+
+import {
+  SampleFlagErrorEntity,
+  SampleFlagMissingWorkEntity,
+} from './sample-flag.entity';
 
 export enum SampleStatus {
   COMPLETED = 'COMPLETED',
@@ -73,4 +78,18 @@ export class SampleEntity extends GenericEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'done_by_id' })
   done_by: UserEntity;
+
+  @ApiProperty({
+    description: 'Sample flag errors',
+    type: () => Object,
+  })
+  @OneToOne(() => SampleFlagErrorEntity, (flag) => flag.sample)
+  flag_errors: SampleFlagErrorEntity;
+
+  @ApiProperty({
+    description: 'Sample flag missing work',
+    type: () => Object,
+  })
+  @OneToOne(() => SampleFlagMissingWorkEntity, (flag) => flag.sample)
+  flag_missing_work: SampleFlagMissingWorkEntity;
 }

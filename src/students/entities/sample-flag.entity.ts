@@ -1,0 +1,49 @@
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
+
+import { ApiProperty } from '@nestjs/swagger';
+
+import { DatedGenericEntity } from '@/core/generic-entity';
+import { UserEntity } from '@/users/entities/user.entity';
+
+import { SampleEntity } from './sample.entity';
+
+export class SampleFlagEntity extends DatedGenericEntity {
+  @ApiProperty({ description: 'Sample ID' })
+  @PrimaryColumn()
+  id: number;
+
+  @Column()
+  @ApiProperty({ description: 'User ID' })
+  user_id: number;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: 'user_id' })
+  @ApiProperty({ description: 'User', type: () => Object })
+  user: UserEntity;
+
+  @OneToOne(() => SampleEntity, (sample) => sample.id)
+  @JoinColumn({ name: 'id' })
+  @ApiProperty({ description: 'Sample', type: () => Object })
+  sample: SampleEntity;
+}
+
+@Entity({ name: 'sample_flag_errors' })
+export class SampleFlagErrorEntity extends SampleFlagEntity {
+  @Column()
+  @ApiProperty({ description: 'Comment' })
+  comment: string;
+}
+
+@Entity({ name: 'sample_flag_missing_work' })
+export class SampleFlagMissingWorkEntity extends SampleFlagEntity {
+  @Column()
+  @ApiProperty({ description: 'Reason' })
+  reason: string;
+}

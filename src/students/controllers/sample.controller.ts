@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -15,18 +16,29 @@ import {
   ApiErrorResponses,
   ApiPaginatedCrudResponse,
   ApiPaginationQueries,
+  CurrentUser,
   EntityId,
   PaginatedResult,
   PaginationOptions,
   Roles,
 } from '@/core';
+import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
-import { CreateSampleDto, UpdateSampleDto } from '../dto/sample.dto';
+import {
+  CreateSampleDto,
+  CreateSampleFlagErrorDto,
+  CreateSampleFlagMissingWorkDto,
+  UpdateSampleDto,
+} from '../dto/sample.dto';
 import { SampleEntity } from '../entities/sample.entity';
+import {
+  SampleFlagErrorEntity,
+  SampleFlagMissingWorkEntity,
+} from '../entities/sample-flag.entity';
 import { SampleService } from '../services/sample.service';
 
-@ApiTags('samples')
+@ApiTags('Samples')
 @Controller('samples')
 @Roles(
   RolesEnum.ADMIN,
@@ -62,6 +74,8 @@ export class SampleController {
       },
       done_by: true,
       subject: true,
+      flag_errors: true,
+      flag_missing_work: true,
     });
   }
 
@@ -88,5 +102,27 @@ export class SampleController {
   @ApiErrorResponses()
   async delete(@Param('id') id: EntityId): Promise<void> {
     return this.sampleService.delete(id);
+  }
+
+  @Post(':id/flag-error')
+  @ApiOperation({ summary: 'Flag an error in a sample' })
+  @ApiCrudResponse(SampleFlagErrorEntity)
+  async flagError(
+    @CurrentUser('id') user_id: UserEntity['id'],
+    @Param('id', ParseIntPipe) id: SampleFlagErrorEntity['id'],
+    @Body() createDto: CreateSampleFlagErrorDto,
+  ): Promise<SampleFlagErrorEntity> {
+    return this.sampleService.flagError(id, user_id, createDto);
+  }
+
+  @Post(':id/flag-missing-work')
+  @ApiOperation({ summary: 'Flag missing work in a sample' })
+  @ApiCrudResponse(SampleFlagMissingWorkEntity)
+  async flagMissingWork(
+    @CurrentUser('id') user_id: UserEntity['id'],
+    @Param('id', ParseIntPipe) id: SampleFlagMissingWorkEntity['id'],
+    @Body() createDto: CreateSampleFlagMissingWorkDto,
+  ): Promise<SampleFlagMissingWorkEntity> {
+    return this.sampleService.flagMissingWork(id, user_id, createDto);
   }
 }

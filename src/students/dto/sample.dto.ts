@@ -41,3 +41,17 @@ export class CreateSampleDto {
 }
 
 export class UpdateSampleDto extends PartialType(CreateSampleDto) {}
+
+export class CreateSampleFlagErrorDto {
+  @ApiProperty({ description: 'Comment' })
+  @IsString()
+  @IsNotEmpty()
+  comment: string;
+}
+
+export class CreateSampleFlagMissingWorkDto {
+  @ApiProperty({ description: 'Reason' })
+  @IsString()
+  @IsNotEmpty()
+  reason: string;
+}

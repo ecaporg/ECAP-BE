@@ -58,6 +58,7 @@ export class TeacherComplianceTaskService {
         samples: {
           subject: true,
           done_by: true,
+          flag_missing_work: true,
           assignment_period: {
             student: {
               user: true,
