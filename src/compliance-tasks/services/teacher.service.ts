@@ -37,12 +37,18 @@ export class TeacherComplianceTaskService {
       await this.assignmentPeriodService.findAllWithCompletedCount(
         paginationOptions,
         {
-          samples: true,
-          student: {
-            track: true,
-            academy: true,
-            school: true,
-            user: true,
+          samples: {
+            assignment_period: {
+              learning_period: {
+                track: true,
+              },
+              student: {
+                user: true,
+                track: true,
+                academy: true,
+                school: true,
+              },
+            },
           },
         },
       );
