@@ -5,20 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core';
 
-import {
-  AssignmentEntity,
-  AssignmentPeriodEntity,
-} from '../entities/subject-assignment.entity';
-
-@Injectable()
-export class AssignmentService extends BaseService<AssignmentEntity> {
-  constructor(
-    @InjectRepository(AssignmentEntity)
-    private readonly assignmentRepository: Repository<AssignmentEntity>,
-  ) {
-    super(assignmentRepository);
-  }
-}
+import { AssignmentPeriodEntity } from '../entities/assignment.entity';
 
 @Injectable()
 export class AssignmentPeriodService extends BaseService<AssignmentPeriodEntity> {

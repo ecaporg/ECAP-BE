@@ -19,8 +19,8 @@ export class SampleFlagEntity extends DatedGenericEntity {
   @PrimaryColumn()
   id: number;
 
-  @Column()
-  @ApiProperty({ description: 'User ID' })
+  @Column({ nullable: true })
+  @ApiProperty({ description: 'User ID', nullable: true })
   user_id: number;
 
   @ManyToOne(() => UserEntity)
@@ -46,4 +46,11 @@ export class SampleFlagMissingWorkEntity extends SampleFlagEntity {
   @Column()
   @ApiProperty({ description: 'Reason' })
   reason: string;
+}
+
+@Entity({ name: 'sample_flag_completed' })
+export class SampleFlagCompletedEntity extends SampleFlagEntity {
+  @Column()
+  @ApiProperty({ description: 'Message' })
+  message: string;
 }

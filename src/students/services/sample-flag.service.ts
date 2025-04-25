@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from '@/core/services/base.service';
 
 import {
+  SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
 } from '../entities/sample-flag.entity';
@@ -27,5 +28,15 @@ export class SampleFlagMissingWorkService extends BaseService<SampleFlagMissingW
     private sampleFlagMissingWorkRepository: Repository<SampleFlagMissingWorkEntity>,
   ) {
     super(sampleFlagMissingWorkRepository);
+  }
+}
+
+@Injectable()
+export class SampleFlagCompletedService extends BaseService<SampleFlagCompletedEntity> {
+  constructor(
+    @InjectRepository(SampleFlagCompletedEntity)
+    private sampleFlagCompletedRepository: Repository<SampleFlagCompletedEntity>,
+  ) {
+    super(sampleFlagCompletedRepository);
   }
 }

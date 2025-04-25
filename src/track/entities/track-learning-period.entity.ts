@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
-import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
+import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 
 import { TrackEntity } from './track.entity';
 

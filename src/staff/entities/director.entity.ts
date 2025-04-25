@@ -16,13 +16,13 @@ import { UserEntity } from '@/users/entities/user.entity';
 
 @Entity({ name: 'directors' })
 export class DirectorEntity extends DatedGenericEntity {
-  @ApiProperty({ description: 'School ID associated with this director' })
-  @Column()
-  school_id: number;
-
   @ApiProperty({ description: 'User ID associated with this director' })
   @PrimaryColumn()
   id: number;
+
+  @ApiProperty({ description: 'School ID associated with this director' })
+  @Column()
+  school_id: number;
 
   @ApiProperty({ description: 'Academy ID associated with this director' })
   @Column()

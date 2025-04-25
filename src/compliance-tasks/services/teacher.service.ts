@@ -6,10 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { IAuthUser } from '@/auth/types/auth-user';
 import { extractPaginationOptions } from '@/core/utils/pagination.utils';
 import { AcademicYearService } from '@/school/services/academic-year.service';
-import {
-  AssignmentPeriodService,
-  AssignmentService,
-} from '@/school/services/subject-assignment.service';
+import { AssignmentPeriodService } from '@/school/services/subject-assignment.service';
 import { StudentService } from '@/students/services/student.service';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { TenantService } from '@/tenant/services/tenant.service';
@@ -24,7 +21,6 @@ import {
 export class TeacherComplianceTaskService {
   constructor(
     private readonly studentService: StudentService,
-    private readonly assignmentService: AssignmentService,
     private readonly assignmentPeriodService: AssignmentPeriodService,
     private readonly academicYearService: AcademicYearService,
     private readonly tenantService: TenantService,
@@ -93,7 +89,7 @@ export class TeacherComplianceTaskService {
     };
 
     if (user.role === RolesEnum.TEACHER) {
-      query.schools = { assignments: { teacher: { user } } };
+      query.schools = { courses: { teacher: { user } } };
     } else if (user.role === RolesEnum.ADMIN) {
       query.admins = { user };
     } else if (user.role === RolesEnum.DIRECTOR) {

@@ -10,7 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { DatedGenericEntity } from '@/core/generic-entity';
-import { AssignmentEntity } from '@/school/entities/subject-assignment.entity';
+import { CourseEntity } from '@/course/entities/course.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
@@ -34,8 +34,8 @@ export class TeacherEntity extends StaffEntity {
     description: 'Assignments for this teacher',
     type: () => [{}],
   })
-  @OneToMany(() => AssignmentEntity, (assignment) => assignment.teacher)
-  assignments: AssignmentEntity[];
+  @OneToMany(() => CourseEntity, (course) => course.teacher)
+  courses: CourseEntity[];
 }
 
 @Entity({

@@ -8,15 +8,13 @@ import { PasswordDTO } from '@/auth/dtos/password.dto';
 import { ResetPasswordDTO } from '@/auth/dtos/reset-password.dto';
 import { SignInDTO } from '@/auth/dtos/sign-in.dto';
 import { AuthUser } from '@/auth/types/auth-user';
+import { CourseEntity } from '@/course/entities/course.entity';
 import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
 // School entities
 import { AcademyEntity } from '@/school/entities/academy.entity';
+import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { SemesterEntity } from '@/school/entities/semester.entity';
-import {
-  AssignmentEntity,
-  AssignmentPeriodEntity,
-} from '@/school/entities/subject-assignment.entity';
 // Staff entities
 import { DirectorEntity } from '@/staff/entities/director.entity';
 import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
@@ -69,7 +67,7 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   AcademicYearEntity,
   SchoolEntity,
   SemesterEntity,
-  AssignmentEntity,
+  CourseEntity,
   AssignmentPeriodEntity,
   TenantEntity,
 

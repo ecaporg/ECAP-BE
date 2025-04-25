@@ -9,7 +9,7 @@ import {
   CurrentUser,
   Roles,
 } from '@/core';
-import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
+import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 

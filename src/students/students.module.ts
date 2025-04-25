@@ -4,12 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SampleController } from './controllers/sample.controller';
 import { SampleEntity } from './entities/sample.entity';
 import {
+  SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
 } from './entities/sample-flag.entity';
 import { StudentEntity } from './entities/student.entity';
 import { SampleService } from './services/sample.service';
 import {
+  SampleFlagCompletedService,
   SampleFlagErrorService,
   SampleFlagMissingWorkService,
 } from './services/sample-flag.service';
@@ -22,6 +24,7 @@ import { StudentService } from './services/student.service';
       SampleEntity,
       SampleFlagErrorEntity,
       SampleFlagMissingWorkEntity,
+      SampleFlagCompletedEntity,
     ]),
   ],
   controllers: [SampleController],
@@ -30,12 +33,14 @@ import { StudentService } from './services/student.service';
     SampleService,
     SampleFlagErrorService,
     SampleFlagMissingWorkService,
+    SampleFlagCompletedService,
   ],
   exports: [
     StudentService,
     SampleService,
     SampleFlagErrorService,
     SampleFlagMissingWorkService,
+    SampleFlagCompletedService,
   ],
 })
 export class StudentsModule {}

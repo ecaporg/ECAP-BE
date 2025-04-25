@@ -3,11 +3,10 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
+import { CourseEntity } from '@/course/entities/course.entity';
 import { DirectorEntity } from '@/staff/entities/director.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
-
-import { AssignmentEntity } from './subject-assignment.entity';
 
 @Entity({ name: 'schools' })
 export class SchoolEntity extends GenericEntity {
@@ -45,6 +44,6 @@ export class SchoolEntity extends GenericEntity {
     description: 'Subject assignments in this school',
     type: () => [{}],
   })
-  @OneToMany(() => AssignmentEntity, (assignment) => assignment.school)
-  assignments: AssignmentEntity[];
+  @OneToMany(() => CourseEntity, (course) => course.school)
+  courses: CourseEntity[];
 }
