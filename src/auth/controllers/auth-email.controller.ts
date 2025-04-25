@@ -3,8 +3,8 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiErrorResponses } from '@/core';
 
-import { EmailDTO } from './dtos/email.dto';
-import { AuthEmailService } from './auth-email.service';
+import { EmailDTO } from '../dtos/email.dto';
+import { AuthEmailService } from '../services/auth-email.service';
 
 @ApiTags('Authentication - email')
 @Controller('auth/email')

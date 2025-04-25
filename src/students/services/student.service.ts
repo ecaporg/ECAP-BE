@@ -13,13 +13,6 @@ export class StudentService extends BaseService<StudentEntity> {
     @InjectRepository(StudentEntity)
     private studentRepository: Repository<StudentEntity>,
   ) {
-    super(studentRepository);
-  }
-
-  async findBySchoolId(schoolId: number): Promise<StudentEntity[]> {
-    return this.repository.find({
-      where: { school_id: schoolId },
-      relations: ['school', 'user'],
-    });
+    super(studentRepository, { defaultRelations: { user: true } });
   }
 }

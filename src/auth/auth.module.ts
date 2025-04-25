@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 
+import { AuthController } from './controllers/auth.controller';
+import { AuthEmailController } from './controllers/auth-email.controller';
+import { AuthService } from './services/auth.service';
+import { AuthEmailService } from './services/auth-email.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtForgotPasswordStrategy } from './strategies/jwt-forgot-password.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { EmailAvailableConstraint } from './validations/email-available';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { AuthEmailController } from './auth-email.controller';
-import { AuthEmailService } from './auth-email.service';
 import commonImports from './common-imports';
 
 @Module({

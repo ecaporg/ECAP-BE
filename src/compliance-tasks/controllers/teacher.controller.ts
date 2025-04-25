@@ -1,8 +1,9 @@
-import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IAuthUser } from '@/auth/types/auth-user';
 import {
+  ApiArrayResponse,
   ApiCrudResponse,
   ApiErrorResponses,
   ApiPaginatedCrudResponse,
@@ -10,6 +11,7 @@ import {
   Roles,
 } from '@/core';
 import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
@@ -43,7 +45,6 @@ export class TeacherComplianceTaskController {
 
   @Get('filters')
   @ApiOperation({ summary: 'Get available filters for students table' })
-  @ApiErrorResponses()
   @ApiCrudResponse(TenantEntity)
   async getFilters(@CurrentUser() user: IAuthUser) {
     return this.teacherComplianceTaskService.getFilters(user);
@@ -55,5 +56,16 @@ export class TeacherComplianceTaskController {
   @ApiPaginatedCrudResponse(AssignmentPeriodEntity)
   async getStudentSamples(@Query() filters: StudentSamplesFilterDto) {
     return this.teacherComplianceTaskService.getStudentSamples(filters);
+  }
+
+  @Get('students/:search')
+  @ApiOperation({ summary: 'Search students' })
+  @ApiErrorResponses()
+  @ApiArrayResponse(StudentEntity)
+  async searchStudents(
+    @CurrentUser() user: IAuthUser,
+    @Param('search') search: string,
+  ) {
+    return this.teacherComplianceTaskService.searchStudents(user, search);
   }
 }

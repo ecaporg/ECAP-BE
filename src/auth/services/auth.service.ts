@@ -14,11 +14,11 @@ import {
 import { UserEntity } from '@/users/entities/user.entity';
 import { UsersService } from '@/users/users.service';
 
-import { AuthTokensDTO } from './dtos/auth-tokens.dto';
-import { ChangeEmailPasswordDTO } from './dtos/change-email.dto';
-import { LoginResponseDTO } from './dtos/login-response.dto';
-import { ResetPasswordDTO } from './dtos/reset-password.dto';
-import { IAuthUser } from './types/auth-user';
+import { AuthTokensDTO } from '../dtos/auth-tokens.dto';
+import { ChangeEmailPasswordDTO } from '../dtos/change-email.dto';
+import { LoginResponseDTO } from '../dtos/login-response.dto';
+import { ResetPasswordDTO } from '../dtos/reset-password.dto';
+import { IAuthUser } from '../types/auth-user';
 import { AuthEmailService } from './auth-email.service';
 
 @Injectable()

@@ -5,7 +5,7 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { ForbiddenException } from '@/core';
 
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { IAuthUser } from '../types/auth-user';
 
 @Injectable()

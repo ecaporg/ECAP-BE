@@ -11,15 +11,15 @@ import {
 import { ApiCrudResponse, ApiErrorResponses, CurrentUser } from '@/core';
 import { CreateUserDTO } from '@/users/dtos/create-user.dto';
 
-import { AccountVerified } from './decorators/account-verified';
-import { AuthTokensDTO } from './dtos/auth-tokens.dto';
-import { EmailDTO } from './dtos/email.dto';
-import { LoginResponseDTO } from './dtos/login-response.dto';
-import { PasswordDTO } from './dtos/password.dto';
-import { ResetPasswordDTO } from './dtos/reset-password.dto';
-import { SignInDTO } from './dtos/sign-in.dto';
-import { AuthUser, IAuthUser } from './types/auth-user';
-import { AuthService } from './auth.service';
+import { AccountVerified } from '../decorators/account-verified';
+import { AuthTokensDTO } from '../dtos/auth-tokens.dto';
+import { EmailDTO } from '../dtos/email.dto';
+import { LoginResponseDTO } from '../dtos/login-response.dto';
+import { PasswordDTO } from '../dtos/password.dto';
+import { ResetPasswordDTO } from '../dtos/reset-password.dto';
+import { SignInDTO } from '../dtos/sign-in.dto';
+import { AuthUser, IAuthUser } from '../types/auth-user';
+import { AuthService } from '../services/auth.service';
 
 @ApiTags('Authentication')
 @Controller('auth')

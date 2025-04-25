@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { FindOptionsWhere, In, LessThanOrEqual } from 'typeorm';
+import { Equal, FindOptionsWhere, In, LessThanOrEqual, Like } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
@@ -28,7 +28,6 @@ export class TeacherComplianceTaskService {
 
   async getStudents(filterDTO: StudentsTableFilterDto) {
     const paginationOptions = extractPaginationOptions(filterDTO);
-    console.log(JSON.stringify({ paginationOptions, filterDTO }, null, 2));
     const assignmentPeriods =
       await this.assignmentPeriodService.findAllWithCompletedCount(
         paginationOptions,
@@ -47,7 +46,6 @@ export class TeacherComplianceTaskService {
 
   async getStudentSamples(filterDTO: StudentSamplesFilterDto) {
     const paginationOptions = extractPaginationOptions(filterDTO);
-    console.log(JSON.stringify({ paginationOptions, filterDTO }, null, 2));
     const assignmentPeriods = await this.assignmentPeriodService.findAll(
       paginationOptions,
       {
@@ -72,8 +70,35 @@ export class TeacherComplianceTaskService {
   async getFilters(user: IAuthUser) {
     const query = await this.getTenantQuery(user);
     const tenant = await this.tenantService.findOneBy(query);
-    console.log(JSON.stringify({ query }, null, 2));
     return tenant;
+  }
+
+  async searchStudents(user: IAuthUser, search: string) {
+    const students = await this.studentService.findBy({
+      where: this.getStudentSearchFields(search).map((property) => ({
+        user: {
+          ...property,
+        },
+        assignment_periods: {
+          assignment: {
+            teacher: { user },
+          },
+        },
+      })),
+    });
+    return students;
+  }
+
+  private getStudentSearchFields(search: string) {
+    return [
+      {
+        firstname: Like(`%${search}%`),
+      },
+      {
+        lastname: Like(`%${search}%`),
+      },
+      { id: Equal(parseInt(search)) },
+    ];
   }
 
   private async getTenantQuery(user: IAuthUser) {
