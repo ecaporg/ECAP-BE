@@ -3,9 +3,9 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
+import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
-import { TenantEntity } from './tenant.entity';
 
 @Entity({ name: 'semesters' })
 export class SemesterEntity extends GenericEntity {

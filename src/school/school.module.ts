@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { StaffModule } from '@/staff/staff.module';
 import { StudentsModule } from '@/students/students.module';
+import { TenantModule } from '@/tenant/tenant.module';
 import { TrackModule } from '@/track/track.module';
 
 import { AcademicYearEntity } from './entities/academic-year.entity';
@@ -13,7 +14,6 @@ import {
   AssignmentEntity,
   AssignmentPeriodEntity,
 } from './entities/subject-assignment.entity';
-import { TenantEntity } from './entities/tenant.entity';
 import { AcademicYearService } from './services/academic-year.service';
 import { AcademyService } from './services/academy.service';
 import { SchoolService } from './services/school.service';
@@ -22,14 +22,12 @@ import {
   AssignmentPeriodService,
   AssignmentService,
 } from './services/subject-assignment.service';
-import { TenantService } from './services/tenant.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       SchoolEntity,
       SemesterEntity,
-      TenantEntity,
       AcademyEntity,
       AcademicYearEntity,
       AssignmentEntity,
@@ -38,11 +36,11 @@ import { TenantService } from './services/tenant.service';
     StudentsModule,
     StaffModule,
     TrackModule,
+    TenantModule,
   ],
   providers: [
     SchoolService,
     SemesterService,
-    TenantService,
     AcademyService,
     AcademicYearService,
     AssignmentService,
@@ -51,7 +49,6 @@ import { TenantService } from './services/tenant.service';
   exports: [
     SchoolService,
     SemesterService,
-    TenantService,
     AcademyService,
     StudentsModule,
     StaffModule,
@@ -59,6 +56,7 @@ import { TenantService } from './services/tenant.service';
     AssignmentService,
     AssignmentPeriodService,
     TrackModule,
+    TenantModule,
   ],
 })
 export class SchoolModule {}

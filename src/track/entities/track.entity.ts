@@ -3,8 +3,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
-import { TenantEntity } from '@/school/entities/tenant.entity';
+import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
+import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
 import { SubjectEntity } from './subject.entity';
 import { TrackCalendarEntity } from './track-calendar.entity';
@@ -29,12 +30,26 @@ export class TrackEntity extends GenericEntity {
   end_date: Date;
 
   @ApiProperty({
+    description: 'Academic year ID associated with this track',
+  })
+  @Column()
+  academic_year_id: number;
+
+  @ApiProperty({
     description: 'Tenant associated with this track',
     type: () => TenantEntity,
   })
   @ManyToOne(() => TenantEntity, (tenant) => tenant.tracks)
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
+
+  @ApiProperty({
+    description: 'Academic year associated with this track',
+    type: () => AcademicYearEntity,
+  })
+  @ManyToOne(() => AcademicYearEntity, (academicYear) => academicYear.tracks)
+  @JoinColumn({ name: 'academic_year_id' })
+  academicYear: AcademicYearEntity;
 
   @ApiProperty({
     description: 'Calendar entries for this track',

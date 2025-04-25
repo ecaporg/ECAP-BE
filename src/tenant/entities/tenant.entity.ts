@@ -3,12 +3,11 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
+import { AcademyEntity } from '@/school/entities/academy.entity';
+import { SchoolEntity } from '@/school/entities/school.entity';
+import { SemesterEntity } from '@/school/entities/semester.entity';
 import { AdminEntity } from '@/staff/entities/staff.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
-
-import { AcademyEntity } from './academy.entity';
-import { SchoolEntity } from './school.entity';
-import { SemesterEntity } from './semester.entity';
 
 @Entity({ name: 'tenants' })
 export class TenantEntity extends GenericEntity {

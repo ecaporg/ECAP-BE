@@ -13,6 +13,8 @@ export class TrackService extends BaseService<TrackEntity> {
     @InjectRepository(TrackEntity)
     private trackRepository: Repository<TrackEntity>,
   ) {
-    super(trackRepository);
+    super(trackRepository, {
+      defaultRelations: ['academicYear', 'tenant'],
+    });
   }
 }

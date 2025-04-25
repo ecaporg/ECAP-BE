@@ -4,8 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { DirectorEntity } from '@/staff/entities/director.entity';
-
-import { TenantEntity } from './tenant.entity';
+import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
 @Entity({ name: 'academies' })
 export class AcademyEntity extends GenericEntity {

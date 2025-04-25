@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core';
-import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
+import { TrackEntity } from '@/track/entities/track.entity';
 
 import { SemesterEntity } from './semester.entity';
 import { AssignmentEntity } from './subject-assignment.entity';
@@ -32,14 +32,11 @@ export class AcademicYearEntity extends GenericEntity {
   semesters: SemesterEntity[];
 
   @ApiProperty({
-    description: 'Learning periods in this academic year',
+    description: 'Tracks in this academic year',
     type: () => [{}],
   })
-  @OneToMany(
-    () => TrackLearningPeriodEntity,
-    (trackLearningPeriod) => trackLearningPeriod.academicYear,
-  )
-  learningPeriods: TrackLearningPeriodEntity[];
+  @OneToMany(() => TrackEntity, (track) => track.academicYear)
+  tracks: TrackEntity[];
 
   @ApiProperty({
     description: 'Assignments in this academic year',

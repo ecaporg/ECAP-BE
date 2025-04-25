@@ -19,13 +19,13 @@ import { UserEntity } from '@/users/entities/user.entity';
 
 @Entity({ name: 'students' })
 export class StudentEntity extends DatedGenericEntity {
-  @ApiProperty({ description: 'School ID associated with this student' })
-  @Column()
-  school_id: number;
-
   @ApiProperty({ description: 'User ID associated with this student' })
   @PrimaryColumn()
   id: number;
+
+  @ApiProperty({ description: 'School ID associated with this student' })
+  @Column()
+  school_id: number;
 
   @ApiProperty({
     description: 'Academy ID associated with this student',

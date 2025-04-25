@@ -5,14 +5,14 @@ import { Injectable } from '@nestjs/common';
 
 import { IAuthUser } from '@/auth/types/auth-user';
 import { extractPaginationOptions } from '@/core/utils/pagination.utils';
-import { TenantEntity } from '@/school/entities/tenant.entity';
 import { AcademicYearService } from '@/school/services/academic-year.service';
 import {
   AssignmentPeriodService,
   AssignmentService,
 } from '@/school/services/subject-assignment.service';
-import { TenantService } from '@/school/services/tenant.service';
 import { StudentService } from '@/students/services/student.service';
+import { TenantEntity } from '@/tenant/entities/tenant.entity';
+import { TenantService } from '@/tenant/services/tenant.service';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import {
@@ -85,12 +85,10 @@ export class TeacherComplianceTaskService {
       await this.academicYearService.findCurrentAcademicYears();
     const query: FindOptionsWhere<TenantEntity> = {
       tracks: {
-        learningPeriods: {
-          academicYear: {
-            id: In(academicYears.map((academicYear) => academicYear.id)),
-          },
-          start_date: LessThanOrEqual(new Date()),
+        academicYear: {
+          id: In(academicYears.map((academicYear) => academicYear.id)),
         },
+        start_date: LessThanOrEqual(new Date()),
       },
     };
 

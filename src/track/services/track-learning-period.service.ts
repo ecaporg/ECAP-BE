@@ -14,7 +14,7 @@ export class TrackLearningPeriodService extends BaseService<TrackLearningPeriodE
     private trackLearningPeriodRepository: Repository<TrackLearningPeriodEntity>,
   ) {
     super(trackLearningPeriodRepository, {
-      defaultRelations: ['academic_year', 'track'],
+      defaultRelations: ['track'],
     });
   }
 }

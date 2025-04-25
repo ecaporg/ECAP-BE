@@ -11,7 +11,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { DatedGenericEntity } from '@/core/generic-entity';
 import { AssignmentEntity } from '@/school/entities/subject-assignment.entity';
-import { TenantEntity } from '@/school/entities/tenant.entity';
+import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
 export abstract class StaffEntity extends DatedGenericEntity {
@@ -38,14 +38,19 @@ export class TeacherEntity extends StaffEntity {
   assignments: AssignmentEntity[];
 }
 
-@Entity({ name: 'admins' })
+@Entity({
+  name: 'admins',
+  comment: 'Admins and superadmins table',
+})
 export class AdminEntity extends StaffEntity {
-  @ApiProperty({ description: 'Tenant ID associated with this admin' })
+  @ApiProperty({
+    description: 'Tenant ID associated with this admin/superadmin',
+  })
   @PrimaryColumn()
   tenant_id: number;
 
   @ApiProperty({
-    description: 'Tenant associated with this admin',
+    description: 'Tenant associated with this admin/superadmin',
     type: () => TenantEntity,
   })
   @ManyToOne(() => TenantEntity, (tenant) => tenant.admins)

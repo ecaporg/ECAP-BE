@@ -17,7 +17,6 @@ import {
   AssignmentEntity,
   AssignmentPeriodEntity,
 } from '@/school/entities/subject-assignment.entity';
-import { TenantEntity } from '@/school/entities/tenant.entity';
 // Staff entities
 import { DirectorEntity } from '@/staff/entities/director.entity';
 import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
@@ -28,6 +27,7 @@ import {
   SampleFlagMissingWorkEntity,
 } from '@/students/entities/sample-flag.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
+import { TenantEntity } from '@/tenant/entities/tenant.entity';
 // Track entities
 import { SubjectEntity } from '@/track/entities/subject.entity';
 import { TrackEntity } from '@/track/entities/track.entity';

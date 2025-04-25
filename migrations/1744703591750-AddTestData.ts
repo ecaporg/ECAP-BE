@@ -11,11 +11,11 @@ import {
   AssignmentEntity,
   AssignmentPeriodEntity,
 } from '../src/school/entities/subject-assignment.entity';
-import { TenantEntity } from '../src/school/entities/tenant.entity';
 import { DirectorEntity } from '../src/staff/entities/director.entity';
 import { TeacherEntity } from '../src/staff/entities/staff.entity';
 import { SampleEntity } from '../src/students/entities/sample.entity';
 import { StudentEntity } from '../src/students/entities/student.entity';
+import { TenantEntity } from '../src/tenant/entities/tenant.entity';
 import { SubjectEntity } from '../src/track/entities/subject.entity';
 import { TrackEntity } from '../src/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../src/track/entities/track-learning-period.entity';
@@ -287,12 +287,16 @@ export class AddTestData1744271139400 implements MigrationInterface {
           );
           for (const student of filteredStudents) {
             for (const learningPeriod of learningPeriods) {
-              local_assignmentPeriods.push({
-                assignment,
-                student,
-                learning_period: learningPeriod,
-                completed: Math.random() > 0.3,
-              } as AssignmentPeriodEntity);
+              local_assignmentPeriods.push(
+                {
+                  assignment,
+                  student,
+                  learning_period: learningPeriod,
+                  completed: Math.random() > 0.3,
+                },
+                // todo fix this
+                // as AssignmentPeriodEntity
+              );
             }
           }
           assignmentPeriods.push(
