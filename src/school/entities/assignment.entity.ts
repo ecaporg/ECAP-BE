@@ -39,7 +39,7 @@ export class AssignmentPeriodEntity extends GenericEntity {
   learning_period: TrackLearningPeriodEntity;
 
   @ApiProperty({
-    description: 'Assignment associated with this period',
+    description: 'Course associated with this period',
     type: () => Object,
   })
   @ManyToOne(() => CourseEntity)

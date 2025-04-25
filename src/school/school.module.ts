@@ -14,9 +14,9 @@ import { SchoolEntity } from './entities/school.entity';
 import { SemesterEntity } from './entities/semester.entity';
 import { AcademicYearService } from './services/academic-year.service';
 import { AcademyService } from './services/academy.service';
+import { AssignmentPeriodService } from './services/assignment.service';
 import { SchoolService } from './services/school.service';
 import { SemesterService } from './services/semester.service';
-import { AssignmentPeriodService } from './services/subject-assignment.service';
 
 @Module({
   imports: [

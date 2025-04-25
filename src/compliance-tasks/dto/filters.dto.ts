@@ -52,7 +52,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment.school_id'?: number[];
+  'course.school_id'?: number[];
 
   @ApiProperty({
     required: false,
@@ -88,7 +88,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment.teacher_id'?: number;
+  'course.teacher_id'?: number;
 }
 
 export class StudentSamplesFilterDto extends BaseFilterDto {
@@ -117,7 +117,7 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment.teacher_id'?: number[];
+  'course.teacher_id'?: number[];
 
   @ApiProperty({
     required: true,

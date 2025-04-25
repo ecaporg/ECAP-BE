@@ -10,22 +10,22 @@ import { TeacherEntity } from '@/staff/entities/staff.entity';
 
 @Entity({ name: 'courses' })
 export class CourseEntity extends GenericEntity {
-  @ApiProperty({ description: 'School ID associated with this assignment' })
+  @ApiProperty({ description: 'School ID associated with this course' })
   @Column()
   school_id: number;
 
-  @ApiProperty({ description: 'Teacher ID associated with this assignment' })
+  @ApiProperty({ description: 'Teacher ID associated with this course' })
   @Column()
   teacher_id: number;
 
   @ApiProperty({
-    description: 'Academic year ID associated with this assignment',
+    description: 'Academic year ID associated with this course',
   })
   @Column()
   academic_year_id: number;
 
   @ApiProperty({
-    description: 'School associated with this assignment',
+    description: 'School associated with this course',
     type: () => Object,
   })
   @ManyToOne(() => SchoolEntity)
@@ -33,7 +33,7 @@ export class CourseEntity extends GenericEntity {
   school: SchoolEntity;
 
   @ApiProperty({
-    description: 'Teacher associated with this assignment',
+    description: 'Teacher associated with this course',
     type: () => Object,
   })
   @ManyToOne(() => TeacherEntity)
@@ -41,7 +41,7 @@ export class CourseEntity extends GenericEntity {
   teacher: TeacherEntity;
 
   @ApiProperty({
-    description: 'Academic year associated with this assignment',
+    description: 'Academic year associated with this course',
     type: () => AcademicYearEntity,
   })
   @ManyToOne(() => AcademicYearEntity)

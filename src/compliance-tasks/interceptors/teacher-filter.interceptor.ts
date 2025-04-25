@@ -17,7 +17,7 @@ export class TeacherFilterInterceptor implements NestInterceptor {
     const query = request.query;
 
     if (user && user.role === RolesEnum.TEACHER) {
-      query['assignment.teacher_id'] = user.id;
+      query['course.teacher_id'] = user.id;
     }
 
     return next.handle();
