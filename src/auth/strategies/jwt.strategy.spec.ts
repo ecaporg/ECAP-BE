@@ -14,8 +14,8 @@ import { RoleEntity } from '../../users/entities/role.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 import { UserRoleEntity } from '../../users/entities/user-role.entity';
 import { UsersService } from '../../users/users.service';
-import { AuthService } from '../auth.service';
-import { AuthEmailService } from '../auth-email.service';
+import { AuthService } from '../services/auth.service';
+import { AuthEmailService } from '../services/auth-email.service';
 import usersFixtures from '../fixtures/users.fixtures';
 
 import { JwtStrategy } from './jwt.strategy';
