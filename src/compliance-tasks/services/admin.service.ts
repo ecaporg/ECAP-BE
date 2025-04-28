@@ -1,15 +1,9 @@
-import { Equal, FindOptionsWhere, ILike, In, LessThanOrEqual } from 'typeorm';
-
 import { Injectable } from '@nestjs/common';
 
 import { IAuthUser } from '@/auth/types/auth-user';
-import { extractPaginationOptions } from '@/core';
+import { BaseService, extractPaginationOptions } from '@/core';
 import { CourseService } from '@/course/services/course.service';
-import { AcademicYearService } from '@/school/services/academic-year.service';
-import { StaffService } from '@/staff/services/staff.service';
-import { StudentService } from '@/students/services/student.service';
-import { TenantEntity } from '@/tenant/entities/tenant.entity';
-import { TenantService } from '@/tenant/services/tenant.service';
+import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { TeachersTableFilterDto } from '../dto/filters.dto';
@@ -21,7 +15,7 @@ export class AdminComplianceService {
   constructor(
     private readonly courseService: CourseService,
     private readonly teacherComplianceTaskService: TeacherComplianceTaskService,
-    private readonly staffService: StaffService,
+    private readonly teacherService: BaseService<TeacherEntity>,
   ) {}
 
   async getTeachers(filters: TeachersTableFilterDto) {
@@ -57,7 +51,7 @@ export class AdminComplianceService {
             },
           };
 
-    const teachers = await this.staffService.teacherService.findBy({
+    const teachers = await this.teacherService.findBy({
       where: this.teacherComplianceTaskService
         .getUserSearchFields(search)
         .map((property) => ({

@@ -8,8 +8,8 @@ import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
 
 @Injectable()
 export class StaffService {
-  readonly teacherService: BaseService<TeacherEntity>;
-  readonly adminService: BaseService<AdminEntity>;
+  private readonly teacherService: BaseService<TeacherEntity>;
+  private readonly adminService: BaseService<AdminEntity>;
 
   constructor(
     @InjectRepository(TeacherEntity)
