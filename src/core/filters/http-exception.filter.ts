@@ -34,7 +34,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       ...((typeof message === 'object'
         ? message
-        : { message }) as ErrorResponseDto),
+        : { message, statusCode: status }) as ErrorResponseDto),
     };
 
     // Log error for server monitoring
