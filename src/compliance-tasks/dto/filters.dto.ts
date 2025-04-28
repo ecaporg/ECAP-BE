@@ -12,6 +12,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { BaseFilterDto } from '@/core';
 import { NestedObjectKeys } from '@/core/utils/types';
+import { CourseEntity } from '@/course/entities/course.entity';
+import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 
 function IdDecorator(Obj: any) {
   return applyDecorators(
@@ -28,14 +30,11 @@ function IdDecorator(Obj: any) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const keys: NestedObjectKeys<any> = {
-  LEARNING_PERIOD_ID: 'assignment.academic_year.assignments.academic_year',
-  STUDENT_ACADEMY_ID: 'student.academy_id',
-  STUDENT_SCHOOL_ID: 'assignment.school_id',
-  STUDENT_TRACK_ID: 'student.track_id',
-  STUDENT_GRADE: 'student.grade',
-  COMPLETED: 'completed',
-  TEACHER_ID: 'assignment.teacher_id',
+const keys: NestedObjectKeys<AssignmentPeriodEntity> = {
+  ACADEMIC_YEAR: 'course.academic_year',
+  SEMESTER: 'course.academic_year.semesters',
+  SEMPLESTUDENT_STATUS: 'samples.status',
+  SUBJECT: 'course.assignment_periods.samples.subject',
 } as const;
 
 export class StudentsTableFilterDto extends BaseFilterDto {
@@ -148,4 +147,42 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'samples.done_by_id'?: number[];
+}
+
+export class TeachersTableFilterDto extends StudentsTableFilterDto {
+  @ApiProperty({
+    required: false,
+    description: 'Filter by academic year',
+    type: [Number],
+  })
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'course.academic_year'?: number[];
+
+  @ApiProperty({
+    required: false,
+    description: 'Filter by semester',
+    type: [Number],
+  })
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'course.academic_year.semesters'?: number[];
+
+  @ApiProperty({
+    required: false,
+    description: 'Filter by sample status',
+    type: [String],
+  })
+  @IdDecorator(String)
+  @IsString({ each: true })
+  'samples.status'?: string[];
+
+  @ApiProperty({
+    required: false,
+    description: 'Filter by subject',
+    type: [String],
+  })
+  @IdDecorator(String)
+  @IsString({ each: true })
+  'course.assignment_periods.samples.subject'?: string[];
 }

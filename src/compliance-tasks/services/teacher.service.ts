@@ -11,6 +11,7 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import { IAuthUser } from '@/auth/types/auth-user';
+import { BadRequestException } from '@/core';
 import { extractPaginationOptions } from '@/core/utils/pagination.utils';
 import { AcademicYearService } from '@/school/services/academic-year.service';
 import { AssignmentPeriodService } from '@/school/services/assignment.service';
@@ -82,7 +83,7 @@ export class TeacherComplianceTaskService {
 
   async searchStudents(user: IAuthUser, search: string) {
     const students = await this.studentService.findBy({
-      where: this.getStudentSearchFields(search).map((property) => ({
+      where: this.getUserSearchFields(search).map((property) => ({
         user: {
           ...property,
         },
@@ -97,7 +98,7 @@ export class TeacherComplianceTaskService {
     return students;
   }
 
-  private getStudentSearchFields(search: string) {
+  getUserSearchFields(search: string) {
     const fields = [
       {
         firstname: ILike(`%${search}%`),
@@ -128,14 +129,15 @@ export class TeacherComplianceTaskService {
 
     if (user.role === RolesEnum.TEACHER) {
       query.schools = { courses: { teacher: { user } } };
-    } else if (user.role === RolesEnum.ADMIN) {
+    } else if (
+      user.role === RolesEnum.ADMIN ||
+      user.role === RolesEnum.SUPER_ADMIN
+    ) {
       query.admins = { user };
     } else if (user.role === RolesEnum.DIRECTOR) {
       query.schools = { directors: { user } };
     } else {
-      // TODO: remove comment after testing
-      // throw new BadRequestException('User role not found');
-      query.id = 1;
+      throw new BadRequestException('User role not found');
     }
     return query;
   }

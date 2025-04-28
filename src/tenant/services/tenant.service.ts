@@ -21,6 +21,7 @@ export class TenantService extends BaseService<TenantEntity> {
           academicYear: {
             semesters: true,
           },
+          subjects: true,
           learningPeriods: true,
         },
         schools: true,
