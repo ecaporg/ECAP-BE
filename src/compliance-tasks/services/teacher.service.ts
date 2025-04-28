@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Equal, FindOptionsWhere, In, LessThanOrEqual, Like } from 'typeorm';
+import {
+  Equal,
+  FindOptionsWhere,
+  ILike,
+  In,
+  LessThanOrEqual,
+  Like,
+} from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
@@ -91,15 +98,20 @@ export class TeacherComplianceTaskService {
   }
 
   private getStudentSearchFields(search: string) {
-    return [
+    const fields = [
       {
-        firstname: Like(`%${search}%`),
+        firstname: ILike(`%${search}%`),
       },
       {
-        lastname: Like(`%${search}%`),
+        lastname: ILike(`%${search}%`),
       },
-      { id: Equal(parseInt(search)) },
     ];
+    if (!isNaN(parseInt(search))) {
+      fields.push({
+        id: Equal(parseInt(search)),
+      } as any);
+    }
+    return fields;
   }
 
   private async getTenantQuery(user: IAuthUser) {
