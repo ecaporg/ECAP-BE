@@ -9,9 +9,10 @@ import {
 
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
-import { SampleStatus } from '../entities/sample.entity';
+import { SampleEntity, SampleStatus } from '../entities/sample.entity';
 
-export class CreateSampleDto {
+interface SampleInterface extends SampleEntity {}
+export class CreateSampleDto implements Partial<SampleInterface> {
   @ApiProperty({ description: 'Assignment title', maxLength: 250 })
   @IsString()
   @IsNotEmpty()
@@ -38,6 +39,11 @@ export class CreateSampleDto {
   @IsNumber()
   @IsNotEmpty()
   subject_id: number;
+
+  @ApiProperty({ description: 'User ID associated with this sample' })
+  @IsNumber()
+  @IsNotEmpty()
+  done_by_id: number;
 }
 
 export class UpdateSampleDto extends PartialType(CreateSampleDto) {}
