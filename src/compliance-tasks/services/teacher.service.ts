@@ -87,7 +87,7 @@ export class TeacherComplianceTaskService {
           ...property,
         },
         assignment_periods: {
-          assignment: {
+          course: {
             teacher: { user },
           },
         },

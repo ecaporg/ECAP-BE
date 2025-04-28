@@ -12,8 +12,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { DatedGenericEntity } from '@/core/generic-entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
-import { SchoolEntity } from '@/school/entities/school.entity';
 import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { SchoolEntity } from '@/school/entities/school.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
