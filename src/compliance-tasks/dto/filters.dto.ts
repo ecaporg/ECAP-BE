@@ -11,6 +11,8 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { BaseFilterDto } from '@/core';
+import { NestedObjectKeys } from '@/core/utils/types';
+import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
 
 function IdDecorator(Obj: any) {
   return applyDecorators(
@@ -25,6 +27,17 @@ function IdDecorator(Obj: any) {
     IsOptional(),
   );
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const keys: NestedObjectKeys<AssignmentPeriodEntity> = {
+  LEARNING_PERIOD_ID: 'assignment.academic_year.assignments.academic_year',
+  STUDENT_ACADEMY_ID: 'student.academy_id',
+  STUDENT_SCHOOL_ID: 'assignment.school_id',
+  STUDENT_TRACK_ID: 'student.track_id',
+  STUDENT_GRADE: 'student.grade',
+  COMPLETED: 'completed',
+  TEACHER_ID: 'assignment.teacher_id',
+} as const;
 
 export class StudentsTableFilterDto extends BaseFilterDto {
   @ApiProperty({

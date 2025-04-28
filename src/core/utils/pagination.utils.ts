@@ -107,7 +107,20 @@ export function createOrderCondition(
   sortDirection: ('ASC' | 'DESC')[],
 ): Record<string, any> {
   return sortBy.reduce((conditions, field, index) => {
-    conditions[field] = sortDirection[index] || 'ASC';
+    if (field.includes('.')) {
+      const parts = field.split('.');
+      let current = conditions;
+      for (let i = 0; i < parts.length - 1; i++) {
+        const part = parts[i];
+        if (!current[part]) {
+          current[part] = {};
+        }
+        current = current[part];
+      }
+      current[parts[parts.length - 1]] = sortDirection[index] || 'ASC';
+    } else {
+      conditions[field] = sortDirection[index] || 'ASC';
+    }
     return conditions;
   }, {});
 }

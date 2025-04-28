@@ -18,8 +18,8 @@ import { LoginResponseDTO } from '../dtos/login-response.dto';
 import { PasswordDTO } from '../dtos/password.dto';
 import { ResetPasswordDTO } from '../dtos/reset-password.dto';
 import { SignInDTO } from '../dtos/sign-in.dto';
-import { AuthUser, IAuthUser } from '../types/auth-user';
 import { AuthService } from '../services/auth.service';
+import { AuthUser, IAuthUser } from '../types/auth-user';
 
 @ApiTags('Authentication')
 @Controller('auth')

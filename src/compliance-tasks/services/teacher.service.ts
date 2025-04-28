@@ -89,6 +89,7 @@ export class TeacherComplianceTaskService {
           },
         },
       })),
+      take: 10,
     });
     return students;
   }

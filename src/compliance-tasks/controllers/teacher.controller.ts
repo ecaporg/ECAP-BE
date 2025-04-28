@@ -13,7 +13,6 @@ import {
 import { AssignmentPeriodEntity } from '@/school/entities/subject-assignment.entity';
 import { TenantEntity } from '@/school/entities/tenant.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
-import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import {
