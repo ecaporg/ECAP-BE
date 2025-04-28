@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { FindOperator, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,17 +21,23 @@ export class AssignmentPeriodService extends BaseService<AssignmentPeriodEntity>
     relations: Parameters<typeof this.findAll>[1],
   ) {
     const assignmentPeriods = await this.findAll(options, relations);
+    const where = {
+      completed: true,
+      ...options.filters,
+    };
+    console.log(where);
+
+    if ((where.completed as FindOperator<boolean>)?.value === false) {
+      (assignmentPeriods.meta as any).completedCount = 0;
+      return assignmentPeriods;
+    }
 
     const completedCount = await this.assignmentPeriodRepository.count({
-      where: { completed: true, ...options.filters },
+      where,
     });
 
-    return {
-      ...assignmentPeriods,
-      meta: {
-        ...assignmentPeriods.meta,
-        completedCount,
-      },
-    };
+    (assignmentPeriods.meta as any).completedCount = completedCount;
+
+    return assignmentPeriods;
   }
 }
