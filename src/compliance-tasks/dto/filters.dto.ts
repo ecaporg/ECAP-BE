@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 import { applyDecorators } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 import { BaseFilterDto } from '@/core';
 import { NestedObjectKeys } from '@/core/utils/types';
@@ -149,7 +149,18 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
   'samples.done_by_id'?: number[];
 }
 
-export class TeachersTableFilterDto extends StudentsTableFilterDto {
+export class TeachersTableFilterDto extends OmitType(StudentsTableFilterDto, [
+  'learning_period_id',
+]) {
+  @ApiProperty({
+    required: false,
+    description: 'Filter by learning period ID',
+    type: [Number],
+  })
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'learning_period_id'?: number[];
+
   @ApiProperty({
     required: false,
     description: 'Filter by academic year',
