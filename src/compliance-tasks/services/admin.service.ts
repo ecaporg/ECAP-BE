@@ -32,6 +32,8 @@ export class AdminComplianceService {
         'teacher.id as teacher_id',
         'user.firstname as teacher_firstname',
         'user.lastname as teacher_lastname',
+        'academy.id as academy_id',
+        'academy.name as academy_name',
         'COUNT(DISTINCT assignment_periods.student_id) as student_count',
         `COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END) as completed_count`,
         `COUNT(CASE WHEN samples.status = '${SampleStatus.FLAGGED_TO_ADMIN}' THEN samples.id END) as flagged_count`,
@@ -52,12 +54,13 @@ export class AdminComplianceService {
       .addGroupBy('teacher.id')
       .addGroupBy('user.firstname')
       .addGroupBy('user.lastname')
+      .addGroupBy('academy.id')
+      .addGroupBy('academy.name')
       .orderBy(query.order as any);
 
     if (user.role === RolesEnum.DIRECTOR) {
-      subQuery.leftJoin('school.directors', 'directors');
-      subQuery.leftJoin('directors.user', 'director_user');
-      subQuery.andWhere('director_user.id = :id', {
+      subQuery.leftJoin('academy.directors', 'directors');
+      subQuery.andWhere('directors.id = :id', {
         id: user.id,
       });
     } else if (user.role === RolesEnum.ADMIN) {
