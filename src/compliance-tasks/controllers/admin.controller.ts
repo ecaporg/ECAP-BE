@@ -29,8 +29,11 @@ export class AdminComplianceController {
   @Get()
   @ApiOperation({ summary: 'Get table with teachers' })
   @ApiPaginatedCrudResponse(CourseEntity)
-  async getTeachers(@Query() filters: TeachersTableFilterDto) {
-    return this.adminComplianceService.getTeachers(filters);
+  async getTeachers(
+    @Query() filters: TeachersTableFilterDto,
+    @CurrentUser() user: IAuthUser,
+  ) {
+    return this.adminComplianceService.getTeachers(filters, user);
   }
 
   @Get('filters')

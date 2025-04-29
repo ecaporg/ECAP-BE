@@ -1,19 +1,13 @@
-import { Repository } from 'typeorm';
-
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 
 import { IAuthUser } from '@/auth/types/auth-user';
 import { BaseService, extractPaginationOptions } from '@/core';
-import { CourseEntity } from '@/course/entities/course.entity';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { AssignmentPeriodService } from '@/school/services/assignment.service';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { SampleStatus } from '@/students/entities/sample.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { TeachersTableFilterDto } from '../dto/filters.dto';
-import { TeacherComplianceView } from '../views/teacher-compliance.entity';
 
 import { TeacherComplianceTaskService } from './teacher.service';
 
@@ -23,16 +17,14 @@ export class AdminComplianceService {
     private readonly assignmentPeriodService: AssignmentPeriodService,
     private readonly teacherComplianceTaskService: TeacherComplianceTaskService,
     private readonly teacherService: BaseService<TeacherEntity>,
-    @InjectRepository(TeacherComplianceView)
-    private readonly teacherComplianceRepository: Repository<TeacherComplianceView>,
   ) {}
 
-  async getTeachers(filters: TeachersTableFilterDto) {
+  async getTeachers(filters: TeachersTableFilterDto, user: IAuthUser) {
     const paginationOptions = extractPaginationOptions(filters);
     const query =
       this.assignmentPeriodService.getDefaultQuery(paginationOptions);
 
-    const qb = this.assignmentPeriodService
+    const subQuery = this.assignmentPeriodService
       .getRepository()
       .createQueryBuilder('assignment_periods')
       .select([
@@ -60,24 +52,54 @@ export class AdminComplianceService {
       .addGroupBy('teacher.id')
       .addGroupBy('user.firstname')
       .addGroupBy('user.lastname')
-      .orderBy(query.order as any)
-      .skip(query.skip)
-      .take(query.take);
+      .orderBy(query.order as any);
 
-    const [items, totalItems] = await Promise.all([
-      qb.getRawMany(),
-      qb.getCount(),
-    ]);
+    if (user.role === RolesEnum.DIRECTOR) {
+      subQuery.leftJoin('school.directors', 'directors');
+      subQuery.leftJoin('directors.user', 'director_user');
+      subQuery.andWhere('director_user.id = :id', {
+        id: user.id,
+      });
+    } else if (user.role === RolesEnum.ADMIN) {
+      subQuery.leftJoin('school.tenant', 'tenant');
+      subQuery.leftJoin('tenant.admins', 'admins');
+      subQuery.leftJoin('admins.user', 'admin_user');
+      subQuery.andWhere('admin_user.id = :id', {
+        id: user.id,
+      });
+    }
+
+    const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
+
+    const sql = `
+      WITH filtered_data AS (
+        ${subQuerySql}
+      )
+      SELECT 
+        *,
+        (SELECT COUNT(*) FROM filtered_data) as total_rows,
+        (SELECT COUNT(*) FROM filtered_data WHERE is_complated = true) as total_completed
+      FROM filtered_data
+      LIMIT ${query.take} OFFSET ${query.skip}
+    `;
+
+    const items = await this.assignmentPeriodService
+      .getRepository()
+      .query(sql, subQueryParams);
+
+    const totalItems = items[0]?.total_rows || 0;
 
     return {
       items,
       meta: {
-        // completedCount,
         totalItems,
         itemCount: items.length,
         itemsPerPage: query.take,
         totalPages: Math.ceil(totalItems / query.take),
         currentPage: query.skip,
+        completedCount: filters?.completed?.every((item) => item === false)
+          ? 0
+          : items[0]?.total_completed,
       },
     };
   }

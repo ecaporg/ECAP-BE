@@ -136,6 +136,11 @@ export class TeacherComplianceTaskService {
       query.admins = { user };
     } else if (user.role === RolesEnum.DIRECTOR) {
       query.schools = { directors: { user } };
+      query.academies = {
+        directors: {
+          user,
+        },
+      };
     } else {
       throw new BadRequestException('User role not found');
     }

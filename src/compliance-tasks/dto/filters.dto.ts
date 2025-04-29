@@ -31,9 +31,9 @@ function IdDecorator(Obj: any) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const keys: NestedObjectKeys<AssignmentPeriodEntity> = {
-  ACADEMIC_YEAR: 'course.academic_year',
-  SEMESTER: 'course.academic_year.semesters',
-  SEMPLESTUDENT_STATUS: 'samples.status',
+  DIRECTOR: 'course.school.directors.user',
+  // ADMIN: 'course.school.tenant.admins.user',
+  STUDENT_STATUS: 'samples.status',
   SUBJECT: 'course.assignment_periods.samples.subject',
 } as const;
 
