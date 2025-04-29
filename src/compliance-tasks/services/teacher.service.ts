@@ -118,17 +118,16 @@ export class TeacherComplianceTaskService {
   private async getTenantQuery(user: IAuthUser) {
     const academicYears =
       await this.academicYearService.findCurrentAcademicYears();
-    const query: FindOptionsWhere<TenantEntity> = {
-      tracks: {
+    const query: FindOptionsWhere<TenantEntity> = {};
+
+    if (user.role === RolesEnum.TEACHER) {
+      query.schools = { courses: { teacher: { user } } };
+      query.tracks = {
         academicYear: {
           id: In(academicYears.map((academicYear) => academicYear.id)),
         },
         start_date: LessThanOrEqual(new Date()),
-      },
-    };
-
-    if (user.role === RolesEnum.TEACHER) {
-      query.schools = { courses: { teacher: { user } } };
+      };
     } else if (
       user.role === RolesEnum.ADMIN ||
       user.role === RolesEnum.SUPER_ADMIN
