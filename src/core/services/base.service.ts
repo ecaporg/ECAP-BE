@@ -233,4 +233,8 @@ export class BaseService<
 
     return query;
   }
+
+  getRepository(): Repository<T> {
+    return this.repository;
+  }
 }

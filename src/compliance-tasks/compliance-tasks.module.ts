@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { BaseService } from '@/core';
 import { SchoolModule } from '@/school/school.module';
 
 import { AdminComplianceController } from './controllers/admin.controller';
@@ -15,6 +16,7 @@ import { TeacherComplianceTaskService } from './services/teacher.service';
     TeacherComplianceTaskService,
     AdminComplianceService,
     TeacherFilterInterceptor,
+    BaseService,
   ],
   exports: [TeacherComplianceTaskService, AdminComplianceService],
 })

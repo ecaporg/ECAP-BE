@@ -184,5 +184,5 @@ export class TeachersTableFilterDto extends StudentsTableFilterDto {
   })
   @IdDecorator(String)
   @IsString({ each: true })
-  'course.assignment_periods.samples.subject'?: string[];
+  'samples.subject'?: string[];
 }

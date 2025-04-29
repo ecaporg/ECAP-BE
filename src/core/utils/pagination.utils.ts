@@ -3,16 +3,18 @@ import { Equal, In } from 'typeorm';
 import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../services/base.service';
 
+type BaseFilterType = BaseFilterDto;
+
 /**
  * Extract pagination parameters from request query
  * @param request Express request object
  * @param searchFields Array of fields to search in
  * @returns Pagination options object
  */
-export function extractPaginationOptions<T extends BaseFilterDto>(
+export function extractPaginationOptions<T extends BaseFilterType>(
   options: T,
   searchFields?: string[],
-): PaginationOptions {
+): PaginationOptions<any> {
   const { page, limit, sortBy, sortDirection, search, ...filters } = options;
 
   let sortByArray: string[] = [];

@@ -1,40 +1,85 @@
+import { Repository } from 'typeorm';
+
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { IAuthUser } from '@/auth/types/auth-user';
 import { BaseService, extractPaginationOptions } from '@/core';
-import { CourseService } from '@/course/services/course.service';
+import { CourseEntity } from '@/course/entities/course.entity';
+import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { AssignmentPeriodService } from '@/school/services/assignment.service';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
+import { SampleStatus } from '@/students/entities/sample.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { TeachersTableFilterDto } from '../dto/filters.dto';
+import { TeacherComplianceView } from '../views/teacher-compliance.entity';
 
 import { TeacherComplianceTaskService } from './teacher.service';
 
 @Injectable()
 export class AdminComplianceService {
   constructor(
-    private readonly courseService: CourseService,
+    private readonly assignmentPeriodService: AssignmentPeriodService,
     private readonly teacherComplianceTaskService: TeacherComplianceTaskService,
     private readonly teacherService: BaseService<TeacherEntity>,
+    @InjectRepository(TeacherComplianceView)
+    private readonly teacherComplianceRepository: Repository<TeacherComplianceView>,
   ) {}
 
   async getTeachers(filters: TeachersTableFilterDto) {
     const paginationOptions = extractPaginationOptions(filters);
-    const courses = await this.courseService.findAll(paginationOptions, {
-      teacher: {
-        user: true,
-      },
-      academic_year: true,
-      school: true,
-      assignment_periods: {
-        samples: true,
-        student: {
-          academy: true,
-        },
-      },
-    });
+    const query =
+      this.assignmentPeriodService.getDefaultQuery(paginationOptions);
 
-    return courses;
+    const qb = this.assignmentPeriodService
+      .getRepository()
+      .createQueryBuilder('assignment_periods')
+      .select([
+        'assignment_periods.course_id as course_id',
+        'teacher.id as teacher_id',
+        'user.firstname as teacher_firstname',
+        'user.lastname as teacher_lastname',
+        'COUNT(DISTINCT assignment_periods.student_id) as student_count',
+        `COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END) as completed_count`,
+        `COUNT(CASE WHEN samples.status = '${SampleStatus.FLAGGED_TO_ADMIN}' THEN samples.id END) as flagged_count`,
+        `COUNT(CASE WHEN samples.status NOT IN ('${SampleStatus.COMPLETED}', '${SampleStatus.FLAGGED_TO_ADMIN}') THEN samples.id END) as incompleted_count`,
+        `BOOL_AND(samples.status = '${SampleStatus.COMPLETED}') as is_complated`,
+        `(COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END)::float / COUNT(assignment_periods.student_id)::float) * 100 as completion_percentage`,
+      ])
+      .leftJoin('assignment_periods.course', 'course')
+      .leftJoin('course.teacher', 'teacher')
+      .leftJoin('teacher.user', 'user')
+      .leftJoin('course.school', 'school')
+      .leftJoin('course.academic_year', 'academic_year')
+      .leftJoin('assignment_periods.samples', 'samples')
+      .leftJoin('assignment_periods.student', 'student')
+      .leftJoin('student.academy', 'academy')
+      .where(query.where)
+      .groupBy('assignment_periods.course_id')
+      .addGroupBy('teacher.id')
+      .addGroupBy('user.firstname')
+      .addGroupBy('user.lastname')
+      .orderBy(query.order as any)
+      .skip(query.skip)
+      .take(query.take);
+
+    const [items, totalItems] = await Promise.all([
+      qb.getRawMany(),
+      qb.getCount(),
+    ]);
+
+    return {
+      items,
+      meta: {
+        // completedCount,
+        totalItems,
+        itemCount: items.length,
+        itemsPerPage: query.take,
+        totalPages: Math.ceil(totalItems / query.take),
+        currentPage: query.skip,
+      },
+    };
   }
 
   async getFilters(user: IAuthUser) {
