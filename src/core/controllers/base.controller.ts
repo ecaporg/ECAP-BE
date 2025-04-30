@@ -40,7 +40,11 @@ class GenericEntityClass implements GenericEntity {
 //   RolesEnum.TEACHER,
 // )
 export class TemplateController {
-  constructor(protected readonly service: BaseService<GenericEntity, any>) {}
+  protected readonly service: BaseService<GenericEntityClass>;
+  constructor() {
+    // private readonly teacherRepository: Repository<GenericEntityClass>, // @InjectRepository(GenericEntityClass)
+    // this.service = new BaseService<GenericEntityClass>(this.teacherRepository);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Get all entities with pagination' })

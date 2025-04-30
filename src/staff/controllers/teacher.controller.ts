@@ -1,4 +1,4 @@
-import { DeepPartial } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import {
   Body,
@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import {
   ApiCrudResponse,
@@ -37,7 +38,15 @@ import { TeacherEntity } from '../entities/staff.entity';
   RolesEnum.TEACHER,
 )
 export class TeacherController {
-  constructor(protected readonly service: BaseService<TeacherEntity>) {}
+  protected readonly service: BaseService<TeacherEntity>;
+  constructor(
+    @InjectRepository(TeacherEntity)
+    private readonly teacherRepository: Repository<TeacherEntity>,
+  ) {
+    this.service = new BaseService<TeacherEntity>(this.teacherRepository, {
+      defaultRelations: ['user'],
+    });
+  }
 
   // @Get()
   // @ApiOperation({ summary: 'Get all entities with pagination' })
