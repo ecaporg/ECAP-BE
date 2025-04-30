@@ -30,6 +30,15 @@ class GenericEntityClass implements GenericEntity {
  * Replace 'CreateTemplateDTO' with your create DTO name.
  * Replace 'UpdateTemplateDTO' with your update DTO name.
  */
+
+// @ApiTags('Base')
+// @Controller('base')
+// @Roles(
+//   RolesEnum.SUPER_ADMIN,
+//   RolesEnum.ADMIN,
+//   RolesEnum.DIRECTOR,
+//   RolesEnum.TEACHER,
+// )
 export class TemplateController {
   constructor(protected readonly service: BaseService<GenericEntity, any>) {}
 
