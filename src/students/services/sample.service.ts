@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core/services/base.service';
 
+import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
   CreateSampleFlagErrorDto,
   CreateSampleFlagMissingWorkDto,
@@ -24,7 +25,16 @@ export class SampleService extends BaseService<SampleEntity> {
     private sampleFlagErrorService: SampleFlagErrorService,
     private sampleFlagMissingWorkService: SampleFlagMissingWorkService,
   ) {
-    super(sampleRepository);
+    super(sampleRepository, {
+      defaultRelations: {
+        assignment_period: {
+          student: {
+            user: true,
+          },
+        },
+        subject: true,
+      },
+    });
   }
 
   async updateSample(id: number, data: DeepPartial<SampleEntity>) {
@@ -63,5 +73,14 @@ export class SampleService extends BaseService<SampleEntity> {
       id,
       user_id,
     });
+  }
+
+  async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {
+    options['status'] = [
+      SampleStatus.ERRORS_FOUND,
+      SampleStatus.MISSING_SAMPLE,
+      SampleStatus.REASON_REJECTED,
+    ];
+    return this.findAll(options);
   }
 }

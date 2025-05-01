@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 
 import { SchoolModule } from '@/school/school.module';
-import { TeacherService } from '@/staff/services/staff.service';
 
 import { AdminComplianceController } from './controllers/admin.controller';
 import { TeacherComplianceTaskController } from './controllers/teacher.controller';

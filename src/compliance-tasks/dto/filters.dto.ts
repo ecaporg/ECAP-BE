@@ -1,35 +1,14 @@
-import { Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
-import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 import { BaseFilterDto } from '@/core';
-import { NestedObjectKeys } from '@/core/utils/types';
+import { IdDecorator } from '@/core/decorators/filter-dto.decorators';
+import { RecordStringAndDotNotation } from '@/core/utils/types';
 import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 
-function IdDecorator(Obj: any) {
-  return applyDecorators(
-    Transform(({ value }) =>
-      typeof value === 'string'
-        ? value.split(',').map(Obj)
-        : Array.isArray(value)
-          ? value.map(Obj)
-          : [Obj(value)],
-    ),
-    IsArray(),
-    IsOptional(),
-  );
-}
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const keys: NestedObjectKeys<AssignmentPeriodEntity> = {
+const keys: RecordStringAndDotNotation<AssignmentPeriodEntity> = {
   DIRECTOR: 'student.academy.directors.id',
   ADMIN: 'course.teacher_id',
   STUDENT_STATUS: 'samples.status',
@@ -99,6 +78,15 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'course.teacher_id'?: number;
+
+  @ApiProperty({
+    required: false,
+    description: 'Filter by director ID',
+    type: [Number],
+  })
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'student.academy.directors.id'?: number[];
 }
 
 export class StudentSamplesFilterDto extends BaseFilterDto {

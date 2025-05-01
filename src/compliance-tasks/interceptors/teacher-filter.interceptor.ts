@@ -1,25 +1,16 @@
-import { Observable } from 'rxjs';
+import { Injectable } from '@nestjs/common';
 
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
-
+import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
+import { AttachUserIdInterceptor } from '../../core/interceptors/attach-user-id.interceptor';
+
 @Injectable()
-export class TeacherFilterInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
-    const query = request.query;
-
-    if (user && user.role === RolesEnum.TEACHER) {
-      query['course.teacher_id'] = user.id;
-    }
-
-    return next.handle();
+export class TeacherFilterInterceptor extends AttachUserIdInterceptor<AssignmentPeriodEntity> {
+  constructor() {
+    super([
+      { role: RolesEnum.TEACHER, path: 'course.teacher_id' },
+      { role: RolesEnum.DIRECTOR, path: 'student.academy.directors.id' },
+    ]);
   }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export type NestedKeyOf<
+export type NestedObjectToDotNotation<
   T,
-  Depth extends number[] = [0, 1, 2, 3],
+  Depth extends number[] = [0, 1, 2, 3, 4],
 > = Depth['length'] extends 0
   ? never
   : T extends Date
@@ -9,24 +9,27 @@ export type NestedKeyOf<
     : T extends Array<infer U>
       ? {
           [K in keyof U]: K extends string
-            ? K | `${K}.${NestedKeyOf<U[K], Tail<Depth>>}`
+            ? K | `${K}.${NestedObjectToDotNotation<U[K], Tail<Depth>>}`
             : never;
         }[keyof U]
       : T extends object
         ? {
             [K in keyof T]: K extends string
-              ? K | `${K}.${NestedKeyOf<T[K], Tail<Depth>>}`
+              ? K | `${K}.${NestedObjectToDotNotation<T[K], Tail<Depth>>}`
               : never;
           }[keyof T]
         : never;
 
 type Tail<T extends any[]> = T extends [infer _, ...infer Rest] ? Rest : never;
 
-export type RecordWithNestedKeys<T extends object> = Partial<
-  Record<NestedKeyOf<T>, any>
+export type RecordDotNotationAndString<T extends object> = Partial<
+  Record<NestedObjectToDotNotation<T>, any>
 >;
 
-export type NestedObjectKeys<T extends object> = Record<string, NestedKeyOf<T>>;
+export type RecordStringAndDotNotation<T extends object> = Record<
+  string,
+  NestedObjectToDotNotation<T>
+>;
 
 type Split<
   S extends string,

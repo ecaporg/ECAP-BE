@@ -39,8 +39,7 @@ import { TeacherService } from '../services/staff.service';
   RolesEnum.TEACHER,
 )
 export class TeacherController {
-  protected readonly service: BaseService<TeacherEntity>;
-  constructor(private readonly teacherService: TeacherService) {}
+  constructor(private readonly service: TeacherService) {}
 
   // @Get()
   // @ApiOperation({ summary: 'Get all entities with pagination' })

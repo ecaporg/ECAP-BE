@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -22,9 +23,11 @@ import {
   PaginationOptions,
   Roles,
 } from '@/core';
+import { AttachUserIdInterceptor } from '@/core/interceptors/attach-user-id.interceptor';
 import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
+import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
   CreateSampleDto,
   CreateSampleFlagErrorDto,
@@ -38,14 +41,15 @@ import {
 } from '../entities/sample-flag.entity';
 import { SampleService } from '../services/sample.service';
 
-@ApiTags('Samples')
-@Controller('samples')
-@Roles(
+const DefaultRoles = [
   RolesEnum.ADMIN,
   RolesEnum.TEACHER,
-  RolesEnum.DIRECTOR,
   RolesEnum.SUPER_ADMIN,
-)
+];
+
+@ApiTags('Samples')
+@Controller('samples')
+@Roles(...DefaultRoles)
 export class SampleController {
   constructor(private readonly sampleService: SampleService) {}
 
@@ -53,6 +57,7 @@ export class SampleController {
   @ApiOperation({ summary: 'Get all samples with pagination' })
   @ApiPaginationQueries()
   @ApiPaginatedCrudResponse(SampleEntity)
+  @Roles(...DefaultRoles, RolesEnum.DIRECTOR)
   async findAll(
     @Query() options?: PaginationOptions,
   ): Promise<PaginatedResult<SampleEntity>> {
@@ -62,6 +67,7 @@ export class SampleController {
   @Get(':id')
   @ApiOperation({ summary: 'Get sample by ID' })
   @ApiCrudResponse(SampleEntity)
+  @Roles(...DefaultRoles, RolesEnum.DIRECTOR)
   async findOne(@Param('id') id: EntityId): Promise<SampleEntity> {
     return this.sampleService.findOne(id, {
       assignment_period: {
@@ -124,5 +130,26 @@ export class SampleController {
     @Body() createDto: CreateSampleFlagMissingWorkDto,
   ): Promise<SampleFlagMissingWorkEntity> {
     return this.sampleService.flagMissingWork(id, user_id, createDto);
+  }
+
+  @UseInterceptors(
+    new AttachUserIdInterceptor<SampleEntity>([
+      {
+        role: RolesEnum.DIRECTOR,
+        path: 'assignment_period.student.academy.directors.id',
+      },
+      {
+        role: RolesEnum.TEACHER,
+        path: 'assignment_period.course.teacher_id',
+      },
+    ]),
+  )
+  @Get('flagged')
+  @ApiOperation({ summary: 'Get all flagged samples' })
+  @ApiPaginationQueries()
+  @ApiPaginatedCrudResponse(SampleEntity)
+  @Roles(...DefaultRoles, RolesEnum.DIRECTOR)
+  async getFlaggedSamples(@Query() options?: FlaggedSamplesFilterDto) {
+    return this.sampleService.getFlaggedSamples(options);
   }
 }
