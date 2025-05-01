@@ -8,8 +8,10 @@ import { SubjectEntity } from '@/track/entities/subject.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
 import {
+  SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
+  SampleFlagRejectedEntity,
 } from './sample-flag.entity';
 
 export enum SampleStatus {
@@ -92,4 +94,18 @@ export class SampleEntity extends GenericEntity {
   })
   @OneToOne(() => SampleFlagMissingWorkEntity, (flag) => flag.sample)
   flag_missing_work: SampleFlagMissingWorkEntity;
+
+  @ApiProperty({
+    description: 'Sample flag rejected',
+    type: () => Object,
+  })
+  @OneToOne(() => SampleFlagRejectedEntity, (flag) => flag.sample)
+  flag_rejected: SampleFlagRejectedEntity;
+
+  @ApiProperty({
+    description: 'Sample flag completed',
+    type: () => Object,
+  })
+  @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample)
+  flag_completed: SampleFlagCompletedEntity;
 }

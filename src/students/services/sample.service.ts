@@ -82,6 +82,7 @@ export class SampleService extends BaseService<SampleEntity> {
     options['status'] = [
       SampleStatus.REASON_REJECTED,
       SampleStatus.FLAGGED_TO_ADMIN,
+      SampleStatus.ERRORS_FOUND,
     ];
     const paginationOptions = extractPaginationOptions(options);
     return this.findAll(paginationOptions);
