@@ -54,3 +54,10 @@ export class SampleFlagCompletedEntity extends SampleFlagEntity {
   @ApiProperty({ description: 'Message' })
   message: string;
 }
+
+@Entity({ name: 'sample_flag_rejected' })
+export class SampleFlagRejectedEntity extends SampleFlagEntity {
+  @Column()
+  @ApiProperty({ description: 'Reason' })
+  reason: string;
+}

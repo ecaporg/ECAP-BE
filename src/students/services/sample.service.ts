@@ -80,9 +80,8 @@ export class SampleService extends BaseService<SampleEntity> {
 
   async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {
     options['status'] = [
-      SampleStatus.ERRORS_FOUND,
-      SampleStatus.MISSING_SAMPLE,
       SampleStatus.REASON_REJECTED,
+      SampleStatus.FLAGGED_TO_ADMIN,
     ];
     const paginationOptions = extractPaginationOptions(options);
     return this.findAll(paginationOptions);
