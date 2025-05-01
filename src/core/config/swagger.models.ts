@@ -16,12 +16,18 @@ import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { SemesterEntity } from '@/school/entities/semester.entity';
 // Staff entities
-import { AdminEntity, DirectorEntity, TeacherEntity } from '@/staff/entities/staff.entity';
+import {
+  AdminEntity,
+  DirectorEntity,
+  TeacherEntity,
+} from '@/staff/entities/staff.entity';
 // Student entities
 import { SampleEntity } from '@/students/entities/sample.entity';
 import {
+  SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
+  SampleFlagRejectedEntity,
 } from '@/students/entities/sample-flag.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
@@ -86,4 +92,6 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   StudentEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
+  SampleFlagRejectedEntity,
+  SampleFlagCompletedEntity,
 ];

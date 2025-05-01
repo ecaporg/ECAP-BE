@@ -83,28 +83,28 @@ export class SampleEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Sample flag errors',
-    type: () => Object,
+    type: () => SampleFlagErrorEntity,
   })
   @OneToOne(() => SampleFlagErrorEntity, (flag) => flag.sample)
   flag_errors: SampleFlagErrorEntity;
 
   @ApiProperty({
     description: 'Sample flag missing work',
-    type: () => Object,
+    type: () => SampleFlagMissingWorkEntity,
   })
   @OneToOne(() => SampleFlagMissingWorkEntity, (flag) => flag.sample)
   flag_missing_work: SampleFlagMissingWorkEntity;
 
   @ApiProperty({
     description: 'Sample flag rejected',
-    type: () => Object,
+    type: () => SampleFlagRejectedEntity,
   })
   @OneToOne(() => SampleFlagRejectedEntity, (flag) => flag.sample)
   flag_rejected: SampleFlagRejectedEntity;
 
   @ApiProperty({
     description: 'Sample flag completed',
-    type: () => Object,
+    type: () => SampleFlagCompletedEntity,
   })
   @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample)
   flag_completed: SampleFlagCompletedEntity;

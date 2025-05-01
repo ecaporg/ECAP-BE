@@ -7,6 +7,7 @@ import {
   SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
+  SampleFlagRejectedEntity,
 } from './entities/sample-flag.entity';
 import { StudentEntity } from './entities/student.entity';
 import { SampleService } from './services/sample.service';
@@ -24,6 +25,7 @@ import { StudentService } from './services/student.service';
       SampleEntity,
       SampleFlagErrorEntity,
       SampleFlagMissingWorkEntity,
+      SampleFlagRejectedEntity,
       SampleFlagCompletedEntity,
     ]),
   ],
