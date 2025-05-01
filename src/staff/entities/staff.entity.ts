@@ -1,4 +1,5 @@
 import {
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -11,6 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { DatedGenericEntity } from '@/core/generic-entity';
 import { CourseEntity } from '@/course/entities/course.entity';
+import { AcademyEntity } from '@/school/entities/academy.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
@@ -56,4 +58,19 @@ export class AdminEntity extends StaffEntity {
   @ManyToOne(() => TenantEntity, (tenant) => tenant.admins)
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
+}
+
+@Entity({ name: 'directors' })
+export class DirectorEntity extends AdminEntity {
+  @ApiProperty({ description: 'Academy ID associated with this director' })
+  @Column()
+  academy_id: number;
+
+  @ApiProperty({
+    description: 'Academy associated with this director',
+    type: () => Object,
+  })
+  @ManyToOne(() => AcademyEntity, (academy) => academy.directors)
+  @JoinColumn({ name: 'academy_id' })
+  academy: AcademyEntity;
 }

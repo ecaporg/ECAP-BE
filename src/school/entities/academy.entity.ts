@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
-import { DirectorEntity } from '@/staff/entities/director.entity';
+import { DirectorEntity } from '@/staff/entities/staff.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
 @Entity({ name: 'academies' })

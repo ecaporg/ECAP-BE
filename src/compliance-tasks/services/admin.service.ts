@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { IAuthUser } from '@/auth/types/auth-user';
-import { BaseService, extractPaginationOptions } from '@/core';
+import { extractPaginationOptions } from '@/core';
 import { AssignmentPeriodService } from '@/school/services/assignment.service';
-import { TeacherEntity } from '@/staff/entities/staff.entity';
+import { TeacherService } from '@/staff/services/staff.service';
 import { SampleStatus } from '@/students/entities/sample.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
@@ -16,7 +16,7 @@ export class AdminComplianceService {
   constructor(
     private readonly assignmentPeriodService: AssignmentPeriodService,
     private readonly teacherComplianceTaskService: TeacherComplianceTaskService,
-    private readonly teacherService: BaseService<TeacherEntity>,
+    private readonly teacherService: TeacherService,
   ) {}
 
   async getTeachers(filters: TeachersTableFilterDto, user: IAuthUser) {
@@ -114,7 +114,7 @@ export class AdminComplianceService {
   async searchTeachers(user: IAuthUser, search: string) {
     const whereInSchool =
       user.role === RolesEnum.DIRECTOR
-        ? { directors: { user } }
+        ? { tenant: { directors: { user } } }
         : {
             tenant: {
               admins: { user },

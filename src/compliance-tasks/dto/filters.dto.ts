@@ -12,7 +12,6 @@ import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 import { BaseFilterDto } from '@/core';
 import { NestedObjectKeys } from '@/core/utils/types';
-import { CourseEntity } from '@/course/entities/course.entity';
 import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 
 function IdDecorator(Obj: any) {
@@ -32,7 +31,7 @@ function IdDecorator(Obj: any) {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const keys: NestedObjectKeys<AssignmentPeriodEntity> = {
   DIRECTOR: 'student.academy.directors.id',
-  // ADMIN: 'course.school.tenant.admins.user',
+  ADMIN: 'course.teacher_id',
   STUDENT_STATUS: 'samples.status',
   SUBJECT: 'course.assignment_periods.samples.subject',
 } as const;

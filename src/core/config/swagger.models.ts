@@ -16,8 +16,7 @@ import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { SemesterEntity } from '@/school/entities/semester.entity';
 // Staff entities
-import { DirectorEntity } from '@/staff/entities/director.entity';
-import { AdminEntity, TeacherEntity } from '@/staff/entities/staff.entity';
+import { AdminEntity, DirectorEntity, TeacherEntity } from '@/staff/entities/staff.entity';
 // Student entities
 import { SampleEntity } from '@/students/entities/sample.entity';
 import {

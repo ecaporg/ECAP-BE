@@ -127,6 +127,13 @@ export class TeacherComplianceTaskService {
           id: In(academicYears.map((academicYear) => academicYear.id)),
         },
         start_date: LessThanOrEqual(new Date()),
+        learningPeriods: {
+          assignment_periods: {
+            course: {
+              teacher: { user },
+            },
+          },
+        },
       };
     } else if (
       user.role === RolesEnum.ADMIN ||
@@ -134,7 +141,7 @@ export class TeacherComplianceTaskService {
     ) {
       query.admins = { user };
     } else if (user.role === RolesEnum.DIRECTOR) {
-      query.schools = { directors: { user } };
+      query.directors = { user };
       query.academies = {
         directors: {
           user,

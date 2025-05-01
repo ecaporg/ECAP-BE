@@ -6,7 +6,7 @@ import { GenericEntity } from '@/core/generic-entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { SemesterEntity } from '@/school/entities/semester.entity';
-import { AdminEntity } from '@/staff/entities/staff.entity';
+import { AdminEntity, DirectorEntity } from '@/staff/entities/staff.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 
 @Entity({ name: 'tenants' })
@@ -49,4 +49,11 @@ export class TenantEntity extends GenericEntity {
   })
   @OneToMany(() => SemesterEntity, (semester) => semester.tenant)
   semesters: SemesterEntity[];
+
+  @ApiProperty({
+    description: 'Directors associated with this tenant',
+    type: () => [{}],
+  })
+  @OneToMany(() => DirectorEntity, (director) => director.tenant)
+  directors: DirectorEntity[];
 }

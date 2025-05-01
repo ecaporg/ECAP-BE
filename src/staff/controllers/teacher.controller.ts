@@ -28,6 +28,7 @@ import {
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { TeacherEntity } from '../entities/staff.entity';
+import { TeacherService } from '../services/staff.service';
 
 @ApiTags('Teacher')
 @Controller('teachers')
@@ -39,14 +40,7 @@ import { TeacherEntity } from '../entities/staff.entity';
 )
 export class TeacherController {
   protected readonly service: BaseService<TeacherEntity>;
-  constructor(
-    @InjectRepository(TeacherEntity)
-    private readonly teacherRepository: Repository<TeacherEntity>,
-  ) {
-    this.service = new BaseService<TeacherEntity>(this.teacherRepository, {
-      defaultRelations: ['user'],
-    });
-  }
+  constructor(private readonly teacherService: TeacherService) {}
 
   // @Get()
   // @ApiOperation({ summary: 'Get all entities with pagination' })

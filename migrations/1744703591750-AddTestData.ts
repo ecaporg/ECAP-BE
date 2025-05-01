@@ -3,15 +3,19 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { CourseEntity } from '@/course/entities/course.entity';
 import { SemesterEntity } from '@/school/entities/semester.entity';
+import { DirectorEntity, TeacherEntity } from '@/staff/entities/staff.entity';
+import { SampleFlagMissingWorkEntity } from '@/students/entities/sample-flag.entity';
+import { SampleFlagErrorEntity } from '@/students/entities/sample-flag.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { AcademicYearEntity } from '../src/school/entities/academic-year.entity';
 import { AcademyEntity } from '../src/school/entities/academy.entity';
 import { AssignmentPeriodEntity } from '../src/school/entities/assignment.entity';
 import { SchoolEntity } from '../src/school/entities/school.entity';
-import { DirectorEntity } from '../src/staff/entities/director.entity';
-import { TeacherEntity } from '../src/staff/entities/staff.entity';
-import { SampleEntity } from '../src/students/entities/sample.entity';
+import {
+  SampleEntity,
+  SampleStatus,
+} from '../src/students/entities/sample.entity';
 import { StudentEntity } from '../src/students/entities/student.entity';
 import { TenantEntity } from '../src/tenant/entities/tenant.entity';
 import { SubjectEntity } from '../src/track/entities/subject.entity';
@@ -44,6 +48,34 @@ export class AddTestData1744271139400 implements MigrationInterface {
       { name: 'Online', tenant },
       { name: 'Hybrid', tenant },
     ]);
+
+    const director_users = await queryRunner.manager.save(
+      UserEntity,
+      academies.map(
+        (academy, idx) =>
+          ({
+            email: `director${idx}@test.com`,
+            password,
+            firstname: 'Director',
+            lastname: academy.name,
+            isActive: true,
+            emailVerified: true,
+            role: RolesEnum.DIRECTOR,
+          }) as UserEntity,
+      ),
+    );
+    // Create directors
+    const directors = await queryRunner.manager.save(
+      DirectorEntity,
+      academies.map(
+        (academy, idx) =>
+          ({
+            user: director_users[idx],
+            academy,
+            tenant,
+          }) as DirectorEntity,
+      ),
+    );
 
     // Create academic years (including historical data)
     const currentYear = new Date().getFullYear();
@@ -116,31 +148,6 @@ export class AddTestData1744271139400 implements MigrationInterface {
         }
       }
       global_teachers.push(...teachers);
-
-      const director_users = await queryRunner.manager.save(
-        UserEntity,
-        academies.map(
-          (academy) =>
-            ({
-              email: `${academy.name}_${school.name.replace(' ', '_')}@test.com`,
-              password,
-              firstname: `${academy.name} Director`,
-              lastname: 'Test',
-              isActive: true,
-              emailVerified: true,
-              role: RolesEnum.DIRECTOR,
-            }) as UserEntity,
-        ),
-      );
-
-      await queryRunner.manager.save(
-        DirectorEntity,
-        academies.map((academy, index) => ({
-          user: director_users[index],
-          school,
-          academy,
-        })),
-      );
     }
 
     global_courses = (await queryRunner.manager.save(
@@ -215,30 +222,64 @@ export class AddTestData1744271139400 implements MigrationInterface {
       }
 
       for (const track of tracks) {
+        const random_day = Math.floor(Math.random() * 15);
+        const random_month = Math.floor(Math.random() * 2);
         let learningPeriods = [
           {
             name: `Learning Period 1`,
             track,
-            start_date: new Date(academicYear.from, 8, 1),
-            end_date: new Date(academicYear.from, 10, 0),
+            start_date: new Date(
+              academicYear.from,
+              8 + random_month,
+              1 + random_day,
+            ),
+            end_date: new Date(
+              academicYear.from,
+              10 + random_month,
+              0 + random_day,
+            ),
           },
           {
             name: `Learning Period 2`,
             track,
-            start_date: new Date(academicYear.from, 10, 1),
-            end_date: new Date(academicYear.to, 0, 1),
+            start_date: new Date(
+              academicYear.from,
+              10 + random_month,
+              1 + random_day,
+            ),
+            end_date: new Date(
+              academicYear.to,
+              0 + random_month,
+              1 + random_day,
+            ),
           },
           {
             name: `Learning Period 3`,
             track,
-            start_date: new Date(academicYear.to, 0, 2),
-            end_date: new Date(academicYear.to, 3, 0),
+            start_date: new Date(
+              academicYear.to,
+              0 + random_month,
+              2 + random_day,
+            ),
+            end_date: new Date(
+              academicYear.to,
+              3 + random_month,
+              0 + random_day,
+            ),
           },
           {
             name: `Learning Period 4`,
             track,
-            start_date: new Date(academicYear.to, 3, 1),
-            end_date: new Date(academicYear.to, 6, 0),
+            start_date: new Date(
+              academicYear.to,
+              3 + random_month,
+              1 + random_day,
+            ),
+            end_date: new Date(
+              academicYear.to,
+              6 + random_month,
+              0 + random_day,
+            ),
           },
         ] as TrackLearningPeriodEntity[];
 
@@ -283,7 +324,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
         }
 
         // Create samples for students
-        let samples = [];
+        let samples: SampleEntity[] = [];
         for (const assignmentPeriod of assignmentPeriods) {
           const filteredSubjects = subjects.filter(
             (subject) => subject.track_id == track.id,
@@ -296,6 +337,14 @@ export class AddTestData1744271139400 implements MigrationInterface {
               ? assignmentPeriod.course.teacher_id
               : null;
 
+            const status = isCompleted
+              ? SampleStatus.COMPLETED
+              : Math.random() > 0.5
+                ? SampleStatus.ERRORS_FOUND
+                : Math.random() > 0.5
+                  ? SampleStatus.MISSING_SAMPLE
+                  : SampleStatus.PENDING;
+
             samples.push(
               ...([
                 {
@@ -307,7 +356,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
                 },
                 {
                   assignment_title: `Sample 2`,
-                  status: isCompleted ? 'COMPLETED' : 'PENDING',
+                  status,
                   assignment_period_id: assignmentPeriod.id,
                   done_by_id: user_id,
                   subject_id: subject.id,
@@ -319,6 +368,34 @@ export class AddTestData1744271139400 implements MigrationInterface {
         samples = await queryRunner.manager.save(SampleEntity, samples, {
           chunk: 1000,
         });
+
+        const sample_flag_errors = samples.filter(
+          (sample) => sample.status == SampleStatus.ERRORS_FOUND,
+        );
+        const sample_flag_missing_work = samples.filter(
+          (sample) => sample.status == SampleStatus.MISSING_SAMPLE,
+        );
+
+        await queryRunner.manager.save(
+          SampleFlagErrorEntity,
+          sample_flag_errors.map(
+            (sample) =>
+              ({
+                sample,
+                comment: `Comment ${Math.random()}`,
+              }) as SampleFlagErrorEntity,
+          ),
+        );
+        await queryRunner.manager.save(
+          SampleFlagMissingWorkEntity,
+          sample_flag_missing_work.map(
+            (sample) =>
+              ({
+                sample,
+                reason: `Reason ${Math.random()}`,
+              }) as SampleFlagMissingWorkEntity,
+          ),
+        );
       }
     }
 
