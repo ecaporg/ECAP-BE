@@ -3,6 +3,7 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { extractPaginationOptions } from '@/core';
 import { BaseService } from '@/core/services/base.service';
 
 import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
@@ -28,20 +29,22 @@ export class SampleService extends BaseService<SampleEntity> {
     super(sampleRepository, {
       defaultRelations: {
         assignment_period: {
+          learning_period: {
+            track: true,
+          },
           student: {
             user: true,
           },
         },
         subject: true,
+        done_by: true,
+        flag_errors: true,
+        flag_missing_work: true,
       },
     });
   }
 
   async updateSample(id: number, data: DeepPartial<SampleEntity>) {
-    if (data.status && data.status !== SampleStatus.FLAGGED_TO_ADMIN) {
-      await this.sampleFlagErrorService.delete(id).catch(() => {});
-      await this.sampleFlagMissingWorkService.delete(id).catch(() => {});
-    }
     return this.sampleRepository.update(id, data);
   }
 
@@ -81,6 +84,7 @@ export class SampleService extends BaseService<SampleEntity> {
       SampleStatus.MISSING_SAMPLE,
       SampleStatus.REASON_REJECTED,
     ];
-    return this.findAll(options);
+    const paginationOptions = extractPaginationOptions(options);
+    return this.findAll(paginationOptions);
   }
 }

@@ -1,4 +1,4 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -10,7 +10,7 @@ import { SampleEntity } from '../entities/sample.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const keys: RecordStringAndDotNotation<SampleEntity> = {
-  LearningPeriod: 'assignment_period.learning_period_id',
+  LearningPeriod: 'assignment_period',
   Teacher: 'assignment_period.course.teacher_id',
   Student: 'assignment_period.course.academic_year_id',
 } as const;
@@ -34,11 +34,6 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   'assignment_period.course.teacher_id'?: number;
 
-  @ApiProperty({
-    required: false,
-    description: 'Filter by director ID',
-    type: [Number],
-  })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'assignment_period.student.academy.directors.id'?: number[];
@@ -51,4 +46,8 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'assignment_period.academic_year'?: number;
+
+  @IdDecorator(String)
+  @IsString({ each: true })
+  'status'?: string[];
 }

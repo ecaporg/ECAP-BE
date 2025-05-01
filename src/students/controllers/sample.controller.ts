@@ -64,25 +64,33 @@ export class SampleController {
     return this.sampleService.findAll(options);
   }
 
+  @UseInterceptors(
+    new AttachUserIdInterceptor<SampleEntity>([
+      {
+        role: RolesEnum.DIRECTOR,
+        path: 'assignment_period.student.academy.directors.id',
+      },
+      {
+        role: RolesEnum.TEACHER,
+        path: 'assignment_period.course.teacher_id',
+      },
+    ]),
+  )
+  @Get('flagged')
+  @ApiOperation({ summary: 'Get all flagged samples' })
+  @ApiPaginationQueries()
+  @ApiPaginatedCrudResponse(SampleEntity)
+  @Roles(...DefaultRoles, RolesEnum.DIRECTOR)
+  async getFlaggedSamples(@Query() options?: FlaggedSamplesFilterDto) {
+    return this.sampleService.getFlaggedSamples(options);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get sample by ID' })
   @ApiCrudResponse(SampleEntity)
   @Roles(...DefaultRoles, RolesEnum.DIRECTOR)
   async findOne(@Param('id') id: EntityId): Promise<SampleEntity> {
-    return this.sampleService.findOne(id, {
-      assignment_period: {
-        learning_period: {
-          track: true,
-        },
-        student: {
-          user: true,
-        },
-      },
-      done_by: true,
-      subject: true,
-      flag_errors: true,
-      flag_missing_work: true,
-    });
+    return this.sampleService.findOne(id);
   }
 
   @Post()
@@ -130,26 +138,5 @@ export class SampleController {
     @Body() createDto: CreateSampleFlagMissingWorkDto,
   ): Promise<SampleFlagMissingWorkEntity> {
     return this.sampleService.flagMissingWork(id, user_id, createDto);
-  }
-
-  @UseInterceptors(
-    new AttachUserIdInterceptor<SampleEntity>([
-      {
-        role: RolesEnum.DIRECTOR,
-        path: 'assignment_period.student.academy.directors.id',
-      },
-      {
-        role: RolesEnum.TEACHER,
-        path: 'assignment_period.course.teacher_id',
-      },
-    ]),
-  )
-  @Get('flagged')
-  @ApiOperation({ summary: 'Get all flagged samples' })
-  @ApiPaginationQueries()
-  @ApiPaginatedCrudResponse(SampleEntity)
-  @Roles(...DefaultRoles, RolesEnum.DIRECTOR)
-  async getFlaggedSamples(@Query() options?: FlaggedSamplesFilterDto) {
-    return this.sampleService.getFlaggedSamples(options);
   }
 }
