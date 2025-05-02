@@ -120,12 +120,7 @@ export class SampleService extends BaseService<SampleEntity> {
     });
   }
 
-  async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {
-    options['flag_category'] = [
-      SampleFlagCategory.REASON_REJECTED,
-      SampleFlagCategory.ERROR_IN_SAMPLE,
-      SampleFlagCategory.MISSING_SAMPLE,
-    ];
+  async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {;
     const paginationOptions = extractPaginationOptions(options);
     return this.findAll(paginationOptions);
   }

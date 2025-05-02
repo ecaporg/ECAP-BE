@@ -6,7 +6,7 @@ import { BaseFilterDto } from '@/core';
 import { IdDecorator } from '@/core/decorators/filter-dto.decorators';
 import { RecordStringAndDotNotation } from '@/core/utils/types';
 
-import { SampleEntity } from '../entities/sample.entity';
+import { SampleEntity, SampleFlagCategory } from '../entities/sample.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const keys: RecordStringAndDotNotation<SampleEntity> = {
@@ -38,6 +38,11 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   'assignment_period.student.academy.directors.id'?: number[];
 
+  @ApiProperty({
+    required: false,
+    description: 'Filter by academy ID',
+    type: [Number],
+  })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'assignment_period.student.academy_id'?: number[];
@@ -51,7 +56,25 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   'assignment_period.academic_year'?: number;
 
+  @ApiProperty({
+    required: false,
+    description: 'Filter by status',
+    type: [String],
+  })
   @IdDecorator(String)
   @IsString({ each: true })
   'status'?: string[];
+
+  @ApiProperty({
+    required: false,
+    description: 'Filter by flag category',
+    type: [String],
+  })
+  @IdDecorator(String)
+  @IsString({ each: true })
+  'flag_category'?: string[] = [
+    SampleFlagCategory.REASON_REJECTED,
+    SampleFlagCategory.ERROR_IN_SAMPLE,
+    SampleFlagCategory.MISSING_SAMPLE,
+  ];
 }
