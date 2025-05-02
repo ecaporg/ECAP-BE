@@ -44,6 +44,11 @@ export class CreateSampleDto implements Partial<SampleInterface> {
   @IsNumber()
   @IsNotEmpty()
   done_by_id: number;
+
+  @ApiProperty({ description: 'Grade' })
+  @IsString()
+  @IsOptional()
+  grade?: string;
 }
 
 export class UpdateSampleDto extends PartialType(CreateSampleDto) {}
