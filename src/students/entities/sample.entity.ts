@@ -55,6 +55,13 @@ export class SampleEntity extends GenericEntity {
   subject_id: number;
 
   @ApiProperty({
+    description: 'Sample grade (e.g. 1/5, 2/5, 3/5, 4/5, 5/5)',
+    nullable: true,
+  })
+  @Column({ nullable: true })
+  grade?: string;
+
+  @ApiProperty({
     description: 'Subject associated with this sample',
     type: () => SubjectEntity,
   })
