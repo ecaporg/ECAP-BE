@@ -18,6 +18,7 @@ import { AssignmentPeriodEntity } from '../src/school/entities/assignment.entity
 import { SchoolEntity } from '../src/school/entities/school.entity';
 import {
   SampleEntity,
+  SampleFlagCategory,
   SampleStatus,
 } from '../src/students/entities/sample.entity';
 import { StudentEntity } from '../src/students/entities/student.entity';
@@ -349,6 +350,11 @@ export class AddTestData1744271139400 implements MigrationInterface {
                   ? SampleStatus.MISSING_SAMPLE
                   : SampleStatus.PENDING;
 
+            const flag_category =
+              status == SampleStatus.ERRORS_FOUND
+                ? SampleFlagCategory.ERROR_IN_SAMPLE
+                : null;
+
             samples.push(
               ...([
                 {
@@ -357,6 +363,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
                   assignment_period_id: assignmentPeriod.id,
                   done_by_id: assignmentPeriod.completed ? user_id : null,
                   subject_id: subject.id,
+                  flag_category,
                 },
                 {
                   assignment_title: `Sample 2`,
@@ -364,6 +371,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
                   assignment_period_id: assignmentPeriod.id,
                   done_by_id: user_id,
                   subject_id: subject.id,
+                  flag_category,
                 },
               ] as SampleEntity[]),
             );

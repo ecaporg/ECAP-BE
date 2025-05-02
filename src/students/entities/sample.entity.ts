@@ -23,6 +23,12 @@ export enum SampleStatus {
   REASON_REJECTED = 'REASON_REJECTED',
 }
 
+export enum SampleFlagCategory {
+  MISSING_SAMPLE = 'MISSING_SAMPLE',
+  REASON_REJECTED = 'REASON_REJECTED',
+  ERROR_IN_SAMPLE = 'ERROR_IN_SAMPLE',
+}
+
 @Entity({ name: 'samples' })
 export class SampleEntity extends GenericEntity {
   @ApiProperty({ description: 'Assignment title', maxLength: 250 })
@@ -36,6 +42,14 @@ export class SampleEntity extends GenericEntity {
   })
   @Column({ type: 'enum', enum: SampleStatus })
   status: SampleStatus;
+
+  @ApiProperty({
+    description: 'Sample flag category',
+    maxLength: 250,
+    enum: SampleFlagCategory,
+  })
+  @Column({ type: 'enum', enum: SampleFlagCategory, nullable: true })
+  flag_category: SampleFlagCategory;
 
   @ApiProperty({
     description: 'User ID of the user who set completed status of this sample',

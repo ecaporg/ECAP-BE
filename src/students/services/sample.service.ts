@@ -13,7 +13,11 @@ import {
   CreateSampleFlagMissingWorkDto,
   CreateSampleFlagRejectedDto,
 } from '../dto/sample.dto';
-import { SampleEntity, SampleStatus } from '../entities/sample.entity';
+import {
+  SampleEntity,
+  SampleFlagCategory,
+  SampleStatus,
+} from '../entities/sample.entity';
 
 import {
   SampleFlagCompletedService,
@@ -63,6 +67,7 @@ export class SampleService extends BaseService<SampleEntity> {
   ) {
     await this.update(id, {
       status: SampleStatus.FLAGGED_TO_ADMIN,
+      flag_category: SampleFlagCategory.ERROR_IN_SAMPLE,
     });
     return this.sampleFlagErrorService.create({
       ...createDto,
@@ -78,6 +83,7 @@ export class SampleService extends BaseService<SampleEntity> {
   ) {
     await this.update(id, {
       status: SampleStatus.FLAGGED_TO_ADMIN,
+      flag_category: SampleFlagCategory.MISSING_SAMPLE,
     });
     return this.sampleFlagMissingWorkService.create({
       ...createDto,
@@ -93,6 +99,7 @@ export class SampleService extends BaseService<SampleEntity> {
   ) {
     await this.update(id, {
       status: SampleStatus.REASON_REJECTED,
+      flag_category: SampleFlagCategory.REASON_REJECTED,
     });
     return this.sampleFlagRejectedService.create({
       ...createDto,
@@ -114,10 +121,10 @@ export class SampleService extends BaseService<SampleEntity> {
   }
 
   async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {
-    options['status'] = [
-      SampleStatus.REASON_REJECTED,
-      SampleStatus.FLAGGED_TO_ADMIN,
-      SampleStatus.ERRORS_FOUND,
+    options['flag_category'] = [
+      SampleFlagCategory.REASON_REJECTED,
+      SampleFlagCategory.ERROR_IN_SAMPLE,
+      SampleFlagCategory.MISSING_SAMPLE,
     ];
     const paginationOptions = extractPaginationOptions(options);
     return this.findAll(paginationOptions);
