@@ -199,6 +199,11 @@ export class BaseService<
     return count > 0;
   }
 
+  async count(options?: PaginationOptions<T>): Promise<number> {
+    const filters = options?.filters || {};
+    return this.repository.count({ where: filters });
+  }
+
   getDefaultQuery(
     options?: PaginationOptions<T>,
     relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],

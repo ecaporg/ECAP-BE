@@ -120,8 +120,15 @@ export class SampleService extends BaseService<SampleEntity> {
     });
   }
 
-  async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {;
+  async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {
     const paginationOptions = extractPaginationOptions(options);
-    return this.findAll(paginationOptions);
+    const res = await this.findAll(paginationOptions);
+    // const complatedCount = await this.count({
+    //   filters: {
+    //     ...paginationOptions.filters,
+    //     status: SampleStatus.COMPLETED,
+    //   },
+    // });
+    return res;
   }
 }
