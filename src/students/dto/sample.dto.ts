@@ -73,3 +73,10 @@ export class CreateSampleFlagRejectedDto {
   @IsNotEmpty()
   reason: string;
 }
+
+export class CreateSampleFlagCompletedDto {
+  @ApiProperty({ description: 'Message' })
+  @IsString()
+  @IsNotEmpty()
+  message: string;
+}

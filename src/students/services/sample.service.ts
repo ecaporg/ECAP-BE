@@ -8,6 +8,7 @@ import { BaseService } from '@/core/services/base.service';
 
 import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
+  CreateSampleFlagCompletedDto,
   CreateSampleFlagErrorDto,
   CreateSampleFlagMissingWorkDto,
   CreateSampleFlagRejectedDto,
@@ -15,6 +16,7 @@ import {
 import { SampleEntity, SampleStatus } from '../entities/sample.entity';
 
 import {
+  SampleFlagCompletedService,
   SampleFlagErrorService,
   SampleFlagMissingWorkService,
   SampleFlagRejectedService,
@@ -28,6 +30,7 @@ export class SampleService extends BaseService<SampleEntity> {
     private sampleFlagErrorService: SampleFlagErrorService,
     private sampleFlagMissingWorkService: SampleFlagMissingWorkService,
     private sampleFlagRejectedService: SampleFlagRejectedService,
+    private sampleFlagCompletedService: SampleFlagCompletedService,
   ) {
     super(sampleRepository, {
       defaultRelations: {
@@ -89,6 +92,18 @@ export class SampleService extends BaseService<SampleEntity> {
     createDto: CreateSampleFlagRejectedDto,
   ) {
     return this.sampleFlagRejectedService.create({ ...createDto, id, user_id });
+  }
+
+  async flagCompleted(
+    id: number,
+    user_id: number,
+    createDto: CreateSampleFlagCompletedDto,
+  ) {
+    return this.sampleFlagCompletedService.create({
+      ...createDto,
+      id,
+      user_id,
+    });
   }
 
   async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {

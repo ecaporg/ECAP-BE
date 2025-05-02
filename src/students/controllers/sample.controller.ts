@@ -33,10 +33,12 @@ import {
   CreateSampleFlagErrorDto,
   CreateSampleFlagMissingWorkDto,
   CreateSampleFlagRejectedDto,
+  CreateSampleFlagCompletedDto,
   UpdateSampleDto,
 } from '../dto/sample.dto';
 import { SampleEntity } from '../entities/sample.entity';
 import {
+  SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
   SampleFlagRejectedEntity,
@@ -151,5 +153,16 @@ export class SampleController {
     @Body() createDto: CreateSampleFlagRejectedDto,
   ): Promise<SampleFlagRejectedEntity> {
     return this.sampleService.flagRejected(id, user_id, createDto);
+  }
+
+  @Post(':id/flag-completed')
+  @ApiOperation({ summary: 'Flag a completed sample' })
+  @ApiCrudResponse(SampleFlagCompletedEntity)
+  async flagCompleted(
+    @CurrentUser('id') user_id: UserEntity['id'],
+    @Param('id', ParseIntPipe) id: SampleFlagCompletedEntity['id'],
+    @Body() createDto: CreateSampleFlagCompletedDto,
+  ): Promise<SampleFlagCompletedEntity> {
+    return this.sampleService.flagCompleted(id, user_id, createDto);
   }
 }
