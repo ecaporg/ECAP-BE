@@ -9,6 +9,7 @@ import {
   SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
+  SampleFlagRejectedEntity,
 } from '../entities/sample-flag.entity';
 
 @Injectable()
@@ -38,5 +39,15 @@ export class SampleFlagCompletedService extends BaseService<SampleFlagCompletedE
     private sampleFlagCompletedRepository: Repository<SampleFlagCompletedEntity>,
   ) {
     super(sampleFlagCompletedRepository);
+  }
+}
+
+@Injectable()
+export class SampleFlagRejectedService extends BaseService<SampleFlagRejectedEntity> {
+  constructor(
+    @InjectRepository(SampleFlagRejectedEntity)
+    private sampleFlagRejectedRepository: Repository<SampleFlagRejectedEntity>,
+  ) {
+    super(sampleFlagRejectedRepository);
   }
 }

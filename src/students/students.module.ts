@@ -15,6 +15,7 @@ import {
   SampleFlagCompletedService,
   SampleFlagErrorService,
   SampleFlagMissingWorkService,
+  SampleFlagRejectedService,
 } from './services/sample-flag.service';
 import { StudentService } from './services/student.service';
 
@@ -36,6 +37,7 @@ import { StudentService } from './services/student.service';
     SampleFlagErrorService,
     SampleFlagMissingWorkService,
     SampleFlagCompletedService,
+    SampleFlagRejectedService,
   ],
   exports: [
     StudentService,
@@ -43,6 +45,7 @@ import { StudentService } from './services/student.service';
     SampleFlagErrorService,
     SampleFlagMissingWorkService,
     SampleFlagCompletedService,
+    SampleFlagRejectedService,
   ],
 })
 export class StudentsModule {}

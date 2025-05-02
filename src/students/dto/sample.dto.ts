@@ -61,3 +61,10 @@ export class CreateSampleFlagMissingWorkDto {
   @IsNotEmpty()
   reason: string;
 }
+
+export class CreateSampleFlagRejectedDto {
+  @ApiProperty({ description: 'Reason' })
+  @IsString()
+  @IsNotEmpty()
+  reason: string;
+}

@@ -10,12 +10,14 @@ import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
   CreateSampleFlagErrorDto,
   CreateSampleFlagMissingWorkDto,
+  CreateSampleFlagRejectedDto,
 } from '../dto/sample.dto';
 import { SampleEntity, SampleStatus } from '../entities/sample.entity';
 
 import {
   SampleFlagErrorService,
   SampleFlagMissingWorkService,
+  SampleFlagRejectedService,
 } from './sample-flag.service';
 
 @Injectable()
@@ -25,6 +27,7 @@ export class SampleService extends BaseService<SampleEntity> {
     private sampleRepository: Repository<SampleEntity>,
     private sampleFlagErrorService: SampleFlagErrorService,
     private sampleFlagMissingWorkService: SampleFlagMissingWorkService,
+    private sampleFlagRejectedService: SampleFlagRejectedService,
   ) {
     super(sampleRepository, {
       defaultRelations: {
@@ -76,6 +79,14 @@ export class SampleService extends BaseService<SampleEntity> {
       id,
       user_id,
     });
+  }
+
+  async flagRejected(
+    id: number,
+    user_id: number,
+    createDto: CreateSampleFlagRejectedDto,
+  ) {
+    return this.sampleFlagRejectedService.create({ ...createDto, id, user_id });
   }
 
   async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {
