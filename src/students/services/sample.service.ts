@@ -41,8 +41,10 @@ export class SampleService extends BaseService<SampleEntity> {
         },
         subject: true,
         done_by: true,
-        flag_errors: true,
-        flag_missing_work: true,
+        flag_errors: { user: true },
+        flag_missing_work: { user: true },
+        flag_rejected: { user: true },
+        flag_completed: { user: true },
       },
     });
   }
