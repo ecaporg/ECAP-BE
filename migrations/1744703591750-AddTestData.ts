@@ -3,7 +3,11 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { CourseEntity } from '@/course/entities/course.entity';
 import { SemesterEntity } from '@/school/entities/semester.entity';
-import { DirectorEntity, TeacherEntity } from '@/staff/entities/staff.entity';
+import {
+  AdminEntity,
+  DirectorEntity,
+  TeacherEntity,
+} from '@/staff/entities/staff.entity';
 import { SampleFlagMissingWorkEntity } from '@/students/entities/sample-flag.entity';
 import { SampleFlagErrorEntity } from '@/students/entities/sample-flag.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
@@ -400,7 +404,7 @@ export class AddTestData1744271139400 implements MigrationInterface {
     }
 
     // Create admin user
-    await queryRunner.manager.save(UserEntity, {
+    const admin = await queryRunner.manager.save(UserEntity, {
       email: 'admin@test.com',
       password: await argon2.hash('password'),
       firstname: 'Admin',
@@ -408,6 +412,11 @@ export class AddTestData1744271139400 implements MigrationInterface {
       isActive: true,
       emailVerified: true,
       role: RolesEnum.SUPER_ADMIN,
+    });
+
+    await queryRunner.manager.save(AdminEntity, {
+      user: admin,
+      tenant,
     });
   }
 
