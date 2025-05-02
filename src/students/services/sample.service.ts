@@ -91,7 +91,14 @@ export class SampleService extends BaseService<SampleEntity> {
     user_id: number,
     createDto: CreateSampleFlagRejectedDto,
   ) {
-    return this.sampleFlagRejectedService.create({ ...createDto, id, user_id });
+    await this.update(id, {
+      status: SampleStatus.REASON_REJECTED,
+    });
+    return this.sampleFlagRejectedService.create({
+      ...createDto,
+      id,
+      user_id,
+    });
   }
 
   async flagCompleted(
