@@ -40,9 +40,6 @@ export class AddTestData1744271139400 implements MigrationInterface {
     const schools = await queryRunner.manager.save(SchoolEntity, [
       { name: 'School 1', tenant },
       { name: 'School 2', tenant },
-      { name: 'School 3', tenant },
-      { name: 'School 4', tenant },
-      { name: 'School 5', tenant },
     ]);
 
     // Create academies
@@ -50,8 +47,6 @@ export class AddTestData1744271139400 implements MigrationInterface {
       { name: 'Home', tenant },
       { name: 'Offline', tenant },
       { name: 'Flex', tenant },
-      { name: 'Online', tenant },
-      { name: 'Hybrid', tenant },
     ]);
 
     const director_users = await queryRunner.manager.save(
@@ -85,7 +80,6 @@ export class AddTestData1744271139400 implements MigrationInterface {
     // Create academic years (including historical data)
     const currentYear = new Date().getFullYear();
     const academicYears = await queryRunner.manager.save(AcademicYearEntity, [
-      { from: currentYear - 2, to: currentYear - 1 },
       { from: currentYear - 1, to: currentYear },
       { from: currentYear, to: currentYear + 1 },
     ]);
@@ -163,17 +157,20 @@ export class AddTestData1744271139400 implements MigrationInterface {
     for (const academicYear of academicYears) {
       // Create tracks
       const tracks = await queryRunner.manager.save(TrackEntity, [
-        ...Array.from(
-          { length: 4 },
-          (_, i) =>
-            ({
-              name: `Track ${i + 1}`,
-              tenant,
-              start_date: new Date(academicYear.from, 8, 1),
-              end_date: new Date(academicYear.to, 6, 0),
-              academic_year_id: academicYear.id,
-            }) as TrackEntity,
-        ),
+        {
+          name: `Track A`,
+          tenant,
+          start_date: new Date(academicYear.from, 8, 1),
+          end_date: new Date(academicYear.to, 6, 0),
+          academic_year_id: academicYear.id,
+        } as TrackEntity,
+        {
+          name: `Track B`,
+          tenant,
+          start_date: new Date(academicYear.from, 8, 1),
+          end_date: new Date(academicYear.to, 6, 0),
+          academic_year_id: academicYear.id,
+        } as TrackEntity,
       ]);
 
       let subjects = [] as SubjectEntity[];
@@ -312,11 +309,13 @@ export class AddTestData1744271139400 implements MigrationInterface {
           );
           for (const student of filteredStudents) {
             for (const learningPeriod of learningPeriods) {
+              const completed = Math.random() > 0.3;
               local_assignmentPeriods.push({
                 course,
                 student,
                 learning_period: learningPeriod,
-                completed: Math.random() > 0.3,
+                completed,
+                percentage: completed ? 100 : 0,
               } as AssignmentPeriodEntity);
             }
           }
