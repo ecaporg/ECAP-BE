@@ -36,19 +36,14 @@ export class AssignmentPeriodEntity extends GenericEntity {
   @ApiProperty({ description: 'Whether this period is completed' })
   @VirtualColumn({
     query: (alias) => `
-      CASE 
-        WHEN (
-          SELECT COUNT(*) 
-          FROM samples s 
-          WHERE s.assignment_period_id = ${alias}.id
-        ) = 0 THEN FALSE
-        WHEN (
-          SELECT COUNT(*) 
-          FROM samples s 
-          WHERE s.assignment_period_id = ${alias}.id AND s.status <> 'COMPLETED'
-        ) > 0 THEN FALSE
-        ELSE TRUE
-      END
+      (SELECT 
+        CASE 
+          WHEN COUNT(s.id) = 0 THEN FALSE 
+          WHEN SUM(CASE WHEN s.status <> 'COMPLETED' THEN 1 ELSE 0 END) > 0 THEN FALSE 
+          ELSE TRUE 
+        END 
+      FROM samples s 
+      WHERE s.assignment_period_id = ${alias}.id)
     `,
   })
   completed: boolean;
@@ -56,22 +51,13 @@ export class AssignmentPeriodEntity extends GenericEntity {
   @ApiProperty({ description: 'Percentage of completed samples' })
   @VirtualColumn({
     query: (alias) => `
-      CASE 
-        WHEN (
-          SELECT COUNT(*) 
-          FROM samples s 
-          WHERE s.assignment_period_id = ${alias}.id
-        ) = 0 THEN 0
-        ELSE (
-          SELECT CAST(COUNT(*) * 100.0 / (
-            SELECT COUNT(*) 
-            FROM samples s 
-            WHERE s.assignment_period_id = ${alias}.id
-          ) AS DECIMAL(5,2))
-          FROM samples s 
-          WHERE s.assignment_period_id = ${alias}.id AND s.status = 'COMPLETED'
-        )
-      END
+      (SELECT 
+        CASE 
+          WHEN COUNT(s.id) = 0 THEN 0 
+          ELSE CAST(SUM(CASE WHEN s.status = 'COMPLETED' THEN 1 ELSE 0 END) * 100.0 / COUNT(s.id) AS DECIMAL(5,2)) 
+        END 
+      FROM samples s 
+      WHERE s.assignment_period_id = ${alias}.id)
     `,
   })
   percentage: number;
