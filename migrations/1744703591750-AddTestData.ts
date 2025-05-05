@@ -438,9 +438,11 @@ export class AddTestData1744271139400 implements MigrationInterface {
     );
     for (const assignment_period of assignment_periods) {
       assignment_period.percentage =
-        assignment_period.samples.filter(
+        (assignment_period.samples.filter(
           (sample) => sample.status == SampleStatus.COMPLETED,
-        ).length / assignment_period.samples.length;
+        ).length /
+          assignment_period.samples.length) *
+        100;
     }
     await queryRunner.manager.save(AssignmentPeriodEntity, assignment_periods);
   }
