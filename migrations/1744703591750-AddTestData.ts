@@ -426,6 +426,23 @@ export class AddTestData1744271139400 implements MigrationInterface {
       user: admin,
       tenant,
     });
+
+    const assignment_periods = await queryRunner.manager.find(
+      AssignmentPeriodEntity,
+      {
+        where: {
+          completed: false,
+        },
+        relations: { samples: true },
+      },
+    );
+    for (const assignment_period of assignment_periods) {
+      assignment_period.percentage =
+        assignment_period.samples.filter(
+          (sample) => sample.status == SampleStatus.COMPLETED,
+        ).length / assignment_period.samples.length;
+    }
+    await queryRunner.manager.save(AssignmentPeriodEntity, assignment_periods);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

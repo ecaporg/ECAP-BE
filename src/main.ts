@@ -9,6 +9,7 @@ moduleAlias.addAliases({
 
 // Інші імпорти
 import { useContainer } from 'class-validator';
+import { DataSource } from 'typeorm';
 
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
@@ -44,7 +45,7 @@ async function bootstrap() {
 
   const corsOptions: CorsOptions = {
     origin: ['http://localhost:3000', configService.get('FRONTEND_URL')],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   };
 

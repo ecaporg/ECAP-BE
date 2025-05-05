@@ -30,10 +30,10 @@ import { RolesEnum } from '@/users/enums/roles.enum';
 import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
   CreateSampleDto,
+  CreateSampleFlagCompletedDto,
   CreateSampleFlagErrorDto,
   CreateSampleFlagMissingWorkDto,
   CreateSampleFlagRejectedDto,
-  CreateSampleFlagCompletedDto,
   UpdateSampleDto,
 } from '../dto/sample.dto';
 import { SampleEntity } from '../entities/sample.entity';

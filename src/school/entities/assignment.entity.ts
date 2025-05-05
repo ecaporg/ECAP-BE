@@ -1,17 +1,17 @@
 import {
+  AfterLoad,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
-  VirtualColumn,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core/generic-entity';
 import { CourseEntity } from '@/course/entities/course.entity';
-import { SampleEntity } from '@/students/entities/sample.entity';
+import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
@@ -34,32 +34,11 @@ export class AssignmentPeriodEntity extends GenericEntity {
   learning_period_id: number;
 
   @ApiProperty({ description: 'Whether this period is completed' })
-  @VirtualColumn({
-    query: (alias) => `
-      (SELECT 
-        CASE 
-          WHEN COUNT(s.id) = 0 THEN FALSE 
-          WHEN SUM(CASE WHEN s.status <> 'COMPLETED' THEN 1 ELSE 0 END) > 0 THEN FALSE 
-          ELSE TRUE 
-        END 
-      FROM samples s 
-      WHERE s.assignment_period_id = ${alias}.id)
-    `,
-  })
+  @Column({ type: 'boolean', default: false })
   completed: boolean;
 
   @ApiProperty({ description: 'Percentage of completed samples' })
-  @VirtualColumn({
-    query: (alias) => `
-      (SELECT 
-        CASE 
-          WHEN COUNT(s.id) = 0 THEN 0 
-          ELSE CAST(SUM(CASE WHEN s.status = 'COMPLETED' THEN 1 ELSE 0 END) * 100.0 / COUNT(s.id) AS DECIMAL(5,2)) 
-        END 
-      FROM samples s 
-      WHERE s.assignment_period_id = ${alias}.id)
-    `,
-  })
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   percentage: number;
 
   @ApiProperty({
@@ -92,4 +71,24 @@ export class AssignmentPeriodEntity extends GenericEntity {
   })
   @OneToMany(() => SampleEntity, (sample) => sample.assignment_period)
   samples: SampleEntity[];
+
+  @AfterLoad()
+  updateCompletionStats() {
+    if (this.samples && this.samples.length > 0) {
+      const totalSamples = this.samples.length;
+      const completedSamples = this.samples.filter(
+        (sample) => sample.status === SampleStatus.COMPLETED,
+      ).length;
+
+      this.percentage =
+        totalSamples > 0
+          ? parseFloat(((completedSamples * 100) / totalSamples).toFixed(2))
+          : 0;
+
+      this.completed = totalSamples > 0 && completedSamples === totalSamples;
+    } else {
+      this.percentage = 0;
+      this.completed = false;
+    }
+  }
 }

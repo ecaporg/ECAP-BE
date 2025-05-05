@@ -18,6 +18,7 @@ import {
   SampleFlagRejectedService,
 } from './services/sample-flag.service';
 import { StudentService } from './services/student.service';
+import { SampleSubscriber } from './subscribers/sample.subscriber';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { StudentService } from './services/student.service';
     SampleFlagMissingWorkService,
     SampleFlagCompletedService,
     SampleFlagRejectedService,
+    SampleSubscriber,
   ],
   exports: [
     StudentService,

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DbV81746116962955 implements MigrationInterface {
-  name = 'DbV81746116962955';
+export class DbV91746477960232 implements MigrationInterface {
+  name = 'DbV91746477960232';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -29,16 +29,22 @@ export class DbV81746116962955 implements MigrationInterface {
       `CREATE TABLE "sample_flag_completed" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "user_id" integer, "message" character varying NOT NULL, CONSTRAINT "PK_72d8a98ddf845484d3cb1f35112" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
+      `CREATE TABLE "sample_flag_rejected" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "user_id" integer, "reason" character varying NOT NULL, CONSTRAINT "PK_961bf01c879380765f2bb29c086" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
       `CREATE TYPE "public"."samples_status_enum" AS ENUM('COMPLETED', 'FLAGGED_TO_ADMIN', 'PENDING', 'ERRORS_FOUND', 'MISSING_SAMPLE', 'REASON_REJECTED')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "samples" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "assignment_title" character varying(250) NOT NULL, "status" "public"."samples_status_enum" NOT NULL, "done_by_id" integer, "assignment_period_id" integer NOT NULL, "subject_id" integer NOT NULL, CONSTRAINT "PK_d68b5b3bd25a6851b033fb63444" PRIMARY KEY ("id"))`,
+      `CREATE TYPE "public"."samples_flag_category_enum" AS ENUM('MISSING_SAMPLE', 'REASON_REJECTED', 'ERROR_IN_SAMPLE')`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "samples" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "assignment_title" character varying(250) NOT NULL, "status" "public"."samples_status_enum" NOT NULL, "flag_category" "public"."samples_flag_category_enum", "done_by_id" integer, "assignment_period_id" integer NOT NULL, "subject_id" integer NOT NULL, "grade" character varying, CONSTRAINT "PK_d68b5b3bd25a6851b033fb63444" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "track_learning_periods" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "track_id" integer NOT NULL, "name" character varying(250) NOT NULL, "start_date" TIMESTAMP NOT NULL, "end_date" TIMESTAMP NOT NULL, CONSTRAINT "PK_d829f156a60ce0e53880b5ff78a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "assignment_periods" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "course_id" integer NOT NULL, "student_id" integer NOT NULL, "learning_period_id" integer NOT NULL, "completed" boolean NOT NULL, CONSTRAINT "PK_31b7add7e538990db80d9b8cfd4" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "assignment_periods" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "course_id" integer NOT NULL, "student_id" integer NOT NULL, "learning_period_id" integer NOT NULL, "completed" boolean NOT NULL DEFAULT false, "percentage" numeric(5,2) NOT NULL DEFAULT '0', CONSTRAINT "PK_31b7add7e538990db80d9b8cfd4" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "students" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "school_id" integer NOT NULL, "academy_id" integer, "track_id" integer, "grade" character varying(250) NOT NULL, CONSTRAINT "PK_7d7f07271ad4ce999880713f05e" PRIMARY KEY ("id"))`,
@@ -105,6 +111,12 @@ export class DbV81746116962955 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "sample_flag_completed" ADD CONSTRAINT "FK_72d8a98ddf845484d3cb1f35112" FOREIGN KEY ("id") REFERENCES "samples"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "sample_flag_rejected" ADD CONSTRAINT "FK_b9bea24f0f61a9d4a9631bfa443" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "sample_flag_rejected" ADD CONSTRAINT "FK_961bf01c879380765f2bb29c086" FOREIGN KEY ("id") REFERENCES "samples"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "samples" ADD CONSTRAINT "FK_cb96080f78bd231658473bac12f" FOREIGN KEY ("subject_id") REFERENCES "subjects"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -254,6 +266,12 @@ export class DbV81746116962955 implements MigrationInterface {
       `ALTER TABLE "samples" DROP CONSTRAINT "FK_cb96080f78bd231658473bac12f"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "sample_flag_rejected" DROP CONSTRAINT "FK_961bf01c879380765f2bb29c086"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "sample_flag_rejected" DROP CONSTRAINT "FK_b9bea24f0f61a9d4a9631bfa443"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "sample_flag_completed" DROP CONSTRAINT "FK_72d8a98ddf845484d3cb1f35112"`,
     );
     await queryRunner.query(
@@ -300,7 +318,9 @@ export class DbV81746116962955 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "assignment_periods"`);
     await queryRunner.query(`DROP TABLE "track_learning_periods"`);
     await queryRunner.query(`DROP TABLE "samples"`);
+    await queryRunner.query(`DROP TYPE "public"."samples_flag_category_enum"`);
     await queryRunner.query(`DROP TYPE "public"."samples_status_enum"`);
+    await queryRunner.query(`DROP TABLE "sample_flag_rejected"`);
     await queryRunner.query(`DROP TABLE "sample_flag_completed"`);
     await queryRunner.query(`DROP TABLE "sample_flag_missing_work"`);
     await queryRunner.query(`DROP TABLE "sample_flag_errors"`);

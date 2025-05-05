@@ -31,6 +31,8 @@ import { UsersModule } from '@/users/users.module';
         dropSchema: false,
         logging: false,
         logger: 'advanced-console',
+        subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
+        autoLoadEntities: true,
       }),
       inject: [ConfigService],
     }),
