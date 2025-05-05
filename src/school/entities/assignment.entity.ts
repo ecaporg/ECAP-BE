@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  VirtualColumn,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -27,8 +34,47 @@ export class AssignmentPeriodEntity extends GenericEntity {
   learning_period_id: number;
 
   @ApiProperty({ description: 'Whether this period is completed' })
-  @Column()
+  @VirtualColumn({
+    query: (alias) => `
+      CASE 
+        WHEN (
+          SELECT COUNT(*) 
+          FROM samples s 
+          WHERE s.assignment_period_id = ${alias}.id
+        ) = 0 THEN FALSE
+        WHEN (
+          SELECT COUNT(*) 
+          FROM samples s 
+          WHERE s.assignment_period_id = ${alias}.id AND s.status <> 'COMPLETED'
+        ) > 0 THEN FALSE
+        ELSE TRUE
+      END
+    `,
+  })
   completed: boolean;
+
+  @ApiProperty({ description: 'Percentage of completed samples' })
+  @VirtualColumn({
+    query: (alias) => `
+      CASE 
+        WHEN (
+          SELECT COUNT(*) 
+          FROM samples s 
+          WHERE s.assignment_period_id = ${alias}.id
+        ) = 0 THEN 0
+        ELSE (
+          SELECT CAST(COUNT(*) * 100.0 / (
+            SELECT COUNT(*) 
+            FROM samples s 
+            WHERE s.assignment_period_id = ${alias}.id
+          ) AS DECIMAL(5,2))
+          FROM samples s 
+          WHERE s.assignment_period_id = ${alias}.id AND s.status = 'COMPLETED'
+        )
+      END
+    `,
+  })
+  percentage: number;
 
   @ApiProperty({
     description: 'Learning period associated with this period',

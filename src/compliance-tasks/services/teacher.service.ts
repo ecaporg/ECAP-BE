@@ -40,7 +40,6 @@ export class TeacherComplianceTaskService {
       await this.assignmentPeriodService.findAllWithCompletedCount(
         paginationOptions,
         {
-          samples: true,
           student: {
             track: true,
             academy: true,
