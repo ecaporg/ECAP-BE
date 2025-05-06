@@ -9,7 +9,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core/generic-entity';
+import { GenericEntity } from '@/core';
 import { CourseEntity } from '@/course/entities/course.entity';
 import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
 import { StudentEntity } from '@/students/entities/student.entity';

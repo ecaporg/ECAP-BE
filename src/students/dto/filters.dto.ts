@@ -2,9 +2,7 @@ import { IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { BaseFilterDto } from '@/core';
-import { IdDecorator } from '@/core/decorators/filter-dto.decorators';
-import { RecordStringAndDotNotation } from '@/core/utils/types';
+import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
 
 import { SampleEntity, SampleFlagCategory } from '../entities/sample.entity';
 

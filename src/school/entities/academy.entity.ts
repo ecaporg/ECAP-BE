@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core/generic-entity';
+import { GenericEntity } from '@/core';
 import { DirectorEntity } from '@/staff/entities/staff.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 

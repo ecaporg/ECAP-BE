@@ -1,18 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  Equal,
-  FindOptionsWhere,
-  ILike,
-  In,
-  LessThanOrEqual,
-  Like,
-} from 'typeorm';
+import { Equal, FindOptionsWhere, ILike, In, LessThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
 import { IAuthUser } from '@/auth/types/auth-user';
-import { BadRequestException } from '@/core';
-import { extractPaginationOptions } from '@/core/utils/pagination.utils';
+import { BadRequestException, extractPaginationOptions } from '@/core';
 import { AcademicYearService } from '@/school/services/academic-year.service';
 import { AssignmentPeriodService } from '@/school/services/assignment.service';
 import { StudentService } from '@/students/services/student.service';

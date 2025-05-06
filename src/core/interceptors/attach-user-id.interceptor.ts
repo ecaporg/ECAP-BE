@@ -7,7 +7,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 
-import { NestedObjectToDotNotation } from '@/core/utils/types';
+import { NestedObjectToDotNotation } from '@/core';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 interface RolePathMapping<T extends object> {

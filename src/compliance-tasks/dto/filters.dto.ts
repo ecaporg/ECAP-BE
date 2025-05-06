@@ -2,9 +2,7 @@ import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 
-import { BaseFilterDto } from '@/core';
-import { IdDecorator } from '@/core/decorators/filter-dto.decorators';
-import { RecordStringAndDotNotation } from '@/core/utils/types';
+import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
 import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

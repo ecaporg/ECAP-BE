@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core/generic-entity';
+import { GenericEntity } from '@/core';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';

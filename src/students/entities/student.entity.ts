@@ -10,7 +10,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { DatedGenericEntity } from '@/core/generic-entity';
+import { DatedGenericEntity } from '@/core';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';

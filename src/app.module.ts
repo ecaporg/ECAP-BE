@@ -7,6 +7,7 @@ import { AppService } from '@/app.service';
 import { AuthModule } from '@/auth/auth.module';
 import { ComplianceTasksModule } from '@/compliance-tasks/compliance-tasks.module';
 import { CoreModule } from '@/core/core.module';
+import { DashboardModule } from '@/dashboard/dashboard.module';
 import { SchoolModule } from '@/school/school.module';
 import { UsersModule } from '@/users/users.module';
 
@@ -17,6 +18,7 @@ import { UsersModule } from '@/users/users.module';
     UsersModule,
     SchoolModule,
     ComplianceTasksModule,
+    DashboardModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,

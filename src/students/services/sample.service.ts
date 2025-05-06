@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { extractPaginationOptions } from '@/core';
-import { BaseService } from '@/core/services/base.service';
+import { BaseService } from '@/core';
 
 import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {

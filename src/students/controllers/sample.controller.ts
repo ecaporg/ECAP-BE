@@ -17,13 +17,13 @@ import {
   ApiErrorResponses,
   ApiPaginatedCrudResponse,
   ApiPaginationQueries,
+  AttachUserIdInterceptor,
   CurrentUser,
   EntityId,
   PaginatedResult,
   PaginationOptions,
   Roles,
 } from '@/core';
-import { AttachUserIdInterceptor } from '@/core/interceptors/attach-user-id.interceptor';
 import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
