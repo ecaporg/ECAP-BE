@@ -107,11 +107,11 @@ export class TeacherComplianceTaskService {
   }
 
   private async getTenantQuery(user: IAuthUser) {
-    const academicYears =
-      await this.academicYearService.findCurrentAcademicYears();
     const query: FindOptionsWhere<TenantEntity> = {};
 
     if (user.role === RolesEnum.TEACHER) {
+      const academicYears =
+        await this.academicYearService.findCurrentAcademicYears();
       query.schools = { courses: { teacher: { user } } };
       query.tracks = {
         academicYear: {

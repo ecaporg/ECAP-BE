@@ -1,17 +1,10 @@
-import {
-  AfterLoad,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core';
 import { CourseEntity } from '@/course/entities/course.entity';
-import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
+import { SampleEntity } from '@/students/entities/sample.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
@@ -71,24 +64,4 @@ export class AssignmentPeriodEntity extends GenericEntity {
   })
   @OneToMany(() => SampleEntity, (sample) => sample.assignment_period)
   samples: SampleEntity[];
-
-  @AfterLoad()
-  updateCompletionStats() {
-    if (this.samples && this.samples.length > 0) {
-      const totalSamples = this.samples.length;
-      const completedSamples = this.samples.filter(
-        (sample) => sample.status === SampleStatus.COMPLETED,
-      ).length;
-
-      this.percentage =
-        totalSamples > 0
-          ? parseFloat(((completedSamples * 100) / totalSamples).toFixed(2))
-          : 0;
-
-      this.completed = totalSamples > 0 && completedSamples === totalSamples;
-    } else {
-      this.percentage = 0;
-      this.completed = false;
-    }
-  }
 }

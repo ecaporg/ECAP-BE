@@ -1,22 +1,25 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
-import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { BaseFilterDto, RecordStringAndDotNotation } from '@/core';
+import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const keys: RecordStringAndDotNotation<AssignmentPeriodEntity> = {
-  DIRECTOR: 'student.academy.directors.id',
-  ADMIN: 'course.teacher_id',
-  STUDENT_STATUS: 'samples.status',
-  SUBJECT: 'course.assignment_periods.samples.subject',
+const keys: RecordStringAndDotNotation<TrackLearningPeriodEntity> = {
+  DIRECTOR: 'assignment_periods.student.academy.directors.id',
+  ADMIN: 'track.tenant.admins.id',
+  TEACHER: 'assignment_periods.course.teacher_id',
 } as const;
 
 export class DashboardFilterDto extends BaseFilterDto {
-  @IdDecorator(Number)
-  @IsNumber({}, { each: true })
-  'course.teacher_id'?: number;
+  @IsOptional()
+  @IsNumber()
+  'track.tenant.admins.id'?: number;
 
-  @IdDecorator(Number)
-  @IsNumber({}, { each: true })
-  'student.academy.directors.id'?: number[];
+  @IsOptional()
+  @IsNumber()
+  'assignment_periods.student.academy.directors.id'?: number;
+
+  @IsOptional()
+  @IsNumber()
+  'assignment_periods.course.teacher_id'?: number;
 }

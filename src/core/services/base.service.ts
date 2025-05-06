@@ -44,6 +44,8 @@ export type BaseServiceOptions<T, IDKey> = {
   defaultRelations?: FindOptionsRelations<T> | string[];
 };
 
+const CACHE_TTL = 60000;
+
 export class BaseService<
   T extends DatedGenericEntity,
   IDKey extends keyof T = any,
@@ -93,33 +95,7 @@ export class BaseService<
     options?: PaginationOptions<T>,
     relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],
   ): Promise<PaginatedResult<T>> {
-    const page = options?.page || 1;
-    const limit = options?.limit || 15;
-    const sortBy = options?.sortBy?.length ? options.sortBy : ['createdAt'];
-    const sortDirection = options?.sortDirection || ['DESC'];
-    const search = options?.search || '';
-    const searchFields = options?.searchFields || [];
-    const filters = options?.filters || {};
-
-    const query: FindManyOptions<T> = {
-      skip: (page - 1) * limit,
-      take: limit,
-      order: createOrderCondition(sortBy, sortDirection),
-      relations: relations || this.defaultRelations,
-      where: filters,
-    };
-
-    if (search && searchFields.length > 0) {
-      const searchConditions: FindOptionsWhere<T> = createSearchCondition(
-        search,
-        searchFields,
-      );
-
-      query.where = {
-        ...query.where,
-        ...searchConditions,
-      };
-    }
+    const query = this.getDefaultQuery(options, relations);
 
     const [items, totalItems] = await this.repository.findAndCount(query);
 
@@ -128,9 +104,9 @@ export class BaseService<
       meta: {
         totalItems,
         itemCount: items.length,
-        itemsPerPage: limit,
-        totalPages: Math.ceil(totalItems / limit),
-        currentPage: page,
+        itemsPerPage: query.take,
+        totalPages: Math.ceil(totalItems / query.take),
+        currentPage: options?.page || 1,
       },
     };
   }
@@ -143,6 +119,7 @@ export class BaseService<
     const entity = await this.repository.findOne({
       relations: relations || this.defaultRelations,
       where,
+      cache: CACHE_TTL,
     });
 
     if (!entity) {
@@ -157,6 +134,7 @@ export class BaseService<
   async findBy(options: FindManyOptions<T>): Promise<T[]> {
     return this.repository.find({
       relations: this.defaultRelations,
+      cache: CACHE_TTL,
       ...options,
     });
   }
@@ -168,6 +146,7 @@ export class BaseService<
     const entity = await this.repository.findOne({
       relations: relations || this.defaultRelations,
       where: options,
+      cache: CACHE_TTL,
     });
 
     if (!entity) {
@@ -201,7 +180,13 @@ export class BaseService<
 
   async count(options?: PaginationOptions<T>): Promise<number> {
     const filters = options?.filters || {};
-    return this.repository.count({ where: filters });
+    return this.repository.count({ where: filters, cache: CACHE_TTL });
+  }
+
+  async average(
+    ...params: Parameters<Repository<T>['average']>
+  ): Promise<number> {
+    return this.repository.average(...params);
   }
 
   getDefaultQuery(
@@ -222,6 +207,7 @@ export class BaseService<
       order: createOrderCondition(sortBy, sortDirection),
       relations: relations || this.defaultRelations,
       where: filters,
+      cache: CACHE_TTL,
     };
 
     if (search && searchFields.length > 0) {
@@ -237,9 +223,5 @@ export class BaseService<
     }
 
     return query;
-  }
-
-  getRepository(): Repository<T> {
-    return this.repository;
   }
 }

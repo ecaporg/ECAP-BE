@@ -19,6 +19,7 @@ import { ChangeEmailPasswordDTO } from '../dtos/change-email.dto';
 import { LoginResponseDTO } from '../dtos/login-response.dto';
 import { ResetPasswordDTO } from '../dtos/reset-password.dto';
 import { IAuthUser } from '../types/auth-user';
+
 import { AuthEmailService } from './auth-email.service';
 
 @Injectable()
@@ -54,7 +55,10 @@ export class AuthService {
   }
 
   async validateUserById(userId: number): Promise<IAuthUser | null> {
-    const user = await this.userService.findOneBy({ id: userId }, {});
+    const user = await this.userService.findOneBy(
+      { id: userId },
+      { director: true },
+    );
 
     if (!user) {
       return null;

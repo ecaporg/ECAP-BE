@@ -1,31 +1,56 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
-export class DashboardStatsDto {
+export class DashboardStatItemDto {
+  @ApiProperty({
+    description: 'Learning period',
+    type: TrackLearningPeriodEntity,
+  })
+  learningPeriods: TrackLearningPeriodEntity[];
+
+  @ApiProperty({
+    description: 'Compliance',
+    type: Number,
+  })
+  compliance: number;
+
+  @ApiProperty({
+    description: 'Status',
+    type: Boolean,
+  })
+  completed: boolean;
+}
+
+export class DashboardStatsResponseDto {
   @ApiProperty({
     description: 'Learning periods before the previous one',
-    type: [TrackLearningPeriodEntity],
-    required: false,
+    type: DashboardStatItemDto,
   })
-  beforeThePreviousOne?: TrackLearningPeriodEntity[];
+  beforeThePreviousOne: DashboardStatItemDto;
 
   @ApiProperty({
     description: 'Previous learning periods',
-    type: [TrackLearningPeriodEntity],
-    required: false,
+    type: DashboardStatItemDto,
   })
-  previousLP?: TrackLearningPeriodEntity[];
+  previousLP?: DashboardStatItemDto;
 
   @ApiProperty({
     description: 'Current learning periods',
-    type: [TrackLearningPeriodEntity],
+    type: DashboardStatItemDto,
   })
-  currentLP: TrackLearningPeriodEntity[];
+  currentLP: DashboardStatItemDto;
 
   @ApiProperty({
     description: 'Upcoming learning periods',
-    type: [TrackLearningPeriodEntity],
+    type: DashboardStatItemDto,
   })
-  upcomingLP: TrackLearningPeriodEntity[];
+  upcomingLP: DashboardStatItemDto;
+
+  @ApiProperty({
+    description: 'Academic year',
+    type: AcademicYearEntity,
+  })
+  academicYear: AcademicYearEntity;
 }

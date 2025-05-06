@@ -1,65 +1,135 @@
-import { LessThan, MoreThan } from 'typeorm';
+import { In } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
+import { extractPaginationOptions } from '@/core';
+import { AcademicYearService } from '@/school/services/academic-year.service';
+import { AssignmentPeriodService } from '@/school/services/assignment.service';
+import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 import { TrackLearningPeriodService } from '@/track/services/track-learning-period.service';
+import { UserEntity } from '@/users/entities/user.entity';
+import { RolesEnum } from '@/users/enums/roles.enum';
 
-import { DashboardStatsDto } from '../dto/dashboard-stats.dto';
+import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
 import { DashboardFilterDto } from '../dto/filters.dto';
 
 @Injectable()
 export class DashboardService {
-  constructor(private trackLearningPeriodService: TrackLearningPeriodService) {}
+  constructor(
+    private trackLearningPeriodService: TrackLearningPeriodService,
+    private academicYearService: AcademicYearService,
+    private assignmentPeriodService: AssignmentPeriodService,
+  ) {}
 
   async getDashboardStats(
     options: DashboardFilterDto,
-  ): Promise<DashboardStatsDto> {
+    user: UserEntity,
+  ): Promise<DashboardStatsResponseDto> {
+    const baseStats = await this.getStatisticsTeacher(options);
+    if (user.role === RolesEnum.TEACHER) {
+      delete baseStats.groups;
+      return baseStats;
+    }
+
+    return baseStats;
+  }
+
+  private async getStatisticsTeacher(options: DashboardFilterDto) {
+    const filters =
+      extractPaginationOptions<DashboardFilterDto>(options).filters;
+
+    const currentAcademicYears =
+      await this.academicYearService.findCurrentAcademicYears();
+
+    filters.track = {
+      academic_year_id: In(
+        currentAcademicYears.map((academicYear) => academicYear.id),
+      ),
+    };
+
     const now = new Date();
 
-    // Get current learning periods (those that include today's date)
-    const currentLP = await this.trackLearningPeriodService.findBy({
-      where: {
-        start_date: LessThan(now),
-        end_date: MoreThan(now),
-      },
-      relations: ['track'],
-    });
+    const allLP = await this.trackLearningPeriodService.findBy(filters);
 
-    // Get upcoming learning periods (those that start after today)
-    const upcomingLP = await this.trackLearningPeriodService.findBy({
-      where: {
-        start_date: MoreThan(now),
-      },
-      order: {
-        start_date: 'ASC',
-      },
-      relations: ['track'],
-    });
+    const groups = this.formGroups(allLP);
 
-    // Get previous learning periods (those that ended before today)
-    const allPreviousLP = await this.trackLearningPeriodService.findBy({
-      where: {
-        end_date: LessThan(now),
-      },
-      order: {
-        end_date: 'DESC',
-      },
-      relations: ['track'],
-    });
+    const currentLP =
+      groups.find(
+        ([key]) => key.start_date <= now && key.end_date >= now,
+      )?.[1] || [];
 
-    // Separate previous learning periods into two categories
-    const previousLP = allPreviousLP.slice(
-      0,
-      Math.min(allPreviousLP.length, 5),
-    );
+    const upcomingLP = groups.find(([key]) => key.start_date > now)?.[1] || [];
+
+    const previousLP = groups.find(([key]) => key.end_date < now)?.[1] || [];
+
     const beforeThePreviousOne =
-      allPreviousLP.length > 5 ? allPreviousLP.slice(5) : undefined;
+      previousLP.length > 0
+        ? groups.find(([key]) => key.start_date < previousLP[0].start_date)?.[1]
+        : [];
+
+    const [
+      currentCompliance,
+      upcomingCompliance,
+      previousCompliance,
+      beforeThePreviousOneCompliance,
+    ] = await Promise.all([
+      this.calculateCompliance(currentLP),
+      this.calculateCompliance(upcomingLP),
+      this.calculateCompliance(previousLP),
+      this.calculateCompliance(beforeThePreviousOne),
+    ]);
 
     return {
-      currentLP,
-      upcomingLP,
-      previousLP: previousLP.length > 0 ? previousLP : undefined,
-      beforeThePreviousOne,
+      groups,
+      currentLP: {
+        learningPeriods: currentLP,
+        compliance: currentCompliance,
+        completed: currentCompliance === 100,
+      },
+      upcomingLP: {
+        learningPeriods: upcomingLP,
+        compliance: upcomingCompliance,
+        completed: upcomingCompliance === 100,
+      },
+      previousLP: {
+        learningPeriods: previousLP,
+        compliance: previousCompliance,
+        completed: previousCompliance >= 100,
+      },
+      beforeThePreviousOne: {
+        learningPeriods: beforeThePreviousOne,
+        compliance: beforeThePreviousOneCompliance,
+        completed: beforeThePreviousOneCompliance >= 100,
+      },
     };
+  }
+
+  private calculateCompliance(lp: TrackLearningPeriodEntity[]) {
+    return this.assignmentPeriodService.average('percentage', {
+      learning_period_id: In(lp.map((lp) => lp.id)),
+    });
+  }
+
+  private formGroups(allLP: TrackLearningPeriodEntity[]) {
+    const groups = new Map<
+      Pick<TrackLearningPeriodEntity, 'start_date' | 'end_date'>,
+      TrackLearningPeriodEntity[]
+    >();
+
+    allLP.forEach((lp) => {
+      const key = {
+        start_date: lp.start_date,
+        end_date: lp.end_date,
+      };
+      if (!groups.has(key)) {
+        groups.set(key, []);
+      }
+      groups.get(key).push(lp);
+    });
+
+    // sort from the most recent to the oldest
+    return Array.from(groups.entries()).sort(
+      ([key1], [key2]) => key2.start_date.getTime() - key1.start_date.getTime(),
+    );
   }
 }

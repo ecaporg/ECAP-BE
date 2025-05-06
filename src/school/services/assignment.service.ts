@@ -1,9 +1,10 @@
-import { Equal, FindOperator, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core';
+import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
 import { AssignmentPeriodEntity } from '../entities/assignment.entity';
 
@@ -42,6 +43,11 @@ export class AssignmentPeriodService extends BaseService<AssignmentPeriodEntity>
 
     (assignmentPeriods.meta as any).completedCount = completedCount;
 
+    console.log(assignmentPeriods);
     return assignmentPeriods;
+  }
+
+  getRepository(): Repository<AssignmentPeriodEntity> {
+    return this.assignmentPeriodRepository;
   }
 }
