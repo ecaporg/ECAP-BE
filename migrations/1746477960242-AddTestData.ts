@@ -28,7 +28,7 @@ import { TrackEntity } from '../src/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../src/track/entities/track-learning-period.entity';
 import { UserEntity } from '../src/users/entities/user.entity';
 
-export class AddTestData1744271139400 implements MigrationInterface {
+export class AddTestData1746477960242 implements MigrationInterface {
   private password: string;
 
   public async up(queryRunner: QueryRunner): Promise<void> {
