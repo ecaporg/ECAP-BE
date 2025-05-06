@@ -29,421 +29,90 @@ import { TrackLearningPeriodEntity } from '../src/track/entities/track-learning-
 import { UserEntity } from '../src/users/entities/user.entity';
 
 export class AddTestData1744271139400 implements MigrationInterface {
-  public async up(queryRunner: QueryRunner): Promise<void> {
-    const password = await argon2.hash('password');
-    // Create a tenant
-    const tenant = await queryRunner.manager.save(TenantEntity, {
-      name: 'Test Tenant',
+  private password: string;
+  constructor() {
+    argon2.hash('password').then((hash) => {
+      this.password = hash;
     });
+  }
+
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    // Create a tenant
+    const tenant = await this.createTenant(queryRunner);
 
     // Create schools
-    const schools = await queryRunner.manager.save(SchoolEntity, [
-      { name: 'School 1', tenant },
-      { name: 'School 2', tenant },
-    ]);
+    const schools = await this.createSchool(queryRunner, tenant);
 
     // Create academies
-    const academies = await queryRunner.manager.save(AcademyEntity, [
-      { name: 'Home', tenant },
-      { name: 'Offline', tenant },
-      { name: 'Flex', tenant },
-    ]);
+    const academies = await this.createAcademy(queryRunner, tenant);
 
-    const director_users = await queryRunner.manager.save(
-      UserEntity,
-      academies.map(
-        (academy, idx) =>
-          ({
-            email: `director${idx}@test.com`,
-            password,
-            firstname: 'Director',
-            lastname: academy.name,
-            isActive: true,
-            emailVerified: true,
-            role: RolesEnum.DIRECTOR,
-          }) as UserEntity,
-      ),
-    );
     // Create directors
-    const directors = await queryRunner.manager.save(
-      DirectorEntity,
-      academies.map(
-        (academy, idx) =>
-          ({
-            user: director_users[idx],
-            academy,
-            tenant,
-          }) as DirectorEntity,
-      ),
-    );
+    await this.createDirectors(queryRunner, academies, tenant);
 
     // Create academic years (including historical data)
-    const currentYear = new Date().getFullYear();
-    const academicYears = await queryRunner.manager.save(AcademicYearEntity, [
-      { from: currentYear - 1, to: currentYear },
-      { from: currentYear, to: currentYear + 1 },
-    ]);
+    const academicYears = await this.createAcademicYears(queryRunner);
 
-    for (const academicYear of academicYears) {
-      await queryRunner.manager.save(SemesterEntity, [
-        {
-          name: 'Semester 1',
-          academic_year_id: academicYear.id,
-          start_date: new Date(academicYear.from, 8, 1),
-          end_date: new Date(academicYear.from, 11, 0),
-          tenant,
-        },
-        {
-          name: 'Semester 2',
-          academic_year_id: academicYear.id,
-          start_date: new Date(academicYear.to, 0, 1),
-          end_date: new Date(academicYear.to, 7, 31),
-          tenant,
-        },
-      ]);
-    }
+    // Create semesters
+    await this.createSemesters(queryRunner, academicYears, tenant);
 
-    // Create learning periods for each academic year
-
-    const global_teachers = [] as TeacherEntity[];
-    let global_courses = [] as CourseEntity[];
-
-    for (const school of schools) {
-      const teacher_users = await queryRunner.manager.save(
-        UserEntity,
-        Array.from(
-          { length: 15 },
-          (_, i) =>
-            ({
-              firstname: `Teacher ${i}`,
-              lastname: `${school.name}`,
-              email: `teacher${i}_${school.name.replace(' ', '_')}@test.com`,
-              password,
-              isActive: true,
-              emailVerified: true,
-              role: RolesEnum.TEACHER,
-            }) as UserEntity,
-        ),
-      );
-
-      const teachers = await queryRunner.manager.save(
-        TeacherEntity,
-        Array.from(
-          { length: 15 },
-          (_, i) =>
-            ({
-              user: teacher_users[i],
-            }) as TeacherEntity,
-        ),
-      );
-
-      for (const academicYear of academicYears) {
-        for (const teacher of teachers) {
-          global_courses.push({
-            school_id: school.id,
-            teacher_id: teacher.id,
-            academic_year: academicYear,
-          } as CourseEntity);
-        }
-      }
-      global_teachers.push(...teachers);
-    }
-
-    global_courses = (await queryRunner.manager.save(
-      CourseEntity,
-      global_courses,
-    )) as CourseEntity[];
+    // Create teachers and courses for all schools and academic years
+    const { global_courses } = await this.createTeachersAndCourses(
+      queryRunner,
+      schools,
+      academicYears,
+    );
 
     for (const academicYear of academicYears) {
       // Create tracks
-      const tracks = await queryRunner.manager.save(TrackEntity, [
-        {
-          name: `Track A`,
-          tenant,
-          start_date: new Date(academicYear.from, 8, 1),
-          end_date: new Date(academicYear.to, 6, 0),
-          academic_year_id: academicYear.id,
-        } as TrackEntity,
-        {
-          name: `Track B`,
-          tenant,
-          start_date: new Date(academicYear.from, 8, 1),
-          end_date: new Date(academicYear.to, 6, 0),
-          academic_year_id: academicYear.id,
-        } as TrackEntity,
-      ]);
+      const tracks = await this.createTracks(queryRunner, academicYear, tenant);
 
-      let subjects = [] as SubjectEntity[];
-      for (const track of tracks) {
-        subjects.push(
-          ...Array.from(
-            { length: 5 },
-            (_, i) =>
-              ({
-                name: `Subject ${i + 1} for ${track.name}`,
-                track,
-              }) as SubjectEntity,
-          ),
-        );
-      }
-      subjects = await queryRunner.manager.save(SubjectEntity, subjects);
+      // Create students
+      const students = await this.createStudents(
+        queryRunner,
+        schools,
+        academies,
+        tracks,
+        academicYear,
+      );
 
-      const students = [] as StudentEntity[];
-      for (const school of schools) {
-        const users = await queryRunner.manager.save(
-          UserEntity,
-          Array.from(
-            { length: 100 },
-            (_, i) =>
-              ({
-                email: `user${i}_${school.name.replace(' ', '_')}_${academicYear.from}_${academicYear.to}@test.com`,
-                password,
-                firstname: `User${i}`,
-                lastname: `Test`,
-                isActive: true,
-                emailVerified: true,
-                role: RolesEnum.STUDENT,
-              }) as UserEntity,
-          ),
+      for (let track_index = 0; track_index < tracks.length; track_index++) {
+        const track = tracks[track_index];
+
+        // Create learning periods
+        const learningPeriods = await this.createLearningPeriods(
+          queryRunner,
+          track,
+          academicYear,
         );
 
-        const logcal = await queryRunner.manager.save(
-          StudentEntity,
-          users.map(
-            (user, i) =>
-              ({
-                user,
-                school_id: school.id,
-                academy_id: academies[i % academies.length].id,
-                track_id: tracks[i % tracks.length].id,
-                grade: `Grade ${(i % 12) + 1}`,
-              }) as StudentEntity,
-          ),
-        );
-        students.push(...logcal);
-      }
-
-      for (const track of tracks) {
-        const random_day = Math.floor(Math.random() * 15);
-        const random_month = Math.floor(Math.random() * 2);
-        let learningPeriods = [
-          {
-            name: `Learning Period 1`,
-            track,
-            start_date: new Date(
-              academicYear.from,
-              8 + random_month,
-              1 + random_day,
-            ),
-            end_date: new Date(
-              academicYear.from,
-              10 + random_month,
-              0 + random_day,
-            ),
-          },
-          {
-            name: `Learning Period 2`,
-            track,
-            start_date: new Date(
-              academicYear.from,
-              10 + random_month,
-              1 + random_day,
-            ),
-            end_date: new Date(
-              academicYear.to,
-              0 + random_month,
-              1 + random_day,
-            ),
-          },
-          {
-            name: `Learning Period 3`,
-            track,
-            start_date: new Date(
-              academicYear.to,
-              0 + random_month,
-              2 + random_day,
-            ),
-            end_date: new Date(
-              academicYear.to,
-              3 + random_month,
-              0 + random_day,
-            ),
-          },
-          {
-            name: `Learning Period 4`,
-            track,
-            start_date: new Date(
-              academicYear.to,
-              3 + random_month,
-              1 + random_day,
-            ),
-            end_date: new Date(
-              academicYear.to,
-              6 + random_month,
-              0 + random_day,
-            ),
-          },
-        ] as TrackLearningPeriodEntity[];
-
-        learningPeriods = await queryRunner.manager.save(
-          TrackLearningPeriodEntity,
-          learningPeriods,
-        );
         // Create assignment periods
-        const track_index = tracks.findIndex(
-          (arr_track) => arr_track.id == track.id,
-        );
-        const filtered_courses = global_courses.filter(
-          (as, index) =>
-            track_index % index == 0 && as.academic_year_id == academicYear.id,
+        const assignmentPeriods = await this.createAssignmentPeriods(
+          queryRunner,
+          learningPeriods,
+          students,
+          global_courses,
+          track,
+          track_index,
+          academicYear,
+          tracks.length,
         );
 
-        const assignmentPeriods = [];
-        for (const course of filtered_courses) {
-          // Assign to all learning periods in the current academic year
-          const local_assignmentPeriods = [];
-          const filteredStudents = students.filter(
-            (student) =>
-              student.track_id == track.id &&
-              student.school_id == course.school_id,
-          );
-          for (const student of filteredStudents) {
-            for (const learningPeriod of learningPeriods) {
-              const completed = Math.random() > 0.3;
-              local_assignmentPeriods.push({
-                course,
-                student,
-                learning_period: learningPeriod,
-                completed,
-                percentage: completed ? 100 : 0,
-              } as AssignmentPeriodEntity);
-            }
-          }
-          assignmentPeriods.push(
-            ...(await queryRunner.manager.save(
-              AssignmentPeriodEntity,
-              local_assignmentPeriods,
-            )),
-          );
-        }
+        // Create subjects
+        const subjects = await this.createSubjects(queryRunner, track);
 
         // Create samples for students
-        let samples: SampleEntity[] = [];
-        for (const assignmentPeriod of assignmentPeriods) {
-          const filteredSubjects = subjects.filter(
-            (subject) => subject.track_id == track.id,
-          );
-
-          for (const subject of filteredSubjects) {
-            const isCompleted =
-              Math.random() > 0.7 || assignmentPeriod.completed;
-            const user_id = isCompleted
-              ? assignmentPeriod.course.teacher_id
-              : null;
-
-            const status = isCompleted
-              ? SampleStatus.COMPLETED
-              : Math.random() > 0.5
-                ? SampleStatus.ERRORS_FOUND
-                : Math.random() > 0.5
-                  ? SampleStatus.MISSING_SAMPLE
-                  : SampleStatus.PENDING;
-
-            const flag_category =
-              status == SampleStatus.ERRORS_FOUND
-                ? SampleFlagCategory.ERROR_IN_SAMPLE
-                : null;
-
-            samples.push(
-              ...([
-                {
-                  assignment_title: `Sample`,
-                  status: assignmentPeriod.completed ? 'COMPLETED' : 'PENDING',
-                  assignment_period_id: assignmentPeriod.id,
-                  done_by_id: assignmentPeriod.completed ? user_id : null,
-                  subject_id: subject.id,
-                  flag_category,
-                },
-                {
-                  assignment_title: `Sample 2`,
-                  status,
-                  assignment_period_id: assignmentPeriod.id,
-                  done_by_id: user_id,
-                  subject_id: subject.id,
-                  flag_category,
-                },
-              ] as SampleEntity[]),
-            );
-          }
-        }
-        samples = await queryRunner.manager.save(SampleEntity, samples, {
-          chunk: 1000,
-        });
-
-        const sample_flag_errors = samples.filter(
-          (sample) => sample.status == SampleStatus.ERRORS_FOUND,
-        );
-        const sample_flag_missing_work = samples.filter(
-          (sample) => sample.status == SampleStatus.MISSING_SAMPLE,
-        );
-
-        await queryRunner.manager.save(
-          SampleFlagErrorEntity,
-          sample_flag_errors.map(
-            (sample) =>
-              ({
-                sample,
-                comment: `Comment ${Math.random()}`,
-              }) as SampleFlagErrorEntity,
-          ),
-        );
-        await queryRunner.manager.save(
-          SampleFlagMissingWorkEntity,
-          sample_flag_missing_work.map(
-            (sample) =>
-              ({
-                sample,
-                reason: `Reason ${Math.random()}`,
-              }) as SampleFlagMissingWorkEntity,
-          ),
+        // Create sample flags
+        await this.createSampleFlags(
+          queryRunner,
+          await this.createSamples(queryRunner, assignmentPeriods, subjects),
         );
       }
     }
 
     // Create admin user
-    const admin = await queryRunner.manager.save(UserEntity, {
-      email: 'admin@test.com',
-      password: await argon2.hash('password'),
-      firstname: 'Admin',
-      lastname: 'Admin',
-      isActive: true,
-      emailVerified: true,
-      role: RolesEnum.SUPER_ADMIN,
-    });
+    await this.createAdmin(queryRunner, tenant);
 
-    await queryRunner.manager.save(AdminEntity, {
-      user: admin,
-      tenant,
-    });
-
-    const assignment_periods = await queryRunner.manager.find(
-      AssignmentPeriodEntity,
-      {
-        where: {
-          completed: false,
-        },
-        relations: { samples: true },
-      },
-    );
-    for (const assignment_period of assignment_periods) {
-      assignment_period.percentage =
-        (assignment_period.samples.filter(
-          (sample) => sample.status == SampleStatus.COMPLETED,
-        ).length /
-          assignment_period.samples.length) *
-        100;
-    }
-    await queryRunner.manager.save(AssignmentPeriodEntity, assignment_periods);
+    await this.recalculateAssignmentPeriods(queryRunner);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -496,6 +165,542 @@ export class AddTestData1744271139400 implements MigrationInterface {
     await queryRunner.manager.query(
       'TRUNCATE TABLE "assignment_periods" RESTART IDENTITY CASCADE',
     );
+  }
+
+  private createTenant(queryRunner: QueryRunner): Promise<TenantEntity> {
+    return queryRunner.manager.save(TenantEntity, {
+      name: 'Elite',
+    });
+  }
+
+  private createSchool(
+    queryRunner: QueryRunner,
+    tenant: TenantEntity,
+  ): Promise<SchoolEntity[]> {
+    return queryRunner.manager.save(SchoolEntity, [
+      { name: 'Mountain Empire', tenant } as SchoolEntity,
+      { name: 'Lucerne', tenant } as SchoolEntity,
+    ]);
+  }
+
+  private createAcademy(
+    queryRunner: QueryRunner,
+    tenant: TenantEntity,
+  ): Promise<AcademyEntity[]> {
+    return queryRunner.manager.save(AcademyEntity, [
+      { name: 'Homeschool', tenant },
+      { name: 'Flex', tenant },
+      { name: 'Academy', tenant },
+    ]);
+  }
+
+  private async createDirectors(
+    queryRunner: QueryRunner,
+    academies: AcademyEntity[],
+    tenant: TenantEntity,
+  ): Promise<DirectorEntity[]> {
+    const director_users = await queryRunner.manager.save(
+      UserEntity,
+      academies.map(
+        (academy, idx) =>
+          ({
+            email: `director${idx}@test.com`,
+            password: this.password,
+            firstname: 'Director',
+            lastname: academy.name,
+            isActive: true,
+            emailVerified: true,
+            role: RolesEnum.DIRECTOR,
+          }) as UserEntity,
+      ),
+    );
+    const directors = await queryRunner.manager.save(
+      DirectorEntity,
+      academies.map(
+        (academy, idx) =>
+          ({
+            user: director_users[idx],
+            academy,
+            tenant,
+          }) as DirectorEntity,
+      ),
+    );
+    return directors;
+  }
+
+  private createAcademicYears(
+    queryRunner: QueryRunner,
+  ): Promise<AcademicYearEntity[]> {
+    const currentYear = new Date().getFullYear();
+    return queryRunner.manager.save(AcademicYearEntity, [
+      { from: currentYear - 1, to: currentYear },
+      { from: currentYear, to: currentYear + 1 },
+    ]);
+  }
+
+  private async createSemesters(
+    queryRunner: QueryRunner,
+    academicYears: AcademicYearEntity[],
+    tenant: TenantEntity,
+  ) {
+    for (const academicYear of academicYears) {
+      await queryRunner.manager.save(SemesterEntity, [
+        {
+          name: 'Semester 1: Track A',
+          academic_year_id: academicYear.id,
+          start_date: new Date(academicYear.from, 6, 1),
+          end_date: new Date(academicYear.from, 0, 16),
+          tenant,
+        },
+        {
+          name: 'Semester 2: Track A',
+          academic_year_id: academicYear.id,
+          start_date: new Date(academicYear.to, 0, 21),
+          end_date: new Date(academicYear.to, 5, 11),
+          tenant,
+        },
+        {
+          name: 'Semester 1: Track B',
+          academic_year_id: academicYear.id,
+          start_date: new Date(academicYear.to, 7, 27),
+          end_date: new Date(academicYear.to, 0, 16),
+          tenant,
+        },
+        {
+          name: 'Semester 2: Track B',
+          academic_year_id: academicYear.id,
+          start_date: new Date(academicYear.to, 0, 21),
+          end_date: new Date(academicYear.to, 5, 11),
+          tenant,
+        },
+      ]);
+    }
+  }
+
+  private async createTeachersAndCourses(
+    queryRunner: QueryRunner,
+    schools: SchoolEntity[],
+    academicYears: AcademicYearEntity[],
+  ) {
+    const global_teachers = [] as TeacherEntity[];
+    let global_courses = [] as CourseEntity[];
+
+    for (const school of schools) {
+      const teacher_users = await queryRunner.manager.save(
+        UserEntity,
+        Array.from(
+          { length: 15 },
+          (_, i) =>
+            ({
+              firstname: `Teacher ${i}`,
+              lastname: `${school.name}`,
+              email: `teacher${i + global_teachers.length}@test.com`,
+              password: this.password,
+              isActive: true,
+              emailVerified: true,
+              role: RolesEnum.TEACHER,
+            }) as UserEntity,
+        ),
+      );
+
+      const teachers = await queryRunner.manager.save(
+        TeacherEntity,
+        Array.from(
+          { length: 15 },
+          (_, i) =>
+            ({
+              user: teacher_users[i],
+            }) as TeacherEntity,
+        ),
+      );
+
+      for (const academicYear of academicYears) {
+        for (const teacher of teachers) {
+          global_courses.push({
+            school_id: school.id,
+            teacher_id: teacher.id,
+            academic_year: academicYear,
+          } as CourseEntity);
+        }
+      }
+      global_teachers.push(...teachers);
+    }
+
+    global_courses = (await queryRunner.manager.save(
+      CourseEntity,
+      global_courses,
+    )) as CourseEntity[];
+
+    return { global_teachers, global_courses };
+  }
+
+  private async createTracks(
+    queryRunner: QueryRunner,
+    academicYear: AcademicYearEntity,
+    tenant: TenantEntity,
+  ) {
+    return queryRunner.manager.save(TrackEntity, [
+      {
+        name: `Track A`,
+        tenant,
+        start_date: new Date(academicYear.from, 7, 1),
+        end_date: new Date(academicYear.to, 6, 10),
+        academic_year_id: academicYear.id,
+      } as TrackEntity,
+      {
+        name: `Track B`,
+        tenant,
+        start_date: new Date(academicYear.from, 8, 27),
+        end_date: new Date(academicYear.to, 6, 10),
+        academic_year_id: academicYear.id,
+      } as TrackEntity,
+    ]);
+  }
+
+  private async createSubjects(
+    queryRunner: QueryRunner,
+    track: TrackEntity,
+  ): Promise<SubjectEntity[]> {
+    const subjects = [] as SubjectEntity[];
+    subjects.push(
+      ...Array.from(
+        { length: 5 },
+        (_, i) =>
+          ({
+            name: `Subject ${i + 1} for ${track.name}`,
+            track,
+          }) as SubjectEntity,
+      ),
+    );
+    return queryRunner.manager.save(SubjectEntity, subjects);
+  }
+
+  private async createStudents(
+    queryRunner: QueryRunner,
+    schools: SchoolEntity[],
+    academies: AcademyEntity[],
+    tracks: TrackEntity[],
+    academicYear: AcademicYearEntity,
+  ) {
+    const students = [] as StudentEntity[];
+    for (const school of schools) {
+      const users = await queryRunner.manager.save(
+        UserEntity,
+        Array.from(
+          { length: 100 },
+          (_, i) =>
+            ({
+              email: `user${i}_${school.name.replace(' ', '_')}_${academicYear.from}_${academicYear.to}@test.com`,
+              password: this.password,
+              firstname: `User${i}`,
+              lastname: `Test`,
+              isActive: true,
+              emailVerified: true,
+              role: RolesEnum.STUDENT,
+            }) as UserEntity,
+        ),
+      );
+
+      const logcal = await queryRunner.manager.save(
+        StudentEntity,
+        users.map(
+          (user, i) =>
+            ({
+              user,
+              school_id: school.id,
+              academy_id: academies[i % academies.length].id,
+              track_id: tracks[i % tracks.length].id,
+              grade: `Grade ${(i % 12) + 1}`,
+            }) as StudentEntity,
+        ),
+      );
+      students.push(...logcal);
+    }
+    return students;
+  }
+
+  private async createLearningPeriods(
+    queryRunner: QueryRunner,
+    track: TrackEntity,
+    academicYear: AcademicYearEntity,
+  ) {
+    let learningPeriods = [] as TrackLearningPeriodEntity[];
+    if (track.name == 'Track A') {
+      learningPeriods = [
+        {
+          name: `LP1`,
+          track,
+          start_date: new Date(academicYear.from, 6, 1),
+          end_date: new Date(academicYear.from, 7, 3),
+        },
+        {
+          name: `LP2`,
+          track,
+          start_date: new Date(academicYear.from, 7, 5),
+          end_date: new Date(academicYear.from, 7, 27),
+        },
+        {
+          name: `LP3`,
+          track,
+          start_date: new Date(academicYear.from, 7, 28),
+          end_date: new Date(academicYear.from, 9, 4),
+        },
+        {
+          name: `LP4`,
+          track,
+          start_date: new Date(academicYear.from, 9, 7),
+          end_date: new Date(academicYear.from, 10, 22),
+        },
+        {
+          name: `LP5`,
+          track,
+          start_date: new Date(academicYear.from, 11, 2),
+          end_date: new Date(academicYear.to, 0, 17),
+        },
+        {
+          name: `LP6`,
+          track,
+          start_date: new Date(academicYear.to, 0, 22),
+          end_date: new Date(academicYear.to, 1, 14),
+        },
+        {
+          name: `LP7`,
+          track,
+          start_date: new Date(academicYear.to, 1, 18),
+          end_date: new Date(academicYear.to, 2, 21),
+        },
+        {
+          name: `LP8`,
+          track,
+          start_date: new Date(academicYear.to, 2, 24),
+          end_date: new Date(academicYear.to, 4, 3),
+        },
+        {
+          name: `LP9`,
+          track,
+          start_date: new Date(academicYear.to, 4, 5),
+          end_date: new Date(academicYear.to, 5, 10),
+        },
+      ] as TrackLearningPeriodEntity[];
+    } else {
+      learningPeriods = [
+        {
+          name: `LP1`,
+          track,
+          start_date: new Date(academicYear.from, 7, 28),
+          end_date: new Date(academicYear.from, 9, 4),
+        },
+        {
+          name: `LP2`,
+          track,
+          start_date: new Date(academicYear.from, 9, 7),
+          end_date: new Date(academicYear.from, 10, 22),
+        },
+        {
+          name: `LP3`,
+          track,
+          start_date: new Date(academicYear.from, 11, 2),
+          end_date: new Date(academicYear.to, 0, 17),
+        },
+        {
+          name: `LP4`,
+          track,
+          start_date: new Date(academicYear.to, 0, 22),
+          end_date: new Date(academicYear.to, 1, 13),
+        },
+        {
+          name: `LP5`,
+          track,
+          start_date: new Date(academicYear.to, 1, 18),
+          end_date: new Date(academicYear.to, 2, 21),
+        },
+        {
+          name: `LP6`,
+          track,
+          start_date: new Date(academicYear.to, 2, 24),
+          end_date: new Date(academicYear.to, 4, 2),
+        },
+        {
+          name: `LP7`,
+          track,
+          start_date: new Date(academicYear.to, 4, 5),
+          end_date: new Date(academicYear.to, 5, 10),
+        },
+      ] as TrackLearningPeriodEntity[];
+    }
+    learningPeriods = await queryRunner.manager.save(
+      TrackLearningPeriodEntity,
+      learningPeriods,
+    );
+
+    return learningPeriods;
+  }
+
+  private async createAssignmentPeriods(
+    queryRunner: QueryRunner,
+    learningPeriods: TrackLearningPeriodEntity[],
+    students: StudentEntity[],
+    courses: CourseEntity[],
+    track: TrackEntity,
+    track_index: number,
+    academicYear: AcademicYearEntity,
+    length: number,
+  ) {
+    const filtered_courses = courses.filter(
+      (as, index) =>
+        index % length == track_index && as.academic_year_id == academicYear.id,
+    );
+
+    const assignmentPeriods = [];
+
+    for (const course of filtered_courses) {
+      const local_assignmentPeriods = [];
+      const filteredStudents = students.filter(
+        (student) =>
+          student.track_id == track.id && student.school_id == course.school_id,
+      );
+      for (const student of filteredStudents) {
+        for (const learningPeriod of learningPeriods) {
+          const completed = Math.random() > 0.3;
+          local_assignmentPeriods.push({
+            course,
+            student,
+            learning_period: learningPeriod,
+            completed,
+            percentage: completed ? 100 : 0,
+          } as AssignmentPeriodEntity);
+        }
+      }
+      assignmentPeriods.push(
+        ...(await queryRunner.manager.save(
+          AssignmentPeriodEntity,
+          local_assignmentPeriods,
+        )),
+      );
+    }
+    return assignmentPeriods;
+  }
+
+  private async createSamples(
+    queryRunner: QueryRunner,
+    assignmentPeriods: AssignmentPeriodEntity[],
+    subjects: SubjectEntity[],
+  ) {
+    const samples: SampleEntity[] = [];
+    for (const assignmentPeriod of assignmentPeriods) {
+      for (const subject of subjects) {
+        const isCompleted = Math.random() > 0.7 || assignmentPeriod.completed;
+        const user_id = isCompleted ? assignmentPeriod.course.teacher_id : null;
+
+        const status = isCompleted
+          ? SampleStatus.COMPLETED
+          : Math.random() > 0.5
+            ? SampleStatus.ERRORS_FOUND
+            : Math.random() > 0.5
+              ? SampleStatus.MISSING_SAMPLE
+              : SampleStatus.PENDING;
+
+        const flag_category =
+          status == SampleStatus.ERRORS_FOUND
+            ? SampleFlagCategory.ERROR_IN_SAMPLE
+            : null;
+
+        samples.push(
+          ...([
+            {
+              assignment_title: `Sample`,
+              status: assignmentPeriod.completed ? 'COMPLETED' : 'PENDING',
+              assignment_period_id: assignmentPeriod.id,
+              done_by_id: assignmentPeriod.completed ? user_id : null,
+              subject_id: subject.id,
+              flag_category,
+            },
+            {
+              assignment_title: `Sample 2`,
+              status,
+              assignment_period_id: assignmentPeriod.id,
+              done_by_id: user_id,
+              subject_id: subject.id,
+              flag_category,
+            },
+          ] as SampleEntity[]),
+        );
+      }
+    }
+    return await queryRunner.manager.save(SampleEntity, samples, {
+      chunk: 1000,
+    });
+  }
+
+  private async createSampleFlags(
+    queryRunner: QueryRunner,
+    samples: SampleEntity[],
+  ) {
+    const sample_flag_errors = samples.filter(
+      (sample) => sample.status == SampleStatus.ERRORS_FOUND,
+    );
+    const sample_flag_missing_work = samples.filter(
+      (sample) => sample.status == SampleStatus.MISSING_SAMPLE,
+    );
+
+    await queryRunner.manager.save(
+      SampleFlagErrorEntity,
+      sample_flag_errors.map(
+        (sample) =>
+          ({
+            sample,
+            comment: `Comment ${Math.random()}`,
+          }) as SampleFlagErrorEntity,
+      ),
+    );
+    await queryRunner.manager.save(
+      SampleFlagMissingWorkEntity,
+      sample_flag_missing_work.map(
+        (sample) =>
+          ({
+            sample,
+            reason: `Reason ${Math.random()}`,
+          }) as SampleFlagMissingWorkEntity,
+      ),
+    );
+  }
+
+  private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
+    const admin = await queryRunner.manager.save(UserEntity, {
+      email: 'admin@test.com',
+      password: await argon2.hash('password'),
+      firstname: 'Admin',
+      lastname: 'Admin',
+      isActive: true,
+      emailVerified: true,
+      role: RolesEnum.SUPER_ADMIN,
+    });
+
+    await queryRunner.manager.save(AdminEntity, {
+      user: admin,
+      tenant,
+    });
+  }
+
+  private async recalculateAssignmentPeriods(queryRunner: QueryRunner) {
+    const assignment_periods = await queryRunner.manager.find(
+      AssignmentPeriodEntity,
+      {
+        where: {
+          completed: false,
+        },
+        relations: { samples: true },
+      },
+    );
+    for (const assignment_period of assignment_periods) {
+      assignment_period.percentage =
+        (assignment_period.samples.filter(
+          (sample) => sample.status == SampleStatus.COMPLETED,
+        ).length /
+          assignment_period.samples.length) *
+        100;
+    }
+    await queryRunner.manager.save(AssignmentPeriodEntity, assignment_periods);
   }
 }
 
