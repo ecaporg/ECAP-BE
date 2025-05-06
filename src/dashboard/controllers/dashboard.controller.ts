@@ -10,17 +10,17 @@ import {
 import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
-import { DashboardStatsDto } from '../dto/dashboard-stats.dto';
+import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
 import { DashboardFilterDto } from '../dto/filters.dto';
 import { DashboardService } from '../services/dashboard.service';
 
 const interceptor = new AttachUserIdInterceptor<DashboardFilterDto>([
   {
-    role: RolesEnum.DIRECTOR,
+    role: RolesEnum.TEACHER,
     path: 'assignment_periods.course.teacher_id' as keyof DashboardFilterDto,
   },
   {
-    role: RolesEnum.TEACHER,
+    role: RolesEnum.DIRECTOR,
     path: 'assignment_periods.student.academy.directors.id' as keyof DashboardFilterDto,
   },
   {
@@ -46,12 +46,12 @@ export class DashboardController {
 
   @Get('stats')
   @ApiOperation({ summary: 'Get entity by ID' })
-  @ApiCrudResponse(DashboardStatsDto)
+  @ApiCrudResponse(DashboardStatsResponseDto)
   @UseInterceptors(interceptor)
   async getDashboardStats(
     @Query() options: DashboardFilterDto,
     @CurrentUser() user: UserEntity,
-  ): Promise<DashboardStatsDto> {
+  ): Promise<DashboardStatsResponseDto> {
     return this.dashboardService.getDashboardStats(options, user);
   }
 }

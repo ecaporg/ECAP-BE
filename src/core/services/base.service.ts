@@ -44,8 +44,6 @@ export type BaseServiceOptions<T, IDKey> = {
   defaultRelations?: FindOptionsRelations<T> | string[];
 };
 
-const CACHE_TTL = 60000;
-
 export class BaseService<
   T extends DatedGenericEntity,
   IDKey extends keyof T = any,
@@ -119,7 +117,6 @@ export class BaseService<
     const entity = await this.repository.findOne({
       relations: relations || this.defaultRelations,
       where,
-      cache: CACHE_TTL,
     });
 
     if (!entity) {
@@ -134,7 +131,6 @@ export class BaseService<
   async findBy(options: FindManyOptions<T>): Promise<T[]> {
     return this.repository.find({
       relations: this.defaultRelations,
-      cache: CACHE_TTL,
       ...options,
     });
   }
@@ -146,7 +142,6 @@ export class BaseService<
     const entity = await this.repository.findOne({
       relations: relations || this.defaultRelations,
       where: options,
-      cache: CACHE_TTL,
     });
 
     if (!entity) {
@@ -180,7 +175,7 @@ export class BaseService<
 
   async count(options?: PaginationOptions<T>): Promise<number> {
     const filters = options?.filters || {};
-    return this.repository.count({ where: filters, cache: CACHE_TTL });
+    return this.repository.count({ where: filters });
   }
 
   async average(
@@ -207,7 +202,6 @@ export class BaseService<
       order: createOrderCondition(sortBy, sortDirection),
       relations: relations || this.defaultRelations,
       where: filters,
-      cache: CACHE_TTL,
     };
 
     if (search && searchFields.length > 0) {

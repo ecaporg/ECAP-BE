@@ -35,6 +35,7 @@ import { UsersModule } from '@/users/users.module';
         logger: 'advanced-console',
         subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
         autoLoadEntities: true,
+        cache: { duration: 60000 },
       }),
       inject: [ConfigService],
     }),

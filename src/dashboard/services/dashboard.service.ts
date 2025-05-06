@@ -42,6 +42,7 @@ export class DashboardService {
       await this.academicYearService.findCurrentAcademicYears();
 
     filters.track = {
+      ...filters.track,
       academic_year_id: In(
         currentAcademicYears.map((academicYear) => academicYear.id),
       ),
@@ -49,7 +50,11 @@ export class DashboardService {
 
     const now = new Date();
 
-    const allLP = await this.trackLearningPeriodService.findBy(filters);
+    const allLP = await this.trackLearningPeriodService.findBy({
+      where: {
+        ...filters,
+      },
+    });
 
     const groups = this.formGroups(allLP);
 
@@ -64,14 +69,14 @@ export class DashboardService {
 
     const beforeThePreviousOne =
       previousLP.length > 0
-        ? groups.find(([key]) => key.start_date < previousLP[0].start_date)?.[1]
+        ? groups.find(([key]) => key.end_date < previousLP[0].start_date)?.[1]
         : [];
 
     const [
-      currentCompliance,
-      upcomingCompliance,
-      previousCompliance,
-      beforeThePreviousOneCompliance,
+      currentCompliance = 0,
+      upcomingCompliance = 0,
+      previousCompliance = 0,
+      beforeThePreviousOneCompliance = 0,
     ] = await Promise.all([
       this.calculateCompliance(currentLP),
       this.calculateCompliance(upcomingLP),
@@ -101,6 +106,7 @@ export class DashboardService {
         compliance: beforeThePreviousOneCompliance,
         completed: beforeThePreviousOneCompliance >= 100,
       },
+      academicYear: currentAcademicYears[0],
     };
   }
 
@@ -110,17 +116,15 @@ export class DashboardService {
     });
   }
 
+  private formatDateKey(lp: TrackLearningPeriodEntity) {
+    return `${lp.start_date.toISOString().split('T')[0]} ${lp.end_date.toISOString().split('T')[0]}`;
+  }
+
   private formGroups(allLP: TrackLearningPeriodEntity[]) {
-    const groups = new Map<
-      Pick<TrackLearningPeriodEntity, 'start_date' | 'end_date'>,
-      TrackLearningPeriodEntity[]
-    >();
+    const groups = new Map();
 
     allLP.forEach((lp) => {
-      const key = {
-        start_date: lp.start_date,
-        end_date: lp.end_date,
-      };
+      const key = this.formatDateKey(lp);
       if (!groups.has(key)) {
         groups.set(key, []);
       }
@@ -128,8 +132,17 @@ export class DashboardService {
     });
 
     // sort from the most recent to the oldest
-    return Array.from(groups.entries()).sort(
-      ([key1], [key2]) => key2.start_date.getTime() - key1.start_date.getTime(),
-    );
+    return Array.from(groups.entries())
+      .map(([key, lp]) => [
+        {
+          start_date: new Date(key.split(' ')[0]),
+          end_date: new Date(key.split(' ')[1]),
+        },
+        lp,
+      ])
+      .sort(
+        ([key1], [key2]) =>
+          key2.start_date.getTime() - key1.start_date.getTime(),
+      );
   }
 }
