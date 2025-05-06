@@ -30,14 +30,11 @@ import { UserEntity } from '../src/users/entities/user.entity';
 
 export class AddTestData1744271139400 implements MigrationInterface {
   private password: string;
-  constructor() {
-    argon2.hash('password').then((hash) => {
-      this.password = hash;
-    });
-  }
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Create a tenant
+    this.password = await argon2.hash('password');
+
     const tenant = await this.createTenant(queryRunner);
 
     // Create schools
