@@ -9,6 +9,7 @@ import { ResetPasswordDTO } from '@/auth/dtos/reset-password.dto';
 import { SignInDTO } from '@/auth/dtos/sign-in.dto';
 import { AuthUser } from '@/auth/types/auth-user';
 import { CourseEntity } from '@/course/entities/course.entity';
+import { DashboardStatsResponseDto } from '@/dashboard/dto/dashboard-stats.dto';
 import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
 // School entities
 import { AcademyEntity } from '@/school/entities/academy.entity';
@@ -94,4 +95,6 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   SampleFlagMissingWorkEntity,
   SampleFlagRejectedEntity,
   SampleFlagCompletedEntity,
+
+  DashboardStatsResponseDto,
 ];

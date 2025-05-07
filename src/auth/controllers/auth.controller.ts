@@ -10,6 +10,7 @@ import {
 
 import { ApiCrudResponse, ApiErrorResponses, CurrentUser } from '@/core';
 import { CreateUserDTO } from '@/users/dtos/create-user.dto';
+import { UserEntity } from '@/users/entities/user.entity';
 
 import { AccountVerified } from '../decorators/account-verified';
 import { AuthTokensDTO } from '../dtos/auth-tokens.dto';
@@ -95,8 +96,8 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
   @ApiOperation({ summary: 'Get current user' })
-  @ApiCrudResponse(AuthUser)
-  getMe(@CurrentUser() user: IAuthUser) {
+  @ApiCrudResponse(UserEntity)
+  getMe(@CurrentUser() user: UserEntity) {
     return user;
   }
 

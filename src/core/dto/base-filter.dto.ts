@@ -52,7 +52,7 @@ export class BaseFilterDto {
   @Transform(({ value }) =>
     typeof value === 'string' ? value.split(',') : value,
   )
-  sortDirection?: SortDirectionEnum[] = [SortDirectionEnum.ASC];
+  sortDirection?: SortDirectionEnum[];
 
   @ApiProperty({ required: false, description: 'Search query' })
   @IsOptional()
