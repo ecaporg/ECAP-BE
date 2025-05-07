@@ -23,6 +23,32 @@ export class DashboardStatItemDto {
   completed: boolean;
 }
 
+export class AcademyStatItemDto {
+  @ApiProperty({
+    description: 'Academy id',
+    type: String,
+  })
+  academy_id: string;
+
+  @ApiProperty({
+    description: 'Academy name',
+    type: String,
+  })
+  academy_name: string;
+
+  @ApiProperty({
+    description: 'Academy compliance',
+    type: Number,
+  })
+  compliance: number;
+
+  @ApiProperty({
+    description: 'Academy year to date compliance',
+    type: Number,
+  })
+  yearToDateCompliance: number;
+}
+
 export class DashboardStatsResponseDto {
   @ApiProperty({
     description: 'Learning periods before the previous one',
@@ -59,4 +85,10 @@ export class DashboardStatsResponseDto {
     type: Number,
   })
   yearToDateCompliance?: number;
+
+  @ApiProperty({
+    description: 'Academy to date compliance',
+    type: AcademyStatItemDto,
+  })
+  academies?: AcademyStatItemDto[];
 }

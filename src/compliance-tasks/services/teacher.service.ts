@@ -112,7 +112,7 @@ export class TeacherComplianceTaskService {
     if (user.role === RolesEnum.TEACHER) {
       const academicYears =
         await this.academicYearService.findCurrentAcademicYears();
-      query.schools = { courses: { teacher: { user } } };
+      query.schools = { courses: { teacher: { user: { id: user.id } } } };
       query.tracks = {
         academicYear: {
           id: In(academicYears.map((academicYear) => academicYear.id)),
@@ -121,7 +121,7 @@ export class TeacherComplianceTaskService {
         learningPeriods: {
           assignment_periods: {
             course: {
-              teacher: { user },
+              teacher: { user: { id: user.id } },
             },
           },
         },
@@ -130,12 +130,12 @@ export class TeacherComplianceTaskService {
       user.role === RolesEnum.ADMIN ||
       user.role === RolesEnum.SUPER_ADMIN
     ) {
-      query.admins = { user };
+      query.admins = { user: { id: user.id } };
     } else if (user.role === RolesEnum.DIRECTOR) {
-      query.directors = { user };
+      query.directors = { user: { id: user.id } };
       query.academies = {
         directors: {
-          user,
+          user: { id: user.id },
         },
       };
     } else {
