@@ -8,11 +8,13 @@ import {
 } from '@nestjs/common';
 
 import { NestedObjectToDotNotation } from '@/core';
+import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 interface RolePathMapping<T extends object> {
   role: RolesEnum;
   path: NestedObjectToDotNotation<T>;
+  map?: (user: UserEntity) => any;
 }
 
 @Injectable()
@@ -33,7 +35,9 @@ export class AttachUserIdInterceptor<T extends object>
     if (user && user.id) {
       for (const mapping of this.roleMappings) {
         if (user && user.role === mapping.role) {
-          query[mapping.path as string] = user.id;
+          query[mapping.path as string] = mapping.map
+            ? mapping.map(user)
+            : user.id;
         }
       }
     }

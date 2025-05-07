@@ -10,7 +10,11 @@ export class TeacherFilterInterceptor extends AttachUserIdInterceptor<Assignment
   constructor() {
     super([
       { role: RolesEnum.TEACHER, path: 'course.teacher_id' },
-      { role: RolesEnum.DIRECTOR, path: 'student.academy.directors.id' },
+      {
+        role: RolesEnum.DIRECTOR,
+        path: 'student.academy_id',
+        map: (user) => user.director?.academy?.id,
+      },
     ]);
   }
 }

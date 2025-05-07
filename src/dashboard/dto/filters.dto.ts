@@ -5,7 +5,7 @@ import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-perio
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const keys: RecordStringAndDotNotation<TrackLearningPeriodEntity> = {
-  DIRECTOR: 'assignment_periods.student.academy.directors.id',
+  DIRECTOR: 'assignment_periods.student.academy_id',
   ADMIN: 'track.tenant.admins.id',
   TEACHER: 'assignment_periods.course.teacher_id',
 } as const;
@@ -17,7 +17,7 @@ export class DashboardFilterDto extends BaseFilterDto {
 
   @IsOptional()
   @IsNumber()
-  'assignment_periods.student.academy.directors.id'?: number;
+  'assignment_periods.student.academy_id'?: number;
 
   @IsOptional()
   @IsNumber()

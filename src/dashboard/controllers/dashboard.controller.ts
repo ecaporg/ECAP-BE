@@ -21,7 +21,8 @@ const interceptor = new AttachUserIdInterceptor<DashboardFilterDto>([
   },
   {
     role: RolesEnum.DIRECTOR,
-    path: 'assignment_periods.student.academy.directors.id' as keyof DashboardFilterDto,
+    path: 'assignment_periods.student.academy_id' as keyof DashboardFilterDto,
+    map: (user) => user.director?.academy?.id,
   },
   {
     role: RolesEnum.ADMIN,

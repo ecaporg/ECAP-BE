@@ -57,7 +57,7 @@ export class AuthService {
   async validateUserById(userId: number): Promise<AuthUser | null> {
     const user = await this.userService.findOneBy(
       { id: userId },
-      { director: true },
+      { director: { academy: true } },
     );
 
     if (!user) {
@@ -211,7 +211,9 @@ export class AuthService {
     delete user.password;
     delete user.refreshToken;
 
-    return user;
+    return {
+      ...user,
+    };
   }
 
   async handleEmailUpdate(

@@ -135,7 +135,12 @@ export class DashboardService {
     );
 
     const yearToDateCompliance = await this.calculateCompliance(
-      baseStats.groups.slice(0, currentIndex).flatMap(([, lp]) => lp),
+      baseStats.groups
+        .slice(
+          0,
+          currentIndex === -1 ? baseStats.groups.length : currentIndex + 1,
+        )
+        .flatMap(([, lp]) => lp),
     );
 
     return {

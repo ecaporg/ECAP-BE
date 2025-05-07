@@ -32,10 +32,6 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   'assignment_period.course.teacher_id'?: number;
 
-  @IdDecorator(Number)
-  @IsNumber({}, { each: true })
-  'assignment_period.student.academy.directors.id'?: number[];
-
   @ApiProperty({
     required: false,
     description: 'Filter by academy ID',

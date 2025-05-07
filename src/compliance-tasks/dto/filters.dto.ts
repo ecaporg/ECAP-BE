@@ -76,15 +76,6 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'course.teacher_id'?: number;
-
-  @ApiProperty({
-    required: false,
-    description: 'Filter by director ID',
-    type: [Number],
-  })
-  @IdDecorator(Number)
-  @IsNumber({}, { each: true })
-  'student.academy.directors.id'?: number[];
 }
 
 export class StudentSamplesFilterDto extends BaseFilterDto {
@@ -132,10 +123,15 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   'samples.done_by_id'?: number[];
+
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'student.academy_id'?: number[];
 }
 
 export class TeachersTableFilterDto extends OmitType(StudentsTableFilterDto, [
   'learning_period_id',
+  'student.academy_id',
 ]) {
   @ApiProperty({
     required: false,
