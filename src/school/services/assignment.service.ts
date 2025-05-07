@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core';
-import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
 import { AssignmentPeriodEntity } from '../entities/assignment.entity';
 

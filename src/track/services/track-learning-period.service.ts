@@ -17,4 +17,8 @@ export class TrackLearningPeriodService extends BaseService<TrackLearningPeriodE
       defaultRelations: ['track'],
     });
   }
+
+  getRepository(): Repository<TrackLearningPeriodEntity> {
+    return this.trackLearningPeriodRepository;
+  }
 }
