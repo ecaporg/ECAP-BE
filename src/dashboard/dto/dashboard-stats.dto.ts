@@ -53,4 +53,10 @@ export class DashboardStatsResponseDto {
     type: AcademicYearEntity,
   })
   academicYear: AcademicYearEntity;
+
+  @ApiProperty({
+    description: 'Year to date compliance',
+    type: Number,
+  })
+  yearToDateCompliance?: number;
 }

@@ -13,6 +13,18 @@ import { RolesEnum } from '@/users/enums/roles.enum';
 import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
 import { DashboardFilterDto } from '../dto/filters.dto';
 
+type Groups = [
+  {
+    start_date: Date;
+    end_date: Date;
+  },
+  TrackLearningPeriodEntity[],
+];
+
+type ResponseWithGroups = DashboardStatsResponseDto & {
+  groups: Groups[];
+};
+
 @Injectable()
 export class DashboardService {
   constructor(
@@ -25,16 +37,22 @@ export class DashboardService {
     options: DashboardFilterDto,
     user: UserEntity,
   ): Promise<DashboardStatsResponseDto> {
-    const baseStats = await this.getStatisticsTeacher(options);
+    const baseStats = await this.getStatisticForTeacher(options);
     if (user.role === RolesEnum.TEACHER) {
       delete baseStats.groups;
       return baseStats;
     }
 
-    return baseStats;
+    const directorStats = await this.getStatisticForDirector(baseStats);
+    if (user.role === RolesEnum.DIRECTOR) {
+      delete directorStats.groups;
+      return directorStats;
+    }
+
+    return directorStats;
   }
 
-  private async getStatisticsTeacher(options: DashboardFilterDto) {
+  private async getStatisticForTeacher(options: DashboardFilterDto) {
     const filters =
       extractPaginationOptions<DashboardFilterDto>(options).filters;
 
@@ -110,6 +128,22 @@ export class DashboardService {
     };
   }
 
+  private async getStatisticForDirector(baseStats: ResponseWithGroups) {
+    const now = new Date();
+    const currentIndex = baseStats.groups.findIndex(
+      ([key]) => key.start_date <= now && key.end_date >= now,
+    );
+
+    const yearToDateCompliance = await this.calculateCompliance(
+      baseStats.groups.slice(0, currentIndex).flatMap(([, lp]) => lp),
+    );
+
+    return {
+      ...baseStats,
+      yearToDateCompliance,
+    };
+  }
+
   private calculateCompliance(lp: TrackLearningPeriodEntity[]) {
     return this.assignmentPeriodService.average('percentage', {
       learning_period_id: In(lp.map((lp) => lp.id)),
@@ -133,13 +167,16 @@ export class DashboardService {
 
     // sort from the most recent to the oldest
     return Array.from(groups.entries())
-      .map(([key, lp]) => [
-        {
-          start_date: new Date(key.split(' ')[0]),
-          end_date: new Date(key.split(' ')[1]),
-        },
-        lp,
-      ])
+      .map(
+        ([key, lp]) =>
+          [
+            {
+              start_date: new Date(key.split(' ')[0]),
+              end_date: new Date(key.split(' ')[1]),
+            },
+            lp,
+          ] as Groups,
+      )
       .sort(
         ([key1], [key2]) =>
           key2.start_date.getTime() - key1.start_date.getTime(),
