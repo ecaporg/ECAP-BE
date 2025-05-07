@@ -18,11 +18,11 @@ export class TrackLearningPeriodEntity extends GenericEntity {
   name: string;
 
   @ApiProperty({ description: 'Learning period start date' })
-  @Column()
+  @Column({ type: 'date' })
   start_date: Date;
 
   @ApiProperty({ description: 'Learning period end date' })
-  @Column()
+  @Column({ type: 'date' })
   end_date: Date;
 
   @ApiProperty({

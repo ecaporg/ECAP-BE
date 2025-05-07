@@ -24,11 +24,11 @@ export class SemesterEntity extends GenericEntity {
   name: string;
 
   @ApiProperty({ description: 'Semester start date' })
-  @Column()
+  @Column({ type: 'date' })
   start_date: Date;
 
   @ApiProperty({ description: 'Semester end date' })
-  @Column()
+  @Column({ type: 'date' })
   end_date: Date;
 
   @ApiProperty({

@@ -22,11 +22,11 @@ export class TrackEntity extends GenericEntity {
   name: string;
 
   @ApiProperty({ description: 'Track start date' })
-  @Column()
+  @Column({ type: 'date' })
   start_date: Date;
 
   @ApiProperty({ description: 'Track end date' })
-  @Column()
+  @Column({ type: 'date' })
   end_date: Date;
 
   @ApiProperty({

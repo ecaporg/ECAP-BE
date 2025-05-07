@@ -11,7 +11,7 @@ export class TrackCalendarEntity {
   track_id: number;
 
   @ApiProperty({ description: 'Date of the calendar entry' })
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'date' })
   date: Date;
 
   @ApiProperty({ description: 'Type of calendar entry', maxLength: 250 })
