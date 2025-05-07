@@ -17,7 +17,7 @@ import { UserRoleEntity } from '../../users/entities/user-role.entity';
 import { UsersService } from '../../users/users.service';
 import usersFixtures from '../fixtures/users.fixtures';
 import { AuthService } from '../services/auth.service';
-import { IAuthUser } from '../types/auth-user';
+import { AuthUser } from '../types/auth-user';
 
 import { JwtRefreshStrategy } from './jwt-refresh.strategy';
 
@@ -76,7 +76,7 @@ describe('LocalStrategy tests', () => {
     } as unknown as Request;
 
     it('should return the user with refresh token', async () => {
-      const authUserMock = { id: 4 } as IAuthUser;
+      const authUserMock = { id: 4 } as AuthUser;
 
       const user = await jwtRefreshStrategy.validate(requestMock, authUserMock);
 
@@ -96,7 +96,7 @@ describe('LocalStrategy tests', () => {
     });
 
     it('should thrown an exception', async () => {
-      const authUserMock = { id: 40 } as IAuthUser;
+      const authUserMock = { id: 40 } as AuthUser;
 
       await expect(
         jwtRefreshStrategy.validate(requestMock, authUserMock),

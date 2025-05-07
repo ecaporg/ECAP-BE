@@ -20,7 +20,7 @@ import { PasswordDTO } from '../dtos/password.dto';
 import { ResetPasswordDTO } from '../dtos/reset-password.dto';
 import { SignInDTO } from '../dtos/sign-in.dto';
 import { AuthService } from '../services/auth.service';
-import { AuthUser, IAuthUser } from '../types/auth-user';
+import { AuthUser } from '../types/auth-user';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -35,7 +35,7 @@ export class AuthController {
   @Post('sign-up')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiCrudResponse(AuthUser, 'created')
-  signUp(@Body() createUserDto: CreateUserDTO): Promise<IAuthUser> {
+  signUp(@Body() createUserDto: CreateUserDTO): Promise<AuthUser> {
     return this.authService.signUp(createUserDto);
   }
 
@@ -44,7 +44,7 @@ export class AuthController {
   @Post('sign-in')
   @ApiOperation({ summary: 'Authenticate user with credentials' })
   @ApiCrudResponse(LoginResponseDTO)
-  signIn(@CurrentUser() user: IAuthUser): Promise<LoginResponseDTO> {
+  signIn(@CurrentUser() user: AuthUser): Promise<LoginResponseDTO> {
     return this.authService.signIn(user);
   }
 

@@ -7,7 +7,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ForbiddenException } from '@/core';
 
 import { AuthService } from '../services/auth.service';
-import { IAuthUser } from '../types/auth-user';
+import { AuthUser } from '../types/auth-user';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate({ id }: IAuthUser) {
+  async validate({ id }: AuthUser) {
     const user = await this.authService.validateUserById(id);
     if (!user) {
       throw new ForbiddenException('User not valid');

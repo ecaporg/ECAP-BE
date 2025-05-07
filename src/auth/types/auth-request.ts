@@ -1,11 +1,11 @@
 import { Request } from 'express';
 
-import { IAuthUser } from './auth-user';
+import { AuthUser } from './auth-user';
 
 export interface IAuthRequest extends Request {
-  user: IAuthUser;
+  user: AuthUser;
 }
 
 export interface IAuthRefreshRequest extends Request {
-  user: IAuthUser & { refreshToken: string };
+  user: AuthUser & { refreshToken: string };
 }

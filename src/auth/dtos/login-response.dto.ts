@@ -1,6 +1,6 @@
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { IAuthUser } from '../types/auth-user';
+import { AuthUser } from '../types/auth-user';
 
 @ApiTags('Authentication')
 export class LoginResponseDTO {
@@ -29,5 +29,5 @@ export class LoginResponseDTO {
       roles: ['user'],
     },
   })
-  user: IAuthUser;
+  user: AuthUser;
 }

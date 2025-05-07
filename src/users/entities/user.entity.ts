@@ -54,26 +54,26 @@ export class UserEntity extends GenericEntity {
     type: () => [{}],
   })
   @OneToOne(() => StudentEntity, (student) => student.user)
-  student: StudentEntity;
+  student?: StudentEntity;
 
   @ApiProperty({
     description: 'Teacher profiles associated with this user',
     type: () => [{}],
   })
   @OneToOne(() => TeacherEntity, (teacher) => teacher.user)
-  teacher: TeacherEntity;
+  teacher?: TeacherEntity;
 
   @ApiProperty({
     description: 'Director profiles associated with this user',
     type: () => [{}],
   })
   @OneToOne(() => DirectorEntity, (director) => director.user)
-  director: DirectorEntity;
+  director?: DirectorEntity;
 
   @ApiProperty({
     description: 'Admin profiles associated with this user',
     type: () => [{}],
   })
   @OneToOne(() => AdminEntity, (admin) => admin.user)
-  admin: AdminEntity;
+  admin?: AdminEntity;
 }

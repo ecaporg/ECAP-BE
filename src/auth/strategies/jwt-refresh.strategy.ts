@@ -8,7 +8,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ForbiddenException } from '@/core';
 
 import { AuthService } from '../services/auth.service';
-import { IAuthUser, IAuthUserRefreshToken } from '../types/auth-user';
+import { AuthUser, IAuthUserRefreshToken } from '../types/auth-user';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -29,7 +29,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
 
   async validate(
     req: Request,
-    { id }: IAuthUser,
+    { id }: AuthUser,
   ): Promise<IAuthUserRefreshToken> {
     const user = await this.authService.validateUserById(id);
     if (!user) {

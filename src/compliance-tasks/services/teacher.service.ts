@@ -3,7 +3,7 @@ import { Equal, FindOptionsWhere, ILike, In, LessThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
-import { IAuthUser } from '@/auth/types/auth-user';
+import { AuthUser } from '@/auth/types/auth-user';
 import { BadRequestException, extractPaginationOptions } from '@/core';
 import { AcademicYearService } from '@/school/services/academic-year.service';
 import { AssignmentPeriodService } from '@/school/services/assignment.service';
@@ -66,13 +66,13 @@ export class TeacherComplianceTaskService {
     return assignmentPeriods;
   }
 
-  async getFilters(user: IAuthUser) {
+  async getFilters(user: AuthUser) {
     const query = await this.getTenantQuery(user);
     const tenant = await this.tenantService.findOneBy(query);
     return tenant;
   }
 
-  async searchStudents(user: IAuthUser, search: string) {
+  async searchStudents(user: AuthUser, search: string) {
     const students = await this.studentService.findBy({
       where: this.getUserSearchFields(search).map((property) => ({
         user: {
@@ -106,7 +106,7 @@ export class TeacherComplianceTaskService {
     return fields;
   }
 
-  private async getTenantQuery(user: IAuthUser) {
+  private async getTenantQuery(user: AuthUser) {
     const query: FindOptionsWhere<TenantEntity> = {};
 
     if (user.role === RolesEnum.TEACHER) {

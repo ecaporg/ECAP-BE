@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { IAuthUser } from '@/auth/types/auth-user';
+import { AuthUser } from '@/auth/types/auth-user';
 import {
   ApiArrayResponse,
   ApiCrudResponse,
@@ -31,7 +31,7 @@ export class AdminComplianceController {
   @ApiPaginatedCrudResponse(CourseEntity)
   async getTeachers(
     @Query() filters: TeachersTableFilterDto,
-    @CurrentUser() user: IAuthUser,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.adminComplianceService.getTeachers(filters, user);
   }
@@ -39,7 +39,7 @@ export class AdminComplianceController {
   @Get('filters')
   @ApiOperation({ summary: 'Get available filters for students table' })
   @ApiCrudResponse(TenantEntity)
-  async getFilters(@CurrentUser() user: IAuthUser) {
+  async getFilters(@CurrentUser() user: AuthUser) {
     return this.adminComplianceService.getFilters(user);
   }
 
@@ -48,7 +48,7 @@ export class AdminComplianceController {
   @ApiErrorResponses()
   @ApiArrayResponse(TeacherEntity)
   async searchTeachers(
-    @CurrentUser() user: IAuthUser,
+    @CurrentUser() user: AuthUser,
     @Param('search') search: string,
   ) {
     return this.adminComplianceService.searchTeachers(user, search);

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { IAuthUser } from '@/auth/types/auth-user';
+import { AuthUser } from '@/auth/types/auth-user';
 import { extractPaginationOptions } from '@/core';
 import { AssignmentPeriodService } from '@/school/services/assignment.service';
 import { TeacherService } from '@/staff/services/staff.service';
@@ -19,7 +19,7 @@ export class AdminComplianceService {
     private readonly teacherService: TeacherService,
   ) {}
 
-  async getTeachers(filters: TeachersTableFilterDto, user: IAuthUser) {
+  async getTeachers(filters: TeachersTableFilterDto, user: AuthUser) {
     const paginationOptions = extractPaginationOptions(filters);
     const query =
       this.assignmentPeriodService.getDefaultQuery(paginationOptions);
@@ -107,11 +107,11 @@ export class AdminComplianceService {
     };
   }
 
-  async getFilters(user: IAuthUser) {
+  async getFilters(user: AuthUser) {
     return this.teacherComplianceTaskService.getFilters(user);
   }
 
-  async searchTeachers(user: IAuthUser, search: string) {
+  async searchTeachers(user: AuthUser, search: string) {
     const whereInSchool =
       user.role === RolesEnum.DIRECTOR
         ? { tenant: { directors: { user } } }

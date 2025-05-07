@@ -18,7 +18,7 @@ import { AuthTokensDTO } from '../dtos/auth-tokens.dto';
 import { ChangeEmailPasswordDTO } from '../dtos/change-email.dto';
 import { LoginResponseDTO } from '../dtos/login-response.dto';
 import { ResetPasswordDTO } from '../dtos/reset-password.dto';
-import { IAuthUser } from '../types/auth-user';
+import { AuthUser } from '../types/auth-user';
 
 import { AuthEmailService } from './auth-email.service';
 
@@ -34,7 +34,7 @@ export class AuthService {
   async validateUserEmailPassword(
     email: string,
     password: string,
-  ): Promise<IAuthUser | null> {
+  ): Promise<AuthUser | null> {
     const user = await this.userService.findUserByEmail(email);
 
     if (!user) {
@@ -54,7 +54,7 @@ export class AuthService {
     return this.getAuthUser(user);
   }
 
-  async validateUserById(userId: number): Promise<IAuthUser | null> {
+  async validateUserById(userId: number): Promise<AuthUser | null> {
     const user = await this.userService.findOneBy(
       { id: userId },
       { director: true },
@@ -71,7 +71,7 @@ export class AuthService {
     return this.getAuthUser(user);
   }
 
-  async signIn(user: IAuthUser): Promise<LoginResponseDTO> {
+  async signIn(user: AuthUser): Promise<LoginResponseDTO> {
     const { accessToken, refreshToken } = await this.getTokens(user);
 
     await this.updateUserRefreshToken(user.id, refreshToken);
@@ -121,7 +121,7 @@ export class AuthService {
     return tokens;
   }
 
-  async getTokens(authUser: IAuthUser): Promise<AuthTokensDTO> {
+  async getTokens(authUser: AuthUser): Promise<AuthTokensDTO> {
     const accessTokenResponse = this.jwtService.signAsync(authUser, {
       secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
       expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'),
@@ -149,7 +149,7 @@ export class AuthService {
     });
   }
 
-  async signUp(user: CreateUserDTO): Promise<IAuthUser> {
+  async signUp(user: CreateUserDTO): Promise<AuthUser> {
     const hashedPassword = await argon2.hash(user.password);
     const createdUser = await this.userService.createUser({
       ...user,
@@ -207,19 +207,11 @@ export class AuthService {
     return { success: true };
   }
 
-  private async getAuthUser(user: UserEntity): Promise<IAuthUser> {
-    const { id, firstname, lastname, email, isActive, emailVerified, role } =
-      user;
+  private async getAuthUser(user: UserEntity): Promise<AuthUser> {
+    delete user.password;
+    delete user.refreshToken;
 
-    return {
-      id,
-      firstname,
-      lastname,
-      email,
-      isActive,
-      emailVerified: emailVerified || false,
-      role,
-    };
+    return user;
   }
 
   async handleEmailUpdate(

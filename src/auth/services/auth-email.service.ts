@@ -7,7 +7,7 @@ import { BadRequestException, UnauthorizedException } from '@/core';
 import { UsersService } from '@/users/users.service';
 
 import { ChangeEmailDTO } from '../dtos/change-email.dto';
-import { IAuthUser } from '../types/auth-user';
+import { AuthUser } from '../types/auth-user';
 
 @Injectable()
 export class AuthEmailService {
@@ -93,7 +93,7 @@ export class AuthEmailService {
     throw new BadRequestException('Invalid token payload');
   }
 
-  async verifyEmailToken(token: string): Promise<IAuthUser> {
+  async verifyEmailToken(token: string): Promise<AuthUser> {
     const email = this.validateConfirmEmailToken(token);
 
     const user = await this.usersService.findUserByEmail(email);
@@ -112,7 +112,7 @@ export class AuthEmailService {
       isActive: user.isActive,
       emailVerified: true,
       role: user.role,
-    };
+    } as AuthUser;
   }
 
   async resendConfirmationLink(email: string): Promise<void> {

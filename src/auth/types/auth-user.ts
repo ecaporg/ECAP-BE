@@ -1,25 +1,12 @@
-import { RolesEnum } from '@/users/enums/roles.enum';
+import { OmitType } from '@nestjs/swagger';
 
-export interface IAuthUser {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  isActive: boolean;
-  emailVerified: boolean;
-  role: RolesEnum;
-}
+import { UserEntity } from '@/users/entities/user.entity';
 
-export interface IAuthUserRefreshToken extends IAuthUser {
+export class AuthUser extends OmitType(UserEntity, [
+  'password',
+  'refreshToken',
+]) {}
+
+export interface IAuthUserRefreshToken extends AuthUser {
   refreshToken: string;
-}
-
-export class AuthUser implements IAuthUser {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  isActive: boolean;
-  emailVerified: boolean;
-  role: RolesEnum;
 }
