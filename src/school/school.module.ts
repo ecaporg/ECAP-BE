@@ -7,6 +7,7 @@ import { StudentsModule } from '@/students/students.module';
 import { TenantModule } from '@/tenant/tenant.module';
 import { TrackModule } from '@/track/track.module';
 
+import { SchoolController } from './controllers/school.controller';
 import { AcademicYearEntity } from './entities/academic-year.entity';
 import { AcademyEntity } from './entities/academy.entity';
 import { AssignmentPeriodEntity } from './entities/assignment.entity';
@@ -19,6 +20,7 @@ import { SchoolService } from './services/school.service';
 import { SemesterService } from './services/semester.service';
 
 @Module({
+  controllers: [SchoolController],
   imports: [
     TypeOrmModule.forFeature([
       SchoolEntity,

@@ -13,6 +13,7 @@ export * from './filters/http-exception.filter';
 // Interceptors
 export * from './interceptors/transform.interceptor';
 export * from './interceptors/attach-user-id.interceptor';
+export * from './interceptors/attach-to-body.interceptor';
 
 // Middlewares
 export * from './middleware/logger.middleware';

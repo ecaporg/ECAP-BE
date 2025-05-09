@@ -1,6 +1,15 @@
 import { DeepPartial } from 'typeorm';
 
-import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 import {
@@ -75,7 +84,20 @@ export class TemplateController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update an entity' })
   @ApiCrudResponse(GenericEntityClass)
-  async update(
+  async patch(
+    @Param('id') id: EntityId,
+    @Body() updateDto: any,
+  ): Promise<GenericEntity> {
+    return this.service.update(
+      id,
+      updateDto as unknown as DeepPartial<GenericEntity>,
+    );
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update an entity' })
+  @ApiCrudResponse(GenericEntityClass)
+  async put(
     @Param('id') id: EntityId,
     @Body() updateDto: any,
   ): Promise<GenericEntity> {
