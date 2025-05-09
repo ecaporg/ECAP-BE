@@ -100,9 +100,11 @@ export class AdminComplianceService {
         itemsPerPage: query.take,
         totalPages: Math.ceil(totalItems / query.take),
         currentPage: query.skip,
-        completedCount: filters?.completed?.every((item) => item === false)
-          ? 0
-          : items[0]?.total_completed,
+        additionalData: {
+          completedCount: filters?.completed?.every((item) => item === false)
+            ? 0
+            : items[0]?.total_completed,
+        },
       },
     };
   }

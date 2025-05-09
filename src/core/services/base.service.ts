@@ -24,7 +24,7 @@ export interface PaginationOptions<T = any> {
   filters?: FindOptionsWhere<T>;
 }
 
-export interface PaginatedResult<T> {
+export interface PaginatedResult<T, D = any> {
   items: T[];
   meta: {
     totalItems: number;
@@ -32,6 +32,7 @@ export interface PaginatedResult<T> {
     itemsPerPage: number;
     totalPages: number;
     currentPage: number;
+    additionalData?: D;
   };
 }
 

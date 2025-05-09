@@ -40,7 +40,9 @@ export class AssignmentPeriodService extends BaseService<AssignmentPeriodEntity>
       where,
     });
 
-    (assignmentPeriods.meta as any).completedCount = completedCount;
+    assignmentPeriods.meta.additionalData = {
+      completedCount,
+    };
 
     console.log(assignmentPeriods);
     return assignmentPeriods;
