@@ -24,10 +24,11 @@ export class SchoolService extends BaseService<SchoolEntity> {
   async adminCreate(data: DeepPartial<SchoolEntity>, user: UserEntity) {
     const admin = await this.adminService.findOne({ id: user.id });
 
-    const school = this.schoolRepository.create({
+    const school = this.create({
       ...data,
       tenant_id: admin.tenant.id,
     });
-    return this.schoolRepository.save(school);
+
+    return school;
   }
 }

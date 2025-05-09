@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CourseModule } from '@/course/course.module';
-import { AdminService } from '@/staff/services/staff.service';
 import { StaffModule } from '@/staff/staff.module';
 import { StudentsModule } from '@/students/students.module';
 import { TenantModule } from '@/tenant/tenant.module';
 import { TrackModule } from '@/track/track.module';
 
+import { AcademyController } from './controllers/academy.controller';
 import { SchoolController } from './controllers/school.controller';
 import { AcademicYearEntity } from './entities/academic-year.entity';
 import { AcademyEntity } from './entities/academy.entity';
@@ -21,7 +21,7 @@ import { SchoolService } from './services/school.service';
 import { SemesterService } from './services/semester.service';
 
 @Module({
-  controllers: [SchoolController],
+  controllers: [SchoolController, AcademyController],
   imports: [
     TypeOrmModule.forFeature([
       SchoolEntity,

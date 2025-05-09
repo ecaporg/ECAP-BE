@@ -1,5 +1,3 @@
-import { DeepPartial } from 'typeorm';
-
 import {
   Body,
   Controller,
@@ -32,7 +30,6 @@ import { CreateSchoolDto, UpdateSchoolDto } from '../dto/school.dto';
 import { SchoolEntity as School } from '../entities/school.entity';
 import { SchoolFilterInterceptor } from '../interceptors/school-filter.interceptor';
 import { SchoolService } from '../services/school.service';
-// --------------------------------------------------------------------------
 
 @ApiTags('Schools')
 @Controller('schools')
@@ -54,7 +51,6 @@ export class SchoolController {
   async findAll(
     @Query() options?: SchoolFilterDto,
   ): Promise<PaginatedResult<School>> {
-    console.log(options);
     return this.schoolService.findAll(options);
   }
 
@@ -78,10 +74,7 @@ export class SchoolController {
     @Body() createSchoolDto: CreateSchoolDto,
     @CurrentUser() user: UserEntity,
   ): Promise<School> {
-    return this.schoolService.adminCreate(
-      createSchoolDto as unknown as DeepPartial<School>,
-      user,
-    );
+    return this.schoolService.adminCreate(createSchoolDto, user);
   }
 
   @Patch(':id')
@@ -91,10 +84,7 @@ export class SchoolController {
     @Param('id') id: EntityId,
     @Body() updateSchoolDto: UpdateSchoolDto,
   ): Promise<School> {
-    return this.schoolService.update(
-      id,
-      updateSchoolDto as unknown as DeepPartial<School>,
-    );
+    return this.schoolService.update(id, updateSchoolDto);
   }
 
   @Put(':id')
@@ -104,10 +94,7 @@ export class SchoolController {
     @Param('id') id: EntityId,
     @Body() updateSchoolDto: UpdateSchoolDto,
   ): Promise<School> {
-    return this.schoolService.update(
-      id,
-      updateSchoolDto as unknown as DeepPartial<School>,
-    );
+    return this.schoolService.update(id, updateSchoolDto);
   }
 
   @Delete(':id')

@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { StaffModule } from '@/staff/staff.module';
+
+import { TrackController } from './controllers/track.controller';
 import { SubjectEntity } from './entities/subject.entity';
 import { TrackEntity } from './entities/track.entity';
 import { TrackCalendarEntity } from './entities/track-calendar.entity';
@@ -18,7 +21,9 @@ import { TrackLearningPeriodService } from './services/track-learning-period.ser
       TrackLearningPeriodEntity,
       SubjectEntity,
     ]),
+    StaffModule,
   ],
+  controllers: [TrackController],
   providers: [
     TrackService,
     TrackCalendarService,

@@ -37,6 +37,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : { message, statusCode: status }) as ErrorResponseDto),
     };
 
+    errorResponse.error =
+      errorResponse.error || errorResponse.message || 'Internal server error';
+
     // Log error for server monitoring
     this.logger.error(
       `${request.method} ${request.url} - ${status}`,
