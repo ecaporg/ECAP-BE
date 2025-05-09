@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CourseModule } from '@/course/course.module';
+import { AdminService } from '@/staff/services/staff.service';
 import { StaffModule } from '@/staff/staff.module';
 import { StudentsModule } from '@/students/students.module';
 import { TenantModule } from '@/tenant/tenant.module';

@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
@@ -9,7 +15,7 @@ import { SchoolEntity } from '../entities/school.entity';
 
 interface School extends SchoolEntity {}
 
-export class CreateSchoolDto implements Pick<School, 'name' | 'tenant_id'> {
+export class CreateSchoolDto implements Pick<School, 'name'> {
   @ApiProperty({
     description: 'The name of the school',
     example: 'Greenwood High',
@@ -25,8 +31,8 @@ export class CreateSchoolDto implements Pick<School, 'name' | 'tenant_id'> {
     example: 1,
   })
   @IsNumber({}, { message: 'Tenant ID must be a number' })
-  @IsNotEmpty({ message: 'Tenant ID is required' })
-  tenant_id: number;
+  @IsOptional({ message: 'Tenant ID is required' })
+  tenant_id?: number;
 }
 
 export class UpdateSchoolDto extends PartialType(CreateSchoolDto) {}

@@ -1,9 +1,11 @@
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core';
+import { AdminService } from '@/staff/services/staff.service';
+import { UserEntity } from '@/users/entities/user.entity';
 
 import { SchoolEntity } from '../entities/school.entity';
 
@@ -12,9 +14,20 @@ export class SchoolService extends BaseService<SchoolEntity> {
   constructor(
     @InjectRepository(SchoolEntity)
     private schoolRepository: Repository<SchoolEntity>,
+    private adminService: AdminService,
   ) {
     super(schoolRepository, {
-      defaultRelations: ['tenant', 'director'],
+      defaultRelations: ['tenant'],
     });
+  }
+
+  async adminCreate(data: DeepPartial<SchoolEntity>, user: UserEntity) {
+    const admin = await this.adminService.findOne({ id: user.id });
+
+    const school = this.schoolRepository.create({
+      ...data,
+      tenant_id: admin.tenant.id,
+    });
+    return this.schoolRepository.save(school);
   }
 }

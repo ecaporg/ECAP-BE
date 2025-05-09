@@ -19,19 +19,18 @@ import {
   ApiErrorResponses,
   ApiPaginatedCrudResponse,
   ApiPaginationQueries,
+  CurrentUser,
   EntityId,
   PaginatedResult,
   Roles,
 } from '@/core';
+import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { SchoolFilterDto } from '../dto/filters.dto';
 import { CreateSchoolDto, UpdateSchoolDto } from '../dto/school.dto';
 import { SchoolEntity as School } from '../entities/school.entity';
-import {
-  AttachTenantIdInterceptor,
-  SchoolFilterInterceptor,
-} from '../interceptors/school-filter.interceptor';
+import { SchoolFilterInterceptor } from '../interceptors/school-filter.interceptor';
 import { SchoolService } from '../services/school.service';
 // --------------------------------------------------------------------------
 
@@ -55,6 +54,7 @@ export class SchoolController {
   async findAll(
     @Query() options?: SchoolFilterDto,
   ): Promise<PaginatedResult<School>> {
+    console.log(options);
     return this.schoolService.findAll(options);
   }
 
@@ -74,10 +74,13 @@ export class SchoolController {
   @Post()
   @ApiOperation({ summary: 'Create a new school' })
   @ApiCrudResponse(School, 'created')
-  @UseInterceptors(AttachTenantIdInterceptor)
-  async create(@Body() createSchoolDto: CreateSchoolDto): Promise<School> {
-    return this.schoolService.create(
+  async create(
+    @Body() createSchoolDto: CreateSchoolDto,
+    @CurrentUser() user: UserEntity,
+  ): Promise<School> {
+    return this.schoolService.adminCreate(
       createSchoolDto as unknown as DeepPartial<School>,
+      user,
     );
   }
 
