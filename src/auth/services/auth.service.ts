@@ -60,12 +60,8 @@ export class AuthService {
       { director: { academy: true } },
     );
 
-    if (!user) {
-      return null;
-    }
-
     if (!user.isActive) {
-      return null;
+      throw new UnauthorizedException('User is inactive');
     }
 
     return this.getAuthUser(user);

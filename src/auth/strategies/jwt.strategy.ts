@@ -23,11 +23,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate({ id }: AuthUser) {
-    const user = await this.authService.validateUserById(id);
-    if (!user) {
-      throw new ForbiddenException('User not valid');
+    try {
+      return await this.authService.validateUserById(id);
+    } catch (error) {
+      throw new ForbiddenException('User not valid', error);
     }
-
-    return user;
   }
 }
