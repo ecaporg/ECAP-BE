@@ -16,6 +16,7 @@ import { SubjectService } from './services/subject.service';
 import { TrackService } from './services/track.service';
 import { TrackCalendarService } from './services/track-calendar.service';
 import { TrackLearningPeriodService } from './services/track-learning-period.service';
+import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { TrackLearningPeriodService } from './services/track-learning-period.ser
     SubjectService,
     AcademicYearService,
     SemesterService,
+    TrackCalendarSubscriber,
   ],
   exports: [
     TrackService,

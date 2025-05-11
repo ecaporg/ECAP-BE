@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -53,10 +60,10 @@ export class TrackEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Calendar entries for this track',
-    type: () => [{}],
+    type: () => TrackCalendarEntity,
   })
-  @OneToMany(() => TrackCalendarEntity, (calendar) => calendar.track)
-  calendar: TrackCalendarEntity[];
+  @OneToOne(() => TrackCalendarEntity, (calendar) => calendar.track)
+  calendar: TrackCalendarEntity;
 
   @ApiProperty({
     description: 'Subjects in this track',

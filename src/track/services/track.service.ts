@@ -11,6 +11,8 @@ import { UserEntity } from '@/users/entities/user.entity';
 import { AcademicYearEntity } from '../entities/academic-year.entity';
 import { TrackEntity } from '../entities/track.entity';
 
+import { TrackCalendarService } from './track-calendar.service';
+
 @Injectable()
 export class TrackService extends BaseService<TrackEntity> {
   constructor(
@@ -18,6 +20,7 @@ export class TrackService extends BaseService<TrackEntity> {
     private readonly trackRepository: Repository<TrackEntity>,
     private readonly adminService: AdminService,
     private readonly academicYearService: AcademicYearService,
+    private readonly trackCalendarService: TrackCalendarService,
   ) {
     super(trackRepository, {
       defaultRelations: ['tenant', 'academicYear'],

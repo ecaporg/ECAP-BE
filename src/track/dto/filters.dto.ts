@@ -30,3 +30,22 @@ export class TrackFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   'tenant.schools.courses.teacher_id': number[];
 }
+
+export class TrackCalendarFilterDto extends BaseFilterDto {
+  @ApiProperty({
+    required: true,
+    description: 'Filter by track ID',
+    type: [Number],
+  })
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'track.tenant_id': number[];
+
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'track.tenant.directors.id': number[];
+
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  'track.tenant.schools.courses.teacher_id': number[];
+}
