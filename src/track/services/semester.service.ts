@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core';
 
-import { SemesterEntity } from '../entities/semester.entity';
+import { SemesterEntity } from '../../track/entities/semester.entity';
 
 @Injectable()
 export class SemesterService extends BaseService<SemesterEntity> {

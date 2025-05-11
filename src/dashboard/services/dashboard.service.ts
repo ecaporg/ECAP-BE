@@ -3,7 +3,7 @@ import { In } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 
 import { extractPaginationOptions } from '@/core';
-import { AcademicYearService } from '@/school/services/academic-year.service';
+import { AcademicYearService } from '@/track/services/academic-year.service';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 import { TrackLearningPeriodService } from '@/track/services/track-learning-period.service';
 import { UserEntity } from '@/users/entities/user.entity';

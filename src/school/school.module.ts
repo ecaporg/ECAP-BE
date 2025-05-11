@@ -9,25 +9,19 @@ import { TrackModule } from '@/track/track.module';
 
 import { AcademyController } from './controllers/academy.controller';
 import { SchoolController } from './controllers/school.controller';
-import { AcademicYearEntity } from './entities/academic-year.entity';
 import { AcademyEntity } from './entities/academy.entity';
 import { AssignmentPeriodEntity } from './entities/assignment.entity';
 import { SchoolEntity } from './entities/school.entity';
-import { SemesterEntity } from './entities/semester.entity';
-import { AcademicYearService } from './services/academic-year.service';
 import { AcademyService } from './services/academy.service';
 import { AssignmentPeriodService } from './services/assignment.service';
 import { SchoolService } from './services/school.service';
-import { SemesterService } from './services/semester.service';
 
 @Module({
   controllers: [SchoolController, AcademyController],
   imports: [
     TypeOrmModule.forFeature([
       SchoolEntity,
-      SemesterEntity,
       AcademyEntity,
-      AcademicYearEntity,
       AssignmentPeriodEntity,
     ]),
     StudentsModule,
@@ -36,20 +30,12 @@ import { SemesterService } from './services/semester.service';
     TenantModule,
     CourseModule,
   ],
-  providers: [
-    SchoolService,
-    SemesterService,
-    AcademyService,
-    AcademicYearService,
-    AssignmentPeriodService,
-  ],
+  providers: [SchoolService, AcademyService, AssignmentPeriodService],
   exports: [
     SchoolService,
-    SemesterService,
     AcademyService,
     StudentsModule,
     StaffModule,
-    AcademicYearService,
     AssignmentPeriodService,
     TrackModule,
     TenantModule,

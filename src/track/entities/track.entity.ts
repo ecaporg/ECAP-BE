@@ -3,10 +3,10 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core';
-import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
+import { AcademicYearEntity } from './academic-year.entity';
 import { SubjectEntity } from './subject.entity';
 import { TrackCalendarEntity } from './track-calendar.entity';
 import { TrackLearningPeriodEntity } from './track-learning-period.entity';

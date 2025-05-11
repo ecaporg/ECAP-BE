@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AuthUser } from '@/auth/types/auth-user';
 import { BadRequestException, extractPaginationOptions } from '@/core';
-import { AcademicYearService } from '@/school/services/academic-year.service';
+import { AcademicYearService } from '@/track/services/academic-year.service';
 import { AssignmentPeriodService } from '@/school/services/assignment.service';
 import { StudentService } from '@/students/services/student.service';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';

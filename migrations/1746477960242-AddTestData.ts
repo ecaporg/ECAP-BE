@@ -2,7 +2,6 @@ import * as argon2 from 'argon2';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { CourseEntity } from '@/course/entities/course.entity';
-import { SemesterEntity } from '@/school/entities/semester.entity';
 import {
   AdminEntity,
   DirectorEntity,
@@ -10,9 +9,10 @@ import {
 } from '@/staff/entities/staff.entity';
 import { SampleFlagMissingWorkEntity } from '@/students/entities/sample-flag.entity';
 import { SampleFlagErrorEntity } from '@/students/entities/sample-flag.entity';
+import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
+import { SemesterEntity } from '@/track/entities/semester.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
-import { AcademicYearEntity } from '../src/school/entities/academic-year.entity';
 import { AcademyEntity } from '../src/school/entities/academy.entity';
 import { AssignmentPeriodEntity } from '../src/school/entities/assignment.entity';
 import { SchoolEntity } from '../src/school/entities/school.entity';
@@ -28,7 +28,7 @@ import { TrackEntity } from '../src/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../src/track/entities/track-learning-period.entity';
 import { UserEntity } from '../src/users/entities/user.entity';
 
-export class AddTestData1746477960242 implements MigrationInterface {
+export class AddTestData201746984777855 implements MigrationInterface {
   private password: string;
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -361,7 +361,7 @@ export class AddTestData1746477960242 implements MigrationInterface {
     const subjects = [] as SubjectEntity[];
     subjects.push(
       ...Array.from(
-        { length: 5 },
+        { length: 2 },
         (_, i) =>
           ({
             name: `Subject ${i + 1} for ${track.name}`,
@@ -384,7 +384,7 @@ export class AddTestData1746477960242 implements MigrationInterface {
       const users = await queryRunner.manager.save(
         UserEntity,
         Array.from(
-          { length: 100 },
+          { length: 30 },
           (_, i) =>
             ({
               email: `user${i}_${school.name.replace(' ', '_')}_${academicYear.from}_${academicYear.to}@test.com`,

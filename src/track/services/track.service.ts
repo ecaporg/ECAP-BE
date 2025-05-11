@@ -5,8 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core';
 import { AdminService } from '@/staff/services/staff.service';
+import { AcademicYearService } from '@/track/services/academic-year.service';
 import { UserEntity } from '@/users/entities/user.entity';
 
+import { AcademicYearEntity } from '../entities/academic-year.entity';
 import { TrackEntity } from '../entities/track.entity';
 
 @Injectable()
@@ -15,6 +17,7 @@ export class TrackService extends BaseService<TrackEntity> {
     @InjectRepository(TrackEntity)
     private readonly trackRepository: Repository<TrackEntity>,
     private readonly adminService: AdminService,
+    private readonly academicYearService: AcademicYearService,
   ) {
     super(trackRepository, {
       defaultRelations: ['tenant', 'academicYear'],
@@ -26,7 +29,26 @@ export class TrackService extends BaseService<TrackEntity> {
     user: UserEntity,
   ): Promise<TrackEntity> {
     const admin = await this.adminService.findOne({ id: user.id } as any);
+    let academicYear: AcademicYearEntity;
+    const from = (createTrackDto.start_date as Date).getFullYear();
+    const to = (createTrackDto.end_date as Date).getFullYear();
 
-    return this.create({ ...createTrackDto, tenant_id: admin.tenant_id });
+    try {
+      academicYear = await this.academicYearService.findOne({
+        from,
+        to,
+      });
+    } catch (ignore) {
+      academicYear = await this.academicYearService.create({
+        from,
+        to,
+      });
+    }
+
+    return this.create({
+      ...createTrackDto,
+      tenant_id: admin.tenant_id,
+      academic_year_id: academicYear.id,
+    });
   }
 }

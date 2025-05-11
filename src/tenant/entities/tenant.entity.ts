@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GenericEntity } from '@/core';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
-import { SemesterEntity } from '@/school/entities/semester.entity';
+import { SemesterEntity } from '@/track/entities/semester.entity';
 import { AdminEntity, DirectorEntity } from '@/staff/entities/staff.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 

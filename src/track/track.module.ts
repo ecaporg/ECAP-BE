@@ -4,10 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StaffModule } from '@/staff/staff.module';
 
 import { TrackController } from './controllers/track.controller';
+import { AcademicYearEntity } from './entities/academic-year.entity';
+import { SemesterEntity } from './entities/semester.entity';
 import { SubjectEntity } from './entities/subject.entity';
 import { TrackEntity } from './entities/track.entity';
 import { TrackCalendarEntity } from './entities/track-calendar.entity';
 import { TrackLearningPeriodEntity } from './entities/track-learning-period.entity';
+import { AcademicYearService } from './services/academic-year.service';
+import { SemesterService } from './services/semester.service';
 import { SubjectService } from './services/subject.service';
 import { TrackService } from './services/track.service';
 import { TrackCalendarService } from './services/track-calendar.service';
@@ -20,6 +24,8 @@ import { TrackLearningPeriodService } from './services/track-learning-period.ser
       TrackCalendarEntity,
       TrackLearningPeriodEntity,
       SubjectEntity,
+      AcademicYearEntity,
+      SemesterEntity,
     ]),
     StaffModule,
   ],
@@ -29,12 +35,16 @@ import { TrackLearningPeriodService } from './services/track-learning-period.ser
     TrackCalendarService,
     TrackLearningPeriodService,
     SubjectService,
+    AcademicYearService,
+    SemesterService,
   ],
   exports: [
     TrackService,
     TrackCalendarService,
     TrackLearningPeriodService,
     SubjectService,
+    AcademicYearService,
+    SemesterService,
   ],
 })
 export class TrackModule {}

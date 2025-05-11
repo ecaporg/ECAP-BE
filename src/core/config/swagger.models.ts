@@ -3,12 +3,10 @@ import { Type } from '@nestjs/common';
 // Auth models
 import { AuthUser } from '@/auth/types/auth-user';
 import { CourseEntity } from '@/course/entities/course.entity';
-import { AcademicYearEntity } from '@/school/entities/academic-year.entity';
 // School entities
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
-import { SemesterEntity } from '@/school/entities/semester.entity';
 // Staff entities
 import {
   AdminEntity,
@@ -25,6 +23,8 @@ import {
 } from '@/students/entities/sample-flag.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
+import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
+import { SemesterEntity } from '@/track/entities/semester.entity';
 // Track entities
 import { SubjectEntity } from '@/track/entities/subject.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
