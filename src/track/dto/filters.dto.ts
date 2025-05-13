@@ -49,3 +49,5 @@ export class TrackCalendarFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   'track.tenant.schools.courses.teacher_id': number[];
 }
+
+export class TrackLearningPeriodFilterDto extends TrackCalendarFilterDto {}

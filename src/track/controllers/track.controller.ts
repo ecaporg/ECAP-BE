@@ -54,6 +54,26 @@ export class TrackController {
     return this.trackService.findAll(options);
   }
 
+  @Get('/periods')
+  @ApiOperation({
+    summary: 'Get all tracks with learning periods with pagination',
+  })
+  @ApiPaginationQueries()
+  @ApiPaginatedCrudResponse(TrackEntity)
+  @Roles(
+    RolesEnum.SUPER_ADMIN,
+    RolesEnum.ADMIN,
+    RolesEnum.DIRECTOR,
+    RolesEnum.TEACHER,
+  )
+  async findAllPeriods(
+    @Query() options?: TrackFilterDto,
+  ): Promise<PaginatedResult<TrackEntity>> {
+    return this.trackService.findAll(options, {
+      learningPeriods: true,
+    });
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get track by ID' })
   @ApiCrudResponse(TrackEntity)
