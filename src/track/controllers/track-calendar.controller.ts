@@ -33,7 +33,7 @@ import { TrackCalendarFilterInterceptor } from '../interceptors/track-calendar-f
 import { TrackCalendarService } from '../services/track-calendar.service';
 
 @ApiTags('Track Calendar')
-@Controller('track-calendar')
+@Controller('track-calendars')
 @UseInterceptors(TrackCalendarFilterInterceptor)
 @Roles(RolesEnum.SUPER_ADMIN)
 export class TrackCalendarController {

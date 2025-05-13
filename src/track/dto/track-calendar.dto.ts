@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -16,6 +16,7 @@ interface TrackCalendar extends TrackCalendarEntity {}
 
 export class CalendarDayDto {
   @ApiProperty({ description: 'Calendar day' })
+  @Transform(({ value }) => new Date(value))
   @IsNotEmpty()
   @IsDate()
   day: Date;

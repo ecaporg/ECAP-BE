@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StaffModule } from '@/staff/staff.module';
 
 import { TrackController } from './controllers/track.controller';
+import { TrackCalendarController } from './controllers/track-calendar.controller';
 import { AcademicYearEntity } from './entities/academic-year.entity';
 import { SemesterEntity } from './entities/semester.entity';
 import { SubjectEntity } from './entities/subject.entity';
@@ -30,7 +31,7 @@ import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber
     ]),
     StaffModule,
   ],
-  controllers: [TrackController],
+  controllers: [TrackController, TrackCalendarController],
   providers: [
     TrackService,
     TrackCalendarService,
