@@ -11,6 +11,7 @@ import { SampleFlagMissingWorkEntity } from '@/students/entities/sample-flag.ent
 import { SampleFlagErrorEntity } from '@/students/entities/sample-flag.entity';
 import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
 import { SemesterEntity } from '@/track/entities/semester.entity';
+import { TrackCalendarEntity } from '@/track/entities/track-calendar.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { AcademyEntity } from '../src/school/entities/academy.entity';
@@ -336,7 +337,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
     academicYear: AcademicYearEntity,
     tenant: TenantEntity,
   ) {
-    return queryRunner.manager.save(TrackEntity, [
+    const tracks = await queryRunner.manager.save(TrackEntity, [
       {
         name: `Track A`,
         tenant,
@@ -352,6 +353,19 @@ export class AddTestData201746984777855 implements MigrationInterface {
         academic_year_id: academicYear.id,
       } as TrackEntity,
     ]);
+
+    await queryRunner.manager.save(TrackCalendarEntity, [
+      {
+        track: tracks[0],
+        days: [],
+      } as TrackCalendarEntity,
+      {
+        track: tracks[1],
+        days: [],
+      } as TrackCalendarEntity,
+    ]);
+
+    return tracks;
   }
 
   private async createSubjects(
@@ -663,20 +677,37 @@ export class AddTestData201746984777855 implements MigrationInterface {
   }
 
   private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
-    const admin = await queryRunner.manager.save(UserEntity, {
-      email: 'admin@test.com',
-      password: await argon2.hash('password'),
-      firstname: 'Admin',
-      lastname: 'Admin',
-      isActive: true,
-      emailVerified: true,
-      role: RolesEnum.SUPER_ADMIN,
-    });
+    const admin = await queryRunner.manager.save(UserEntity, [
+      {
+        email: 'admin@test.com',
+        password: await argon2.hash('password'),
+        firstname: 'Admin',
+        lastname: 'Admin',
+        isActive: true,
+        emailVerified: true,
+        role: RolesEnum.SUPER_ADMIN,
+      },
+      {
+        email: 'ecap.colin@gmail.com',
+        password: await argon2.hash('password'),
+        firstname: 'Colin',
+        lastname: 'Cooper',
+        isActive: true,
+        emailVerified: true,
+        role: RolesEnum.SUPER_ADMIN,
+      },
+    ]);
 
-    await queryRunner.manager.save(AdminEntity, {
-      user: admin,
-      tenant,
-    });
+    await queryRunner.manager.save(AdminEntity, [
+      {
+        user: admin[0],
+        tenant,
+      },
+      {
+        user: admin[1],
+        tenant,
+      },
+    ]);
   }
 
   private async recalculateAssignmentPeriods(queryRunner: QueryRunner) {
