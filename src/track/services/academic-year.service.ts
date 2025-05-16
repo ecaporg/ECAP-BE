@@ -20,13 +20,15 @@ export class AcademicYearService extends BaseService<AcademicYearEntity> {
     const currentDate = date || new Date();
     const academicYears = await this.academicYearRepository.find({
       where: {
-        semesters: {
-          start_date: LessThanOrEqual(currentDate),
-          end_date: MoreThanOrEqual(currentDate),
+        tracks: {
+          semesters: {
+            start_date: LessThanOrEqual(currentDate),
+            end_date: MoreThanOrEqual(currentDate),
+          },
         },
       },
-      relations: ['semesters'],
     });
+
     return academicYears;
   }
 }

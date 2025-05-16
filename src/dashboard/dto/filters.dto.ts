@@ -3,23 +3,22 @@ import { IsNumber, IsOptional } from 'class-validator';
 import { BaseFilterDto, RecordStringAndDotNotation } from '@/core';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const keys: RecordStringAndDotNotation<TrackLearningPeriodEntity> = {
-  DIRECTOR: 'assignment_periods.student.academy_id',
-  ADMIN: 'track.tenant.admins.id',
+const FILTER_KEYS = {
+  DIRECTOR: 'track.tenant.admins.id',
+  ADMIN: 'assignment_periods.student.academy_id',
   TEACHER: 'assignment_periods.course.teacher_id',
-} as const;
+} satisfies RecordStringAndDotNotation<TrackLearningPeriodEntity>;
 
 export class DashboardFilterDto extends BaseFilterDto {
   @IsOptional()
   @IsNumber()
-  'track.tenant.admins.id'?: number;
+  [FILTER_KEYS.DIRECTOR]?: number;
 
   @IsOptional()
   @IsNumber()
-  'assignment_periods.student.academy_id'?: number;
+  [FILTER_KEYS.ADMIN]?: number;
 
   @IsOptional()
   @IsNumber()
-  'assignment_periods.course.teacher_id'?: number;
+  [FILTER_KEYS.TEACHER]?: number;
 }

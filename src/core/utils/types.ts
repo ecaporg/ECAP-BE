@@ -1,3 +1,7 @@
+import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+
+import { BaseFilterDto } from '../dto/base-filter.dto';
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export type NestedObjectToDotNotation<
   T,

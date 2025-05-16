@@ -5,12 +5,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
 
 import { TrackEntity } from '../entities/track.entity';
+import { TrackCalendarEntity } from '../entities/track-calendar.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const keys: RecordStringAndDotNotation<TrackEntity> = {
-  Tenant: 'tenant_id',
-  Teacher: 'tenant.schools.courses.teacher_id',
-} as const;
+const FILTER_TRACK_KEYS = {
+  TENANT_ID: 'tenant_id',
+  DIRECTOR_ID: 'tenant.directors.id',
+  TEACHER_ID: 'tenant.schools.courses.teacher_id',
+} satisfies RecordStringAndDotNotation<TrackEntity>;
 
 export class TrackFilterDto extends BaseFilterDto {
   @ApiProperty({
@@ -20,16 +21,22 @@ export class TrackFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant_id': number[];
+  [FILTER_TRACK_KEYS.TENANT_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant.directors.id': number[];
+  [FILTER_TRACK_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant.schools.courses.teacher_id': number[];
+  [FILTER_TRACK_KEYS.TEACHER_ID]: number[];
 }
+
+const FILTER_TRACK_CALENDAR_KEYS = {
+  TENANT_ID: 'track.tenant_id',
+  DIRECTOR_ID: 'track.tenant.directors.id',
+  TEACHER_ID: 'track.tenant.schools.courses.teacher_id',
+} satisfies RecordStringAndDotNotation<TrackCalendarEntity>;
 
 export class TrackCalendarFilterDto extends BaseFilterDto {
   @ApiProperty({
@@ -39,15 +46,15 @@ export class TrackCalendarFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'track.tenant_id': number[];
+  [FILTER_TRACK_CALENDAR_KEYS.TENANT_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'track.tenant.directors.id': number[];
+  [FILTER_TRACK_CALENDAR_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'track.tenant.schools.courses.teacher_id': number[];
+  [FILTER_TRACK_CALENDAR_KEYS.TEACHER_ID]: number[];
 }
 
 export class TrackLearningPeriodFilterDto extends TrackCalendarFilterDto {}

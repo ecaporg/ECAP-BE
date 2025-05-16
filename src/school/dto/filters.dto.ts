@@ -7,11 +7,11 @@ import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
 import { AcademyEntity } from '../entities/academy.entity';
 import { SchoolEntity } from '../entities/school.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const keys: RecordStringAndDotNotation<AcademyEntity> = {
-  Tenant: 'tenant_id',
-  Teacher: 'tenant.schools.courses.teacher_id',
-} as const;
+const FILTER_SCHOOL_KEYS = {
+  TENANT_ID: 'tenant_id',
+  DIRECTOR_ID: 'tenant.directors.id',
+  TEACHER_ID: 'courses.teacher_id',
+} satisfies RecordStringAndDotNotation<SchoolEntity>;
 
 export class SchoolFilterDto extends BaseFilterDto {
   @ApiProperty({
@@ -21,16 +21,22 @@ export class SchoolFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant_id': number[];
+  [FILTER_SCHOOL_KEYS.TENANT_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant.directors.id': number[];
+  [FILTER_SCHOOL_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'courses.teacher_id': number[];
+  [FILTER_SCHOOL_KEYS.TEACHER_ID]: number[];
 }
+
+const FILTER_ACADEMY_KEYS = {
+  TENANT_ID: 'tenant_id',
+  DIRECTOR_ID: 'tenant.directors.id',
+  TEACHER_ID: 'tenant.schools.courses.teacher_id',
+} satisfies RecordStringAndDotNotation<AcademyEntity>;
 
 export class AcademyFilterDto extends BaseFilterDto {
   @ApiProperty({
@@ -40,13 +46,13 @@ export class AcademyFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant_id': number[];
+  [FILTER_ACADEMY_KEYS.TENANT_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant.directors.id': number[];
+  [FILTER_ACADEMY_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'tenant.schools.courses.teacher_id': number[];
+  [FILTER_ACADEMY_KEYS.TEACHER_ID]: number[];
 }

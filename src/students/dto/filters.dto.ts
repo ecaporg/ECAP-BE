@@ -6,12 +6,14 @@ import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
 
 import { SampleEntity, SampleFlagCategory } from '../entities/sample.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const keys: RecordStringAndDotNotation<SampleEntity> = {
-  LearningPeriod: 'assignment_period',
-  Teacher: 'assignment_period.course.teacher_id',
-  Student: 'assignment_period.course.academic_year_id',
-} as const;
+const FILTER_KEYS = {
+  LEARNING_PERIOD_ID: 'assignment_period.learning_period_id',
+  TEACHER_ID: 'assignment_period.course.teacher_id',
+  ACADEMY_ID: 'assignment_period.student.academy_id',
+  ACADEMIC_YEAR: 'assignment_period.course.academic_year_id',
+  STATUS: 'status',
+  FLAG_CATEGORY: 'flag_category',
+} satisfies RecordStringAndDotNotation<SampleEntity>;
 
 export class FlaggedSamplesFilterDto extends BaseFilterDto {
   @ApiProperty({
@@ -21,7 +23,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment_period.learning_period_id': number[];
+  [FILTER_KEYS.LEARNING_PERIOD_ID]: number[];
 
   @ApiProperty({
     required: false,
@@ -30,7 +32,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment_period.course.teacher_id'?: number;
+  [FILTER_KEYS.TEACHER_ID]?: number;
 
   @ApiProperty({
     required: false,
@@ -39,7 +41,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment_period.student.academy_id'?: number[];
+  [FILTER_KEYS.ACADEMY_ID]?: number[];
 
   @ApiProperty({
     required: false,
@@ -48,7 +50,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  'assignment_period.academic_year'?: number;
+  [FILTER_KEYS.ACADEMIC_YEAR]?: number;
 
   @ApiProperty({
     required: false,
@@ -57,7 +59,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   })
   @IdDecorator(String)
   @IsString({ each: true })
-  'status'?: string[];
+  [FILTER_KEYS.STATUS]?: string[];
 
   @ApiProperty({
     required: false,
@@ -66,7 +68,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
   })
   @IdDecorator(String)
   @IsString({ each: true })
-  'flag_category'?: string[] = [
+  [FILTER_KEYS.FLAG_CATEGORY]?: string[] = [
     SampleFlagCategory.REASON_REJECTED,
     SampleFlagCategory.ERROR_IN_SAMPLE,
     SampleFlagCategory.MISSING_SAMPLE,

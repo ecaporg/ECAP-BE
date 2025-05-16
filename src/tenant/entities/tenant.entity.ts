@@ -5,7 +5,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GenericEntity } from '@/core';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
-import { SemesterEntity } from '@/track/entities/semester.entity';
 import { AdminEntity, DirectorEntity } from '@/staff/entities/staff.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 
@@ -42,13 +41,6 @@ export class TenantEntity extends GenericEntity {
   })
   @OneToMany(() => TrackEntity, (track) => track.tenant)
   tracks: TrackEntity[];
-
-  @ApiProperty({
-    description: 'Semesters associated with this tenant',
-    type: () => [{}],
-  })
-  @OneToMany(() => SemesterEntity, (semester) => semester.tenant)
-  semesters: SemesterEntity[];
 
   @ApiProperty({
     description: 'Directors associated with this tenant',

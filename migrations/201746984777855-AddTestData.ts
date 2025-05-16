@@ -50,9 +50,6 @@ export class AddTestData201746984777855 implements MigrationInterface {
     // Create academic years (including historical data)
     const academicYears = await this.createAcademicYears(queryRunner);
 
-    // Create semesters
-    await this.createSemesters(queryRunner, academicYears, tenant);
-
     // Create teachers and courses for all schools and academic years
     const { global_courses } = await this.createTeachersAndCourses(
       queryRunner,
@@ -63,6 +60,9 @@ export class AddTestData201746984777855 implements MigrationInterface {
     for (const academicYear of academicYears) {
       // Create tracks
       const tracks = await this.createTracks(queryRunner, academicYear, tenant);
+
+      // Create semesters for these tracks
+      await this.createSemesters(queryRunner, tracks);
 
       // Create students
       const students = await this.createStudents(
@@ -238,38 +238,29 @@ export class AddTestData201746984777855 implements MigrationInterface {
 
   private async createSemesters(
     queryRunner: QueryRunner,
-    academicYears: AcademicYearEntity[],
-    tenant: TenantEntity,
+    tracks: TrackEntity[],
   ) {
-    for (const academicYear of academicYears) {
+    for (const track of tracks) {
+      const semester1StartDate = new Date(track.start_date);
+      const semester2EndDate = new Date(track.end_date);
+      const semester1EndDate = new Date(
+        `${semester1StartDate.getFullYear()}-01-16T00:00:00.000Z`,
+      );
+      const semester2StartDate = new Date(
+        `${semester1StartDate.getFullYear()}-06-17T00:00:00.000Z`,
+      );
       await queryRunner.manager.save(SemesterEntity, [
         {
-          name: 'Semester 1: Track A',
-          academic_year_id: academicYear.id,
-          start_date: new Date(academicYear.from, 6, 1),
-          end_date: new Date(academicYear.from, 0, 16),
-          tenant,
+          name: `Semester 1 for ${track.name}`,
+          track_id: track.id,
+          start_date: semester1StartDate,
+          end_date: semester1EndDate,
         },
         {
-          name: 'Semester 2: Track A',
-          academic_year_id: academicYear.id,
-          start_date: new Date(academicYear.to, 0, 21),
-          end_date: new Date(academicYear.to, 5, 11),
-          tenant,
-        },
-        {
-          name: 'Semester 1: Track B',
-          academic_year_id: academicYear.id,
-          start_date: new Date(academicYear.to, 7, 27),
-          end_date: new Date(academicYear.to, 0, 16),
-          tenant,
-        },
-        {
-          name: 'Semester 2: Track B',
-          academic_year_id: academicYear.id,
-          start_date: new Date(academicYear.to, 0, 21),
-          end_date: new Date(academicYear.to, 5, 11),
-          tenant,
+          name: `Semester 2 for ${track.name}`,
+          track_id: track.id,
+          start_date: semester2StartDate,
+          end_date: semester2EndDate,
         },
       ]);
     }

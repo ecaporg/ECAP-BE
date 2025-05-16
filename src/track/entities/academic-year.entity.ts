@@ -6,8 +6,6 @@ import { GenericEntity } from '@/core';
 import { CourseEntity } from '@/course/entities/course.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 
-import { SemesterEntity } from './semester.entity';
-
 @Entity({ name: 'academic_years' })
 export class AcademicYearEntity extends GenericEntity {
   @ApiProperty({
@@ -25,13 +23,6 @@ export class AcademicYearEntity extends GenericEntity {
   to: number;
 
   @ApiProperty({
-    description: 'Semesters in this academic year',
-    type: () => [{}],
-  })
-  @OneToMany(() => SemesterEntity, (semester) => semester.academic_year)
-  semesters: SemesterEntity[];
-
-  @ApiProperty({
     description: 'Tracks in this academic year',
     type: () => [{}],
   })
@@ -40,7 +31,7 @@ export class AcademicYearEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Assignments in this academic year',
-    type: () => [{}],
+    type: () => [CourseEntity],
   })
   @OneToMany(() => CourseEntity, (course) => course.academic_year)
   courses: CourseEntity[];

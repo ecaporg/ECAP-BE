@@ -14,6 +14,7 @@ import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
+import { SemesterEntity } from './semester.entity';
 import { SubjectEntity } from './subject.entity';
 import { TrackCalendarEntity } from './track-calendar.entity';
 import { TrackLearningPeriodEntity } from './track-learning-period.entity';
@@ -85,4 +86,11 @@ export class TrackEntity extends GenericEntity {
   })
   @OneToMany(() => StudentEntity, (student) => student.track)
   students: StudentEntity[];
+
+  @ApiProperty({
+    description: 'Semesters in this track',
+    type: () => [SemesterEntity],
+  })
+  @OneToMany(() => SemesterEntity, (semester) => semester.track)
+  semesters: SemesterEntity[];
 }
