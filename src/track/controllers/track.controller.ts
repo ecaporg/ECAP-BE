@@ -74,6 +74,26 @@ export class TrackController {
     });
   }
 
+  @Get('/semesters')
+  @ApiOperation({
+    summary: 'Get all tracks with semesters with pagination',
+  })
+  @ApiPaginationQueries()
+  @ApiPaginatedCrudResponse(TrackEntity)
+  @Roles(
+    RolesEnum.SUPER_ADMIN,
+    RolesEnum.ADMIN,
+    RolesEnum.DIRECTOR,
+    RolesEnum.TEACHER,
+  )
+  async findAllSemesters(
+    @Query() options?: TrackFilterDto,
+  ): Promise<PaginatedResult<TrackEntity>> {
+    return this.trackService.findAll(options, {
+      semesters: true,
+    });
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get track by ID' })
   @ApiCrudResponse(TrackEntity)

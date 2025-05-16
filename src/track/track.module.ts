@@ -6,6 +6,7 @@ import { StaffModule } from '@/staff/staff.module';
 import { TrackController } from './controllers/track.controller';
 import { TrackCalendarController } from './controllers/track-calendar.controller';
 import { TrackLearningPeriodController } from './controllers/track-learning-period.controller';
+import { TrackSemesterController } from './controllers/track-semester.controller';
 import { AcademicYearEntity } from './entities/academic-year.entity';
 import { SemesterEntity } from './entities/semester.entity';
 import { SubjectEntity } from './entities/subject.entity';
@@ -36,6 +37,7 @@ import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber
     TrackController,
     TrackCalendarController,
     TrackLearningPeriodController,
+    TrackSemesterController,
   ],
   providers: [
     TrackService,

@@ -58,3 +58,5 @@ export class TrackCalendarFilterDto extends BaseFilterDto {
 }
 
 export class TrackLearningPeriodFilterDto extends TrackCalendarFilterDto {}
+
+export class TrackSemesterFilterDto extends TrackCalendarFilterDto {}
