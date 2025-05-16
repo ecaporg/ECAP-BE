@@ -20,6 +20,11 @@ export class AdminComplianceService {
   ) {}
 
   async getTeachers(filters: TeachersTableFilterDto, user: AuthUser) {
+    const semesters = filters['student.track.semesters.id'];
+    if (semesters && semesters.length > 0) {
+      delete filters['student.track.semesters.id'];
+    }
+
     const paginationOptions = extractPaginationOptions(filters);
     const query =
       this.assignmentPeriodService.getDefaultQuery(paginationOptions);
@@ -69,6 +74,14 @@ export class AdminComplianceService {
       subQuery.leftJoin('admins.user', 'admin_user');
       subQuery.andWhere('admin_user.id = :id', {
         id: user.id,
+      });
+    }
+
+    if (semesters && semesters.length > 0) {
+      subQuery.leftJoin('student.track', 'track');
+      subQuery.leftJoin('track.semesters', 'semesters');
+      subQuery.andWhere('semesters.id IN (:...ids)', {
+        ids: semesters,
       });
     }
 
