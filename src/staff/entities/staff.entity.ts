@@ -25,7 +25,10 @@ export abstract class StaffEntity extends DatedGenericEntity {
     description: 'User associated with this staff member',
     type: () => UserEntity,
   })
-  @OneToOne(() => UserEntity)
+  @OneToOne(() => UserEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'id' })
   user: UserEntity;
 }
@@ -55,7 +58,10 @@ export class AdminEntity extends StaffEntity {
     description: 'Tenant associated with this admin/superadmin',
     type: () => TenantEntity,
   })
-  @ManyToOne(() => TenantEntity, (tenant) => tenant.admins)
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.admins, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
 }
@@ -70,7 +76,10 @@ export class DirectorEntity extends AdminEntity {
     description: 'Academy associated with this director',
     type: () => Object,
   })
-  @ManyToOne(() => AcademyEntity, (academy) => academy.directors)
+  @ManyToOne(() => AcademyEntity, (academy) => academy.directors, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'academy_id' })
   academy: AcademyEntity;
 }

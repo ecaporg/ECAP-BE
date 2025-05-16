@@ -24,7 +24,7 @@ export class StudentEntity extends DatedGenericEntity {
   id: number;
 
   @ApiProperty({ description: 'School ID associated with this student' })
-  @Column()
+  @Column({ nullable: true })
   school_id: number;
 
   @ApiProperty({
@@ -49,7 +49,10 @@ export class StudentEntity extends DatedGenericEntity {
     description: 'School associated with this student',
     type: () => Object,
   })
-  @ManyToOne(() => SchoolEntity, (school) => school.students)
+  @ManyToOne(() => SchoolEntity, (school) => school.students, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'school_id' })
   school: SchoolEntity;
 
@@ -57,7 +60,10 @@ export class StudentEntity extends DatedGenericEntity {
     description: 'User associated with this student',
     type: () => UserEntity,
   })
-  @OneToOne(() => UserEntity)
+  @OneToOne(() => UserEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'id' })
   user: UserEntity;
 
@@ -65,7 +71,10 @@ export class StudentEntity extends DatedGenericEntity {
     description: 'Academy associated with this student',
     type: () => Object,
   })
-  @ManyToOne(() => AcademyEntity)
+  @ManyToOne(() => AcademyEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'academy_id' })
   academy: AcademyEntity;
 
@@ -73,7 +82,10 @@ export class StudentEntity extends DatedGenericEntity {
     description: 'Track associated with this student',
     type: () => Object,
   })
-  @ManyToOne(() => TrackEntity, (track) => track.students)
+  @ManyToOne(() => TrackEntity, (track) => track.students, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
 

@@ -23,12 +23,18 @@ export class SampleFlagEntity extends DatedGenericEntity {
   @ApiProperty({ description: 'User ID', nullable: true })
   user_id: number;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   @ApiProperty({ description: 'User', type: () => Object })
   user: UserEntity;
 
-  @OneToOne(() => SampleEntity, (sample) => sample.id)
+  @OneToOne(() => SampleEntity, (sample) => sample.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'id' })
   @ApiProperty({ description: 'Sample', type: () => Object })
   sample: SampleEntity;

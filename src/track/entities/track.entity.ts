@@ -47,7 +47,10 @@ export class TrackEntity extends GenericEntity {
     description: 'Tenant associated with this track',
     type: () => TenantEntity,
   })
-  @ManyToOne(() => TenantEntity, (tenant) => tenant.tracks)
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.tracks, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
 
@@ -55,7 +58,10 @@ export class TrackEntity extends GenericEntity {
     description: 'Academic year associated with this track',
     type: () => AcademicYearEntity,
   })
-  @ManyToOne(() => AcademicYearEntity, (academicYear) => academicYear.tracks)
+  @ManyToOne(() => AcademicYearEntity, (academicYear) => academicYear.tracks, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'academic_year_id' })
   academicYear: AcademicYearEntity;
 

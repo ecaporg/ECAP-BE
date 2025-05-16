@@ -28,7 +28,10 @@ export class CourseEntity extends GenericEntity {
     description: 'School associated with this course',
     type: () => Object,
   })
-  @ManyToOne(() => SchoolEntity)
+  @ManyToOne(() => SchoolEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'school_id' })
   school: SchoolEntity;
 
@@ -36,7 +39,10 @@ export class CourseEntity extends GenericEntity {
     description: 'Teacher associated with this course',
     type: () => Object,
   })
-  @ManyToOne(() => TeacherEntity)
+  @ManyToOne(() => TeacherEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'teacher_id' })
   teacher: TeacherEntity;
 
@@ -44,7 +50,10 @@ export class CourseEntity extends GenericEntity {
     description: 'Academic year associated with this course',
     type: () => AcademicYearEntity,
   })
-  @ManyToOne(() => AcademicYearEntity)
+  @ManyToOne(() => AcademicYearEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'academic_year_id' })
   academic_year: AcademicYearEntity;
 

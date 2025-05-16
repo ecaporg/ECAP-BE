@@ -38,7 +38,10 @@ export class AssignmentPeriodEntity extends GenericEntity {
     description: 'Learning period associated with this period',
     type: () => TrackLearningPeriodEntity,
   })
-  @ManyToOne(() => TrackLearningPeriodEntity)
+  @ManyToOne(() => TrackLearningPeriodEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'learning_period_id' })
   learning_period: TrackLearningPeriodEntity;
 
@@ -46,7 +49,10 @@ export class AssignmentPeriodEntity extends GenericEntity {
     description: 'Course associated with this period',
     type: () => Object,
   })
-  @ManyToOne(() => CourseEntity)
+  @ManyToOne(() => CourseEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'course_id' })
   course: CourseEntity;
 
@@ -54,7 +60,10 @@ export class AssignmentPeriodEntity extends GenericEntity {
     description: 'Student associated with this period',
     type: () => StudentEntity,
   })
-  @ManyToOne(() => StudentEntity)
+  @ManyToOne(() => StudentEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'student_id' })
   student: StudentEntity;
 

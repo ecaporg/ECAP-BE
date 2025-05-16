@@ -22,7 +22,10 @@ export class AcademyEntity extends GenericEntity {
     description: 'Tenant associated with this academy',
     type: () => TenantEntity,
   })
-  @ManyToOne(() => TenantEntity, (tenant) => tenant.academies)
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.academies, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
 

@@ -27,6 +27,7 @@ export class TrackCalendarEntity extends DatedGenericEntity {
   })
   @OneToOne(() => TrackEntity, (track) => track.calendar, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'id' })
   track: TrackEntity;

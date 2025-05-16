@@ -21,7 +21,10 @@ export class SubjectEntity extends GenericEntity {
     description: 'Track associated with this subject',
     type: () => TrackEntity,
   })
-  @ManyToOne(() => TrackEntity, (track) => track.subjects)
+  @ManyToOne(() => TrackEntity, (track) => track.subjects, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
 

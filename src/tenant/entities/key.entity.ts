@@ -12,7 +12,10 @@ export class KeyEntity extends DatedGenericEntity {
   @PrimaryColumn()
   id: number;
 
-  @OneToOne(() => TenantEntity)
+  @OneToOne(() => TenantEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'id' })
   tenant: TenantEntity;
 }

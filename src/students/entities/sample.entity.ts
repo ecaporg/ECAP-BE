@@ -90,6 +90,10 @@ export class SampleEntity extends GenericEntity {
   @ManyToOne(
     () => AssignmentPeriodEntity,
     (assignment_period) => assignment_period.samples,
+    {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
   )
   @JoinColumn({ name: 'assignment_period_id' })
   assignment_period: AssignmentPeriodEntity;
@@ -98,7 +102,10 @@ export class SampleEntity extends GenericEntity {
     description: 'User who set completed status of this sample',
     type: () => Object,
   })
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'done_by_id' })
   done_by: UserEntity;
 

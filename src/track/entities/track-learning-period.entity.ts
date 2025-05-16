@@ -29,7 +29,10 @@ export class TrackLearningPeriodEntity extends GenericEntity {
     description: 'Track associated with this learning period',
     type: () => Object,
   })
-  @ManyToOne(() => TrackEntity, (track) => track.learningPeriods)
+  @ManyToOne(() => TrackEntity, (track) => track.learningPeriods, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
 

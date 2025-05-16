@@ -28,7 +28,10 @@ export class SemesterEntity extends GenericEntity {
     description: 'Track associated with this semester',
     type: () => TrackEntity,
   })
-  @ManyToOne(() => TrackEntity, (track) => track.semesters)
+  @ManyToOne(() => TrackEntity, (track) => track.semesters, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
 }
