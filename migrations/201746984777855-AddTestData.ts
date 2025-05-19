@@ -603,7 +603,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
               : SampleStatus.PENDING;
 
         const flag_category =
-          status == SampleStatus.ERRORS_FOUND
+          status === SampleStatus.ERRORS_FOUND
             ? SampleFlagCategory.ERROR_IN_SAMPLE
             : null;
 
@@ -611,7 +611,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
           ...([
             {
               assignment_title: `Sample`,
-              status: assignmentPeriod.completed ? 'COMPLETED' : 'PENDING',
+              status: assignmentPeriod.completed ? 'COMPLETED' : status,
               assignment_period_id: assignmentPeriod.id,
               done_by_id: assignmentPeriod.completed ? user_id : null,
               subject_id: subject.id,
@@ -651,7 +651,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
         (sample) =>
           ({
             sample,
-            comment: `Comment ${Math.random()}`,
+            comment: 'Grade is missing',
           }) as SampleFlagErrorEntity,
       ),
     );
@@ -661,7 +661,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
         (sample) =>
           ({
             sample,
-            reason: `Reason ${Math.random()}`,
+            reason: 'End of LP',
           }) as SampleFlagMissingWorkEntity,
       ),
     );
@@ -722,84 +722,3 @@ export class AddTestData201746984777855 implements MigrationInterface {
     await queryRunner.manager.save(AssignmentPeriodEntity, assignment_periods);
   }
 }
-
-/*
-
-
-1. Super Admin:
-- Email (unique)
-- First name
-- Last name
-- Password
-
-2. Schools :
-- School name (up to 50 characters)
-
-
-3. Academies :
-- Academy name (up to 50 characters)
-
-5. Track :
-- Track name (up to 50 characters)
-- Start date (example: 2024-08-01)
-- End date (example: 2024-11-30)
-
-6. Subjects :
-- Subject name (up to 50 characters)
-- Which track it belongs to
-
-7. Academic Year (academic_year):
-- year/year (example: 2024/2025)
-
-8. Semesters :
-- start date (example: 2024-08-01)
-- end date (example: 2024-11-30)
-
-9. Learning Periods:
-- name (example: Learning Period 1)
-- start date (example: 2024-08-01)
-- end date (example: 2024-11-30)
-- which track it belongs to (example: Track A)
-
-10. Track Calendar :
-- if you have a text format - it's great, but if you don't have it, I will try extract it from the pdf
-
-11. Students :
-- Email (unique)
-- First name
-- Last name
-- Password
-- School
-- Academy
-- Track
-- Grade (up to 50 characters)
-
-12. Teachers:
-- Email (unique)
-- First name
-- Last name
-- Password
-- School
-
-13. Directors:
-- Email (unique)
-- First name
-- Last name
-- Password
-- School
-
-14. Administrators:
-- Email (unique)
-- First name
-- Last name
-- Password
-- In which schools they work (example: School A, School B, School C)
-
-
-15. Relations between teachers, students and subjects (This entity should represent which subject is taught by a specific teacher and which students are enrolled in that subject):
-- School (example: School A, School B, School C)
-- Teacher email (example: teacher@test.com)
-- Subject (The subject name should be provided, and if the subject belongs to a specific track, the associated track should also be indicated)
-- Academic Year (example: 2024/2025)
-- List of students (example: student@test.com, student2@test.com, student3@test.com)
-*/
