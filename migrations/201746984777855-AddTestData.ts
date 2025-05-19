@@ -613,7 +613,8 @@ export class AddTestData201746984777855 implements MigrationInterface {
               assignment_title: `Sample`,
               status: assignmentPeriod.completed ? 'COMPLETED' : status,
               assignment_period_id: assignmentPeriod.id,
-              done_by_id: assignmentPeriod.completed ? user_id : null,
+              done_by_id:
+                assignmentPeriod.completed || isCompleted ? user_id : null,
               subject_id: subject.id,
               flag_category,
             },
