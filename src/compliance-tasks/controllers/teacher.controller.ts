@@ -10,7 +10,7 @@ import {
   CurrentUser,
   Roles,
 } from '@/core';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
@@ -38,7 +38,7 @@ export class TeacherComplianceTaskController {
   @Get()
   @UseInterceptors(TeacherFilterInterceptor)
   @ApiOperation({ summary: 'Get table with students' })
-  @ApiPaginatedCrudResponse(AssignmentPeriodEntity)
+  @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)
   async getStudents(@Query() filters: StudentsTableFilterDto) {
     return this.teacherComplianceTaskService.getStudents(filters);
   }
@@ -53,7 +53,7 @@ export class TeacherComplianceTaskController {
   @Get('subjects')
   @UseInterceptors(TeacherFilterInterceptor)
   @ApiOperation({ summary: 'Get table with student samples' })
-  @ApiPaginatedCrudResponse(AssignmentPeriodEntity)
+  @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)
   async getStudentSamples(@Query() filters: StudentSamplesFilterDto) {
     return this.teacherComplianceTaskService.getStudentSamples(filters);
   }

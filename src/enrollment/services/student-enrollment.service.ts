@@ -5,15 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '@/core';
 
-import { AssignmentPeriodEntity } from '../entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '../entities/student-enrollment.entity';
 
 @Injectable()
-export class AssignmentPeriodService extends BaseService<AssignmentPeriodEntity> {
+export class StudentLPEnrollmentService extends BaseService<StudentLPEnrollmentEntity> {
   constructor(
-    @InjectRepository(AssignmentPeriodEntity)
-    private readonly assignmentPeriodRepository: Repository<AssignmentPeriodEntity>,
+    @InjectRepository(StudentLPEnrollmentEntity)
+    private readonly studentLPEnrollmentRepository: Repository<StudentLPEnrollmentEntity>,
   ) {
-    super(assignmentPeriodRepository);
+    super(studentLPEnrollmentRepository);
   }
 
   async findAllWithCompletedCount(
@@ -36,7 +36,7 @@ export class AssignmentPeriodService extends BaseService<AssignmentPeriodEntity>
       return assignmentPeriods;
     }
 
-    const completedCount = await this.assignmentPeriodRepository.count({
+    const completedCount = await this.studentLPEnrollmentRepository.count({
       where,
     });
 
@@ -48,7 +48,7 @@ export class AssignmentPeriodService extends BaseService<AssignmentPeriodEntity>
     return assignmentPeriods;
   }
 
-  getRepository(): Repository<AssignmentPeriodEntity> {
-    return this.assignmentPeriodRepository;
+  getRepository(): Repository<StudentLPEnrollmentEntity> {
+    return this.studentLPEnrollmentRepository;
   }
 }

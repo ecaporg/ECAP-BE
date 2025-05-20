@@ -3,29 +3,31 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
 
-@Entity({ name: 'courses' })
-export class CourseEntity extends GenericEntity {
-  @ApiProperty({ description: 'School ID associated with this course' })
+// todo: rename to TeacherSchoolYearEnrollmentEntity
+
+@Entity({ name: 'teacher_school_year_enrollments' })
+export class TeacherSchoolYearEnrollmentEntity extends GenericEntity {
+  @ApiProperty({ description: 'School ID associated with this enrollment' })
   @Column()
   school_id: number;
 
-  @ApiProperty({ description: 'Teacher ID associated with this course' })
+  @ApiProperty({ description: 'Teacher ID associated with this enrollment' })
   @Column()
   teacher_id: number;
 
   @ApiProperty({
-    description: 'Academic year ID associated with this course',
+    description: 'Academic year ID associated with this enrollment',
   })
   @Column()
   academic_year_id: number;
 
   @ApiProperty({
-    description: 'School associated with this course',
+    description: 'School associated with this enrollment',
     type: () => Object,
   })
   @ManyToOne(() => SchoolEntity, {
@@ -36,7 +38,7 @@ export class CourseEntity extends GenericEntity {
   school: SchoolEntity;
 
   @ApiProperty({
-    description: 'Teacher associated with this course',
+    description: 'Teacher associated with this enrollment',
     type: () => Object,
   })
   @ManyToOne(() => TeacherEntity, {
@@ -47,7 +49,7 @@ export class CourseEntity extends GenericEntity {
   teacher: TeacherEntity;
 
   @ApiProperty({
-    description: 'Academic year associated with this course',
+    description: 'Academic year associated with this enrollment',
     type: () => AcademicYearEntity,
   })
   @ManyToOne(() => AcademicYearEntity, {
@@ -58,12 +60,13 @@ export class CourseEntity extends GenericEntity {
   academic_year: AcademicYearEntity;
 
   @ApiProperty({
-    description: 'Assignment periods associated with this course',
+    description: 'Assignment periods associated with this enrollment',
     type: () => [{}],
   })
   @OneToMany(
-    () => AssignmentPeriodEntity,
-    (assignment_period) => assignment_period.course,
+    () => StudentLPEnrollmentEntity,
+    (student_lp_enrollment) =>
+      student_lp_enrollment.teacher_school_year_enrollment,
   )
-  assignment_periods: AssignmentPeriodEntity[];
+  student_lp_enrollments: StudentLPEnrollmentEntity[];
 }

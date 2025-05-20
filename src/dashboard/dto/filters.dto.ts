@@ -5,8 +5,8 @@ import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-perio
 
 const FILTER_KEYS = {
   DIRECTOR: 'track.tenant.admins.id',
-  ADMIN: 'assignment_periods.student.academy_id',
-  TEACHER: 'assignment_periods.course.teacher_id',
+  ADMIN: 'student_lp_enrollments.student.academy_id',
+  TEACHER: 'student_lp_enrollments.teacher_school_year_enrollment.teacher_id',
 } satisfies RecordStringAndDotNotation<TrackLearningPeriodEntity>;
 
 export class DashboardFilterDto extends BaseFilterDto {

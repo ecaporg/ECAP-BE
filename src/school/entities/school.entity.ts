@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core';
-import { CourseEntity } from '@/course/entities/course.entity';
+import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
@@ -36,9 +36,9 @@ export class SchoolEntity extends GenericEntity {
   students: StudentEntity[];
 
   @ApiProperty({
-    description: 'Subject assignments in this school',
+    description: 'Teacher school year enrollments in this school',
     type: () => [{}],
   })
-  @OneToMany(() => CourseEntity, (course) => course.school)
-  courses: CourseEntity[];
+  @OneToMany(() => TeacherSchoolYearEnrollmentEntity, (course) => course.school)
+  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
 }

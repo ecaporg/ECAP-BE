@@ -2,10 +2,10 @@ import { Type } from '@nestjs/common';
 
 // Auth models
 import { AuthUser } from '@/auth/types/auth-user';
-import { CourseEntity } from '@/course/entities/course.entity';
+import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
 // School entities
 import { AcademyEntity } from '@/school/entities/academy.entity';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 // Staff entities
 import {
@@ -55,8 +55,8 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   AcademicYearEntity,
   SchoolEntity,
   SemesterEntity,
-  CourseEntity,
-  AssignmentPeriodEntity,
+  TeacherSchoolYearEnrollmentEntity,
+  StudentLPEnrollmentEntity,
   TenantEntity,
 
   // Track

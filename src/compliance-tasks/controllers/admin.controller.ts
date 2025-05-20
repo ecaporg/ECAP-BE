@@ -10,7 +10,7 @@ import {
   CurrentUser,
   Roles,
 } from '@/core';
-import { CourseEntity } from '@/course/entities/course.entity';
+import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
@@ -28,7 +28,7 @@ export class AdminComplianceController {
 
   @Get()
   @ApiOperation({ summary: 'Get table with teachers' })
-  @ApiPaginatedCrudResponse(CourseEntity)
+  @ApiPaginatedCrudResponse(TeacherSchoolYearEnrollmentEntity)
   async getTeachers(
     @Query() filters: TeachersTableFilterDto,
     @CurrentUser() user: AuthUser,

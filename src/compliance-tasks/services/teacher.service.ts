@@ -5,11 +5,11 @@ import { Injectable } from '@nestjs/common';
 
 import { AuthUser } from '@/auth/types/auth-user';
 import { BadRequestException, extractPaginationOptions } from '@/core';
-import { AcademicYearService } from '@/track/services/academic-year.service';
-import { AssignmentPeriodService } from '@/school/services/assignment.service';
+import { StudentLPEnrollmentService } from '@/enrollment/services/student-enrollment.service';
 import { StudentService } from '@/students/services/student.service';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 import { TenantService } from '@/tenant/services/tenant.service';
+import { AcademicYearService } from '@/track/services/academic-year.service';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import {
@@ -21,7 +21,7 @@ import {
 export class TeacherComplianceTaskService {
   constructor(
     private readonly studentService: StudentService,
-    private readonly assignmentPeriodService: AssignmentPeriodService,
+    private readonly studentLPEnrollmentService: StudentLPEnrollmentService,
     private readonly academicYearService: AcademicYearService,
     private readonly tenantService: TenantService,
   ) {}
@@ -29,7 +29,7 @@ export class TeacherComplianceTaskService {
   async getStudents(filterDTO: StudentsTableFilterDto) {
     const paginationOptions = extractPaginationOptions(filterDTO);
     const assignmentPeriods =
-      await this.assignmentPeriodService.findAllWithCompletedCount(
+      await this.studentLPEnrollmentService.findAllWithCompletedCount(
         paginationOptions,
         {
           student: {
@@ -45,14 +45,14 @@ export class TeacherComplianceTaskService {
 
   async getStudentSamples(filterDTO: StudentSamplesFilterDto) {
     const paginationOptions = extractPaginationOptions(filterDTO);
-    const assignmentPeriods = await this.assignmentPeriodService.findAll(
+    const assignmentPeriods = await this.studentLPEnrollmentService.findAll(
       paginationOptions,
       {
         samples: {
           subject: true,
           done_by: true,
           flag_missing_work: true,
-          assignment_period: {
+          student_lp_enrollment: {
             student: {
               user: true,
             },
@@ -78,8 +78,8 @@ export class TeacherComplianceTaskService {
         user: {
           ...property,
         },
-        assignment_periods: {
-          course: {
+        student_lp_enrollments: {
+          teacher_school_year_enrollment: {
             teacher: { user },
           },
         },
@@ -112,15 +112,19 @@ export class TeacherComplianceTaskService {
     if (user.role === RolesEnum.TEACHER) {
       const academicYears =
         await this.academicYearService.findCurrentAcademicYears();
-      query.schools = { courses: { teacher: { user: { id: user.id } } } };
+      query.schools = {
+        teacher_school_year_enrollments: {
+          teacher: { user: { id: user.id } },
+        },
+      };
       query.tracks = {
         academicYear: {
           id: In(academicYears.map((academicYear) => academicYear.id)),
         },
         start_date: LessThanOrEqual(new Date()),
         learningPeriods: {
-          assignment_periods: {
-            course: {
+          student_lp_enrollments: {
+            teacher_school_year_enrollment: {
               teacher: { user: { id: user.id } },
             },
           },

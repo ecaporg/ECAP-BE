@@ -72,12 +72,12 @@ export class SampleController {
     new AttachUserIdInterceptor<SampleEntity>([
       {
         role: RolesEnum.DIRECTOR,
-        path: 'assignment_period.student.academy_id',
+        path: 'student_lp_enrollment.student.academy_id',
         map: (user) => user.director?.academy?.id,
       },
       {
         role: RolesEnum.TEACHER,
-        path: 'assignment_period.course.teacher_id',
+        path: 'student_lp_enrollment.teacher_school_year_enrollment.teacher_id',
       },
     ]),
   )

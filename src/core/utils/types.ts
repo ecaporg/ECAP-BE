@@ -1,4 +1,4 @@
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 
 import { BaseFilterDto } from '../dto/base-filter.dto';
 

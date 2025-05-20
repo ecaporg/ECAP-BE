@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AuthUser } from '@/auth/types/auth-user';
 import { extractPaginationOptions } from '@/core';
-import { AssignmentPeriodService } from '@/school/services/assignment.service';
+import { StudentLPEnrollmentService } from '@/enrollment/services/student-enrollment.service';
 import { TeacherService } from '@/staff/services/staff.service';
 import { SampleStatus } from '@/students/entities/sample.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
@@ -14,48 +14,57 @@ import { TeacherComplianceTaskService } from './teacher.service';
 @Injectable()
 export class AdminComplianceService {
   constructor(
-    private readonly assignmentPeriodService: AssignmentPeriodService,
+    private readonly studentLPEnrollmentService: StudentLPEnrollmentService,
     private readonly teacherComplianceTaskService: TeacherComplianceTaskService,
     private readonly teacherService: TeacherService,
   ) {}
 
   async getTeachers(filters: TeachersTableFilterDto, user: AuthUser) {
     const semesters = filters['student.track.semesters.id'];
+    const completed = filters['completed'];
+
+    if (completed && completed.length > 0) {
+      delete filters['completed'];
+    }
+
     if (semesters && semesters.length > 0) {
       delete filters['student.track.semesters.id'];
     }
 
     const paginationOptions = extractPaginationOptions(filters);
     const query =
-      this.assignmentPeriodService.getDefaultQuery(paginationOptions);
+      this.studentLPEnrollmentService.getDefaultQuery(paginationOptions);
 
-    const subQuery = this.assignmentPeriodService
+    const subQuery = this.studentLPEnrollmentService
       .getRepository()
-      .createQueryBuilder('assignment_periods')
+      .createQueryBuilder('student_lp_enrollments')
       .select([
-        'assignment_periods.course_id as course_id',
+        'student_lp_enrollments.teacher_school_year_enrollment_id as teacher_school_year_enrollment_id',
         'teacher.id as teacher_id',
         'user.firstname as teacher_firstname',
         'user.lastname as teacher_lastname',
         'academy.id as academy_id',
         'academy.name as academy_name',
-        'COUNT(DISTINCT assignment_periods.student_id) as student_count',
+        'COUNT(DISTINCT student_lp_enrollments.student_id) as student_count',
         `COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END) as completed_count`,
         `COUNT(CASE WHEN samples.status IN ('${SampleStatus.FLAGGED_TO_ADMIN}', '${SampleStatus.ERRORS_FOUND}', '${SampleStatus.REASON_REJECTED}') THEN samples.id END) as flagged_count`,
         `COUNT(CASE WHEN samples.status IN ('${SampleStatus.PENDING}', '${SampleStatus.MISSING_SAMPLE}') THEN samples.id END) as incompleted_count`,
         `BOOL_AND(samples.status = '${SampleStatus.COMPLETED}') as is_complated`,
-        `(COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END)::float / COUNT(assignment_periods.student_id)::float) * 100 as completion_percentage`,
+        `(COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END)::float / COUNT(student_lp_enrollments.student_id)::float) * 100 as completion_percentage`,
       ])
-      .leftJoin('assignment_periods.course', 'course')
-      .leftJoin('course.teacher', 'teacher')
+      .leftJoin(
+        'student_lp_enrollments.teacher_school_year_enrollment',
+        'teacher_school_year_enrollment',
+      )
+      .leftJoin('teacher_school_year_enrollment.teacher', 'teacher')
       .leftJoin('teacher.user', 'user')
-      .leftJoin('course.school', 'school')
-      .leftJoin('course.academic_year', 'academic_year')
-      .leftJoin('assignment_periods.samples', 'samples')
-      .leftJoin('assignment_periods.student', 'student')
+      .leftJoin('teacher_school_year_enrollment.school', 'school')
+      .leftJoin('teacher_school_year_enrollment.academic_year', 'academic_year')
+      .leftJoin('student_lp_enrollments.samples', 'samples')
+      .leftJoin('student_lp_enrollments.student', 'student')
       .leftJoin('student.academy', 'academy')
       .where(query.where)
-      .groupBy('assignment_periods.course_id')
+      .groupBy('student_lp_enrollments.teacher_school_year_enrollment_id')
       .addGroupBy('teacher.id')
       .addGroupBy('user.firstname')
       .addGroupBy('user.lastname')
@@ -87,19 +96,25 @@ export class AdminComplianceService {
 
     const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
 
+    const completedQuery =
+      completed && completed.length > 0
+        ? `WHERE is_complated IN (${completed.join(',')})`
+        : 'WHERE true';
+
     const sql = `
       WITH filtered_data AS (
         ${subQuerySql}
       )
       SELECT 
         *,
-        (SELECT COUNT(*) FROM filtered_data) as total_rows,
-        (SELECT COUNT(*) FROM filtered_data WHERE is_complated = true) as total_completed
+        (SELECT COUNT(*) FROM filtered_data ${completedQuery}) as total_rows,
+        (SELECT COUNT(*) FROM filtered_data ${completedQuery} AND is_complated = true) as total_completed
       FROM filtered_data
+      ${completedQuery}
       LIMIT ${query.take} OFFSET ${query.skip}
     `;
 
-    const items = await this.assignmentPeriodService
+    const items = await this.studentLPEnrollmentService
       .getRepository()
       .query(sql, subQueryParams);
 
@@ -143,7 +158,7 @@ export class AdminComplianceService {
           user: {
             ...property,
           },
-          courses: {
+          teacher_school_year_enrollments: {
             school: {
               ...whereInSchool,
             },

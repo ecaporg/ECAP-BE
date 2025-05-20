@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { SubjectEntity } from '@/track/entities/subject.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
@@ -59,10 +59,10 @@ export class SampleEntity extends GenericEntity {
   done_by_id: number;
 
   @ApiProperty({
-    description: 'Assignment period ID associated with this sample',
+    description: 'Student LP enrollment ID associated with this sample',
   })
   @Column()
-  assignment_period_id: number;
+  student_lp_enrollment_id: number;
 
   @ApiProperty({ description: 'Subject ID associated with this sample' })
   @Column()
@@ -84,19 +84,19 @@ export class SampleEntity extends GenericEntity {
   subject: SubjectEntity;
 
   @ApiProperty({
-    description: 'Assignment period associated with this sample',
+    description: 'Student LP enrollment associated with this sample',
     type: () => Object,
   })
   @ManyToOne(
-    () => AssignmentPeriodEntity,
-    (assignment_period) => assignment_period.samples,
+    () => StudentLPEnrollmentEntity,
+    (student_lp_enrollment) => student_lp_enrollment.samples,
     {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     },
   )
-  @JoinColumn({ name: 'assignment_period_id' })
-  assignment_period: AssignmentPeriodEntity;
+  @JoinColumn({ name: 'student_lp_enrollment_id' })
+  student_lp_enrollment: StudentLPEnrollmentEntity;
 
   @ApiProperty({
     description: 'User who set completed status of this sample',

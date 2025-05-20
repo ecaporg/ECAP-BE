@@ -9,7 +9,7 @@ import {
 
 import { Injectable, Logger } from '@nestjs/common';
 
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
 
 @Injectable()
@@ -24,12 +24,12 @@ export class SampleSubscriber
 
   async afterInsert(event: InsertEvent<SampleEntity>) {
     this.logger.log(`Detected insert for Sample with id: ${event.entity?.id}`);
-    if (event.entity && event.entity.assignment_period_id) {
+    if (event.entity && event.entity.student_lp_enrollment_id) {
       this.logger.log(
-        `Updating stats for AssignmentPeriod id: ${event.entity.assignment_period_id}`,
+        `Updating stats for Student LP enrollment id: ${event.entity.student_lp_enrollment_id}`,
       );
-      await this.updateAssignmentPeriodStats(
-        event.entity.assignment_period_id,
+      await this.updateStudentLPEnrollmentStats(
+        event.entity.student_lp_enrollment_id,
         event.queryRunner,
       );
     }
@@ -43,14 +43,14 @@ export class SampleSubscriber
 
     if (
       event.entity &&
-      event.entity.assignment_period_id &&
+      event.entity.student_lp_enrollment_id &&
       event.updatedColumns.some((column) => column.propertyName === 'status')
     ) {
       this.logger.log(
-        `Updating stats for AssignmentPeriod id: ${event.entity.assignment_period_id}`,
+        `Updating stats for Student LP enrollment id: ${event.entity.student_lp_enrollment_id}`,
       );
-      await this.updateAssignmentPeriodStats(
-        event.entity.assignment_period_id,
+      await this.updateStudentLPEnrollmentStats(
+        event.entity.student_lp_enrollment_id,
         event.queryRunner,
       );
     }
@@ -58,19 +58,19 @@ export class SampleSubscriber
 
   async afterRemove(event: RemoveEvent<SampleEntity>) {
     this.logger.log(`Detected remove for Sample with id: ${event.entity?.id}`);
-    if (event.entity && event.entity.assignment_period_id) {
+    if (event.entity && event.entity.student_lp_enrollment_id) {
       this.logger.log(
-        `Updating stats for AssignmentPeriod id: ${event.entity.assignment_period_id}`,
+        `Updating stats for Student LP enrollment id: ${event.entity.student_lp_enrollment_id}`,
       );
-      await this.updateAssignmentPeriodStats(
-        event.entity.assignment_period_id,
+      await this.updateStudentLPEnrollmentStats(
+        event.entity.student_lp_enrollment_id,
         event.queryRunner,
       );
     }
   }
 
-  private async updateAssignmentPeriodStats(
-    assignmentPeriodId: number,
+  private async updateStudentLPEnrollmentStats(
+    studentLPEnrollmentId: number,
     queryRunner: QueryRunner,
   ): Promise<void> {
     const startedTransaction = !queryRunner.isTransactionActive;
@@ -82,7 +82,7 @@ export class SampleSubscriber
 
     try {
       const samples = await queryRunner.manager.find(SampleEntity, {
-        where: { assignment_period_id: assignmentPeriodId },
+        where: { student_lp_enrollment_id: studentLPEnrollmentId },
       });
 
       const totalSamples = samples.length;
@@ -98,12 +98,12 @@ export class SampleSubscriber
       const completed = totalSamples > 0 && completedSamples === totalSamples;
 
       this.logger.log(
-        `Stats calculated for AssignmentPeriod ${assignmentPeriodId}: completed=${completed}, percentage=${percentage}`,
+        `Stats calculated for Student LP enrollment ${studentLPEnrollmentId}: completed=${completed}, percentage=${percentage}`,
       );
 
       await queryRunner.manager.update(
-        AssignmentPeriodEntity,
-        { id: assignmentPeriodId },
+        StudentLPEnrollmentEntity,
+        { id: studentLPEnrollmentId },
         {
           percentage,
           completed,
@@ -111,7 +111,7 @@ export class SampleSubscriber
       );
 
       this.logger.log(
-        `Successfully updated stats for AssignmentPeriod ${assignmentPeriodId}`,
+        `Successfully updated stats for Student LP enrollment ${studentLPEnrollmentId}`,
       );
 
       if (startedTransaction) {

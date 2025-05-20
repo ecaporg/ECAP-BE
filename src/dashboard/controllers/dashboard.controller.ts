@@ -17,11 +17,11 @@ import { DashboardService } from '../services/dashboard.service';
 const interceptor = new AttachUserIdInterceptor<DashboardFilterDto>([
   {
     role: RolesEnum.TEACHER,
-    path: 'assignment_periods.course.teacher_id' as keyof DashboardFilterDto,
+    path: 'student_lp_enrollments.teacher_school_year_enrollment.teacher_id' as keyof DashboardFilterDto,
   },
   {
     role: RolesEnum.DIRECTOR,
-    path: 'assignment_periods.student.academy_id' as keyof DashboardFilterDto,
+    path: 'student_lp_enrollments.student.academy_id' as keyof DashboardFilterDto,
     map: (user) => user.director?.academy?.id,
   },
   {

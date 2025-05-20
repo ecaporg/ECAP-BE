@@ -14,7 +14,7 @@ export class TrackLearningPeriodFilterInterceptor extends AttachUserIdIntercepto
       { role: RolesEnum.DIRECTOR, path: 'track.tenant.directors.id' },
       {
         role: RolesEnum.TEACHER,
-        path: 'track.tenant.schools.courses.teacher_id',
+        path: 'track.tenant.schools.teacher_school_year_enrollments.teacher_id',
       },
     ]);
   }

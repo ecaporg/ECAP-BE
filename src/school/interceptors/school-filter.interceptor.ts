@@ -12,7 +12,10 @@ export class SchoolFilterInterceptor extends AttachUserIdInterceptor<SchoolEntit
       { role: RolesEnum.ADMIN, path: 'tenant_id' },
       { role: RolesEnum.SUPER_ADMIN, path: 'tenant_id' },
       { role: RolesEnum.DIRECTOR, path: 'tenant.directors.id' },
-      { role: RolesEnum.TEACHER, path: 'courses.teacher_id' },
+      {
+        role: RolesEnum.TEACHER,
+        path: 'teacher_school_year_enrollments.teacher_id',
+      },
     ]);
   }
 }

@@ -1,7 +1,8 @@
 import * as argon2 from 'argon2';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { CourseEntity } from '@/course/entities/course.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
+import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
 import {
   AdminEntity,
   DirectorEntity,
@@ -15,7 +16,6 @@ import { TrackCalendarEntity } from '@/track/entities/track-calendar.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
 
 import { AcademyEntity } from '../src/school/entities/academy.entity';
-import { AssignmentPeriodEntity } from '../src/school/entities/assignment.entity';
 import { SchoolEntity } from '../src/school/entities/school.entity';
 import {
   SampleEntity,
@@ -272,7 +272,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
     academicYears: AcademicYearEntity[],
   ) {
     const global_teachers = [] as TeacherEntity[];
-    let global_courses = [] as CourseEntity[];
+    let global_courses = [] as TeacherSchoolYearEnrollmentEntity[];
 
     for (const school of schools) {
       const teacher_users = await queryRunner.manager.save(
@@ -309,16 +309,16 @@ export class AddTestData201746984777855 implements MigrationInterface {
             school_id: school.id,
             teacher_id: teacher.id,
             academic_year: academicYear,
-          } as CourseEntity);
+          } as TeacherSchoolYearEnrollmentEntity);
         }
       }
       global_teachers.push(...teachers);
     }
 
     global_courses = (await queryRunner.manager.save(
-      CourseEntity,
+      TeacherSchoolYearEnrollmentEntity,
       global_courses,
-    )) as CourseEntity[];
+    )) as TeacherSchoolYearEnrollmentEntity[];
 
     return { global_teachers, global_courses };
   }
@@ -542,7 +542,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
     queryRunner: QueryRunner,
     learningPeriods: TrackLearningPeriodEntity[],
     students: StudentEntity[],
-    courses: CourseEntity[],
+    courses: TeacherSchoolYearEnrollmentEntity[],
     track: TrackEntity,
     track_index: number,
     academicYear: AcademicYearEntity,
@@ -565,17 +565,17 @@ export class AddTestData201746984777855 implements MigrationInterface {
         for (const learningPeriod of learningPeriods) {
           const completed = Math.random() > 0.3;
           local_assignmentPeriods.push({
-            course,
+            teacher_school_year_enrollment: course,
             student,
             learning_period: learningPeriod,
             completed,
             percentage: completed ? 100 : 0,
-          } as AssignmentPeriodEntity);
+          } as StudentLPEnrollmentEntity);
         }
       }
       assignmentPeriods.push(
         ...(await queryRunner.manager.save(
-          AssignmentPeriodEntity,
+          StudentLPEnrollmentEntity,
           local_assignmentPeriods,
         )),
       );
@@ -585,14 +585,16 @@ export class AddTestData201746984777855 implements MigrationInterface {
 
   private async createSamples(
     queryRunner: QueryRunner,
-    assignmentPeriods: AssignmentPeriodEntity[],
+    assignmentPeriods: StudentLPEnrollmentEntity[],
     subjects: SubjectEntity[],
   ) {
     const samples: SampleEntity[] = [];
     for (const assignmentPeriod of assignmentPeriods) {
       for (const subject of subjects) {
         const isCompleted = Math.random() > 0.7 || assignmentPeriod.completed;
-        const user_id = isCompleted ? assignmentPeriod.course.teacher_id : null;
+        const user_id = isCompleted
+          ? assignmentPeriod.teacher_school_year_enrollment.teacher_id
+          : null;
 
         const status = isCompleted
           ? SampleStatus.COMPLETED
@@ -612,7 +614,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
             {
               assignment_title: `Sample`,
               status: assignmentPeriod.completed ? 'COMPLETED' : status,
-              assignment_period_id: assignmentPeriod.id,
+              student_lp_enrollment_id: assignmentPeriod.id,
               done_by_id:
                 assignmentPeriod.completed || isCompleted ? user_id : null,
               subject_id: subject.id,
@@ -621,7 +623,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
             {
               assignment_title: `Sample 2`,
               status,
-              assignment_period_id: assignmentPeriod.id,
+              student_lp_enrollment_id: assignmentPeriod.id,
               done_by_id: user_id,
               subject_id: subject.id,
               flag_category,
@@ -704,7 +706,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
 
   private async recalculateAssignmentPeriods(queryRunner: QueryRunner) {
     const assignment_periods = await queryRunner.manager.find(
-      AssignmentPeriodEntity,
+      StudentLPEnrollmentEntity,
       {
         where: {
           completed: false,
@@ -720,6 +722,9 @@ export class AddTestData201746984777855 implements MigrationInterface {
           assignment_period.samples.length) *
         100;
     }
-    await queryRunner.manager.save(AssignmentPeriodEntity, assignment_periods);
+    await queryRunner.manager.save(
+      StudentLPEnrollmentEntity,
+      assignment_periods,
+    );
   }
 }

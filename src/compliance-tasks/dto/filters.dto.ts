@@ -3,23 +3,23 @@ import { IsBoolean, IsNumber, IsString } from 'class-validator';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 
 import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 
 const FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'learning_period_id',
   ACADEMY_ID: 'student.academy_id',
-  SCHOOL_ID: 'course.school_id',
+  SCHOOL_ID: 'teacher_school_year_enrollment.school_id',
   TRACK_ID: 'student.track_id',
   STUDENT_GRADE: 'student.grade',
   COMPLETED: 'completed',
-  TEACHER_ID: 'course.teacher_id',
+  TEACHER_ID: 'teacher_school_year_enrollment.teacher_id',
   SAMPLE_STATUS: 'samples.status',
   STUDENT_ID: 'student_id',
   DONE_BY_ID: 'samples.done_by_id',
-  ACADEMIC_YEAR: 'course.academic_year_id',
+  ACADEMIC_YEAR: 'teacher_school_year_enrollment.academic_year_id',
   SEMESTER_ID: 'student.track.semesters.id',
   SAMPLE_SUBJECT: 'samples.subject',
-} satisfies RecordStringAndDotNotation<AssignmentPeriodEntity>;
+} satisfies RecordStringAndDotNotation<StudentLPEnrollmentEntity>;
 
 export class StudentsTableFilterDto extends BaseFilterDto {
   @ApiProperty({
@@ -139,7 +139,6 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
 
 export class TeachersTableFilterDto extends OmitType(StudentsTableFilterDto, [
   FILTER_KEYS.LEARNING_PERIOD_ID,
-  FILTER_KEYS.ACADEMY_ID,
 ]) {
   @ApiProperty({
     required: false,

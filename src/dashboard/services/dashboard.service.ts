@@ -281,7 +281,7 @@ export class DashboardService {
       .createQueryBuilder('track_learning_periods')
       .select(
         `
-        avg(assignment_periods.percentage) as percentage,
+        avg(student_lp_enrollments.percentage) as percentage,
         track_learning_periods.start_date as start_date,
         track_learning_periods.end_date as end_date,
         student.academy_id as academy_id,
@@ -290,10 +290,10 @@ export class DashboardService {
       )
       .leftJoin('track_learning_periods.track', 'track')
       .leftJoin(
-        'track_learning_periods.assignment_periods',
-        'assignment_periods',
+        'track_learning_periods.student_lp_enrollments',
+        'student_lp_enrollments',
       )
-      .leftJoin('assignment_periods.student', 'student')
+      .leftJoin('student_lp_enrollments.student', 'student')
       .leftJoin('student.academy', 'academy')
       .where('track_learning_periods.id IN (:...ids)', {
         ids: periods.map((period) => period.id),
@@ -328,16 +328,27 @@ export class DashboardService {
         adminId: filters['track.tenant.admins.id'],
       });
     }
-    if (filters['assignment_periods.student.academy_id']) {
+    if (filters['student_lp_enrollments.student.academy_id']) {
       queryBuilder.andWhere('student.academy_id = :academyId', {
-        academyId: filters['assignment_periods.student.academy_id'],
+        academyId: filters['student_lp_enrollments.student.academy_id'],
       });
     }
-    if (filters['assignment_periods.course.teacher_id']) {
+    if (
+      filters[
+        'student_lp_enrollments.teacher_school_year_enrollment.teacher.id'
+      ]
+    ) {
       queryBuilder
-        .leftJoin('assignment_periods.course', 'course')
-        .andWhere('course.teacher_id = :teacherId', {
-          teacherId: filters['assignment_periods.course.teacher_id'],
+        .leftJoin(
+          'student_lp_enrollments.teacher_school_year_enrollment',
+          'teacher_school_year_enrollment',
+        )
+        .leftJoin('teacher_school_year_enrollment.teacher', 'teacher')
+        .andWhere('teacher.id = :teacherId', {
+          teacherId:
+            filters[
+              'student_lp_enrollments.teacher_school_year_enrollment.teacher.id'
+            ],
         });
     }
   }

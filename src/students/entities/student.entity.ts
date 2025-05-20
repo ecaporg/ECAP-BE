@@ -11,8 +11,8 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { DatedGenericEntity } from '@/core';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
-import { AssignmentPeriodEntity } from '@/school/entities/assignment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 import { UserEntity } from '@/users/entities/user.entity';
@@ -94,8 +94,8 @@ export class StudentEntity extends DatedGenericEntity {
     type: () => [{}],
   })
   @OneToMany(
-    () => AssignmentPeriodEntity,
-    (assignment_period) => assignment_period.student,
+    () => StudentLPEnrollmentEntity,
+    (student_lp_enrollment) => student_lp_enrollment.student,
   )
-  assignment_periods: AssignmentPeriodEntity[];
+  student_lp_enrollments: StudentLPEnrollmentEntity[];
 }

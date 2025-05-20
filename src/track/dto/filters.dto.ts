@@ -10,7 +10,7 @@ import { TrackCalendarEntity } from '../entities/track-calendar.entity';
 const FILTER_TRACK_KEYS = {
   TENANT_ID: 'tenant_id',
   DIRECTOR_ID: 'tenant.directors.id',
-  TEACHER_ID: 'tenant.schools.courses.teacher_id',
+  TEACHER_ID: 'tenant.schools.teacher_school_year_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<TrackEntity>;
 
 export class TrackFilterDto extends BaseFilterDto {
@@ -35,7 +35,7 @@ export class TrackFilterDto extends BaseFilterDto {
 const FILTER_TRACK_CALENDAR_KEYS = {
   TENANT_ID: 'track.tenant_id',
   DIRECTOR_ID: 'track.tenant.directors.id',
-  TEACHER_ID: 'track.tenant.schools.courses.teacher_id',
+  TEACHER_ID: 'track.tenant.schools.teacher_school_year_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<TrackCalendarEntity>;
 
 export class TrackCalendarFilterDto extends BaseFilterDto {

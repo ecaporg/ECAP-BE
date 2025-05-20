@@ -12,7 +12,10 @@ export class TrackFilterInterceptor extends AttachUserIdInterceptor<TrackEntity>
       { role: RolesEnum.ADMIN, path: 'tenant_id' },
       { role: RolesEnum.SUPER_ADMIN, path: 'tenant_id' },
       { role: RolesEnum.DIRECTOR, path: 'tenant.directors.id' },
-      { role: RolesEnum.TEACHER, path: 'tenant.schools.courses.teacher_id' },
+      {
+        role: RolesEnum.TEACHER,
+        path: 'tenant.schools.teacher_school_year_enrollments.teacher_id',
+      },
     ]);
   }
 }

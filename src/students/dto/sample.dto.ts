@@ -29,11 +29,11 @@ export class CreateSampleDto implements Partial<SampleInterface> {
   status?: SampleStatus = SampleStatus.PENDING;
 
   @ApiProperty({
-    description: 'Assignment period ID associated with this sample',
+    description: 'Student LP enrollment ID associated with this sample',
   })
   @IsNumber()
   @IsNotEmpty()
-  assignment_period_id: number;
+  student_lp_enrollment_id: number;
 
   @ApiProperty({ description: 'Subject ID associated with this sample' })
   @IsNumber()

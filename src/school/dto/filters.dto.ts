@@ -10,7 +10,7 @@ import { SchoolEntity } from '../entities/school.entity';
 const FILTER_SCHOOL_KEYS = {
   TENANT_ID: 'tenant_id',
   DIRECTOR_ID: 'tenant.directors.id',
-  TEACHER_ID: 'courses.teacher_id',
+  TEACHER_ID: 'teacher_school_year_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<SchoolEntity>;
 
 export class SchoolFilterDto extends BaseFilterDto {
@@ -35,7 +35,7 @@ export class SchoolFilterDto extends BaseFilterDto {
 const FILTER_ACADEMY_KEYS = {
   TENANT_ID: 'tenant_id',
   DIRECTOR_ID: 'tenant.directors.id',
-  TEACHER_ID: 'tenant.schools.courses.teacher_id',
+  TEACHER_ID: 'tenant.schools.teacher_school_year_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<AcademyEntity>;
 
 export class AcademyFilterDto extends BaseFilterDto {
