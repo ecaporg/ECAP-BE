@@ -3,8 +3,8 @@ import { In } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 
 import { extractPaginationOptions } from '@/core';
-import { AcademicYearService } from '@/track/services/academic-year.service';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
+import { AcademicYearService } from '@/track/services/academic-year.service';
 import { TrackLearningPeriodService } from '@/track/services/track-learning-period.service';
 import { UserEntity } from '@/users/entities/user.entity';
 import { RolesEnum } from '@/users/enums/roles.enum';
@@ -205,12 +205,13 @@ export class DashboardService {
       };
     }
 
-    const compliance = this.calculateCompliance(
-      averages,
-      this.formatDate(period[0].start_date),
-      this.formatDate(period[0].end_date),
-      null,
-    );
+    const compliance =
+      this.calculateCompliance(
+        averages,
+        this.formatDate(period[0].start_date),
+        this.formatDate(period[0].end_date),
+        null,
+      ) || 0;
 
     return {
       learningPeriods: period[1],
