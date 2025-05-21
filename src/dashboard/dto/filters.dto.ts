@@ -4,8 +4,8 @@ import { BaseFilterDto, RecordStringAndDotNotation } from '@/core';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
 const FILTER_KEYS = {
-  DIRECTOR: 'track.tenant.admins.id',
-  ADMIN: 'student_lp_enrollments.student.academy_id',
+  ADMIN: 'track.tenant.admins.id',
+  DIRECTOR: 'student_lp_enrollments.student.academy_id',
   TEACHER: 'student_lp_enrollments.teacher_school_year_enrollment.teacher_id',
 } satisfies RecordStringAndDotNotation<TrackLearningPeriodEntity>;
 
