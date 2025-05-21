@@ -15,13 +15,9 @@ export class UserEntity extends GenericEntity {
   @Column({ unique: true })
   email: string;
 
-  @ApiProperty({ description: 'User first name' })
+  @ApiProperty({ description: 'User name' })
   @Column()
-  firstname: string;
-
-  @ApiProperty({ description: 'User last name' })
-  @Column()
-  lastname: string;
+  name: string;
 
   @ApiProperty({ description: 'User password (hashed)' })
   @Column()
@@ -48,6 +44,14 @@ export class UserEntity extends GenericEntity {
   @ApiProperty({ description: 'User role', enum: RolesEnum, nullable: true })
   @Column({ nullable: true, enum: RolesEnum })
   role?: RolesEnum;
+
+  @ApiProperty({
+    description:
+      'Additional information such as SIS user id, SIS import id, etc.',
+    nullable: true,
+  })
+  @Column({ type: 'json', nullable: true })
+  additionalInfo?: Record<string, any>;
 
   @ApiProperty({
     description: 'Student profiles associated with this user',

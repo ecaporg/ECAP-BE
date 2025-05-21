@@ -41,8 +41,7 @@ export class AdminComplianceService {
       .select([
         'student_lp_enrollments.teacher_school_year_enrollment_id as teacher_school_year_enrollment_id',
         'teacher.id as teacher_id',
-        'user.firstname as teacher_firstname',
-        'user.lastname as teacher_lastname',
+        'user.name as teacher_name',
         'academy.id as academy_id',
         'academy.name as academy_name',
         'COUNT(DISTINCT student_lp_enrollments.student_id) as student_count',
@@ -66,8 +65,7 @@ export class AdminComplianceService {
       .where(query.where)
       .groupBy('student_lp_enrollments.teacher_school_year_enrollment_id')
       .addGroupBy('teacher.id')
-      .addGroupBy('user.firstname')
-      .addGroupBy('user.lastname')
+      .addGroupBy('user.name')
       .addGroupBy('academy.id')
       .addGroupBy('academy.name')
       .orderBy(query.order as any);

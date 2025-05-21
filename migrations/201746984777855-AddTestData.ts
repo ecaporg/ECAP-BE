@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as argon2 from 'argon2';
+import { readFileSync } from 'fs';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
@@ -29,6 +31,9 @@ import { TrackEntity } from '../src/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../src/track/entities/track-learning-period.entity';
 import { UserEntity } from '../src/users/entities/user.entity';
 
+import { Course } from './elite-data/courses';
+import { People } from './elite-data/peoples';
+
 export class AddTestData201746984777855 implements MigrationInterface {
   private password: string;
 
@@ -51,7 +56,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
     const academicYears = await this.createAcademicYears(queryRunner);
 
     // Create teachers and courses for all schools and academic years
-    const { global_courses } = await this.createTeachersAndCourses(
+    const { enrollments } = await this.createTeachersAndEnrollments(
       queryRunner,
       schools,
       academicYears,
@@ -88,7 +93,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
           queryRunner,
           learningPeriods,
           students,
-          global_courses,
+          enrollments,
           track,
           track_index,
           academicYear,
@@ -188,7 +193,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
     return queryRunner.manager.save(AcademyEntity, [
       { name: 'Homeschool', tenant },
       { name: 'Flex', tenant },
-      { name: 'Academy', tenant },
+      { name: 'Virtual', tenant },
     ]);
   }
 
@@ -197,42 +202,41 @@ export class AddTestData201746984777855 implements MigrationInterface {
     academies: AcademyEntity[],
     tenant: TenantEntity,
   ): Promise<DirectorEntity[]> {
-    const director_users = await queryRunner.manager.save(
-      UserEntity,
-      academies.map(
-        (academy, idx) =>
-          ({
-            email: `director${idx}@test.com`,
-            password: this.password,
-            firstname: 'Director',
-            lastname: academy.name,
-            isActive: true,
-            emailVerified: true,
-            role: RolesEnum.DIRECTOR,
-          }) as UserEntity,
-      ),
-    );
-    const directors = await queryRunner.manager.save(
-      DirectorEntity,
-      academies.map(
-        (academy, idx) =>
-          ({
-            user: director_users[idx],
-            academy,
-            tenant,
-          }) as DirectorEntity,
-      ),
-    );
-    return directors;
+    // const director_users = await queryRunner.manager.save(
+    //   UserEntity,
+    //   academies.map(
+    //     (academy, idx) =>
+    //       ({
+    //         email: `director${idx}@test.com`,
+    //         password: this.password,
+    //         name: 'Director',
+    //         isActive: true,
+    //         emailVerified: true,
+    //         role: RolesEnum.DIRECTOR,
+    //       }) as UserEntity,
+    //   ),
+    // );
+    // const directors = await queryRunner.manager.save(
+    //   DirectorEntity,
+    //   academies.map(
+    //     (academy, idx) =>
+    //       ({
+    //         user: director_users[idx],
+    //         academy,
+    //         tenant,
+    //       }) as DirectorEntity,
+    //   ),
+    // );
+    // return directors;
+    return [];
   }
 
   private createAcademicYears(
     queryRunner: QueryRunner,
   ): Promise<AcademicYearEntity[]> {
-    const currentYear = new Date().getFullYear();
     return queryRunner.manager.save(AcademicYearEntity, [
-      { from: currentYear - 1, to: currentYear },
-      { from: currentYear, to: currentYear + 1 },
+      { from: 2024, to: 2025 },
+      { from: 2025, to: 2026 },
     ]);
   }
 
@@ -266,46 +270,53 @@ export class AddTestData201746984777855 implements MigrationInterface {
     }
   }
 
-  private async createTeachersAndCourses(
+  private async createTeachersAndEnrollments(
     queryRunner: QueryRunner,
     schools: SchoolEntity[],
     academicYears: AcademicYearEntity[],
   ) {
     const global_teachers = [] as TeacherEntity[];
-    let global_courses = [] as TeacherSchoolYearEnrollmentEntity[];
+    const enrollments = [] as TeacherSchoolYearEnrollmentEntity[];
+    const peoples = JSON.parse(
+      readFileSync('elite-data/teachers.json', 'utf8'),
+    ) as People[];
+
+    const teacher_users = await queryRunner.manager.save(
+      UserEntity,
+      peoples.map(
+        (person) =>
+          ({
+            email: person.email,
+            password: this.password,
+            name: person.name,
+            isActive: true,
+            emailVerified: true,
+            role: RolesEnum.TEACHER,
+            additionalInfo: {
+              canvas_id: person.id,
+              sis_user_id: person.sis_user_id,
+              sis_import_id: person.sis_import_id,
+              avatar_url: person.avatar_url,
+              time_zone: person.time_zone,
+            } as Record<string, any>,
+          }) as UserEntity,
+      ),
+    );
+
+    const teachers = await queryRunner.manager.save(
+      TeacherEntity,
+      teacher_users.map(
+        (user) =>
+          ({
+            user,
+          }) as TeacherEntity,
+      ),
+    );
 
     for (const school of schools) {
-      const teacher_users = await queryRunner.manager.save(
-        UserEntity,
-        Array.from(
-          { length: 15 },
-          (_, i) =>
-            ({
-              firstname: `Teacher ${i}`,
-              lastname: `${school.name}`,
-              email: `teacher${i + global_teachers.length}@test.com`,
-              password: this.password,
-              isActive: true,
-              emailVerified: true,
-              role: RolesEnum.TEACHER,
-            }) as UserEntity,
-        ),
-      );
-
-      const teachers = await queryRunner.manager.save(
-        TeacherEntity,
-        Array.from(
-          { length: 15 },
-          (_, i) =>
-            ({
-              user: teacher_users[i],
-            }) as TeacherEntity,
-        ),
-      );
-
       for (const academicYear of academicYears) {
         for (const teacher of teachers) {
-          global_courses.push({
+          enrollments.push({
             school_id: school.id,
             teacher_id: teacher.id,
             academic_year: academicYear,
@@ -315,12 +326,12 @@ export class AddTestData201746984777855 implements MigrationInterface {
       global_teachers.push(...teachers);
     }
 
-    global_courses = (await queryRunner.manager.save(
+    await queryRunner.manager.save(
       TeacherSchoolYearEnrollmentEntity,
-      global_courses,
-    )) as TeacherSchoolYearEnrollmentEntity[];
+      enrollments,
+    );
 
-    return { global_teachers, global_courses };
+    return { global_teachers, enrollments };
   }
 
   private async createTracks(
@@ -363,17 +374,32 @@ export class AddTestData201746984777855 implements MigrationInterface {
     queryRunner: QueryRunner,
     track: TrackEntity,
   ): Promise<SubjectEntity[]> {
-    const subjects = [] as SubjectEntity[];
-    subjects.push(
-      ...Array.from(
-        { length: 2 },
-        (_, i) =>
-          ({
-            name: `Subject ${i + 1} for ${track.name}`,
-            track,
-          }) as SubjectEntity,
-      ),
-    );
+    const courses = JSON.parse(
+      readFileSync('elite-data/courses.json', 'utf8'),
+    ) as Course[];
+    const subjects = courses
+      .filter((course) => {
+        const term = course.term.name.includes(
+          `${track.academicYear.from}/${track.academicYear.to}`,
+        );
+        const match = track.name.match(
+          track.name.includes('B') ? /(\d+)B/ : /(\d+)A/,
+        );
+        return term && match.length > 0;
+      })
+      .map((course) => ({
+        name: course.name,
+        track,
+        canvas_course_id: course.id,
+        canvas_additional_info: {
+          sis_course_id: course.sis_course_id,
+          sis_import_id: course.sis_import_id,
+          account_id: course.account_id,
+          course_code: course.course_code,
+          course_id: course.enrollment_term_id,
+          uuid: course.uuid,
+        } as Record<string, any>,
+      })) as SubjectEntity[];
     return queryRunner.manager.save(SubjectEntity, subjects);
   }
 
@@ -394,8 +420,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
             ({
               email: `user${i}_${school.name.replace(' ', '_')}_${academicYear.from}_${academicYear.to}@test.com`,
               password: this.password,
-              firstname: `User${i}`,
-              lastname: `Test`,
+              name: `User${i} Test`,
               isActive: true,
               emailVerified: true,
               role: RolesEnum.STUDENT,
@@ -412,7 +437,6 @@ export class AddTestData201746984777855 implements MigrationInterface {
               school_id: school.id,
               academy_id: academies[i % academies.length].id,
               track_id: tracks[i % tracks.length].id,
-              grade: `Grade ${(i % 12) + 1}`,
             }) as StudentEntity,
         ),
       );
@@ -542,30 +566,31 @@ export class AddTestData201746984777855 implements MigrationInterface {
     queryRunner: QueryRunner,
     learningPeriods: TrackLearningPeriodEntity[],
     students: StudentEntity[],
-    courses: TeacherSchoolYearEnrollmentEntity[],
+    enrollments: TeacherSchoolYearEnrollmentEntity[],
     track: TrackEntity,
     track_index: number,
     academicYear: AcademicYearEntity,
     length: number,
   ) {
-    const filtered_courses = courses.filter(
+    const filtered_enrollments = enrollments.filter(
       (as, index) =>
         index % length == track_index && as.academic_year_id == academicYear.id,
     );
 
     const assignmentPeriods = [];
 
-    for (const course of filtered_courses) {
+    for (const enrollment of filtered_enrollments) {
       const local_assignmentPeriods = [];
       const filteredStudents = students.filter(
         (student) =>
-          student.track_id == track.id && student.school_id == course.school_id,
+          student.track_id == track.id &&
+          student.school_id == enrollment.school_id,
       );
       for (const student of filteredStudents) {
         for (const learningPeriod of learningPeriods) {
           const completed = Math.random() > 0.3;
           local_assignmentPeriods.push({
-            teacher_school_year_enrollment: course,
+            teacher_school_year_enrollment: enrollment,
             student,
             learning_period: learningPeriod,
             completed,
@@ -675,33 +700,36 @@ export class AddTestData201746984777855 implements MigrationInterface {
       {
         email: 'admin@test.com',
         password: await argon2.hash('password'),
-        firstname: 'Admin',
-        lastname: 'Admin',
+        name: 'Admin',
         isActive: true,
         emailVerified: true,
         role: RolesEnum.SUPER_ADMIN,
       },
       {
-        email: 'ecap.colin@gmail.com',
+        email: 'cheredia@eliteacademic.com',
         password: await argon2.hash('password'),
-        firstname: 'Colin',
-        lastname: 'Cooper',
+        name: 'Catherine Heredia',
+        isActive: true,
+        emailVerified: true,
+        role: RolesEnum.SUPER_ADMIN,
+      },
+      {
+        email: 'rgonzalez@eliteacademic.com',
+        password: await argon2.hash('password'),
+        name: 'Rachel Gonzalez',
         isActive: true,
         emailVerified: true,
         role: RolesEnum.SUPER_ADMIN,
       },
     ]);
 
-    await queryRunner.manager.save(AdminEntity, [
-      {
-        user: admin[0],
+    await queryRunner.manager.save(
+      AdminEntity,
+      admin.map((user) => ({
+        user,
         tenant,
-      },
-      {
-        user: admin[1],
-        tenant,
-      },
-    ]);
+      })),
+    );
   }
 
   private async recalculateAssignmentPeriods(queryRunner: QueryRunner) {

@@ -92,10 +92,7 @@ export class TeacherComplianceTaskService {
   getUserSearchFields(search: string) {
     const fields = [
       {
-        firstname: ILike(`%${search}%`),
-      },
-      {
-        lastname: ILike(`%${search}%`),
+        name: ILike(`%${search}%`),
       },
     ];
     if (!isNaN(parseInt(search))) {

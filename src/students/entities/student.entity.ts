@@ -17,6 +17,7 @@ import { SchoolEntity } from '@/school/entities/school.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
+// TODO: move track_id, academy_id, and school_id to student_enrollment_entity
 @Entity({ name: 'students' })
 export class StudentEntity extends DatedGenericEntity {
   @ApiProperty({ description: 'User ID associated with this student' })
@@ -40,10 +41,6 @@ export class StudentEntity extends DatedGenericEntity {
   })
   @Column({ nullable: true })
   track_id: number;
-
-  @ApiProperty({ description: 'Student grade', maxLength: 250 })
-  @Column({ length: 250 })
-  grade: string;
 
   @ApiProperty({
     description: 'School associated with this student',

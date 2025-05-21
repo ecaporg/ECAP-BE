@@ -23,6 +23,10 @@ export class StudentLPEnrollmentEntity extends GenericEntity {
   @Column()
   student_id: number;
 
+  @ApiProperty({ description: 'Student grade', maxLength: 40 })
+  @Column({ length: 40, default: 'Unknown' })
+  student_grade: string;
+
   @ApiProperty({
     description: 'Learning period ID associated with this enrollment',
   })

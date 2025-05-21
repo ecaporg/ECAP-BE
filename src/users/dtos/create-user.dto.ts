@@ -32,21 +32,12 @@ export class CreateUserDTO {
 
   @ApiProperty({
     type: String,
-    description: 'user firstname (given name)',
+    description: 'user name',
   })
   @IsNotEmpty()
   @IsString()
   @IsAlpha()
-  firstname: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'user lastname (family name)',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @IsAlpha()
-  lastname: string;
+  name: string;
 
   @ApiProperty({
     type: String,

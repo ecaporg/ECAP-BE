@@ -7,11 +7,20 @@ import { SampleEntity } from '@/students/entities/sample.entity';
 
 import { TrackEntity } from './track.entity';
 
+// Subject equals to a course in the Canvas LMS
 @Entity({ name: 'subjects' })
 export class SubjectEntity extends GenericEntity {
   @ApiProperty({ description: 'Track ID associated with this subject' })
   @Column()
   track_id: number;
+
+  @ApiProperty({ description: 'Canvas course id', nullable: true })
+  @Column({ nullable: true, length: 50 })
+  canvas_course_id?: string;
+
+  @ApiProperty({ description: 'Canvas additional info', nullable: true })
+  @Column({ nullable: true, type: 'json' })
+  canvas_additional_info?: Record<string, any>;
 
   @ApiProperty({ description: 'Subject name', maxLength: 250 })
   @Column({ length: 250 })

@@ -21,8 +21,7 @@ export class LoginResponseDTO {
     type: 'object',
     example: {
       id: 1,
-      firstname: 'John',
-      lastname: 'Doe',
+      name: 'John Doe',
       email: 'john.doe@example.com',
       isActive: true,
       emailVerified: true,

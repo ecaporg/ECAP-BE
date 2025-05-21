@@ -10,7 +10,7 @@ const FILTER_KEYS = {
   ACADEMY_ID: 'student.academy_id',
   SCHOOL_ID: 'teacher_school_year_enrollment.school_id',
   TRACK_ID: 'student.track_id',
-  STUDENT_GRADE: 'student.grade',
+  STUDENT_GRADE: 'student_grade',
   COMPLETED: 'completed',
   TEACHER_ID: 'teacher_school_year_enrollment.teacher_id',
   SAMPLE_STATUS: 'samples.status',

@@ -154,7 +154,7 @@ export class AuthService {
 
     await this.authEmailService.sendVerificationLink(
       createdUser.email,
-      createdUser.firstname,
+      createdUser.name,
     );
 
     return this.getAuthUser(createdUser);
@@ -171,11 +171,9 @@ export class AuthService {
       throw new UnauthorizedException('User is inactive');
     }
 
-    const { firstname, lastname } = user;
+    const { name } = user;
 
-    const username = `${firstname} ${lastname}`;
-
-    await this.authEmailService.sendForgotPasswordLink(email, username);
+    await this.authEmailService.sendForgotPasswordLink(email, name);
 
     return true;
   }
@@ -230,16 +228,14 @@ export class AuthService {
       throw new BadRequestException('Email has been taken by another user');
     }
 
-    const { firstname, lastname } = user;
-
-    const username = `${firstname} ${lastname}`;
+    const { name } = user;
 
     await this.authEmailService.sendNewEmailVerificationLink(
       {
         email: user.email,
         newEmail,
       },
-      username,
+      name,
     );
 
     return true;

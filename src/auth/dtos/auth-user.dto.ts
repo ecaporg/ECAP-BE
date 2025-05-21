@@ -11,16 +11,10 @@ export class AuthUserDTO {
   id: number;
 
   @ApiProperty({
-    description: 'User first name',
+    description: 'User name',
     example: 'John',
   })
-  firstname: string;
-
-  @ApiProperty({
-    description: 'User last name',
-    example: 'Doe',
-  })
-  lastname: string;
+  name: string;
 
   @ApiProperty({
     description: 'User email address',

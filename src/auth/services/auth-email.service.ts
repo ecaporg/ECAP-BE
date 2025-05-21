@@ -107,8 +107,7 @@ export class AuthEmailService {
     return {
       id: user.id,
       email: user.email,
-      firstname: user.firstname,
-      lastname: user.lastname,
+      name: user.name,
       isActive: user.isActive,
       emailVerified: true,
       role: user.role,
