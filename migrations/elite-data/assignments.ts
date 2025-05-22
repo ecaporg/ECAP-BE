@@ -173,7 +173,7 @@ async function fetchAllAssignments() {
 fetchAllAssignments();
 
 // run
-// npx ts-node submitions.ts
+// npx ts-node assignments.ts
 
 export type Assignment = {
   anonymous_submissions?: boolean;

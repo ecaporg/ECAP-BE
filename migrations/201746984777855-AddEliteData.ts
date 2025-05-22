@@ -427,6 +427,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
               track_name: person.sis?.schooltracks_title
                 ? `Track ${person.sis.schooltracks_title}`
                 : null,
+              grade: person.sis?.lccgradelevels_gradelevel,
             } as Record<string, any>,
           }) as UserEntity,
       ),
@@ -623,8 +624,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
             completed: false,
             percentage: 0,
             track_id: track.id,
-            student_grade:
-              student.user.canvas_additional_info.lccgradelevels_gradelevel,
+            student_grade: student.user.canvas_additional_info.grade,
           } as StudentLPEnrollmentEntity);
         }
       }
