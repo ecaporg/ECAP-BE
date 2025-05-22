@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as argon2 from 'argon2';
 import { readFileSync } from 'fs';
+import { Assignment } from 'migrations/elite-data/assignments';
+import { Course } from 'migrations/elite-data/courses';
+import { People } from 'migrations/elite-data/students';
+import { Submission } from 'migrations/elite-data/submitions';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
@@ -31,10 +35,7 @@ import { TrackEntity } from '../src/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../src/track/entities/track-learning-period.entity';
 import { UserEntity } from '../src/users/entities/user.entity';
 
-import { Course } from './elite-data/courses';
-import { People } from './elite-data/peoples';
-
-export class AddTestData201746984777855 implements MigrationInterface {
+export class AddEliteData201746984777855 implements MigrationInterface {
   private password: string;
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -55,12 +56,15 @@ export class AddTestData201746984777855 implements MigrationInterface {
     // Create academic years (including historical data)
     const academicYears = await this.createAcademicYears(queryRunner);
 
-    // Create teachers and courses for all schools and academic years
+    // Create teachers and enrollments for all schools and academic years
     const { enrollments } = await this.createTeachersAndEnrollments(
       queryRunner,
       schools,
       academicYears,
     );
+
+    // Create students
+    const students = await this.createStudents(queryRunner, schools, academies);
 
     for (const academicYear of academicYears) {
       // Create tracks
@@ -68,15 +72,6 @@ export class AddTestData201746984777855 implements MigrationInterface {
 
       // Create semesters for these tracks
       await this.createSemesters(queryRunner, tracks);
-
-      // Create students
-      const students = await this.createStudents(
-        queryRunner,
-        schools,
-        academies,
-        tracks,
-        academicYear,
-      );
 
       for (let track_index = 0; track_index < tracks.length; track_index++) {
         const track = tracks[track_index];
@@ -88,16 +83,14 @@ export class AddTestData201746984777855 implements MigrationInterface {
           academicYear,
         );
 
-        // Create assignment periods
-        const assignmentPeriods = await this.createAssignmentPeriods(
+        // Create student LP enrollments
+        const studentLPEnrollments = await this.createStudentLPEnrollments(
           queryRunner,
           learningPeriods,
           students,
           enrollments,
           track,
-          track_index,
           academicYear,
-          tracks.length,
         );
 
         // Create subjects
@@ -105,17 +98,17 @@ export class AddTestData201746984777855 implements MigrationInterface {
 
         // Create samples for students
         // Create sample flags
-        await this.createSampleFlags(
-          queryRunner,
-          await this.createSamples(queryRunner, assignmentPeriods, subjects),
-        );
+        // await this.createSampleFlags(
+        // queryRunner,
+        await this.createSamples(queryRunner, studentLPEnrollments, subjects);
+        // );
       }
     }
 
     // Create admin user
     await this.createAdmin(queryRunner, tenant);
 
-    await this.recalculateAssignmentPeriods(queryRunner);
+    // await this.recalculateAssignmentPeriods(queryRunner);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -156,6 +149,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
     await queryRunner.manager.query(
       'TRUNCATE TABLE "samples" RESTART IDENTITY CASCADE',
     );
+
     await queryRunner.manager.query(
       'TRUNCATE TABLE "semesters" RESTART IDENTITY CASCADE',
     );
@@ -163,10 +157,10 @@ export class AddTestData201746984777855 implements MigrationInterface {
       'TRUNCATE TABLE "academic_years" RESTART IDENTITY CASCADE',
     );
     await queryRunner.manager.query(
-      'TRUNCATE TABLE "courses" RESTART IDENTITY CASCADE',
+      'TRUNCATE TABLE "teacher_school_year_enrollments" RESTART IDENTITY CASCADE',
     );
     await queryRunner.manager.query(
-      'TRUNCATE TABLE "assignment_periods" RESTART IDENTITY CASCADE',
+      'TRUNCATE TABLE "student_lp_enrollments" RESTART IDENTITY CASCADE',
     );
   }
 
@@ -236,7 +230,6 @@ export class AddTestData201746984777855 implements MigrationInterface {
   ): Promise<AcademicYearEntity[]> {
     return queryRunner.manager.save(AcademicYearEntity, [
       { from: 2024, to: 2025 },
-      { from: 2025, to: 2026 },
     ]);
   }
 
@@ -278,7 +271,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
     const global_teachers = [] as TeacherEntity[];
     const enrollments = [] as TeacherSchoolYearEnrollmentEntity[];
     const peoples = JSON.parse(
-      readFileSync('elite-data/teachers.json', 'utf8'),
+      readFileSync('migrations/elite-data/teachers.json', 'utf8'),
     ) as People[];
 
     const teacher_users = await queryRunner.manager.save(
@@ -292,7 +285,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
             isActive: true,
             emailVerified: true,
             role: RolesEnum.TEACHER,
-            additionalInfo: {
+            canvas_additional_info: {
               canvas_id: person.id,
               sis_user_id: person.sis_user_id,
               sis_import_id: person.sis_import_id,
@@ -317,8 +310,8 @@ export class AddTestData201746984777855 implements MigrationInterface {
       for (const academicYear of academicYears) {
         for (const teacher of teachers) {
           enrollments.push({
-            school_id: school.id,
-            teacher_id: teacher.id,
+            school,
+            teacher,
             academic_year: academicYear,
           } as TeacherSchoolYearEnrollmentEntity);
         }
@@ -345,14 +338,14 @@ export class AddTestData201746984777855 implements MigrationInterface {
         tenant,
         start_date: new Date(academicYear.from, 7, 1),
         end_date: new Date(academicYear.to, 6, 10),
-        academic_year_id: academicYear.id,
+        academicYear,
       } as TrackEntity,
       {
         name: `Track B`,
         tenant,
         start_date: new Date(academicYear.from, 8, 27),
         end_date: new Date(academicYear.to, 6, 10),
-        academic_year_id: academicYear.id,
+        academicYear,
       } as TrackEntity,
     ]);
 
@@ -375,18 +368,19 @@ export class AddTestData201746984777855 implements MigrationInterface {
     track: TrackEntity,
   ): Promise<SubjectEntity[]> {
     const courses = JSON.parse(
-      readFileSync('elite-data/courses.json', 'utf8'),
+      readFileSync('migrations/elite-data/courses.json', 'utf8'),
     ) as Course[];
+    const assignments = JSON.parse(
+      readFileSync('migrations/elite-data/assignments-filtered.json', 'utf8'),
+    ) as Assignment[];
     const subjects = courses
-      .filter((course) => {
-        const term = course.term.name.includes(
-          `${track.academicYear.from}/${track.academicYear.to}`,
-        );
-        const match = track.name.match(
-          track.name.includes('B') ? /(\d+)B/ : /(\d+)A/,
-        );
-        return term && match.length > 0;
-      })
+      .filter(
+        (course) =>
+          course.term.name.includes(
+            `${track.academicYear.from}/${track.academicYear.to}`,
+          ) &&
+          assignments.some((assignment) => assignment.course_id == course.id),
+      )
       .map((course) => ({
         name: course.name,
         track,
@@ -396,7 +390,7 @@ export class AddTestData201746984777855 implements MigrationInterface {
           sis_import_id: course.sis_import_id,
           account_id: course.account_id,
           course_code: course.course_code,
-          course_id: course.enrollment_term_id,
+          enrollment_term_id: course.enrollment_term_id,
           uuid: course.uuid,
         } as Record<string, any>,
       })) as SubjectEntity[];
@@ -407,41 +401,62 @@ export class AddTestData201746984777855 implements MigrationInterface {
     queryRunner: QueryRunner,
     schools: SchoolEntity[],
     academies: AcademyEntity[],
-    tracks: TrackEntity[],
-    academicYear: AcademicYearEntity,
   ) {
-    const students = [] as StudentEntity[];
-    for (const school of schools) {
-      const users = await queryRunner.manager.save(
-        UserEntity,
-        Array.from(
-          { length: 30 },
-          (_, i) =>
-            ({
-              email: `user${i}_${school.name.replace(' ', '_')}_${academicYear.from}_${academicYear.to}@test.com`,
-              password: this.password,
-              name: `User${i} Test`,
-              isActive: true,
-              emailVerified: true,
-              role: RolesEnum.STUDENT,
-            }) as UserEntity,
-        ),
-      );
+    const peoples = JSON.parse(
+      readFileSync('migrations/elite-data/students.json', 'utf8'),
+    ) as People[];
+    const users = await queryRunner.manager.save(
+      UserEntity,
+      peoples.map(
+        (person) =>
+          ({
+            email: person.email
+              ? `${person.id}+${person.email}`
+              : `${person.id}@test.com`,
+            password: this.password,
+            name: person.name,
+            isActive: true,
+            emailVerified: true,
+            role: RolesEnum.STUDENT,
+            canvas_additional_info: {
+              canvas_id: person.id,
+              sis_user_id: person.sis_user_id,
+              sis_import_id: person.sis_import_id,
+              avatar_url: person.avatar_url,
+              time_zone: person.time_zone,
+              track_name: person.sis?.schooltracks_title
+                ? `Track ${person.sis.schooltracks_title}`
+                : null,
+            } as Record<string, any>,
+          }) as UserEntity,
+      ),
+    );
 
-      const logcal = await queryRunner.manager.save(
-        StudentEntity,
-        users.map(
-          (user, i) =>
-            ({
-              user,
-              school_id: school.id,
-              academy_id: academies[i % academies.length].id,
-              track_id: tracks[i % tracks.length].id,
-            }) as StudentEntity,
-        ),
-      );
-      students.push(...logcal);
-    }
+    const students = await queryRunner.manager.save(
+      StudentEntity,
+      users.map((user) => {
+        const person = peoples.find(
+          (p) => p.id == user.canvas_additional_info.canvas_id,
+        );
+
+        const school = schools.find(
+          (s) =>
+            s.name ==
+            (person?.sis?.scope_title == 'mountainelite'
+              ? 'Mountain Empire'
+              : 'Lucerne'),
+        );
+
+        const academy = academies.find((a) => a.name == person?.sis?.lc_name);
+
+        return {
+          user,
+          academy_id: academy?.id,
+          school_id: school?.id,
+        } as StudentEntity;
+      }),
+    );
+
     return students;
   }
 
@@ -562,39 +577,54 @@ export class AddTestData201746984777855 implements MigrationInterface {
     return learningPeriods;
   }
 
-  private async createAssignmentPeriods(
+  private async createStudentLPEnrollments(
     queryRunner: QueryRunner,
     learningPeriods: TrackLearningPeriodEntity[],
     students: StudentEntity[],
     enrollments: TeacherSchoolYearEnrollmentEntity[],
     track: TrackEntity,
-    track_index: number,
     academicYear: AcademicYearEntity,
-    length: number,
   ) {
     const filtered_enrollments = enrollments.filter(
-      (as, index) =>
-        index % length == track_index && as.academic_year_id == academicYear.id,
+      (as) => as.academic_year_id == academicYear.id,
     );
+    const teacherStudentRelation = JSON.parse(
+      readFileSync(
+        'migrations/elite-data/teacher-student-relation.json',
+        'utf8',
+      ),
+    ) as Record<string, string[]>;
 
     const assignmentPeriods = [];
-
     for (const enrollment of filtered_enrollments) {
       const local_assignmentPeriods = [];
       const filteredStudents = students.filter(
         (student) =>
-          student.track_id == track.id &&
-          student.school_id == enrollment.school_id,
+          student.school_id == enrollment.school_id &&
+          student.user.canvas_additional_info.track_name == track.name,
       );
       for (const student of filteredStudents) {
+        if (!enrollment.teacher.user.canvas_additional_info)
+          throw new Error('Teacher has no additional info');
+
+        if (
+          !teacherStudentRelation[
+            student.user.canvas_additional_info.canvas_id
+          ]?.includes(enrollment.teacher.user.canvas_additional_info.canvas_id)
+        ) {
+          continue;
+        }
+
         for (const learningPeriod of learningPeriods) {
-          const completed = Math.random() > 0.3;
           local_assignmentPeriods.push({
             teacher_school_year_enrollment: enrollment,
             student,
             learning_period: learningPeriod,
-            completed,
-            percentage: completed ? 100 : 0,
+            completed: false,
+            percentage: 0,
+            track_id: track.id,
+            student_grade:
+              student.user.canvas_additional_info.lccgradelevels_gradelevel,
           } as StudentLPEnrollmentEntity);
         }
       }
@@ -610,52 +640,84 @@ export class AddTestData201746984777855 implements MigrationInterface {
 
   private async createSamples(
     queryRunner: QueryRunner,
-    assignmentPeriods: StudentLPEnrollmentEntity[],
+    studentLPEnrollments: StudentLPEnrollmentEntity[],
     subjects: SubjectEntity[],
   ) {
     const samples: SampleEntity[] = [];
-    for (const assignmentPeriod of assignmentPeriods) {
-      for (const subject of subjects) {
-        const isCompleted = Math.random() > 0.7 || assignmentPeriod.completed;
-        const user_id = isCompleted
-          ? assignmentPeriod.teacher_school_year_enrollment.teacher_id
-          : null;
 
-        const status = isCompleted
-          ? SampleStatus.COMPLETED
-          : Math.random() > 0.5
-            ? SampleStatus.ERRORS_FOUND
-            : Math.random() > 0.5
-              ? SampleStatus.MISSING_SAMPLE
+    const submissions = (
+      JSON.parse(
+        readFileSync('migrations/elite-data/submissions.json', 'utf8'),
+      ) as Submission[][]
+    ).flatMap((e) => e);
+
+    const assignmentsMap = new Map<string, Assignment>(
+      JSON.parse(
+        readFileSync('migrations/elite-data/assignments-filtered.json', 'utf8'),
+      ).map((assignment: Assignment) => [assignment.id.toString(), assignment]),
+    );
+
+    const coursesMap = new Map<string, Course>(
+      JSON.parse(
+        readFileSync('migrations/elite-data/courses.json', 'utf8'),
+      ).map((course: Course) => [course.id.toString(), course]),
+    );
+
+    const subjectMap = new Map<string, SubjectEntity>(
+      subjects.map((s) => [s.canvas_course_id, s]),
+    );
+
+    for (const studentLPEnrollment of studentLPEnrollments) {
+      const assignmentPerLPMap = new Map<string, Assignment>(
+        Array.from(assignmentsMap.values())
+          .filter((a) => {
+            const due_at = new Date(a.due_at);
+            return (
+              due_at >=
+                new Date(studentLPEnrollment.learning_period.start_date) &&
+              due_at <= new Date(studentLPEnrollment.learning_period.end_date)
+            );
+          })
+          .map((a) => [a.id.toString(), a]),
+      );
+
+      const studentSubmitions = submissions.filter(
+        (s) =>
+          s.user_id ==
+            studentLPEnrollment.student.user.canvas_additional_info.canvas_id &&
+          assignmentPerLPMap.has(s.assignment_id),
+      );
+
+      samples.push(
+        ...(studentSubmitions.map((s) => {
+          const assignment = assignmentPerLPMap.get(s.assignment_id);
+          const course = coursesMap.get(assignment.course_id);
+          const subject = subjectMap.get(course.id);
+
+          const status = !s.submitted_at
+            ? SampleStatus.MISSING_SAMPLE
+            : !s.grade
+              ? SampleStatus.ERRORS_FOUND
               : SampleStatus.PENDING;
 
-        const flag_category =
-          status === SampleStatus.ERRORS_FOUND
-            ? SampleFlagCategory.ERROR_IN_SAMPLE
-            : null;
+          const flag_category = !s.submitted_at
+            ? SampleFlagCategory.MISSING_SAMPLE
+            : !s.grade
+              ? SampleFlagCategory.ERROR_IN_SAMPLE
+              : null;
 
-        samples.push(
-          ...([
-            {
-              assignment_title: `Sample`,
-              status: assignmentPeriod.completed ? 'COMPLETED' : status,
-              student_lp_enrollment_id: assignmentPeriod.id,
-              done_by_id:
-                assignmentPeriod.completed || isCompleted ? user_id : null,
-              subject_id: subject.id,
-              flag_category,
-            },
-            {
-              assignment_title: `Sample 2`,
-              status,
-              student_lp_enrollment_id: assignmentPeriod.id,
-              done_by_id: user_id,
-              subject_id: subject.id,
-              flag_category,
-            },
-          ] as SampleEntity[]),
-        );
-      }
+          return {
+            assignment_title: assignmentPerLPMap.get(s.assignment_id)?.name,
+            grade: s.grade,
+            date: s.submitted_at ? new Date(s.submitted_at) : undefined,
+            status,
+            student_lp_enrollment_id: studentLPEnrollment.id,
+            subject,
+            flag_category,
+            preview_url: s.preview_url,
+          } as SampleEntity;
+        }) as SampleEntity[]),
+      );
     }
     return await queryRunner.manager.save(SampleEntity, samples, {
       chunk: 1000,
@@ -689,13 +751,16 @@ export class AddTestData201746984777855 implements MigrationInterface {
         (sample) =>
           ({
             sample,
-            reason: 'End of LP',
+            reason: 'No submission',
           }) as SampleFlagMissingWorkEntity,
       ),
     );
   }
 
   private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
+    const cheredia = await queryRunner.manager.findOne(UserEntity, {
+      where: { email: 'cheredia@eliteacademic.com' },
+    });
     const admin = await queryRunner.manager.save(UserEntity, [
       {
         email: 'admin@test.com',
@@ -706,19 +771,15 @@ export class AddTestData201746984777855 implements MigrationInterface {
         role: RolesEnum.SUPER_ADMIN,
       },
       {
-        email: 'cheredia@eliteacademic.com',
-        password: await argon2.hash('password'),
-        name: 'Catherine Heredia',
-        isActive: true,
-        emailVerified: true,
-        role: RolesEnum.SUPER_ADMIN,
-      },
-      {
         email: 'rgonzalez@eliteacademic.com',
         password: await argon2.hash('password'),
         name: 'Rachel Gonzalez',
         isActive: true,
         emailVerified: true,
+        role: RolesEnum.SUPER_ADMIN,
+      },
+      {
+        ...cheredia,
         role: RolesEnum.SUPER_ADMIN,
       },
     ]);
@@ -755,4 +816,6 @@ export class AddTestData201746984777855 implements MigrationInterface {
       assignment_periods,
     );
   }
+
+  private async deleteRedunantData(queryRunner: QueryRunner) {}
 }

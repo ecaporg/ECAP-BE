@@ -10,7 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '@/core';
-import { StudentEntity } from '@/students/entities/student.entity';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
@@ -90,8 +90,11 @@ export class TrackEntity extends GenericEntity {
     description: 'Students enrolled in this track',
     type: () => [{}],
   })
-  @OneToMany(() => StudentEntity, (student) => student.track)
-  students: StudentEntity[];
+  @OneToMany(
+    () => StudentLPEnrollmentEntity,
+    (student_lp_enrollment) => student_lp_enrollment.track,
+  )
+  studentLPEnrollments: StudentLPEnrollmentEntity[];
 
   @ApiProperty({
     description: 'Semesters in this track',

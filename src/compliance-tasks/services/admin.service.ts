@@ -20,7 +20,7 @@ export class AdminComplianceService {
   ) {}
 
   async getTeachers(filters: TeachersTableFilterDto, user: AuthUser) {
-    const semesters = filters['student.track.semesters.id'];
+    const semesters = filters['track.semesters.id'];
     const completed = filters['completed'];
 
     if (completed && completed.length > 0) {
@@ -28,7 +28,7 @@ export class AdminComplianceService {
     }
 
     if (semesters && semesters.length > 0) {
-      delete filters['student.track.semesters.id'];
+      delete filters['track.semesters.id'];
     }
 
     const paginationOptions = extractPaginationOptions(filters);
@@ -85,7 +85,7 @@ export class AdminComplianceService {
     }
 
     if (semesters && semesters.length > 0) {
-      subQuery.leftJoin('student.track', 'track');
+      subQuery.leftJoin('track', 'track');
       subQuery.leftJoin('track.semesters', 'semesters');
       subQuery.andWhere('semesters.id IN (:...ids)', {
         ids: semesters,

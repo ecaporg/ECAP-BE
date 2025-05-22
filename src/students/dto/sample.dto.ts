@@ -1,4 +1,6 @@
+import { Transform } from 'class-transformer';
 import {
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -49,6 +51,12 @@ export class CreateSampleDto implements Partial<SampleInterface> {
   @IsString()
   @IsOptional()
   grade?: string;
+
+  @ApiProperty({ description: 'Submission date' })
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  @IsOptional()
+  date?: Date;
 }
 
 export class UpdateSampleDto extends PartialType(CreateSampleDto) {}

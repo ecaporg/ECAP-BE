@@ -6,6 +6,7 @@ import { GenericEntity } from '@/core';
 import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
 import { SampleEntity } from '@/students/entities/sample.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
+import { TrackEntity } from '@/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 
 @Entity('student_lp_enrollments')
@@ -40,6 +41,18 @@ export class StudentLPEnrollmentEntity extends GenericEntity {
   @ApiProperty({ description: 'Percentage of completed samples' })
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   percentage: number;
+
+  @ApiProperty({ description: 'Track ID associated with this enrollment' })
+  @Column()
+  track_id: number;
+
+  @ApiProperty({ description: 'Track associated with this enrollment' })
+  @ManyToOne(() => TrackEntity, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'track_id' })
+  track: TrackEntity;
 
   @ApiProperty({
     description: 'Learning period associated with this enrollment',

@@ -64,9 +64,12 @@ export class SampleEntity extends GenericEntity {
   @Column()
   student_lp_enrollment_id: number;
 
-  @ApiProperty({ description: 'Subject ID associated with this sample' })
-  @Column()
-  subject_id: number;
+  @ApiProperty({
+    description: 'Subject ID associated with this sample',
+    nullable: true,
+  })
+  @Column({ nullable: true })
+  subject_id?: number;
 
   @ApiProperty({
     description: 'Sample grade (e.g. 1/5, 2/5, 3/5, 4/5, 5/5)',
@@ -74,6 +77,20 @@ export class SampleEntity extends GenericEntity {
   })
   @Column({ nullable: true })
   grade?: string;
+
+  @ApiProperty({
+    description: 'Sample submission date',
+    nullable: true,
+  })
+  @Column({ nullable: true })
+  date?: Date;
+
+  @ApiProperty({
+    description: 'Sample preview URL',
+    nullable: true,
+  })
+  @Column({ nullable: true, length: 255 })
+  preview_url?: string;
 
   @ApiProperty({
     description: 'Subject associated with this sample',

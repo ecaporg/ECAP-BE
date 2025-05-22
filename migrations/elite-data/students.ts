@@ -118,7 +118,14 @@ async function fetchAll() {
   const sis = await fetchSISS();
   const studentsWithSIS = mergeStudentsAndSIS(students, sis);
 
-  writeFileSync('students.json', JSON.stringify(studentsWithSIS, null, 2));
+  // const studentsWithSIS = JSON.parse(readFileSync('students.json', 'utf8'));
+  // const teachers = JSON.parse(readFileSync('teachers.json', 'utf8'));
+
+  const filteredStudents = studentsWithSIS.filter(
+    (student) => !teachers.some((teacher) => teacher.id === student.id),
+  );
+
+  writeFileSync('students.json', JSON.stringify(filteredStudents, null, 2));
   writeFileSync('teachers.json', JSON.stringify(teachers, null, 2));
 }
 

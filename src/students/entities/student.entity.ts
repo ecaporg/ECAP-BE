@@ -14,7 +14,6 @@ import { DatedGenericEntity } from '@/core';
 import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
-import { TrackEntity } from '@/track/entities/track.entity';
 import { UserEntity } from '@/users/entities/user.entity';
 
 // TODO: move track_id, academy_id, and school_id to student_enrollment_entity
@@ -34,13 +33,6 @@ export class StudentEntity extends DatedGenericEntity {
   })
   @Column({ nullable: true })
   academy_id: number;
-
-  @ApiProperty({
-    description: 'Track ID associated with this student',
-    nullable: true,
-  })
-  @Column({ nullable: true })
-  track_id: number;
 
   @ApiProperty({
     description: 'School associated with this student',
@@ -74,17 +66,6 @@ export class StudentEntity extends DatedGenericEntity {
   })
   @JoinColumn({ name: 'academy_id' })
   academy: AcademyEntity;
-
-  @ApiProperty({
-    description: 'Track associated with this student',
-    type: () => Object,
-  })
-  @ManyToOne(() => TrackEntity, (track) => track.students, {
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'track_id' })
-  track: TrackEntity;
 
   @ApiProperty({
     description: 'Assignment periods for this student',

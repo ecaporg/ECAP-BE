@@ -51,7 +51,7 @@ export class UserEntity extends GenericEntity {
     nullable: true,
   })
   @Column({ type: 'json', nullable: true })
-  additionalInfo?: Record<string, any>;
+  canvas_additional_info?: Record<string, any>;
 
   @ApiProperty({
     description: 'Student profiles associated with this user',

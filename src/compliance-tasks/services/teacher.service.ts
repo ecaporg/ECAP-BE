@@ -32,8 +32,8 @@ export class TeacherComplianceTaskService {
       await this.studentLPEnrollmentService.findAllWithCompletedCount(
         paginationOptions,
         {
+          track: true,
           student: {
-            track: true,
             academy: true,
             school: true,
             user: true,

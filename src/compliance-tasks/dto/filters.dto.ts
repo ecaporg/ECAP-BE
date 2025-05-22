@@ -9,7 +9,7 @@ const FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'learning_period_id',
   ACADEMY_ID: 'student.academy_id',
   SCHOOL_ID: 'teacher_school_year_enrollment.school_id',
-  TRACK_ID: 'student.track_id',
+  TRACK_ID: 'track_id',
   STUDENT_GRADE: 'student_grade',
   COMPLETED: 'completed',
   TEACHER_ID: 'teacher_school_year_enrollment.teacher_id',
@@ -17,7 +17,7 @@ const FILTER_KEYS = {
   STUDENT_ID: 'student_id',
   DONE_BY_ID: 'samples.done_by_id',
   ACADEMIC_YEAR: 'teacher_school_year_enrollment.academic_year_id',
-  SEMESTER_ID: 'student.track.semesters.id',
+  SEMESTER_ID: 'track.semesters.id',
   SAMPLE_SUBJECT: 'samples.subject',
 } satisfies RecordStringAndDotNotation<StudentLPEnrollmentEntity>;
 
