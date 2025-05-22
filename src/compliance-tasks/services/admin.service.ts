@@ -22,6 +22,7 @@ export class AdminComplianceService {
   async getTeachers(filters: TeachersTableFilterDto, user: AuthUser) {
     const semesters = filters['track.semesters.id'];
     const completed = filters['completed'];
+    const subject = filters['samples.subject.id'];
 
     if (completed && completed.length > 0) {
       delete filters['completed'];
@@ -29,6 +30,10 @@ export class AdminComplianceService {
 
     if (semesters && semesters.length > 0) {
       delete filters['track.semesters.id'];
+    }
+
+    if (subject && subject.length > 0) {
+      delete filters['samples.subject.id'];
     }
 
     const paginationOptions = extractPaginationOptions(filters);
@@ -89,6 +94,13 @@ export class AdminComplianceService {
       subQuery.leftJoin('track.semesters', 'semesters');
       subQuery.andWhere('semesters.id IN (:...ids)', {
         ids: semesters,
+      });
+    }
+
+    if (subject && subject.length > 0) {
+      subQuery.leftJoin('samples.subject', 'subject');
+      subQuery.andWhere('subject.id IN (:...ids)', {
+        ids: subject.map((id) => id.split('-')).flat(),
       });
     }
 

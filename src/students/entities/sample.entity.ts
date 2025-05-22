@@ -29,6 +29,33 @@ export enum SampleFlagCategory {
   ERROR_IN_SAMPLE = 'ERROR_IN_SAMPLE',
 }
 
+/**
+ * Describes the common possible states of a sample and the transition flows between them.
+ *
+ * Possible state transition flows:
+ * 1. PENDING -> COMPLETED
+ *    - A sample is pending review and then marked as completed.
+ * 2. ERRORS_FOUND -> PENDING -> COMPLETED
+ *    - A sample has errors, and it's fixed by the teacher and marked as completed.
+ * 3. ERRORS_FOUND -> PENDING -> FLAGGED_TO_ADMIN (assign category: ERROR_IN_SAMPLE)
+ *    - A sample has errors, and it's flagged to an admin by the teacher.
+ * 4. PENDING -> FLAGGED_TO_ADMIN (assign category: ERROR_IN_SAMPLE)
+ *    - A sample is pending review, an error is found, and it's flagged to an admin.
+ * 5. PENDING -> FLAGGED_TO_ADMIN (assign category: ERROR_IN_SAMPLE) -> COMPLETED
+ *    - A sample is pending review, an error is found, it's flagged to an admin,
+ *      the issue is resolved, and then the sample is marked as completed.
+ * 6. MISSING_SAMPLE -> FLAGGED_TO_ADMIN (assign category: MISSING_SAMPLE)
+ *    - A sample is missing, and it's flagged to an admin by the teacher.
+ * 7. MISSING_SAMPLE -> FLAGGED_TO_ADMIN (assign category: MISSING_SAMPLE) -> COMPLETED
+ *    - A sample is missing, it's flagged to an admin, the issue is resolved,
+ *      and then the sample is marked as completed.
+ * 8. MISSING_SAMPLE -> FLAGGED_TO_ADMIN (assign category: MISSING_SAMPLE) -> REASON_REJECTED (assign category: REASON_REJECTED)
+ *    - A sample is rejected by the admin.
+ *
+ * Other statuses like MISSING_SAMPLE or REASON_REJECTED might be initial states
+ * or terminal states depending on the specific business logic.
+ */
+
 @Entity({ name: 'samples' })
 export class SampleEntity extends GenericEntity {
   @ApiProperty({ description: 'Assignment title', maxLength: 250 })

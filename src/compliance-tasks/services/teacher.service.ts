@@ -119,13 +119,11 @@ export class TeacherComplianceTaskService {
           id: In(academicYears.map((academicYear) => academicYear.id)),
         },
         start_date: LessThanOrEqual(new Date()),
-        learningPeriods: {
-          student_lp_enrollments: {
-            teacher_school_year_enrollment: {
-              teacher: { user: { id: user.id } },
-            },
-          },
-        },
+        // studentLPEnrollments: {
+        //   teacher_school_year_enrollment: {
+        //     teacher: { user: { id: user.id } },
+        //   },
+        // },
       };
     } else if (
       user.role === RolesEnum.ADMIN ||

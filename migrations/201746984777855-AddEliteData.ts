@@ -66,6 +66,9 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     // Create students
     const students = await this.createStudents(queryRunner, schools, academies);
 
+    const global_subjects = [] as SubjectEntity[];
+    const global_student_lp_enrollments = [] as StudentLPEnrollmentEntity[];
+    const global_samples = [] as SampleEntity[];
     for (const academicYear of academicYears) {
       // Create tracks
       const tracks = await this.createTracks(queryRunner, academicYear, tenant);
@@ -100,13 +103,28 @@ export class AddEliteData201746984777855 implements MigrationInterface {
         // Create sample flags
         // await this.createSampleFlags(
         // queryRunner,
-        await this.createSamples(queryRunner, studentLPEnrollments, subjects);
+        const samples = await this.createSamples(
+          queryRunner,
+          studentLPEnrollments,
+          subjects,
+        );
         // );
+
+        global_subjects.push(...subjects);
+        global_student_lp_enrollments.push(...studentLPEnrollments);
+        global_samples.push(...samples);
       }
     }
 
     // Create admin user
     await this.createAdmin(queryRunner, tenant);
+    await this.deleteRedunantData(
+      queryRunner,
+      global_samples,
+      global_subjects,
+      global_student_lp_enrollments,
+      enrollments,
+    );
 
     // await this.recalculateAssignmentPeriods(queryRunner);
   }
@@ -196,33 +214,32 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     academies: AcademyEntity[],
     tenant: TenantEntity,
   ): Promise<DirectorEntity[]> {
-    // const director_users = await queryRunner.manager.save(
-    //   UserEntity,
-    //   academies.map(
-    //     (academy, idx) =>
-    //       ({
-    //         email: `director${idx}@test.com`,
-    //         password: this.password,
-    //         name: 'Director',
-    //         isActive: true,
-    //         emailVerified: true,
-    //         role: RolesEnum.DIRECTOR,
-    //       }) as UserEntity,
-    //   ),
-    // );
-    // const directors = await queryRunner.manager.save(
-    //   DirectorEntity,
-    //   academies.map(
-    //     (academy, idx) =>
-    //       ({
-    //         user: director_users[idx],
-    //         academy,
-    //         tenant,
-    //       }) as DirectorEntity,
-    //   ),
-    // );
-    // return directors;
-    return [];
+    const director_users = await queryRunner.manager.save(
+      UserEntity,
+      academies.map(
+        (academy, idx) =>
+          ({
+            email: `director${idx}@test.com`,
+            password: this.password,
+            name: 'Director',
+            isActive: true,
+            emailVerified: true,
+            role: RolesEnum.DIRECTOR,
+          }) as UserEntity,
+      ),
+    );
+    const directors = await queryRunner.manager.save(
+      DirectorEntity,
+      academies.map(
+        (academy, idx) =>
+          ({
+            user: director_users[idx],
+            academy,
+            tenant,
+          }) as DirectorEntity,
+      ),
+    );
+    return directors;
   }
 
   private createAcademicYears(
@@ -382,7 +399,10 @@ export class AddEliteData201746984777855 implements MigrationInterface {
           assignments.some((assignment) => assignment.course_id == course.id),
       )
       .map((course) => ({
-        name: course.name,
+        name: course.name
+          .replaceAll(/\b\d{0,2}[ABKX]\b/g, '')
+          .replaceAll('Flex', '')
+          .trim(),
         track,
         canvas_course_id: course.id,
         canvas_additional_info: {
@@ -651,24 +671,24 @@ export class AddEliteData201746984777855 implements MigrationInterface {
       ) as Submission[][]
     ).flatMap((e) => e);
 
-    const assignmentsMap = new Map<string, Assignment>(
+    const assignmentsMap = new Map<number, Assignment>(
       JSON.parse(
         readFileSync('migrations/elite-data/assignments-filtered.json', 'utf8'),
-      ).map((assignment: Assignment) => [assignment.id.toString(), assignment]),
+      ).map((assignment: Assignment) => [assignment.id, assignment]),
     );
 
-    const coursesMap = new Map<string, Course>(
+    const coursesMap = new Map<number, Course>(
       JSON.parse(
         readFileSync('migrations/elite-data/courses.json', 'utf8'),
-      ).map((course: Course) => [course.id.toString(), course]),
+      ).map((course: Course) => [Number(course.id), course]),
     );
 
-    const subjectMap = new Map<string, SubjectEntity>(
-      subjects.map((s) => [s.canvas_course_id, s]),
+    const subjectMap = new Map<number, SubjectEntity>(
+      subjects.map((s) => [Number(s.canvas_course_id), s]),
     );
 
     for (const studentLPEnrollment of studentLPEnrollments) {
-      const assignmentPerLPMap = new Map<string, Assignment>(
+      const assignmentPerLPMap = new Map<number, Assignment>(
         Array.from(assignmentsMap.values())
           .filter((a) => {
             const due_at = new Date(a.due_at);
@@ -678,50 +698,44 @@ export class AddEliteData201746984777855 implements MigrationInterface {
               due_at <= new Date(studentLPEnrollment.learning_period.end_date)
             );
           })
-          .map((a) => [a.id.toString(), a]),
+          .map((a) => [Number(a.id), a]),
       );
 
       const studentSubmitions = submissions.filter(
         (s) =>
-          s.user_id ==
+          s.user_id.toString() ==
             studentLPEnrollment.student.user.canvas_additional_info.canvas_id &&
-          assignmentPerLPMap.has(s.assignment_id),
+          assignmentPerLPMap.has(Number(s.assignment_id)),
       );
 
       samples.push(
         ...(studentSubmitions.map((s) => {
-          const assignment = assignmentPerLPMap.get(s.assignment_id);
-          const course = coursesMap.get(assignment.course_id);
-          const subject = subjectMap.get(course.id);
+          const assignment = assignmentPerLPMap.get(Number(s.assignment_id));
+          const course = coursesMap.get(Number(assignment.course_id));
+          const subject = subjectMap.get(Number(course.id));
 
           const status = !s.submitted_at
             ? SampleStatus.MISSING_SAMPLE
-            : !s.grade
+            : !s.grade || !assignment?.name
               ? SampleStatus.ERRORS_FOUND
               : SampleStatus.PENDING;
 
-          const flag_category = !s.submitted_at
-            ? SampleFlagCategory.MISSING_SAMPLE
-            : !s.grade
-              ? SampleFlagCategory.ERROR_IN_SAMPLE
-              : null;
-
           return {
-            assignment_title: assignmentPerLPMap.get(s.assignment_id)?.name,
+            assignment_title: assignment?.name,
             grade: s.grade,
             date: s.submitted_at ? new Date(s.submitted_at) : undefined,
             status,
             student_lp_enrollment_id: studentLPEnrollment.id,
             subject,
-            flag_category,
             preview_url: s.preview_url,
           } as SampleEntity;
         }) as SampleEntity[]),
       );
     }
-    return await queryRunner.manager.save(SampleEntity, samples, {
+    const res = await queryRunner.manager.save(SampleEntity, samples, {
       chunk: 1000,
     });
+    return res.length ? res : samples;
   }
 
   private async createSampleFlags(
@@ -744,6 +758,9 @@ export class AddEliteData201746984777855 implements MigrationInterface {
             comment: 'Grade is missing',
           }) as SampleFlagErrorEntity,
       ),
+      {
+        chunk: 1000,
+      },
     );
     await queryRunner.manager.save(
       SampleFlagMissingWorkEntity,
@@ -754,6 +771,9 @@ export class AddEliteData201746984777855 implements MigrationInterface {
             reason: 'No submission',
           }) as SampleFlagMissingWorkEntity,
       ),
+      {
+        chunk: 1000,
+      },
     );
   }
 
@@ -776,11 +796,11 @@ export class AddEliteData201746984777855 implements MigrationInterface {
         name: 'Rachel Gonzalez',
         isActive: true,
         emailVerified: true,
-        role: RolesEnum.SUPER_ADMIN,
+        role: RolesEnum.ADMIN,
       },
       {
         ...cheredia,
-        role: RolesEnum.SUPER_ADMIN,
+        role: RolesEnum.ADMIN,
       },
     ]);
 
@@ -817,5 +837,59 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     );
   }
 
-  private async deleteRedunantData(queryRunner: QueryRunner) {}
+  private async deleteRedunantData(
+    queryRunner: QueryRunner,
+    samples: SampleEntity[],
+    subjects: SubjectEntity[],
+    student_lp_enrollments: StudentLPEnrollmentEntity[],
+    teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[],
+  ) {
+    const subjectIds = new Set(samples.map((s) => s.subject_id));
+    const subjectsToDelete = subjects.filter((s) => !subjectIds.has(s.id));
+    if (subjectsToDelete.length === subjectIds.size) {
+      console.log('No subjects to delete');
+    } else {
+      await queryRunner.manager.delete(SubjectEntity, subjectsToDelete);
+    }
+
+    const studentLPEnrollmentIds = new Set(
+      samples.map(
+        (s) => s.student_lp_enrollment.teacher_school_year_enrollment_id,
+      ),
+    );
+    const teacherSchoolYearEnrollmentsToDelete =
+      teacher_school_year_enrollments.filter(
+        (s) => !studentLPEnrollmentIds.has(s.id),
+      );
+
+    if (
+      teacherSchoolYearEnrollmentsToDelete.length ===
+      studentLPEnrollmentIds.size
+    ) {
+      console.log('No teacher school year enrollments to delete');
+    } else {
+      await queryRunner.manager.delete(
+        TeacherSchoolYearEnrollmentEntity,
+        teacherSchoolYearEnrollmentsToDelete,
+      );
+    }
+
+    const sampel_studentLPEnrollmentIds = new Set(
+      samples.map((s) => s.student_lp_enrollment_id),
+    );
+    const studentLPEnrollmentToDelete = student_lp_enrollments.filter(
+      (s) => !sampel_studentLPEnrollmentIds.has(s.id),
+    );
+
+    if (
+      studentLPEnrollmentToDelete.length === sampel_studentLPEnrollmentIds.size
+    ) {
+      console.log('No student LP enrollments to delete');
+    } else {
+      await queryRunner.manager.delete(
+        StudentLPEnrollmentEntity,
+        studentLPEnrollmentToDelete,
+      );
+    }
+  }
 }

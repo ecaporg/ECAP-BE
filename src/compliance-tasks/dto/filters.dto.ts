@@ -18,7 +18,7 @@ const FILTER_KEYS = {
   DONE_BY_ID: 'samples.done_by_id',
   ACADEMIC_YEAR: 'teacher_school_year_enrollment.academic_year_id',
   SEMESTER_ID: 'track.semesters.id',
-  SAMPLE_SUBJECT: 'samples.subject',
+  SAMPLE_SUBJECT: 'samples.subject.id',
 } satisfies RecordStringAndDotNotation<StudentLPEnrollmentEntity>;
 
 export class StudentsTableFilterDto extends BaseFilterDto {

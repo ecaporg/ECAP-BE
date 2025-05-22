@@ -16,7 +16,6 @@ export class TenantService extends BaseService<TenantEntity> {
     super(tenantRepository, {
       defaultRelations: {
         academies: true,
-        admins: true,
         tracks: {
           academicYear: true,
           semesters: true,
