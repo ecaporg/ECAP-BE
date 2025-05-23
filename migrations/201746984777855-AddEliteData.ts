@@ -25,7 +25,6 @@ import { AcademyEntity } from '../src/school/entities/academy.entity';
 import { SchoolEntity } from '../src/school/entities/school.entity';
 import {
   SampleEntity,
-  SampleFlagCategory,
   SampleStatus,
 } from '../src/students/entities/sample.entity';
 import { StudentEntity } from '../src/students/entities/student.entity';
@@ -66,9 +65,6 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     // Create students
     const students = await this.createStudents(queryRunner, schools, academies);
 
-    const global_subjects = [] as SubjectEntity[];
-    const global_student_lp_enrollments = [] as StudentLPEnrollmentEntity[];
-    const global_samples = [] as SampleEntity[];
     for (const academicYear of academicYears) {
       // Create tracks
       const tracks = await this.createTracks(queryRunner, academicYear, tenant);
@@ -110,21 +106,12 @@ export class AddEliteData201746984777855 implements MigrationInterface {
         );
         // );
 
-        global_subjects.push(...subjects);
-        global_student_lp_enrollments.push(...studentLPEnrollments);
-        global_samples.push(...samples);
+        await this.deleteRedunantData(queryRunner, samples, subjects, track);
       }
     }
 
     // Create admin user
     await this.createAdmin(queryRunner, tenant);
-    await this.deleteRedunantData(
-      queryRunner,
-      global_samples,
-      global_subjects,
-      global_student_lp_enrollments,
-      enrollments,
-    );
 
     // await this.recalculateAssignmentPeriods(queryRunner);
   }
@@ -674,7 +661,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     const assignmentsMap = new Map<number, Assignment>(
       JSON.parse(
         readFileSync('migrations/elite-data/assignments-filtered.json', 'utf8'),
-      ).map((assignment: Assignment) => [assignment.id, assignment]),
+      ).map((assignment: Assignment) => [Number(assignment.id), assignment]),
     );
 
     const coursesMap = new Map<number, Course>(
@@ -687,54 +674,97 @@ export class AddEliteData201746984777855 implements MigrationInterface {
       subjects.map((s) => [Number(s.canvas_course_id), s]),
     );
 
-    for (const studentLPEnrollment of studentLPEnrollments) {
-      const assignmentPerLPMap = new Map<number, Assignment>(
-        Array.from(assignmentsMap.values())
-          .filter((a) => {
-            const due_at = new Date(a.due_at);
-            return (
-              due_at >=
-                new Date(studentLPEnrollment.learning_period.start_date) &&
-              due_at <= new Date(studentLPEnrollment.learning_period.end_date)
-            );
-          })
-          .map((a) => [Number(a.id), a]),
-      );
-
-      const studentSubmitions = submissions.filter(
+    const studentSubmitions = submissions.filter((submission) =>
+      studentLPEnrollments.some(
         (s) =>
-          s.user_id.toString() ==
-            studentLPEnrollment.student.user.canvas_additional_info.canvas_id &&
-          assignmentPerLPMap.has(Number(s.assignment_id)),
-      );
+          s.student.user.canvas_additional_info.canvas_id ==
+          submission.user_id.toString(),
+      ),
+    );
 
-      samples.push(
-        ...(studentSubmitions.map((s) => {
-          const assignment = assignmentPerLPMap.get(Number(s.assignment_id));
-          const course = coursesMap.get(Number(assignment.course_id));
-          const subject = subjectMap.get(Number(course.id));
+    samples.push(
+      ...(studentSubmitions.map((s) => {
+        const assignment = assignmentsMap.get(Number(s.assignment_id));
+        const due_at = new Date(assignment.due_at);
 
-          const status = !s.submitted_at
-            ? SampleStatus.MISSING_SAMPLE
-            : !s.grade || !assignment?.name
-              ? SampleStatus.ERRORS_FOUND
-              : SampleStatus.PENDING;
+        const course = coursesMap.get(Number(assignment.course_id));
+        const subject = subjectMap.get(Number(course.id));
 
-          return {
-            assignment_title: assignment?.name,
-            grade: s.grade,
-            date: s.submitted_at ? new Date(s.submitted_at) : undefined,
-            status,
-            student_lp_enrollment_id: studentLPEnrollment.id,
-            subject,
-            preview_url: s.preview_url,
-          } as SampleEntity;
-        }) as SampleEntity[]),
-      );
-    }
+        const enrollments = studentLPEnrollments.filter(
+          (se) =>
+            se.student.user.canvas_additional_info.canvas_id ==
+              s.user_id.toString() &&
+            due_at >= new Date(se.learning_period.start_date) &&
+            due_at <= new Date(se.learning_period.end_date),
+        );
+
+        const status = !s.submitted_at
+          ? SampleStatus.MISSING_SAMPLE
+          : !s.grade || !assignment?.name
+            ? SampleStatus.ERRORS_FOUND
+            : SampleStatus.PENDING;
+
+        return {
+          assignment_title: assignment?.name,
+          grade: s.grade,
+          date: s.submitted_at ? new Date(s.submitted_at) : undefined,
+          status,
+          subject,
+          preview_url: s.preview_url,
+          student_lp_enrollments: enrollments,
+        } as SampleEntity;
+      }) as SampleEntity[]),
+    );
     const res = await queryRunner.manager.save(SampleEntity, samples, {
-      chunk: 1000,
+      chunk: 500,
     });
+
+    // for (const studentLPEnrollment of studentLPEnrollments) {
+    //   const assignmentPerLPMap = new Map<number, Assignment>(
+    //     Array.from(assignmentsMap.values())
+    //       .filter((a) => {
+    //         const due_at = new Date(a.due_at);
+    //         return (
+    //           due_at >=
+    //             new Date(studentLPEnrollment.learning_period.start_date) &&
+    //           due_at <= new Date(studentLPEnrollment.learning_period.end_date)
+    //         );
+    //       })
+    //       .map((a) => [Number(a.id), a]),
+    //   );
+
+    //   const studentSubmitions = submissions.filter(
+    //     (s) =>
+    //       s.user_id.toString() ==
+    //         studentLPEnrollment.student.user.canvas_additional_info.canvas_id &&
+    //       assignmentPerLPMap.has(Number(s.assignment_id)),
+    //   );
+
+    //   samples.push(
+    //     ...(studentSubmitions.map((s) => {
+    //       const assignment = assignmentPerLPMap.get(Number(s.assignment_id));
+    //       const course = coursesMap.get(Number(assignment.course_id));
+    //       const subject = subjectMap.get(Number(course.id));
+
+    //       const status = !s.submitted_at
+    //         ? SampleStatus.MISSING_SAMPLE
+    //         : !s.grade || !assignment?.name
+    //           ? SampleStatus.ERRORS_FOUND
+    //           : SampleStatus.PENDING;
+
+    //       return {
+    //         assignment_title: assignment?.name,
+    //         grade: s.grade,
+    //         date: s.submitted_at ? new Date(s.submitted_at) : undefined,
+    //         status,
+    //         student_lp_enrollment: studentLPEnrollment,
+    //         subject,
+    //         preview_url: s.preview_url,
+    //       } as SampleEntity;
+    //     }) as SampleEntity[]),
+    //   );
+    // }
+
     return res.length ? res : samples;
   }
 
@@ -841,54 +871,31 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     queryRunner: QueryRunner,
     samples: SampleEntity[],
     subjects: SubjectEntity[],
-    student_lp_enrollments: StudentLPEnrollmentEntity[],
-    teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[],
+    track: TrackEntity,
   ) {
     const subjectIds = new Set(samples.map((s) => s.subject_id));
-    const subjectsToDelete = subjects.filter((s) => !subjectIds.has(s.id));
+    const subjectsToDelete = subjects.filter(
+      (s) => !subjectIds.has(s.id) && s.track_id == track.id,
+    );
     if (subjectsToDelete.length === subjectIds.size) {
       console.log('No subjects to delete');
     } else {
       await queryRunner.manager.delete(SubjectEntity, subjectsToDelete);
     }
 
-    const studentLPEnrollmentIds = new Set(
-      samples.map(
-        (s) => s.student_lp_enrollment.teacher_school_year_enrollment_id,
-      ),
-    );
-    const teacherSchoolYearEnrollmentsToDelete =
-      teacher_school_year_enrollments.filter(
-        (s) => !studentLPEnrollmentIds.has(s.id),
-      );
+    const emptyStudentLPEnrollments = await queryRunner.manager
+      .getRepository(StudentLPEnrollmentEntity)
+      .createQueryBuilder('studentLPEnrollment')
+      .leftJoin('studentLPEnrollment.samples', 'sample')
+      .where('sample.id IS NULL')
+      .getMany();
 
-    if (
-      teacherSchoolYearEnrollmentsToDelete.length ===
-      studentLPEnrollmentIds.size
-    ) {
-      console.log('No teacher school year enrollments to delete');
-    } else {
-      await queryRunner.manager.delete(
-        TeacherSchoolYearEnrollmentEntity,
-        teacherSchoolYearEnrollmentsToDelete,
-      );
-    }
-
-    const sampel_studentLPEnrollmentIds = new Set(
-      samples.map((s) => s.student_lp_enrollment_id),
-    );
-    const studentLPEnrollmentToDelete = student_lp_enrollments.filter(
-      (s) => !sampel_studentLPEnrollmentIds.has(s.id),
-    );
-
-    if (
-      studentLPEnrollmentToDelete.length === sampel_studentLPEnrollmentIds.size
-    ) {
-      console.log('No student LP enrollments to delete');
+    if (emptyStudentLPEnrollments.length === 0) {
+      console.log('No empty student LP enrollments to delete');
     } else {
       await queryRunner.manager.delete(
         StudentLPEnrollmentEntity,
-        studentLPEnrollmentToDelete,
+        emptyStudentLPEnrollments,
       );
     }
   }

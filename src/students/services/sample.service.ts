@@ -38,7 +38,7 @@ export class SampleService extends BaseService<SampleEntity> {
   ) {
     super(sampleRepository, {
       defaultRelations: {
-        student_lp_enrollment: {
+        student_lp_enrollments: {
           learning_period: {
             track: true,
           },

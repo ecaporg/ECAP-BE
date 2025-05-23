@@ -52,7 +52,7 @@ export class TeacherComplianceTaskService {
           subject: true,
           done_by: true,
           flag_missing_work: true,
-          student_lp_enrollment: {
+          student_lp_enrollments: {
             student: {
               user: true,
             },
@@ -80,7 +80,11 @@ export class TeacherComplianceTaskService {
         },
         student_lp_enrollments: {
           teacher_school_year_enrollment: {
-            teacher: { user },
+            teacher: {
+              user: {
+                id: user.id,
+              },
+            },
           },
         },
       })),

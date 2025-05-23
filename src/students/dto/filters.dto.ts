@@ -7,11 +7,11 @@ import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
 import { SampleEntity, SampleFlagCategory } from '../entities/sample.entity';
 
 const FILTER_KEYS = {
-  LEARNING_PERIOD_ID: 'student_lp_enrollment.learning_period_id',
-  TEACHER_ID: 'student_lp_enrollment.teacher_school_year_enrollment.teacher_id',
-  ACADEMY_ID: 'student_lp_enrollment.student.academy_id',
+  LEARNING_PERIOD_ID: 'student_lp_enrollments.learning_period_id',
+  TEACHER_ID: 'student_lp_enrollments.teacher_school_year_enrollment.teacher_id',
+  ACADEMY_ID: 'student_lp_enrollments.student.academy_id',
   ACADEMIC_YEAR:
-    'student_lp_enrollment.teacher_school_year_enrollment.academic_year_id',
+    'student_lp_enrollments.teacher_school_year_enrollment.academic_year_id',
   STATUS: 'status',
   FLAG_CATEGORY: 'flag_category',
 } satisfies RecordStringAndDotNotation<SampleEntity>;

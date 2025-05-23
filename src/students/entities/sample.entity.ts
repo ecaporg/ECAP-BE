@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -15,6 +22,7 @@ import {
 } from './sample-flag.entity';
 
 export enum SampleStatus {
+  CREATED = 'CREATED', // when a sample is created, and doesn't have any status yet, DB only value
   COMPLETED = 'COMPLETED',
   FLAGGED_TO_ADMIN = 'FLAGGED_TO_ADMIN',
   PENDING = 'PENDING',
@@ -86,12 +94,6 @@ export class SampleEntity extends GenericEntity {
   done_by_id: number;
 
   @ApiProperty({
-    description: 'Student LP enrollment ID associated with this sample',
-  })
-  @Column()
-  student_lp_enrollment_id: number;
-
-  @ApiProperty({
     description: 'Subject ID associated with this sample',
     nullable: true,
   })
@@ -128,10 +130,10 @@ export class SampleEntity extends GenericEntity {
   subject: SubjectEntity;
 
   @ApiProperty({
-    description: 'Student LP enrollment associated with this sample',
-    type: () => Object,
+    description: 'Student LP enrollments associated with this sample',
+    type: () => [Object],
   })
-  @ManyToOne(
+  @ManyToMany(
     () => StudentLPEnrollmentEntity,
     (student_lp_enrollment) => student_lp_enrollment.samples,
     {
@@ -139,8 +141,7 @@ export class SampleEntity extends GenericEntity {
       onUpdate: 'CASCADE',
     },
   )
-  @JoinColumn({ name: 'student_lp_enrollment_id' })
-  student_lp_enrollment: StudentLPEnrollmentEntity;
+  student_lp_enrollments: StudentLPEnrollmentEntity[];
 
   @ApiProperty({
     description: 'User who set completed status of this sample',

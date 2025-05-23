@@ -100,7 +100,7 @@ export class AdminComplianceService {
     if (subject && subject.length > 0) {
       subQuery.leftJoin('samples.subject', 'subject');
       subQuery.andWhere('subject.id IN (:...ids)', {
-        ids: subject.map((id) => id.split('-')).flat(),
+        ids: subject,
       });
     }
 
@@ -152,14 +152,15 @@ export class AdminComplianceService {
   }
 
   async searchTeachers(user: AuthUser, search: string) {
-    const whereInSchool =
-      user.role === RolesEnum.DIRECTOR
-        ? { tenant: { directors: { user } } }
-        : {
-            tenant: {
-              admins: { user },
-            },
-          };
+    const whereInSchool = {
+      tenant: {
+        [user.role === RolesEnum.DIRECTOR ? 'directors' : 'admins']: {
+          user: {
+            id: user.id,
+          },
+        },
+      },
+    };
 
     const teachers = await this.teacherService.findBy({
       where: this.teacherComplianceTaskService

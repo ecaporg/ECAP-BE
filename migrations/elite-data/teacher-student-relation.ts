@@ -29,8 +29,10 @@ console.log(coursesMap.size, assignmentsMap.size, submissions.length);
 const teacherStudentMap = new Map<string, Set<string>>();
 
 for (const submission of submissions) {
-  const assignment = assignmentsMap.get(submission[0]?.assignment_id);
-  const course = coursesMap.get(assignment?.course_id?.toString?.());
+  const assignment = assignmentsMap.get(
+    submission[0]?.assignment_id?.toString(),
+  );
+  const course = coursesMap.get(assignment?.course_id?.toString());
   const teachers = course?.teachers.map((teacher) => teacher.id);
 
   if (!teachers) {
@@ -38,11 +40,11 @@ for (const submission of submissions) {
   }
 
   for (const student of submission.map((s) => s.user_id).filter(Boolean)) {
-    if (!teacherStudentMap.has(student)) {
-      teacherStudentMap.set(student, new Set());
+    if (!teacherStudentMap.has(student.toString())) {
+      teacherStudentMap.set(student.toString(), new Set());
     }
     for (const teacher of teachers) {
-      teacherStudentMap.get(student)?.add(teacher);
+      teacherStudentMap.get(student.toString())?.add(teacher.toString());
     }
   }
 }

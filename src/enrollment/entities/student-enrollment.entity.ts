@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -92,6 +100,7 @@ export class StudentLPEnrollmentEntity extends GenericEntity {
     description: 'Samples associated with this period',
     type: () => [{}],
   })
-  @OneToMany(() => SampleEntity, (sample) => sample.student_lp_enrollment)
+  @ManyToMany(() => SampleEntity, (sample) => sample.student_lp_enrollments)
+  @JoinTable()
   samples: SampleEntity[];
 }
