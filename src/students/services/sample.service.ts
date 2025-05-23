@@ -68,7 +68,6 @@ export class SampleService extends BaseService<SampleEntity> {
     await this.update(id, {
       status: SampleStatus.FLAGGED_TO_ADMIN,
       flag_category: SampleFlagCategory.ERROR_IN_SAMPLE,
-      done_by_id: user_id,
     });
     return this.sampleFlagErrorService.create({
       ...createDto,

@@ -51,7 +51,15 @@ export class TeacherComplianceTaskService {
         samples: {
           subject: true,
           done_by: true,
-          flag_missing_work: true,
+          flag_missing_work: {
+            user: true,
+          },
+          flag_errors: {
+            user: true,
+          },
+          flag_rejected: {
+            user: true,
+          },
           student_lp_enrollments: {
             student: {
               user: true,

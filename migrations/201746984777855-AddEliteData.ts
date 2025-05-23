@@ -674,12 +674,14 @@ export class AddEliteData201746984777855 implements MigrationInterface {
       subjects.map((s) => [Number(s.canvas_course_id), s]),
     );
 
-    const studentSubmitions = submissions.filter((submission) =>
-      studentLPEnrollments.some(
-        (s) =>
-          s.student.user.canvas_additional_info.canvas_id ==
-          submission.user_id.toString(),
-      ),
+    const studentSubmitions = submissions.filter(
+      (submission) =>
+        !submission.excused &&
+        studentLPEnrollments.some(
+          (s) =>
+            s.student.user.canvas_additional_info.canvas_id ==
+            submission.user_id.toString(),
+        ),
     );
 
     samples.push(
@@ -698,7 +700,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
             due_at <= new Date(se.learning_period.end_date),
         );
 
-        const status = !s.submitted_at
+        const status = s.missing
           ? SampleStatus.MISSING_SAMPLE
           : !s.grade || !assignment?.name
             ? SampleStatus.ERRORS_FOUND

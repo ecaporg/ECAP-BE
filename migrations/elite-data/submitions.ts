@@ -63,7 +63,7 @@ function getTwoAssigmentPerPeriod() {
       !assignment.due_at ||
       assignment.anonymize_students ||
       assignment.anonymous_submissions ||
-      !assignment.published
+      !assignment.published 
     ) {
       continue;
     }
