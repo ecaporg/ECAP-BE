@@ -2,10 +2,11 @@
 export * from './core.module';
 
 // Base entities
-export * from './generic-entity';
+export * from './entity/generic-entity';
 
 // Base service
 export * from './services/base.service';
+export * from './services/http.service';
 
 // Filters
 export * from './filters/http-exception.filter';
@@ -29,6 +30,7 @@ export * from './decorators/api.decorators';
 export * from './decorators/current-user.decorator';
 export * from './decorators/roles.decorator';
 export * from './decorators/filter-dto.decorators';
+export * from './decorators/extract-base-url.decorator';
 
 // Guards
 export * from './guards/role.guard';

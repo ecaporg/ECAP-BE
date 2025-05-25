@@ -4,13 +4,16 @@ import { DatedGenericEntity } from '@/core';
 
 import { TenantEntity } from './tenant.entity';
 
-@Entity({ name: 'developer_keys' })
+@Entity({ name: 'keys' })
 export class KeyEntity extends DatedGenericEntity {
-  @Column({ length: 255 })
-  key: string;
-
   @PrimaryColumn()
   id: number;
+
+  @Column({ length: 512, nullable: true, default: null })
+  access_token: string;
+
+  @Column({ length: 512, default: null })
+  url: string;
 
   @OneToOne(() => TenantEntity, {
     onDelete: 'CASCADE',

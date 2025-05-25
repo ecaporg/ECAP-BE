@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -7,6 +7,8 @@ import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { AdminEntity, DirectorEntity } from '@/staff/entities/staff.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
+
+import { KeyEntity } from './key.entity';
 
 @Entity({ name: 'tenants' })
 export class TenantEntity extends GenericEntity {
@@ -48,4 +50,11 @@ export class TenantEntity extends GenericEntity {
   })
   @OneToMany(() => DirectorEntity, (director) => director.tenant)
   directors: DirectorEntity[];
+
+  @ApiProperty({
+    description: 'Keys associated with this tenant',
+    type: () => [{}],
+  })
+  @OneToOne(() => KeyEntity, (key) => key.tenant)
+  key: KeyEntity;
 }

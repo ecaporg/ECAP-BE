@@ -16,6 +16,7 @@ import {
 } from '@/staff/entities/staff.entity';
 import { SampleFlagMissingWorkEntity } from '@/students/entities/sample-flag.entity';
 import { SampleFlagErrorEntity } from '@/students/entities/sample-flag.entity';
+import { KeyEntity } from '@/tenant/entities/key.entity';
 import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
 import { SemesterEntity } from '@/track/entities/semester.entity';
 import { TrackCalendarEntity } from '@/track/entities/track-calendar.entity';
@@ -169,10 +170,16 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     );
   }
 
-  private createTenant(queryRunner: QueryRunner): Promise<TenantEntity> {
-    return queryRunner.manager.save(TenantEntity, {
+  private async createTenant(queryRunner: QueryRunner): Promise<TenantEntity> {
+    const tenant = await queryRunner.manager.save(TenantEntity, {
       name: 'Elite',
     });
+    await queryRunner.manager.save(KeyEntity, {
+      access_token: process.env.ELITE_KEY,
+      url: 'https://eliteaa.instructure.com',
+      tenant,
+    });
+    return tenant;
   }
 
   private createSchool(

@@ -8,7 +8,7 @@ import {
 
 import { NotFoundException } from '@/core';
 
-import { DatedGenericEntity } from '../generic-entity';
+import { DatedGenericEntity } from '../entity/generic-entity';
 import {
   createOrderCondition,
   createSearchCondition,

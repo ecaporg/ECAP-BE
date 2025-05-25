@@ -13,8 +13,6 @@ export class KeyService extends BaseService<KeyEntity> {
     @InjectRepository(KeyEntity)
     private keyRepository: Repository<KeyEntity>,
   ) {
-    super(keyRepository, {
-      defaultRelations: ['tenant'],
-    });
+    super(keyRepository);
   }
 }

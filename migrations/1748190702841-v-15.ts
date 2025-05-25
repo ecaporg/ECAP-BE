@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class V151748004747933 implements MigrationInterface {
-  name = 'V151748004747933';
+export class V151748190702841 implements MigrationInterface {
+  name = 'V151748190702841';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -12,6 +12,9 @@ export class V151748004747933 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE TABLE "schools" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "name" character varying(250) NOT NULL, "tenant_id" integer NOT NULL, CONSTRAINT "PK_95b932e47ac129dd8e23a0db548" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "keys" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "access_token" character varying(512), "url" character varying(512), CONSTRAINT "PK_e63d5d51e0192635ab79aa49644" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "tenants" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "name" character varying(250), CONSTRAINT "PK_53be67a04681c66b87ee27c9321" PRIMARY KEY ("id"))`,
@@ -77,9 +80,6 @@ export class V151748004747933 implements MigrationInterface {
       `CREATE TABLE "users" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "email" character varying NOT NULL, "name" character varying NOT NULL, "password" character varying NOT NULL, "isActive" boolean NOT NULL DEFAULT true, "emailVerified" boolean NOT NULL DEFAULT false, "refreshToken" character varying, "role" character varying, "canvas_additional_info" json, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "developer_keys" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "key" character varying(255) NOT NULL, "id" integer NOT NULL, CONSTRAINT "PK_c1b54401931439f8d484676c8fb" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
       `CREATE TABLE "student_lp_enrollments_samples_samples" ("studentLpEnrollmentsId" integer NOT NULL, "samplesId" integer NOT NULL, CONSTRAINT "PK_310caccff6f11fc695a2701d833" PRIMARY KEY ("studentLpEnrollmentsId", "samplesId"))`,
     );
     await queryRunner.query(
@@ -102,6 +102,9 @@ export class V151748004747933 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "schools" ADD CONSTRAINT "FK_cf7fc9b8bccbe84cf907d79d420" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "keys" ADD CONSTRAINT "FK_e63d5d51e0192635ab79aa49644" FOREIGN KEY ("id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
       `ALTER TABLE "semesters" ADD CONSTRAINT "FK_d859f21b7b68bba134c9e163e29" FOREIGN KEY ("track_id") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -191,9 +194,6 @@ export class V151748004747933 implements MigrationInterface {
       `ALTER TABLE "directors" ADD CONSTRAINT "FK_8368997d5eb9dba3523df0add32" FOREIGN KEY ("academy_id") REFERENCES "academies"("id") ON DELETE SET NULL ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "developer_keys" ADD CONSTRAINT "FK_c1b54401931439f8d484676c8fb" FOREIGN KEY ("id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "student_lp_enrollments_samples_samples" ADD CONSTRAINT "FK_89db6913fb005832fbe61338586" FOREIGN KEY ("studentLpEnrollmentsId") REFERENCES "student_lp_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
@@ -207,9 +207,6 @@ export class V151748004747933 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "student_lp_enrollments_samples_samples" DROP CONSTRAINT "FK_89db6913fb005832fbe61338586"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "developer_keys" DROP CONSTRAINT "FK_c1b54401931439f8d484676c8fb"`,
     );
     await queryRunner.query(
       `ALTER TABLE "directors" DROP CONSTRAINT "FK_8368997d5eb9dba3523df0add32"`,
@@ -299,6 +296,9 @@ export class V151748004747933 implements MigrationInterface {
       `ALTER TABLE "semesters" DROP CONSTRAINT "FK_d859f21b7b68bba134c9e163e29"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "keys" DROP CONSTRAINT "FK_e63d5d51e0192635ab79aa49644"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "schools" DROP CONSTRAINT "FK_cf7fc9b8bccbe84cf907d79d420"`,
     );
     await queryRunner.query(
@@ -322,7 +322,6 @@ export class V151748004747933 implements MigrationInterface {
     await queryRunner.query(
       `DROP TABLE "student_lp_enrollments_samples_samples"`,
     );
-    await queryRunner.query(`DROP TABLE "developer_keys"`);
     await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TABLE "directors"`);
     await queryRunner.query(`COMMENT ON TABLE "admins" IS NULL`);
@@ -344,6 +343,7 @@ export class V151748004747933 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "semesters"`);
     await queryRunner.query(`DROP TABLE "academic_years"`);
     await queryRunner.query(`DROP TABLE "tenants"`);
+    await queryRunner.query(`DROP TABLE "keys"`);
     await queryRunner.query(`DROP TABLE "schools"`);
     await queryRunner.query(`DROP TABLE "students"`);
     await queryRunner.query(`DROP TABLE "academies"`);
