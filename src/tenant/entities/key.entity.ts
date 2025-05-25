@@ -12,6 +12,9 @@ export class KeyEntity extends DatedGenericEntity {
   @Column({ length: 512, nullable: true, default: null })
   access_token: string;
 
+  @Column({ length: 512, nullable: true, default: null })
+  session_token: string;
+
   @Column({ length: 512, default: null })
   url: string;
 

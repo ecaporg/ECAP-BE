@@ -177,6 +177,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     await queryRunner.manager.save(KeyEntity, {
       access_token: process.env.ELITE_KEY,
       url: 'https://eliteaa.instructure.com',
+      session_token: process.env.ELITE_SESSION_TOKEN,
       tenant,
     });
     return tenant;
