@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsString,
   MaxLength,
-  MinDate,
   Validate,
   ValidatorConstraintInterface,
 } from 'class-validator';
@@ -42,9 +41,6 @@ export class CreateTrackDto
   @IsNotEmpty()
   @Transform(({ value }) => new Date(value))
   @IsDate()
-  @MinDate(new Date(), {
-    message: 'Start date must be after today',
-  })
   start_date: Date;
 
   // tenant_id will be set from the user in the service
