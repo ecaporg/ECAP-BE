@@ -51,8 +51,8 @@ export class AdminComplianceService {
         'academy.name as academy_name',
         'COUNT(DISTINCT student_lp_enrollments.student_id) as student_count',
         `COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END) as completed_count`,
-        `COUNT(CASE WHEN samples.flag_category IN ('${SampleFlagCategory.ERROR_IN_SAMPLE}', '${SampleFlagCategory.ERROR_IN_SAMPLE}', '${SampleFlagCategory.REASON_REJECTED}') THEN samples.id END) as flagged_count`,
-        `COUNT(CASE WHEN samples.status IN ('${SampleStatus.PENDING}', '${SampleStatus.MISSING_SAMPLE}') THEN samples.id END) as incompleted_count`,
+        `COUNT(CASE WHEN samples.flag_category IN ('${SampleFlagCategory.ERROR_IN_SAMPLE}', '${SampleFlagCategory.MISSING_SAMPLE}', '${SampleFlagCategory.REASON_REJECTED}') THEN samples.id END) as flagged_count`,
+        `COUNT(CASE WHEN samples.status IN ('${SampleStatus.PENDING}', '${SampleStatus.ERRORS_FOUND}', '${SampleStatus.MISSING_SAMPLE}') THEN samples.id END) as incompleted_count`,
         `BOOL_AND(samples.status = '${SampleStatus.COMPLETED}') as is_complated`,
         `(COUNT(CASE WHEN samples.status = '${SampleStatus.COMPLETED}' THEN samples.id END)::float / COUNT(student_lp_enrollments.student_id)::float) * 100 as completion_percentage`,
       ])
