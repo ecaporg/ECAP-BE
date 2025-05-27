@@ -726,6 +726,10 @@ export class AddEliteData201746984777855 implements MigrationInterface {
           preview_url: s.preview_url,
           student_lp_enrollments: enrollments,
           canvas_submission_id: s.id ? Number(s.id) : undefined,
+          done_by_id:
+            status == SampleStatus.COMPLETED
+              ? enrollments[0]?.teacher_school_year_enrollment?.teacher_id
+              : undefined,
         } as SampleEntity;
       }) as SampleEntity[]),
     );
@@ -874,6 +878,9 @@ export class AddEliteData201746984777855 implements MigrationInterface {
         ).length /
           assignment_period.samples.length) *
         100;
+      assignment_period.completed = assignment_period.samples.every(
+        (sample) => sample.status == SampleStatus.COMPLETED,
+      );
     }
     await queryRunner.manager.save(
       StudentLPEnrollmentEntity,
