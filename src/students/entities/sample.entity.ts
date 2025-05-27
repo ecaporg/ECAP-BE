@@ -122,6 +122,13 @@ export class SampleEntity extends GenericEntity {
   preview_url?: string;
 
   @ApiProperty({
+    description: 'Canvas submission ID',
+    nullable: true,
+  })
+  @Column({ nullable: true, type: 'bigint' })
+  canvas_submission_id?: number;
+
+  @ApiProperty({
     description: 'Subject associated with this sample',
     type: () => SubjectEntity,
   })

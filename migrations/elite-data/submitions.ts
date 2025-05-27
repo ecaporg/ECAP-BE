@@ -63,7 +63,7 @@ function getTwoAssigmentPerPeriod() {
       !assignment.due_at ||
       assignment.anonymize_students ||
       assignment.anonymous_submissions ||
-      !assignment.published 
+      !assignment.published
     ) {
       continue;
     }
@@ -162,6 +162,12 @@ async function fetchAllSubmissions() {
 
 fetchAllSubmissions();
 
+export type CanvasWorkflowState =
+  | 'submitted'
+  | 'pending_review'
+  | 'graded'
+  | 'unsubmitted';
+
 export type Submission = {
   id: string;
   body: string;
@@ -172,7 +178,7 @@ export type Submission = {
   assignment_id: string;
   user_id: string | number;
   submission_type: string;
-  workflow_state: string;
+  workflow_state: CanvasWorkflowState;
   grade_matches_current_submission: boolean;
   graded_at: string;
   grader_id: string;

@@ -114,7 +114,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     // Create admin user
     await this.createAdmin(queryRunner, tenant);
 
-    // await this.recalculateAssignmentPeriods(queryRunner);
+    await this.recalculateAssignmentPeriods(queryRunner);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -708,11 +708,14 @@ export class AddEliteData201746984777855 implements MigrationInterface {
             due_at <= new Date(se.learning_period.end_date),
         );
 
-        const status = s.missing
-          ? SampleStatus.MISSING_SAMPLE
-          : !s.grade || !assignment?.name
-            ? SampleStatus.ERRORS_FOUND
-            : SampleStatus.PENDING;
+        const status =
+          s.missing || s.workflow_state === 'unsubmitted'
+            ? SampleStatus.MISSING_SAMPLE
+            : !s.grade || !assignment?.name
+              ? SampleStatus.ERRORS_FOUND
+              : s.workflow_state === 'graded'
+                ? SampleStatus.COMPLETED
+                : SampleStatus.PENDING;
 
         return {
           assignment_title: assignment?.name,
@@ -722,6 +725,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
           subject,
           preview_url: s.preview_url,
           student_lp_enrollments: enrollments,
+          canvas_submission_id: s.id ? Number(s.id) : undefined,
         } as SampleEntity;
       }) as SampleEntity[]),
     );
@@ -874,6 +878,9 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     await queryRunner.manager.save(
       StudentLPEnrollmentEntity,
       assignment_periods,
+      {
+        chunk: 1000,
+      },
     );
   }
 
