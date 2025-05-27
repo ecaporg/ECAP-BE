@@ -862,33 +862,65 @@ export class AddEliteData201746984777855 implements MigrationInterface {
   }
 
   private async recalculateAssignmentPeriods(queryRunner: QueryRunner) {
-    const assignment_periods = await queryRunner.manager.find(
-      StudentLPEnrollmentEntity,
-      {
-        where: {
-          completed: false,
-        },
-        relations: { samples: true },
-      },
+    await queryRunner.manager.query(
+      `
+        WITH assignment_stats AS (
+    SELECT 
+      sle.id,
+      COUNT(s.id) as total_samples,
+      COUNT(CASE WHEN s.status = 'COMPLETED' THEN 1 END) as completed_samples,
+      CASE 
+        WHEN COUNT(s.id) > 0 THEN 
+          (COUNT(CASE WHEN s.status = 'COMPLETED' THEN 1 END)::decimal / COUNT(s.id)::decimal) * 100
+        ELSE 0 
+      END as calculated_percentage,
+      CASE 
+        WHEN COUNT(s.id) = 0 THEN false
+        WHEN COUNT(s.id) = COUNT(CASE WHEN s.status = 'COMPLETED' THEN 1 END) THEN true
+        ELSE false
+      END as is_completed
+    FROM student_lp_enrollments sle
+    LEFT JOIN student_lp_enrollments_samples_samples slss ON slss."studentLpEnrollmentsId" = sle.id
+    LEFT JOIN samples s ON s.id = slss."samplesId"
+    WHERE sle.completed = false
+    GROUP BY sle.id
+  )
+  UPDATE student_lp_enrollments 
+  SET 
+    percentage = assignment_stats.calculated_percentage,
+    completed = assignment_stats.is_completed,
+    "updatedAt" = NOW()
+  FROM assignment_stats
+  WHERE student_lp_enrollments.id = assignment_stats.id;
+      `,
     );
-    for (const assignment_period of assignment_periods) {
-      assignment_period.percentage =
-        (assignment_period.samples.filter(
-          (sample) => sample.status == SampleStatus.COMPLETED,
-        ).length /
-          assignment_period.samples.length) *
-        100;
-      assignment_period.completed = assignment_period.samples.every(
-        (sample) => sample.status == SampleStatus.COMPLETED,
-      );
-    }
-    await queryRunner.manager.save(
-      StudentLPEnrollmentEntity,
-      assignment_periods,
-      {
-        chunk: 1000,
-      },
-    );
+    // const assignment_periods = await queryRunner.manager.find(
+    //   StudentLPEnrollmentEntity,
+    //   {
+    //     where: {
+    //       completed: false,
+    //     },
+    //     relations: { samples: true },
+    //   },
+    // );
+    // for (const assignment_period of assignment_periods) {
+    //   assignment_period.percentage =
+    //     (assignment_period.samples.filter(
+    //       (sample) => sample.status == SampleStatus.COMPLETED,
+    //     ).length /
+    //       assignment_period.samples.length) *
+    //     100;
+    //   assignment_period.completed = assignment_period.samples.every(
+    //     (sample) => sample.status == SampleStatus.COMPLETED,
+    //   );
+    // }
+    // await queryRunner.manager.save(
+    //   StudentLPEnrollmentEntity,
+    //   assignment_periods,
+    //   {
+    //     chunk: 1000,
+    //   },
+    // );
   }
 
   private async deleteRedunantData(

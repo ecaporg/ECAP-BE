@@ -68,7 +68,7 @@ export function extractPaginationOptions<T extends BaseFilterType>(
   }
 
   return {
-    page: page ? page : 1,
+    page: page,
     limit: limit,
     sortBy: sortByArray,
     sortDirection: sortDirectionArray,
