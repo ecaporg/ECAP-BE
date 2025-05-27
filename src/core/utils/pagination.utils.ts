@@ -69,7 +69,7 @@ export function extractPaginationOptions<T extends BaseFilterType>(
 
   return {
     page: page ? page : 1,
-    limit: limit ? limit : 15,
+    limit: limit,
     sortBy: sortByArray,
     sortDirection: sortDirectionArray,
     search: search as string,

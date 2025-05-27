@@ -28,7 +28,7 @@ export class BaseFilterDto {
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  limit?: number = 15;
+  limit?: number = 12;
 
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()
