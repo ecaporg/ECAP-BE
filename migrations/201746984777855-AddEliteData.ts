@@ -639,7 +639,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
             completed: false,
             percentage: 0,
             track_id: track.id,
-            student_grade: student.user.canvas_additional_info.grade,
+            student_grade: `Grade ${student.user.canvas_additional_info.grade}`,
           } as StudentLPEnrollmentEntity);
         }
       }
