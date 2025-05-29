@@ -2,10 +2,10 @@ import { Type } from '@nestjs/common';
 
 // Auth models
 import { AuthUser } from '@/auth/types/auth-user';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
 // School entities
 import { AcademyEntity } from '@/school/entities/academy.entity';
-import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 // Staff entities
 import {

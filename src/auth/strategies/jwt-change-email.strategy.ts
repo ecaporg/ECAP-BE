@@ -4,10 +4,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
+import { UnauthorizedException } from '@/core';
+
 import { UsersService } from '../../users/users.service';
 
 import { ChangeEmailDTO } from './../dtos/change-email.dto';
-import { UnauthorizedException } from '@/core';
 
 @Injectable()
 export class JwtChangeEmailStrategy extends PassportStrategy(
