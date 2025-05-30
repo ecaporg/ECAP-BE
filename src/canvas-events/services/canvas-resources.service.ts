@@ -10,6 +10,7 @@ import {
   CanvasAssignmentDto,
   CanvasCourseDto,
   CanvasEnrollmentDto,
+  CanvasSubmissionDto,
   CanvasUserDto,
 } from '../dto';
 
@@ -117,5 +118,28 @@ export class CanvasResourcesService {
         params,
       })
       .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data));
+  }
+
+  /**
+   * Fetch submission details
+   * @param courseId - Course ID
+   * @param assignmentId - Assignment ID
+   * @param userId - User ID
+   */
+  fetchSubmission(
+    key: KeyEntity,
+    courseId: string | number,
+    assignmentId: string | number,
+    userId: string | number,
+  ): Observable<CanvasSubmissionDto> {
+    const url = `${key.url}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions/${userId}`;
+
+    return this.httpService
+      .get<CanvasSubmissionDto>(url, {
+        headers: this.getHeaders(key),
+      })
+      .pipe(
+        map((response: AxiosResponse<CanvasSubmissionDto>) => response.data),
+      );
   }
 }

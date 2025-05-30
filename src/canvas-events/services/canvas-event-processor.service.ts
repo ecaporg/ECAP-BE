@@ -1,31 +1,41 @@
-import { firstValueFrom } from 'rxjs';
-import { DeepPartial } from 'typeorm';
+import { async, firstValueFrom } from 'rxjs';
+import { DeepPartial, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
 import { NotFoundException } from '@/core';
+import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
 import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
+import { StudentLPEnrollmentService } from '@/enrollment/services/student-enrollment.service';
 import { TeacherSchoolYearEnrollmentService } from '@/enrollment/services/teacher-enrollment.service';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
 import { TeacherService } from '@/staff/services/staff.service';
+import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
+import { SampleService } from '@/students/services/sample.service';
 import { StudentService } from '@/students/services/student.service';
 import { KeyEntity } from '@/tenant/entities/key.entity';
 import { TenantEntity } from '@/tenant/entities/tenant.entity';
+import { ErrorService } from '@/tenant/services/error.service';
 import { TenantService } from '@/tenant/services/tenant.service';
 import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
 import { SubjectEntity } from '@/track/entities/subject.entity';
+import { TrackEntity } from '@/track/entities/track.entity';
+import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '@/track/services/academic-year.service';
-import { UserEntity } from '@/users/entities/user.entity';
+import { SubjectService } from '@/track/services/subject.service';
+import { TrackLearningPeriodService } from '@/track/services/track-learning-period.service';
 import { RolesEnum } from '@/users/enums/roles.enum';
 import { UsersService } from '@/users/users.service';
 
 import {
+  CanvasAssignmentDto,
   CanvasCourseDto,
   CanvasEventDto,
   CanvasEventType,
   CanvasSubmissionCreatedEventDto,
+  CanvasSubmissionDto,
   CanvasSubmissionUpdatedEventDto,
   CanvasUserDto,
 } from '../dto';
@@ -41,6 +51,11 @@ export class CanvasProcessorService {
     protected readonly teacherService: TeacherService,
     protected readonly canvasResourcesService: CanvasResourcesService,
     protected readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService,
+    protected readonly learningPeriodService: TrackLearningPeriodService,
+    protected readonly subjectService: SubjectService,
+    protected readonly studentLPEnrollmentService: StudentLPEnrollmentService,
+    protected readonly sampleService: SampleService,
+    protected readonly errorService: ErrorService,
   ) {}
 
   protected async getAllData(event: CanvasEventDto, key: KeyEntity) {
@@ -64,6 +79,15 @@ export class CanvasProcessorService {
       this.canvasResourcesService.fetchCourse(key, enrollment.course_id),
     );
 
+    const submission = await firstValueFrom(
+      this.canvasResourcesService.fetchSubmission(
+        key,
+        enrollment.course_id,
+        event.body.assignment_id,
+        event.body.user_id,
+      ),
+    );
+
     const teachers = await firstValueFrom(
       this.canvasResourcesService.fetchTeachersInCourse(
         key,
@@ -79,7 +103,7 @@ export class CanvasProcessorService {
       ),
     );
 
-    return { enrollment, assignment, course, teachers, user };
+    return { enrollment, assignment, course, teachers, user, submission };
   }
 
   protected async getOrCreateTeachersEnrolemts(
@@ -138,10 +162,7 @@ export class CanvasProcessorService {
         },
       );
 
-      if (
-        user.teacher &&
-        user.teacher.teacher_school_year_enrollments.length > 0
-      ) {
+      if (user.teacher.teacher_school_year_enrollments.length > 0) {
         const schools = new Set(
           user.teacher.teacher_school_year_enrollments.map(
             (enrolemt) => enrolemt.school_id,
@@ -161,9 +182,19 @@ export class CanvasProcessorService {
         );
 
         return newEnrolemts;
-      }
+      } else {
+        const newTeacherEnrolemts = await Promise.all(
+          tenant.schools.map((school) =>
+            this.teacherSchoolYearEnrollmentService.create({
+              school,
+              teacher: user.teacher,
+              academic_year: currentAcademicYear,
+            } as DeepPartial<TeacherSchoolYearEnrollmentEntity>),
+          ),
+        );
 
-      return [];
+        return newTeacherEnrolemts;
+      }
     } catch (error) {
       if (error instanceof NotFoundException) {
         const user = await this.userService.create({
@@ -195,14 +226,15 @@ export class CanvasProcessorService {
         );
 
         return newTeacherEnrolemts;
+      } else {
+        throw error;
       }
     }
   }
 
   protected async getOrCreateStudent(
     person: CanvasUserDto,
-    academy?: AcademyEntity,
-    school?: SchoolEntity,
+    tenant: TenantEntity,
   ): Promise<StudentEntity> {
     try {
       return await this.studentService.findOneBy({
@@ -236,12 +268,155 @@ export class CanvasProcessorService {
 
         const student = await this.studentService.create({
           user,
-          academy_id: academy?.id,
-          school_id: school?.id,
         } as StudentEntity);
 
+        await this.errorService.create({
+          tenant,
+          message:
+            'Create new student without academy, school, and track. JSON: ' +
+            JSON.stringify(user),
+        });
+
         return student;
+      } else {
+        throw error;
       }
+    }
+  }
+
+  protected async findSubjectAndLearningPeriod(
+    assignment: CanvasAssignmentDto,
+    course: CanvasCourseDto,
+    tracks: TrackEntity[],
+    student: StudentEntity,
+  ): Promise<SubjectEntity[]> {
+    const subjects = await this.subjectService.findBy({
+      where: {
+        canvas_course_id: course.id.toString(),
+        track: {
+          learningPeriods: {
+            start_date: LessThanOrEqual(new Date(assignment.due_at)),
+            end_date: MoreThanOrEqual(new Date(assignment.due_at)),
+          },
+        },
+      },
+      relations: {
+        track: {
+          learningPeriods: true,
+        },
+      },
+    });
+
+    if (subjects.length === 0) {
+      await this.subjectService.create({
+        name: course.name
+          .replaceAll(/\b\d{0,2}[ABKX]\b/g, '')
+          .replaceAll('Flex', '')
+          .trim(),
+        track: tracks.find((track) =>
+          student.user.canvas_additional_info.track_name
+            ? track.name === student.user.canvas_additional_info.track_name
+            : true,
+        ),
+        canvas_course_id: course.id.toString(),
+        canvas_additional_info: {
+          account_id: course.account_id,
+          course_code: course.course_code,
+          enrollment_term_id: course.enrollment_term_id,
+          uuid: course.uuid,
+        } as Record<string, any>,
+      });
+
+      return this.findSubjectAndLearningPeriod(
+        assignment,
+        course,
+        tracks,
+        student,
+      );
+    }
+
+    return subjects.map((subject) => ({
+      ...subject,
+      track: {
+        ...subject.track,
+        learningPeriods: subject.track.learningPeriods.filter(
+          (learning_period) =>
+            new Date(learning_period.start_date) <=
+              new Date(assignment.due_at) &&
+            new Date(learning_period.end_date) >= new Date(assignment.due_at),
+        ),
+      },
+    }));
+  }
+
+  protected async getOrCreateStudentEnrolemts(
+    student: StudentEntity,
+    learning_periods: TrackLearningPeriodEntity[],
+    teacher_enrolemts: TeacherSchoolYearEnrollmentEntity[],
+  ) {
+    const student_enrolemts = await this.studentLPEnrollmentService.findBy({
+      where: {
+        student,
+        learning_period: In(
+          learning_periods.map((learning_period) => learning_period.id),
+        ),
+        teacher_school_year_enrollment_id: In(
+          teacher_enrolemts.map((enrolemt) => enrolemt.id),
+        ),
+      },
+    });
+
+    if (student_enrolemts.length === 0) {
+      return await Promise.all(
+        teacher_enrolemts.flatMap((enrolemt) =>
+          learning_periods.map((learning_period) =>
+            this.studentLPEnrollmentService.create({
+              student,
+              learning_period,
+              teacher_school_year_enrollment: enrolemt,
+              completed: false,
+              track_id: learning_period.track_id,
+            }),
+          ),
+        ),
+      );
+    }
+
+    return student_enrolemts;
+  }
+
+  protected async createSamples(
+    student_enrolemts: StudentLPEnrollmentEntity[],
+    subjects: SubjectEntity[],
+    assignment: CanvasAssignmentDto,
+    submission: CanvasSubmissionDto,
+  ) {
+    {
+      const status =
+        submission.missing || submission.workflow_state === 'unsubmitted'
+          ? SampleStatus.MISSING_SAMPLE
+          : !submission.grade || !assignment?.name
+            ? SampleStatus.ERRORS_FOUND
+            : submission.workflow_state === 'graded'
+              ? SampleStatus.COMPLETED
+              : SampleStatus.PENDING;
+
+      return {
+        assignment_title: assignment?.name,
+        grade: submission.grade,
+        date: submission.submitted_at
+          ? new Date(submission.submitted_at)
+          : undefined,
+        status,
+        subject: subjects[0],
+        preview_url: submission.preview_url,
+        student_lp_enrollments: student_enrolemts,
+        canvas_submission_id: submission.id ? Number(submission.id) : undefined,
+        done_by_id:
+          status == SampleStatus.COMPLETED
+            ? student_enrolemts[0]?.teacher_school_year_enrollment?.teacher_id
+            : undefined,
+      } as SampleEntity;
     }
   }
 
@@ -259,6 +434,9 @@ export class CanvasProcessorService {
             },
           },
         },
+        tracks: {
+          academic_year_id: currentAcademicYear[0].id,
+        },
       },
       {
         key: true,
@@ -269,6 +447,9 @@ export class CanvasProcessorService {
             },
             academic_year: true,
           },
+        },
+        tracks: {
+          learningPeriods: true,
         },
       },
     );
@@ -314,7 +495,7 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
     tenant: TenantEntity,
     currentAcademicYear: AcademicYearEntity,
   ): Promise<void> {
-    const { enrollment, assignment, course, teachers, user } =
+    const { assignment, course, teachers, user, submission } =
       await this.getAllData(event, tenant.key);
 
     const teacher_enrolemts = await this.getOrCreateTeachersEnrolemts(
@@ -324,6 +505,26 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
     );
 
     const student = await this.getOrCreateStudent(user[0]);
+
+    const subjects = await this.findSubjectAndLearningPeriod(
+      assignment,
+      course,
+      tenant.tracks,
+      student,
+    );
+
+    const student_enrolemts = await this.getOrCreateStudentEnrolemts(
+      student,
+      subjects.flatMap((subject) => subject.track.learningPeriods),
+      teacher_enrolemts,
+    );
+
+    await this.createSamples(
+      student_enrolemts,
+      subjects,
+      assignment,
+      submission,
+    );
   }
 
   private async handleSubmissionUpdated(

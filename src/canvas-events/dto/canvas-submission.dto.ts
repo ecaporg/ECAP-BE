@@ -10,7 +10,10 @@ import {
 
 import { SubmissionCommentDto } from './submission-comment.dto';
 
-export class CanvasSubmissionApiDto {
+export class CanvasSubmissionDto {
+  @IsNumber()
+  id: number;
+
   @IsNumber()
   assignment_id: number;
 
