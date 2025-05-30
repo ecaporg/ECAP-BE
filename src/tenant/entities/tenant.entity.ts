@@ -8,6 +8,7 @@ import { SchoolEntity } from '@/school/entities/school.entity';
 import { AdminEntity, DirectorEntity } from '@/staff/entities/staff.entity';
 import { TrackEntity } from '@/track/entities/track.entity';
 
+import { ErrorEntity } from './error.entity';
 import { KeyEntity } from './key.entity';
 
 @Entity({ name: 'tenants' })
@@ -15,6 +16,9 @@ export class TenantEntity extends GenericEntity {
   @ApiProperty({ description: 'Tenant name', maxLength: 250, nullable: true })
   @Column({ length: 250, nullable: true, default: null })
   name: string;
+
+  @Column({ nullable: true, default: null, type: 'bigint' })
+  root_id: number;
 
   @ApiProperty({
     description: 'Schools associated with this tenant',
@@ -50,6 +54,13 @@ export class TenantEntity extends GenericEntity {
   })
   @OneToMany(() => DirectorEntity, (director) => director.tenant)
   directors: DirectorEntity[];
+
+  @ApiProperty({
+    description: 'Errors associated with this tenant',
+    type: () => [{}],
+  })
+  @OneToMany(() => ErrorEntity, (error) => error.tenant)
+  errors: ErrorEntity[];
 
   @ApiProperty({
     description: 'Keys associated with this tenant',

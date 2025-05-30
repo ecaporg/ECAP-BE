@@ -100,4 +100,22 @@ export class CanvasResourcesService {
       })
       .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data));
   }
+
+  fetchUsersInAccount(
+    key: KeyEntity,
+    accountId: string | number,
+    userId: string,
+  ): Observable<CanvasUserDto[]> {
+    const url = `${key.url}/api/v1/accounts/${accountId}/users`;
+    const params = {
+      search_term: userId,
+    };
+
+    return this.httpService
+      .get<CanvasUserDto[]>(url, {
+        headers: this.getHeaders(key),
+        params,
+      })
+      .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data));
+  }
 }
