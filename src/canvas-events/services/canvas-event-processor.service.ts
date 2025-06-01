@@ -10,6 +10,7 @@ import { StudentLPEnrollmentService } from '@/enrollment/services/student-enroll
 import { TeacherSchoolYearEnrollmentService } from '@/enrollment/services/teacher-enrollment.service';
 import { AcademyEntity } from '@/school/entities/academy.entity';
 import { SchoolEntity } from '@/school/entities/school.entity';
+import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { TeacherService } from '@/staff/services/staff.service';
 import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
 import { StudentEntity } from '@/students/entities/student.entity';
@@ -390,6 +391,7 @@ export class CanvasProcessorService {
     subjects: SubjectEntity[],
     assignment: CanvasAssignmentDto,
     submission: CanvasSubmissionDto,
+    teacher: TeacherEntity,
   ) {
     {
       const status =
@@ -412,10 +414,7 @@ export class CanvasProcessorService {
         preview_url: submission.preview_url,
         student_lp_enrollments: student_enrolemts,
         canvas_submission_id: submission.id ? Number(submission.id) : undefined,
-        done_by_id:
-          status == SampleStatus.COMPLETED
-            ? student_enrolemts[0]?.teacher_school_year_enrollment?.teacher_id
-            : undefined,
+        done_by_id: status == SampleStatus.COMPLETED ? teacher.id : undefined,
       } as SampleEntity;
     }
   }
@@ -504,7 +503,7 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
       currentAcademicYear,
     );
 
-    const student = await this.getOrCreateStudent(user[0]);
+    const student = await this.getOrCreateStudent(user[0], tenant);
 
     const subjects = await this.findSubjectAndLearningPeriod(
       assignment,
@@ -524,11 +523,14 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
       subjects,
       assignment,
       submission,
+      teacher_enrolemts[0].teacher,
     );
   }
 
   private async handleSubmissionUpdated(
     event: CanvasSubmissionUpdatedEventDto,
     tenant: TenantEntity,
-  ): Promise<void> {}
+  ): Promise<void> {
+    const { submission } = await this.getAllData(event, tenant.key);
+  }
 }
