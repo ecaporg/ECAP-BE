@@ -1,3 +1,4 @@
+import puppeteer from 'puppeteer';
 import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -37,15 +38,45 @@ export class KeyService extends BaseService<KeyEntity> {
         'user-agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
       };
+
       const urlResponse = await fetch(endpoint.toString(), {
         headers,
       });
 
       const urlData = await urlResponse.json();
 
-      await fetch(urlData.session_url, {
-        headers,
+      const browser = await puppeteer.launch({
+        headless: false,
+        defaultViewport: null,
+        args: ['--start-maximized'],
       });
+
+      try {
+        const page = await browser.newPage();
+
+        await page.setExtraHTTPHeaders(headers);
+
+        await page.goto(urlData.session_url, {
+          waitUntil: 'networkidle2',
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
+        const cookies = await page.cookies();
+
+        const legacyNormandySessionCookie = cookies.find(
+          (cookie) => cookie.name === '_legacy_normandy_session',
+        );
+
+        if (legacyNormandySessionCookie) {
+          tenant.key.session_token = legacyNormandySessionCookie.value;
+          await this.save(tenant.key);
+        } else {
+          throw new Error('Cookie _legacy_normandy_session not found');
+        }
+      } finally {
+        await browser.close();
+      }
     }
     return tenant.key;
   }
