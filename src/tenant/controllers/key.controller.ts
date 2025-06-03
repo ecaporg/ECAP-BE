@@ -35,6 +35,6 @@ export class KeyController {
         key: true,
       },
     );
-    return tenant.key;
+    return this.service.refreshSessionToken(tenant);
   }
 }

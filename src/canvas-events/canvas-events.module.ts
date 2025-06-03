@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
-import { TenantService } from '@/tenant/services/tenant.service';
+import { SchoolModule } from '@/school/school.module';
 
 import { CanvasEventProcessorController } from './controllers/canvas-event-processor.controller';
 import { CanvasEventProcessorService } from './services/canvas-event-processor.service';
@@ -13,12 +13,12 @@ import { SisResourcesService } from './services/sis-resources.service';
     HttpModule.register({
       timeout: 300000,
     }),
+    SchoolModule,
   ],
   providers: [
     CanvasResourcesService,
     SisResourcesService,
     CanvasEventProcessorService,
-    TenantService,
   ],
   controllers: [CanvasEventProcessorController],
   exports: [
