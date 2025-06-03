@@ -1,4 +1,3 @@
-import { chromium } from 'playwright';
 import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
