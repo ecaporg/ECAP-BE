@@ -1,9 +1,7 @@
-import puppeteer from 'puppeteer-core';
 import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import chromium from '@sparticuz/chromium';
 
 import { BaseService } from '@/core';
 
@@ -17,6 +15,42 @@ export class KeyService extends BaseService<KeyEntity> {
     private keyRepository: Repository<KeyEntity>,
   ) {
     super(keyRepository);
+  }
+
+  private async launchBrowser() {
+    // Lazy loading puppeteer тільки коли потрібно
+    const puppeteer = await import('puppeteer-core');
+
+    if (process.env.NODE_ENV === 'production') {
+      const chromium = await import('@sparticuz/chromium');
+
+      return puppeteer.default.launch({
+        args: [
+          ...chromium.default.args,
+          '--hide-scrollbars',
+          '--disable-web-security',
+          '--disable-extensions',
+          '--disable-plugins',
+          '--disable-images',
+          '--disable-javascript',
+          '--no-first-run',
+          '--disable-default-apps',
+          '--disable-background-timer-throttling',
+          '--disable-backgrounding-occluded-windows',
+          '--disable-renderer-backgrounding',
+          '--memory-pressure-off',
+        ],
+        defaultViewport: chromium.default.defaultViewport,
+        executablePath: await chromium.default.executablePath(),
+        headless: chromium.default.headless,
+      });
+    } else {
+      return puppeteer.default.launch({
+        args: ['--start-maximized'],
+        defaultViewport: null,
+        headless: false,
+      });
+    }
   }
 
   async refreshSessionToken(tenant: TenantEntity) {
@@ -46,22 +80,7 @@ export class KeyService extends BaseService<KeyEntity> {
 
       const urlData = await urlResponse.json();
 
-      const browser = await puppeteer.launch({
-        args:
-          process.env.NODE_ENV === 'production'
-            ? [...chromium.args, '--hide-scrollbars', '--disable-web-security']
-            : ['--start-maximized'],
-        defaultViewport:
-          process.env.NODE_ENV === 'production'
-            ? chromium.defaultViewport
-            : null,
-        executablePath:
-          process.env.NODE_ENV === 'production'
-            ? await chromium.executablePath()
-            : undefined,
-        headless:
-          process.env.NODE_ENV === 'production' ? chromium.headless : false,
-      });
+      const browser = await this.launchBrowser();
 
       try {
         const page = await browser.newPage();
