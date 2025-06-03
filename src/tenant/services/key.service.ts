@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -22,71 +22,31 @@ export class KeyService extends BaseService<KeyEntity> {
     const isProduction = true;
 
     const launchOptions = {
+      headless: isProduction,
       args: [
-        '--start-maximized',
         ...(isProduction
           ? [
               '--no-sandbox',
               '--disable-setuid-sandbox',
               '--disable-dev-shm-usage',
-              '--disable-accelerated-2d-canvas',
-              '--no-first-run',
-              '--no-zygote',
               '--disable-gpu',
-              '--single-process',
-              '--disable-background-timer-throttling',
-              '--disable-backgrounding-occluded-windows',
-              '--disable-renderer-backgrounding',
-              '--disable-features=TranslateUI',
-              '--disable-ipc-flooding-protection',
               '--disable-web-security',
               '--disable-features=VizDisplayCompositor',
             ]
           : []),
       ],
-      defaultViewport: null,
-      headless: isProduction ? true : false,
-      // Render-specific settings
-      protocolTimeout: 120000, // 2 minutes
-      // Force Chrome path for Render
-      ...(process.env.RENDER && {
-        executablePath: '/usr/bin/google-chrome-stable',
-      }),
+      timeout: 120000, // 2 minutes
     };
 
     try {
-      return await puppeteer.launch(launchOptions);
+      return await chromium.launch(launchOptions);
     } catch (error) {
       console.error(
         'Failed to launch browser with default config:',
         error.message,
       );
-
-      // Try with explicit executable path for common deployment environments
-      const possiblePaths = [
-        '/usr/bin/chromium-browser',
-        '/usr/bin/chromium',
-        '/usr/bin/google-chrome-stable',
-        '/usr/bin/google-chrome',
-      ];
-
-      for (const executablePath of possiblePaths) {
-        try {
-          return await puppeteer.launch({
-            ...launchOptions,
-            executablePath,
-          });
-        } catch (pathError) {
-          console.warn(
-            `Failed to launch with ${executablePath}:`,
-            pathError.message,
-          );
-        }
-      }
-
-      // If all paths fail, throw the original error
       throw new Error(
-        `Failed to launch browser. Original error: ${error.message}. Please ensure Chrome is installed by running: npx puppeteer browsers install chrome`,
+        `Failed to launch browser. Original error: ${error.message}`,
       );
     }
   }
@@ -126,9 +86,7 @@ export class KeyService extends BaseService<KeyEntity> {
         try {
           page = await browser.newPage();
 
-          page.setDefaultNavigationTimeout(60000);
-          page.setDefaultTimeout(60000);
-
+          // Set headers
           await page.setExtraHTTPHeaders(headers);
 
           let navigationSuccess = false;
@@ -150,7 +108,7 @@ export class KeyService extends BaseService<KeyEntity> {
                 waitUntil = 'domcontentloaded';
                 timeout = 90000;
               } else {
-                waitUntil = 'networkidle2';
+                waitUntil = 'networkidle';
                 timeout = 60000;
               }
 
@@ -202,7 +160,7 @@ export class KeyService extends BaseService<KeyEntity> {
           if (navigationSuccess) {
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            const cookies = await page.cookies();
+            const cookies = await page.context().cookies();
 
             const legacyNormandySessionCookie = cookies.find(
               (cookie) => cookie.name === '_legacy_normandy_session',
