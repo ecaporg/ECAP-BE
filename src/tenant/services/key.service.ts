@@ -1,8 +1,9 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chromium from '@sparticuz/chromium';
 
 import { BaseService } from '@/core';
 
@@ -46,18 +47,20 @@ export class KeyService extends BaseService<KeyEntity> {
       const urlData = await urlResponse.json();
 
       const browser = await puppeteer.launch({
-        headless: process.env.NODE_ENV === 'production',
-        defaultViewport: null,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--single-process',
-          ...(process.env.NODE_ENV !== 'production'
-            ? ['--start-maximized']
-            : []),
-        ],
+        args:
+          process.env.NODE_ENV === 'production'
+            ? [...chromium.args, '--hide-scrollbars', '--disable-web-security']
+            : ['--start-maximized'],
+        defaultViewport:
+          process.env.NODE_ENV === 'production'
+            ? chromium.defaultViewport
+            : null,
+        executablePath:
+          process.env.NODE_ENV === 'production'
+            ? await chromium.executablePath()
+            : undefined,
+        headless:
+          process.env.NODE_ENV === 'production' ? chromium.headless : false,
       });
 
       try {
