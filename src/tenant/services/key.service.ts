@@ -22,11 +22,12 @@ export class KeyService extends BaseService<KeyEntity> {
     const puppeteer = await import('puppeteer-core');
 
     if (process.env.NODE_ENV === 'production') {
-      const { default: chromium } = await import('@sparticuz/chromium');
+      const chromiumModule = await import('@sparticuz/chromium');
+      const chromium = chromiumModule.default || chromiumModule;
 
       return puppeteer.default.launch({
         args: [
-          ...chromium.args,
+          ...(chromium.args || []),
           '--hide-scrollbars',
           '--disable-web-security',
           '--disable-extensions',
@@ -40,9 +41,11 @@ export class KeyService extends BaseService<KeyEntity> {
           '--disable-renderer-backgrounding',
           '--memory-pressure-off',
         ],
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
+        defaultViewport: chromium.defaultViewport || null,
+        executablePath: await (chromium.executablePath
+          ? chromium.executablePath()
+          : '/usr/bin/chromium-browser'),
+        headless: chromium.headless !== false,
       });
     } else {
       return puppeteer.default.launch({
