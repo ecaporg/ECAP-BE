@@ -1,4 +1,4 @@
-import { async, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { DeepPartial, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -8,8 +8,6 @@ import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollm
 import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
 import { StudentLPEnrollmentService } from '@/enrollment/services/student-enrollment.service';
 import { TeacherSchoolYearEnrollmentService } from '@/enrollment/services/teacher-enrollment.service';
-import { AcademyEntity } from '@/school/entities/academy.entity';
-import { SchoolEntity } from '@/school/entities/school.entity';
 import { TeacherEntity } from '@/staff/entities/staff.entity';
 import { TeacherService } from '@/staff/services/staff.service';
 import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
@@ -63,7 +61,7 @@ export class CanvasProcessorService {
     const enrollment = await firstValueFrom(
       this.canvasResourcesService.fetchEnrollment(
         key,
-        event.metadata.user_account_id,
+        event.body.user_id,
         event.metadata.context_id,
       ),
     );
@@ -393,30 +391,71 @@ export class CanvasProcessorService {
     submission: CanvasSubmissionDto,
     teacher: TeacherEntity,
   ) {
-    {
-      const status =
-        submission.missing || submission.workflow_state === 'unsubmitted'
-          ? SampleStatus.MISSING_SAMPLE
-          : !submission.grade || !assignment?.name
-            ? SampleStatus.ERRORS_FOUND
-            : submission.workflow_state === 'graded'
-              ? SampleStatus.COMPLETED
-              : SampleStatus.PENDING;
+    const status =
+      submission.missing || submission.workflow_state === 'unsubmitted'
+        ? SampleStatus.MISSING_SAMPLE
+        : !submission.grade || !assignment?.name
+          ? SampleStatus.ERRORS_FOUND
+          : submission.workflow_state === 'graded'
+            ? SampleStatus.COMPLETED
+            : SampleStatus.PENDING;
 
-      return {
-        assignment_title: assignment?.name,
-        grade: submission.grade,
-        date: submission.submitted_at
-          ? new Date(submission.submitted_at)
-          : undefined,
-        status,
-        subject: subjects[0],
-        preview_url: submission.preview_url,
-        student_lp_enrollments: student_enrolemts,
-        canvas_submission_id: submission.id ? Number(submission.id) : undefined,
-        done_by_id: status == SampleStatus.COMPLETED ? teacher.id : undefined,
-      } as SampleEntity;
+    return {
+      assignment_title: assignment?.name,
+      grade: submission.grade,
+      date: submission.submitted_at
+        ? new Date(submission.submitted_at)
+        : undefined,
+      status,
+      subject: subjects[0],
+      preview_url: submission.preview_url,
+      student_lp_enrollments: student_enrolemts,
+      canvas_submission_id: submission.id ? Number(submission.id) : undefined,
+      done_by_id: status == SampleStatus.COMPLETED ? teacher.id : undefined,
+    } as SampleEntity;
+  }
+
+  protected async updateSample(
+    submission: CanvasSubmissionDto,
+    assignment: CanvasAssignmentDto,
+    teachers: CanvasUserDto[],
+  ) {
+    const sample = await this.sampleService.findOneBy({
+      canvas_submission_id: submission.id ? Number(submission.id) : undefined,
+    });
+
+    sample.status =
+      submission.missing || submission.workflow_state === 'unsubmitted'
+        ? SampleStatus.MISSING_SAMPLE
+        : !submission.grade || !assignment?.name
+          ? SampleStatus.ERRORS_FOUND
+          : submission.workflow_state === 'graded'
+            ? SampleStatus.COMPLETED
+            : SampleStatus.PENDING;
+
+    sample.assignment_title = assignment?.name;
+    sample.grade = submission.grade;
+    sample.date = submission.submitted_at
+      ? new Date(submission.submitted_at)
+      : undefined;
+    sample.preview_url = submission.preview_url;
+    if (!sample.done_by_id && sample.status == SampleStatus.COMPLETED) {
+      const teacherDto = teachers.find(
+        (teacher) => teacher.id == submission.user_id,
+      );
+
+      if (teacherDto) {
+        const teacher = await this.teacherService.findOneBy({
+          user: {
+            email: teacherDto.email,
+          },
+        });
+
+        sample.done_by_id = teacher ? teacher.id : undefined;
+      }
     }
+
+    return this.sampleService.save(sample);
   }
 
   protected async findTenantByRootAccountId(rootAccountId: string) {
@@ -459,7 +498,7 @@ export class CanvasProcessorService {
 
 @Injectable()
 export class CanvasEventProcessorService extends CanvasProcessorService {
-  async processCanvasEvent(event: CanvasEventDto): Promise<void> {
+  async processCanvasEvent(event: CanvasEventDto) {
     const { tenant, currentAcademicYear } =
       await this.findTenantByRootAccountId(event.metadata.root_account_id);
 
@@ -531,6 +570,11 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
     event: CanvasSubmissionUpdatedEventDto,
     tenant: TenantEntity,
   ): Promise<void> {
-    const { submission } = await this.getAllData(event, tenant.key);
+    const { submission, assignment, teachers } = await this.getAllData(
+      event,
+      tenant.key,
+    );
+
+    await this.updateSample(submission, assignment, teachers);
   }
 }

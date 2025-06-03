@@ -163,6 +163,10 @@ export class BaseService<
     return this.repository.save(updated);
   }
 
+  async save(entity: T): Promise<T> {
+    return this.repository.save(entity);
+  }
+
   async delete(id: EntityKey<T>): Promise<void> {
     const entity = await this.findOne(id);
     await this.repository.remove(entity);
