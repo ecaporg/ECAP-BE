@@ -285,7 +285,7 @@ export class CanvasProcessorService {
     }
   }
 
-  protected async findSubjectAndLearningPeriod(
+  protected async findSubjectWithLearningPeriod(
     assignment: CanvasAssignmentDto,
     course: CanvasCourseDto,
     tracks: TrackEntity[],
@@ -328,7 +328,7 @@ export class CanvasProcessorService {
         } as Record<string, any>,
       });
 
-      return this.findSubjectAndLearningPeriod(
+      return this.findSubjectWithLearningPeriod(
         assignment,
         course,
         tracks,
@@ -505,7 +505,7 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
 
     const student = await this.getOrCreateStudent(user[0], tenant);
 
-    const subjects = await this.findSubjectAndLearningPeriod(
+    const subjects = await this.findSubjectWithLearningPeriod(
       assignment,
       course,
       tenant.tracks,

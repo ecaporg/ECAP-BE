@@ -173,6 +173,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
   private async createTenant(queryRunner: QueryRunner): Promise<TenantEntity> {
     const tenant = await queryRunner.manager.save(TenantEntity, {
       name: 'Elite',
+      root_id: 1,
     });
     await queryRunner.manager.save(KeyEntity, {
       access_token: process.env.ELITE_KEY,
@@ -685,6 +686,7 @@ export class AddEliteData201746984777855 implements MigrationInterface {
     const studentSubmitions = submissions.filter(
       (submission) =>
         !submission.excused &&
+        submission.user_id &&
         studentLPEnrollments.some(
           (s) =>
             s.student.user.canvas_additional_info.canvas_id ==
