@@ -19,7 +19,7 @@ export class KeyService extends BaseService<KeyEntity> {
   }
 
   private async launchBrowser() {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = true;
 
     const launchOptions = {
       args: [
@@ -105,32 +105,77 @@ export class KeyService extends BaseService<KeyEntity> {
       const urlData = await urlResponse.json();
 
       const browser = await this.launchBrowser();
+      let page;
 
       try {
-        const page = await browser.newPage();
+        page = await browser.newPage();
+
+        page.setDefaultNavigationTimeout(60000);
+        page.setDefaultTimeout(60000);
 
         await page.setExtraHTTPHeaders(headers);
 
-        await page.goto(urlData.session_url, {
-          waitUntil: 'networkidle2',
-        });
+        let navigationSuccess = false;
+        const maxRetries = 3;
 
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            console.log(
+              `Navigation attempt ${attempt}/${maxRetries} to: ${urlData.session_url}`,
+            );
 
-        const cookies = await page.cookies();
+            await page.goto(urlData.session_url, {
+              waitUntil: ['domcontentloaded', 'networkidle0'],
+              timeout: 45000,
+            });
 
-        const legacyNormandySessionCookie = cookies.find(
-          (cookie) => cookie.name === '_legacy_normandy_session',
-        );
+            navigationSuccess = true;
+            break;
+          } catch (navError) {
+            console.warn(
+              `Navigation attempt ${attempt} failed:`,
+              navError.message,
+            );
 
-        if (legacyNormandySessionCookie) {
-          tenant.key.session_token = legacyNormandySessionCookie.value;
-          await this.save(tenant.key);
-        } else {
-          throw new Error('Cookie _legacy_normandy_session not found');
+            if (attempt === maxRetries) {
+              try {
+                await page.goto(urlData.session_url, {
+                  waitUntil: 'domcontentloaded',
+                  timeout: 30000,
+                });
+                navigationSuccess = true;
+              } catch (finalError) {
+                throw new Error(
+                  `Navigation failed after ${maxRetries} attempts. Last error: ${finalError.message}`,
+                );
+              }
+            } else {
+              await new Promise((resolve) => setTimeout(resolve, 2000));
+            }
+          }
+        }
+
+        if (navigationSuccess) {
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+
+          const cookies = await page.cookies();
+
+          const legacyNormandySessionCookie = cookies.find(
+            (cookie) => cookie.name === '_legacy_normandy_session',
+          );
+
+          if (legacyNormandySessionCookie) {
+            tenant.key.session_token = legacyNormandySessionCookie.value;
+            await this.save(tenant.key);
+          } else {
+            throw new Error('Cookie _legacy_normandy_session not found');
+          }
         }
       } finally {
-        await browser.close();
+        if (page) {
+          await page.close().catch(console.error);
+        }
+        await browser.close().catch(console.error);
       }
     }
     return tenant.key;
