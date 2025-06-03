@@ -46,9 +46,18 @@ export class KeyService extends BaseService<KeyEntity> {
       const urlData = await urlResponse.json();
 
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: process.env.NODE_ENV === 'production',
         defaultViewport: null,
-        args: ['--start-maximized'],
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--single-process',
+          ...(process.env.NODE_ENV !== 'production'
+            ? ['--start-maximized']
+            : []),
+        ],
       });
 
       try {
