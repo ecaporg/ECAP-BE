@@ -1,7 +1,5 @@
 import { IsNumber } from 'class-validator';
 
-import { ApiProperty } from '@nestjs/swagger';
-
 import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
 
 import { TenantEntity } from '../entities/tenant.entity';

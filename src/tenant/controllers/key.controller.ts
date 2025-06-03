@@ -1,4 +1,11 @@
-import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { ApiCrudResponse, extractPaginationOptions, Roles } from '@/core';
@@ -19,7 +26,7 @@ export class KeyController {
   ) {}
 
   @Get('access-token')
-  @ApiOperation({ summary: 'Get school by ID' })
+  @ApiOperation({ summary: 'Get access token' })
   @ApiCrudResponse(KeyEntity)
   @UseInterceptors(TenantKeyFilterInterceptor)
   @Roles(
@@ -35,7 +42,31 @@ export class KeyController {
         key: true,
       },
     );
-    const key = await this.service.refreshSessionToken(tenant);
-    return key;
+
+    return tenant.key;
+  }
+
+  @Post('refresh-session-token')
+  @ApiOperation({ summary: 'Refresh session token' })
+  @ApiCrudResponse(KeyEntity)
+  @UseInterceptors(TenantKeyFilterInterceptor)
+  @Roles(
+    RolesEnum.SUPER_ADMIN,
+    RolesEnum.ADMIN,
+    RolesEnum.DIRECTOR,
+    RolesEnum.TEACHER,
+  )
+  async refreshSessionToken(
+    @Query() filter: TenantKeyFilterDto,
+    @Body() body: { session_token: string },
+  ) {
+    const tenant = await this.tenantService.findOneBy(
+      extractPaginationOptions(filter).filters,
+      {
+        key: true,
+      },
+    );
+
+    return this.service.refreshSessionToken(tenant, body.session_token);
   }
 }
