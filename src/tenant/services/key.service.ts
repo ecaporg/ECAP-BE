@@ -19,11 +19,62 @@ export class KeyService extends BaseService<KeyEntity> {
   }
 
   private async launchBrowser() {
-    return puppeteer.launch({
-      args: ['--start-maximized'],
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    const launchOptions = {
+      args: [
+        '--start-maximized',
+        ...(isProduction
+          ? [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-accelerated-2d-canvas',
+              '--no-first-run',
+              '--no-zygote',
+              '--disable-gpu',
+            ]
+          : []),
+      ],
       defaultViewport: null,
-      headless: false,
-    });
+      headless: isProduction ? true : false,
+    };
+
+    try {
+      return await puppeteer.launch(launchOptions);
+    } catch (error) {
+      console.error(
+        'Failed to launch browser with default config:',
+        error.message,
+      );
+
+      // Try with explicit executable path for common deployment environments
+      const possiblePaths = [
+        '/usr/bin/chromium-browser',
+        '/usr/bin/chromium',
+        '/usr/bin/google-chrome-stable',
+        '/usr/bin/google-chrome',
+      ];
+
+      for (const executablePath of possiblePaths) {
+        try {
+          return await puppeteer.launch({
+            ...launchOptions,
+            executablePath,
+          });
+        } catch (pathError) {
+          console.warn(
+            `Failed to launch with ${executablePath}:`,
+            pathError.message,
+          );
+        }
+      }
+
+      // If all paths fail, throw the original error
+      throw new Error(
+        `Failed to launch browser. Original error: ${error.message}. Please ensure Chrome is installed by running: npx puppeteer browsers install chrome`,
+      );
+    }
   }
 
   async refreshSessionToken(tenant: TenantEntity) {
