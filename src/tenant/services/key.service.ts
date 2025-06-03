@@ -124,9 +124,23 @@ export class KeyService extends BaseService<KeyEntity> {
               `Navigation attempt ${attempt}/${maxRetries} to: ${urlData.session_url}`,
             );
 
+            let waitUntil;
+            let timeout;
+
+            if (attempt === 1) {
+              waitUntil = 'load';
+              timeout = 60000;
+            } else if (attempt === 2) {
+              waitUntil = 'domcontentloaded';
+              timeout = 60000;
+            } else {
+              waitUntil = 'networkidle2';
+              timeout = 60000;
+            }
+
             await page.goto(urlData.session_url, {
-              waitUntil: ['domcontentloaded', 'networkidle0'],
-              timeout: 45000,
+              waitUntil,
+              timeout,
             });
 
             navigationSuccess = true;
@@ -137,26 +151,40 @@ export class KeyService extends BaseService<KeyEntity> {
               navError.message,
             );
 
-            if (attempt === maxRetries) {
-              try {
-                await page.goto(urlData.session_url, {
-                  waitUntil: 'domcontentloaded',
-                  timeout: 30000,
-                });
-                navigationSuccess = true;
-              } catch (finalError) {
-                throw new Error(
-                  `Navigation failed after ${maxRetries} attempts. Last error: ${finalError.message}`,
-                );
-              }
-            } else {
-              await new Promise((resolve) => setTimeout(resolve, 2000));
+            if (attempt < maxRetries) {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
             }
           }
         }
 
+        // If all navigation attempts failed, try one final approach with no wait conditions
+        if (!navigationSuccess) {
+          try {
+            console.log('Trying final navigation with minimal conditions');
+            await page.goto(urlData.session_url, {
+              timeout: 60000,
+            });
+
+            // Wait for basic page elements to load
+            await page
+              .waitForFunction(
+                () =>
+                  document.readyState === 'complete' ||
+                  document.readyState === 'interactive',
+                { timeout: 5000 },
+              )
+              .catch(() => {}); // Ignore timeout here
+
+            navigationSuccess = true;
+          } catch (finalError) {
+            throw new Error(
+              `All navigation attempts failed. Last error: ${finalError.message}`,
+            );
+          }
+        }
+
         if (navigationSuccess) {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
           const cookies = await page.cookies();
 
