@@ -18,42 +18,13 @@ export class KeyService extends BaseService<KeyEntity> {
   }
 
   private async launchBrowser() {
-    // Lazy loading puppeteer тільки коли потрібно
     const puppeteer = await import('puppeteer-core');
 
-    if (process.env.NODE_ENV === 'production') {
-      const chromiumModule = await import('@sparticuz/chromium');
-      const chromium = chromiumModule.default || chromiumModule;
-
-      return puppeteer.default.launch({
-        args: [
-          ...(chromium.args || []),
-          '--hide-scrollbars',
-          '--disable-web-security',
-          '--disable-extensions',
-          '--disable-plugins',
-          '--disable-images',
-          '--disable-javascript',
-          '--no-first-run',
-          '--disable-default-apps',
-          '--disable-background-timer-throttling',
-          '--disable-backgrounding-occluded-windows',
-          '--disable-renderer-backgrounding',
-          '--memory-pressure-off',
-        ],
-        defaultViewport: chromium.defaultViewport || null,
-        executablePath: await (chromium.executablePath
-          ? chromium.executablePath()
-          : '/usr/bin/chromium-browser'),
-        headless: chromium.headless !== false,
-      });
-    } else {
-      return puppeteer.default.launch({
-        args: ['--start-maximized'],
-        defaultViewport: null,
-        headless: false,
-      });
-    }
+    return puppeteer.default.launch({
+      args: ['--start-maximized'],
+      defaultViewport: null,
+      headless: false,
+    });
   }
 
   async refreshSessionToken(tenant: TenantEntity) {
