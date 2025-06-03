@@ -1,3 +1,4 @@
+import puppeteer from 'puppeteer';
 import { Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -18,9 +19,7 @@ export class KeyService extends BaseService<KeyEntity> {
   }
 
   private async launchBrowser() {
-    const puppeteer = await import('puppeteer-core');
-
-    return puppeteer.default.launch({
+    return puppeteer.launch({
       args: ['--start-maximized'],
       defaultViewport: null,
       headless: false,
