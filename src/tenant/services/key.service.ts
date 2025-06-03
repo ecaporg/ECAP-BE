@@ -18,39 +18,6 @@ export class KeyService extends BaseService<KeyEntity> {
     super(keyRepository);
   }
 
-  private async launchBrowser() {
-    const isProduction = true;
-
-    const launchOptions = {
-      headless: isProduction,
-      args: [
-        ...(isProduction
-          ? [
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-              '--disable-dev-shm-usage',
-              '--disable-gpu',
-              '--disable-web-security',
-              '--disable-features=VizDisplayCompositor',
-            ]
-          : []),
-      ],
-      timeout: 120000, // 2 minutes
-    };
-
-    try {
-      return await chromium.launch(launchOptions);
-    } catch (error) {
-      console.error(
-        'Failed to launch browser with default config:',
-        error.message,
-      );
-      throw new Error(
-        `Failed to launch browser. Original error: ${error.message}`,
-      );
-    }
-  }
-
   async refreshSessionToken(tenant: TenantEntity) {
     if (
       new Date(tenant.key.updatedAt) <
@@ -78,124 +45,17 @@ export class KeyService extends BaseService<KeyEntity> {
 
       const urlData = await urlResponse.json();
 
-      // Wrap the entire browser operation with a timeout
-      const browserOperation = async () => {
-        const browser = await this.launchBrowser();
-        let page;
-
-        try {
-          page = await browser.newPage();
-
-          // Set headers
-          await page.setExtraHTTPHeaders(headers);
-
-          let navigationSuccess = false;
-          const maxRetries = 3;
-
-          for (let attempt = 1; attempt <= maxRetries; attempt++) {
-            try {
-              console.log(
-                `Navigation attempt ${attempt}/${maxRetries} to: ${urlData.session_url}`,
-              );
-
-              let waitUntil;
-              let timeout;
-
-              if (attempt === 1) {
-                waitUntil = 'load';
-                timeout = 120000;
-              } else if (attempt === 2) {
-                waitUntil = 'domcontentloaded';
-                timeout = 90000;
-              } else {
-                waitUntil = 'networkidle';
-                timeout = 60000;
-              }
-
-              await page.goto(urlData.session_url, {
-                waitUntil,
-                timeout,
-              });
-
-              navigationSuccess = true;
-              break;
-            } catch (navError) {
-              console.warn(
-                `Navigation attempt ${attempt} failed:`,
-                navError.message,
-              );
-
-              if (attempt < maxRetries) {
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-              }
-            }
-          }
-
-          // If all navigation attempts failed, try one final approach with no wait conditions
-          if (!navigationSuccess) {
-            try {
-              console.log('Trying final navigation with minimal conditions');
-              await page.goto(urlData.session_url, {
-                timeout: 60000,
-              });
-
-              // Wait for basic page elements to load
-              await page
-                .waitForFunction(
-                  () =>
-                    document.readyState === 'complete' ||
-                    document.readyState === 'interactive',
-                  { timeout: 5000 },
-                )
-                .catch(() => {}); // Ignore timeout here
-
-              navigationSuccess = true;
-            } catch (finalError) {
-              throw new Error(
-                `All navigation attempts failed. Last error: ${finalError.message}`,
-              );
-            }
-          }
-
-          if (navigationSuccess) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            const cookies = await page.context().cookies();
-
-            const legacyNormandySessionCookie = cookies.find(
-              (cookie) => cookie.name === '_legacy_normandy_session',
-            );
-
-            if (legacyNormandySessionCookie) {
-              tenant.key.session_token = legacyNormandySessionCookie.value;
-              await this.save(tenant.key);
-            } else {
-              throw new Error('Cookie _legacy_normandy_session not found');
-            }
-          }
-        } finally {
-          if (page) {
-            await page.close().catch(console.error);
-          }
-          await browser.close().catch(console.error);
-        }
-      };
-
-      // Set a global timeout for the entire operation (5 minutes)
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(
-          () => {
-            reject(new Error('Browser operation timed out after 5 minutes'));
-          },
-          5 * 60 * 1000,
-        );
+      const res = await fetch(urlData.session_url, {
+        headers,
       });
 
-      try {
-        await Promise.race([browserOperation(), timeoutPromise]);
-      } catch (error) {
-        console.error('Browser operation failed:', error.message);
-        throw error;
+      const cookies = Array.from(res.headers.entries()).filter(([, value]) =>
+        value.includes('_legacy_normandy_session'),
+      );
+
+      if (cookies.length > 0) {
+        tenant.key.session_token = cookies[0][1].split('; ')[0];
+        await this.save(tenant.key);
       }
     }
     return tenant.key;

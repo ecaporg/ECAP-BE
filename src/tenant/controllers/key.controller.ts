@@ -35,6 +35,7 @@ export class KeyController {
         key: true,
       },
     );
-    return this.service.refreshSessionToken(tenant);
+    const key = await this.service.refreshSessionToken(tenant);
+    return key;
   }
 }
