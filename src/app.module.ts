@@ -5,12 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
 import { AuthModule } from '@/auth/auth.module';
+import { CanvasEventsModule } from '@/canvas-events/canvas-events.module';
 import { ComplianceTasksModule } from '@/compliance-tasks/compliance-tasks.module';
 import { CoreModule } from '@/core/core.module';
 import { DashboardModule } from '@/dashboard/dashboard.module';
 import { SchoolModule } from '@/school/school.module';
 import { UsersModule } from '@/users/users.module';
-
 @Module({
   imports: [
     CoreModule,
@@ -19,6 +19,7 @@ import { UsersModule } from '@/users/users.module';
     SchoolModule,
     ComplianceTasksModule,
     DashboardModule,
+    CanvasEventsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
