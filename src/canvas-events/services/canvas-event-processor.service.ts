@@ -502,7 +502,15 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
     const { tenant, currentAcademicYear } =
       await this.findTenantByRootAccountId(event.metadata.root_account_id);
 
-    await this.handleEventByType(event, tenant, currentAcademicYear);
+    try {
+      await this.handleEventByType(event, tenant, currentAcademicYear);
+    } catch (error) {
+      this.errorService.create({
+        tenant,
+        message: `Error processing canvas event: ${error.message}, event: ${JSON.stringify(event)}`,
+      });
+      throw error;
+    }
   }
 
   private async handleEventByType(
