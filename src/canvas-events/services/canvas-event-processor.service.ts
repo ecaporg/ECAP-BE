@@ -498,6 +498,36 @@ export class CanvasProcessorService {
 
 @Injectable()
 export class CanvasEventProcessorService extends CanvasProcessorService {
+  constructor(
+    protected readonly tenantService: TenantService,
+    protected readonly studentService: StudentService,
+    protected readonly academicYearService: AcademicYearService,
+    protected readonly userService: UsersService,
+    protected readonly teacherService: TeacherService,
+    protected readonly canvasResourcesService: CanvasResourcesService,
+    protected readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService,
+    protected readonly learningPeriodService: TrackLearningPeriodService,
+    protected readonly subjectService: SubjectService,
+    protected readonly studentLPEnrollmentService: StudentLPEnrollmentService,
+    protected readonly sampleService: SampleService,
+    protected readonly errorService: ErrorService,
+  ) {
+    super(
+      tenantService,
+      studentService,
+      academicYearService,
+      userService,
+      teacherService,
+      canvasResourcesService,
+      teacherSchoolYearEnrollmentService,
+      learningPeriodService,
+      subjectService,
+      studentLPEnrollmentService,
+      sampleService,
+      errorService,
+    );
+  }
+
   async processCanvasEvent(event: CanvasEventDto) {
     const { tenant, currentAcademicYear } =
       await this.findTenantByRootAccountId(event.metadata.root_account_id);
