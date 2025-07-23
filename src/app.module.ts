@@ -32,6 +32,7 @@ import { UsersModule } from '@/users/users.module';
         url: configService.get('POSTGRES_URL'),
         synchronize: false,
         dropSchema: false,
+        ssl: true,
         logging: false,
         logger: 'advanced-console',
         subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
