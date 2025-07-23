@@ -179,8 +179,8 @@ export class DashboardService {
       .map((avg) => {
         const compliance = this.calculateCompliance(
           stats.periodAverages,
-          this.formatDate(stats.currentLP.learningPeriods[0].start_date),
-          this.formatDate(stats.currentLP.learningPeriods[0].end_date),
+          this.formatDate(stats.currentLP.learningPeriods[0]?.start_date),
+          this.formatDate(stats.currentLP.learningPeriods[0]?.end_date),
           avg.academy_id,
         );
 
@@ -198,7 +198,7 @@ export class DashboardService {
     period: LearningPeriodGroup | null,
     averages: DashboardStatsWithGroups['periodAverages'],
   ) {
-    if (!period) {
+    if (!period || !period[0]) {
       return {
         learningPeriods: [],
         compliance: 0,
@@ -215,7 +215,7 @@ export class DashboardService {
       ) || 0;
 
     return {
-      learningPeriods: period[1],
+      learningPeriods: period[0],
       compliance,
       completed: compliance >= 100,
     };

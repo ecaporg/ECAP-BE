@@ -29,6 +29,14 @@ export class AcademicYearService extends BaseService<AcademicYearEntity> {
       },
     });
 
+    if (!academicYears.length) {
+      return this.academicYearRepository
+        .findOne({
+          order: { to: 'DESC' },
+        })
+        .then((year) => (year ? [year] : []));
+    }
+
     return academicYears;
   }
 }
