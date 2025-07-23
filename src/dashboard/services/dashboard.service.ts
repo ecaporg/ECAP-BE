@@ -75,10 +75,11 @@ export class DashboardService {
     const currentAcademicYears =
       await this.academicYearService.findCurrentAcademicYears();
 
-    filters.track = {
-      ...filters.track,
-      academic_year_id: In(currentAcademicYears.map((year) => year.id)),
-    };
+    if (currentAcademicYears.length)
+      filters.track = {
+        ...filters.track,
+        academic_year_id: In(currentAcademicYears.map((year) => year.id)),
+      };
 
     const now = new Date();
     const learningPeriods = await this.trackLearningPeriodService.findBy({
