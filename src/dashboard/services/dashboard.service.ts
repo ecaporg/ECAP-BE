@@ -86,6 +86,36 @@ export class DashboardService {
       where: { ...filters },
     });
 
+    if (!learningPeriods.length) {
+      return {
+        academicYear: currentAcademicYears[0] || null,
+        academies: [],
+        groups: [],
+        periodAverages: [],
+        yearToDateCompliance: 0,
+        currentLP: {
+          learningPeriods: [],
+          compliance: 0,
+          completed: false,
+        },
+        previousLP: {
+          learningPeriods: [],
+          compliance: 0,
+          completed: false,
+        },
+        beforeThePreviousOne: {
+          learningPeriods: [],
+          compliance: 0,
+          completed: false,
+        },
+        upcomingLP: {
+          learningPeriods: [],
+          compliance: 0,
+          completed: false,
+        },
+      };
+    }
+
     const periodGroups = this.groupLearningPeriods(learningPeriods);
     const currentPeriodIndex = this.findCurrentPeriodIndex(periodGroups, now);
 
