@@ -122,13 +122,12 @@ export class SampleService extends BaseService<SampleEntity> {
 
   async getFlaggedSamples(options?: FlaggedSamplesFilterDto) {
     const paginationOptions = extractPaginationOptions(options);
-    const res = await this.findAll(paginationOptions);
-    // const complatedCount = await this.count({
-    //   filters: {
-    //     ...paginationOptions.filters,
-    //     status: SampleStatus.COMPLETED,
-    //   },
-    // });
-    return res;
+    return this.findAll(paginationOptions);
+  }
+
+  async uploadToStudentPathway(id: number) {
+    const sample = await this.findOneBy({ id });
+
+    return sample;
   }
 }
