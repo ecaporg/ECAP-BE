@@ -530,7 +530,7 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
 
   async processCanvasEvent(event: CanvasEventDto) {
     const { tenant, currentAcademicYear } =
-      await this.findTenantByRootAccountId('1'); //replace root_id on domain for more reliable search. Example:  elite.canvas.com
+      await this.findTenantByRootAccountId('1'); //replace root_id on domain for more reliable search. Example:  eliteaa.instructure.com
 
     try {
       await this.handleEventByType(event, tenant, currentAcademicYear);

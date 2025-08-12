@@ -245,7 +245,7 @@ export class DashboardService {
       ) || 0;
 
     return {
-      learningPeriods: period[0],
+      learningPeriods: period[1] || [],
       compliance,
       completed: compliance >= 100,
     };
