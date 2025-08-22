@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 
 import { NotFoundException } from '../../core';
-
 import { DatedGenericEntity } from '../entity/generic-entity';
 import {
   createOrderCondition,

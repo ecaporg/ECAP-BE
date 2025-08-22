@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ApiErrorResponses } from '../../core';
-
 import { EmailDTO } from '../dtos/email.dto';
 import { AuthEmailService } from '../services/auth-email.service';
 

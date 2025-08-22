@@ -5,7 +5,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
 import { KeyEntity } from '../../tenant/entities/key.entity';
-
 import {
   CanvasAssignmentDto,
   CanvasCourseDto,

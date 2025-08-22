@@ -6,7 +6,6 @@ import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ForbiddenException } from '../../core';
-
 import { mockEmailService } from '../../test-utils/auth-service.mock';
 import { mockConfigService } from '../../test-utils/config-service.mock';
 import dbTestingUtils from '../../test-utils/db-testing.utils';

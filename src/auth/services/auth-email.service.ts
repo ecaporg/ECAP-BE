@@ -5,7 +5,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 
 import { BadRequestException, UnauthorizedException } from '../../core';
 import { UsersService } from '../../users/users.service';
-
 import { ChangeEmailDTO } from '../dtos/change-email.dto';
 import { AuthUser } from '../types/auth-user';
 

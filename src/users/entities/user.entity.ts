@@ -6,7 +6,6 @@ import { GenericEntity } from '../../core';
 import { AdminEntity, TeacherEntity } from '../../staff/entities/staff.entity';
 import { DirectorEntity } from '../../staff/entities/staff.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
-
 import { RolesEnum } from '../enums/roles.enum';
 
 @Entity({ name: 'users' })

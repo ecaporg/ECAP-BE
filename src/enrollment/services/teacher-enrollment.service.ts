@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '../../core';
-
 import { TeacherSchoolYearEnrollmentEntity } from '../entities/teacher-enrollment.entity';
 
 @Injectable()

@@ -7,7 +7,6 @@ import {
   IdDecorator,
   RecordStringAndDotNotation,
 } from '../../core';
-
 import { SampleEntity, SampleFlagCategory } from '../entities/sample.entity';
 
 const FILTER_KEYS = {

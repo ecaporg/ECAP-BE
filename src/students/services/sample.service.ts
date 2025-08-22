@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { extractPaginationOptions } from '../../core';
 import { BaseService } from '../../core';
-
 import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
   CreateSampleFlagCompletedDto,

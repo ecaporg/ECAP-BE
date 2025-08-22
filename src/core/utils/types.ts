@@ -1,7 +1,3 @@
-import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
-
-import { BaseFilterDto } from '../dto/base-filter.dto';
-
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export type NestedObjectToDotNotation<
   T,

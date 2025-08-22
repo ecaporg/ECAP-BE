@@ -24,7 +24,6 @@ import {
 } from '../../core';
 import { UserEntity } from '../../users/entities/user.entity';
 import { RolesEnum } from '../../users/enums/roles.enum';
-
 import { SchoolFilterDto } from '../dto/filters.dto';
 import { CreateSchoolDto, UpdateSchoolDto } from '../dto/school.dto';
 import { SchoolEntity as School } from '../entities/school.entity';

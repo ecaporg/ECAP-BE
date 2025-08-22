@@ -30,7 +30,6 @@ import { SubjectService } from '../../track/services/subject.service';
 import { TrackLearningPeriodService } from '../../track/services/track-learning-period.service';
 import { RolesEnum } from '../../users/enums/roles.enum';
 import { UsersService } from '../../users/users.service';
-
 import {
   CanvasAssignmentDto,
   CanvasCourseDto,

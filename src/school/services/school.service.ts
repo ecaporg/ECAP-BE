@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from '../../core';
 import { AdminService } from '../../staff/services/staff.service';
 import { UserEntity } from '../../users/entities/user.entity';
-
 import { SchoolEntity } from '../entities/school.entity';
 
 @Injectable()

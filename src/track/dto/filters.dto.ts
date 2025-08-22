@@ -7,7 +7,6 @@ import {
   IdDecorator,
   RecordStringAndDotNotation,
 } from '../../core';
-
 import { TrackEntity } from '../entities/track.entity';
 import { TrackCalendarEntity } from '../entities/track-calendar.entity';
 

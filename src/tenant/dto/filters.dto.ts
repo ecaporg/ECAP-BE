@@ -5,7 +5,6 @@ import {
   IdDecorator,
   RecordStringAndDotNotation,
 } from '../../core';
-
 import { TenantEntity } from '../entities/tenant.entity';
 
 const FILTER_KEYS = {

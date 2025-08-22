@@ -7,7 +7,6 @@ import {
   IdDecorator,
   RecordStringAndDotNotation,
 } from '../../core';
-
 import { AcademyEntity } from '../entities/academy.entity';
 import { SchoolEntity } from '../entities/school.entity';
 

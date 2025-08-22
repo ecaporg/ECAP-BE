@@ -6,7 +6,6 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
 import { ForbiddenException } from '../../core';
-
 import { AuthService } from '../services/auth.service';
 import { AuthUser, IAuthUserRefreshToken } from '../types/auth-user';
 
