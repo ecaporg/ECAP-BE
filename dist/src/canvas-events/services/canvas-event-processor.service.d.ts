@@ -1,0 +1,77 @@
+import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
+import { StudentLPEnrollmentService } from 'src/enrollment/services/student-enrollment.service';
+import { TeacherSchoolYearEnrollmentService } from 'src/enrollment/services/teacher-enrollment.service';
+import { TeacherEntity } from 'src/staff/entities/staff.entity';
+import { TeacherService } from 'src/staff/services/staff.service';
+import { SampleEntity } from 'src/students/entities/sample.entity';
+import { StudentEntity } from 'src/students/entities/student.entity';
+import { SampleService } from 'src/students/services/sample.service';
+import { StudentService } from 'src/students/services/student.service';
+import { KeyEntity } from 'src/tenant/entities/key.entity';
+import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { ErrorService } from 'src/tenant/services/error.service';
+import { TenantService } from 'src/tenant/services/tenant.service';
+import { AcademicYearEntity } from 'src/track/entities/academic-year.entity';
+import { SubjectEntity } from 'src/track/entities/subject.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
+import { TrackLearningPeriodEntity } from 'src/track/entities/track-learning-period.entity';
+import { AcademicYearService } from 'src/track/services/academic-year.service';
+import { SubjectService } from 'src/track/services/subject.service';
+import { TrackLearningPeriodService } from 'src/track/services/track-learning-period.service';
+import { UsersService } from 'src/users/users.service';
+import { CanvasAssignmentDto, CanvasCourseDto, CanvasEventDto, CanvasSubmissionDto, CanvasUserDto } from '../dto';
+import { CanvasResourcesService } from './canvas-resources.service';
+export declare class CanvasProcessorService {
+    protected readonly tenantService: TenantService;
+    protected readonly studentService: StudentService;
+    protected readonly academicYearService: AcademicYearService;
+    protected readonly userService: UsersService;
+    protected readonly teacherService: TeacherService;
+    protected readonly canvasResourcesService: CanvasResourcesService;
+    protected readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService;
+    protected readonly learningPeriodService: TrackLearningPeriodService;
+    protected readonly subjectService: SubjectService;
+    protected readonly studentLPEnrollmentService: StudentLPEnrollmentService;
+    protected readonly sampleService: SampleService;
+    protected readonly errorService: ErrorService;
+    constructor(tenantService: TenantService, studentService: StudentService, academicYearService: AcademicYearService, userService: UsersService, teacherService: TeacherService, canvasResourcesService: CanvasResourcesService, teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService, learningPeriodService: TrackLearningPeriodService, subjectService: SubjectService, studentLPEnrollmentService: StudentLPEnrollmentService, sampleService: SampleService, errorService: ErrorService);
+    protected getAllData(event: CanvasEventDto, key: KeyEntity): Promise<{
+        enrollment: import("../dto").CanvasEnrollmentDto;
+        assignment: CanvasAssignmentDto;
+        course: CanvasCourseDto;
+        teachers: CanvasUserDto[];
+        user: CanvasUserDto[];
+        submission: CanvasSubmissionDto;
+    }>;
+    protected getOrCreateTeachersEnrolemts(teachers: CanvasUserDto[], tenant: TenantEntity, currentAcademicYear: AcademicYearEntity): Promise<TeacherSchoolYearEnrollmentEntity[]>;
+    protected createTeacherAndEnrolemt(teacher: CanvasUserDto, tenant: TenantEntity, currentAcademicYear: AcademicYearEntity): Promise<TeacherSchoolYearEnrollmentEntity[]>;
+    protected getOrCreateStudent(person: CanvasUserDto, tenant: TenantEntity): Promise<StudentEntity>;
+    protected findSubjectWithLearningPeriod(assignment: CanvasAssignmentDto, course: CanvasCourseDto, tracks: TrackEntity[], student: StudentEntity): Promise<SubjectEntity[]>;
+    protected getOrCreateStudentEnrolemts(student: StudentEntity, learning_periods: TrackLearningPeriodEntity[], teacher_enrolemts: TeacherSchoolYearEnrollmentEntity[]): Promise<StudentLPEnrollmentEntity[]>;
+    protected createSamples(student_enrolemts: StudentLPEnrollmentEntity[], subjects: SubjectEntity[], assignment: CanvasAssignmentDto, submission: CanvasSubmissionDto, teacher: TeacherEntity): Promise<SampleEntity>;
+    protected updateSample(submission: CanvasSubmissionDto, assignment: CanvasAssignmentDto, teachers: CanvasUserDto[]): Promise<SampleEntity>;
+    protected findTenantByRootAccountId(rootAccountId: string): Promise<{
+        tenant: TenantEntity;
+        currentAcademicYear: AcademicYearEntity;
+    }>;
+}
+export declare class CanvasEventProcessorService extends CanvasProcessorService {
+    protected readonly tenantService: TenantService;
+    protected readonly studentService: StudentService;
+    protected readonly academicYearService: AcademicYearService;
+    protected readonly userService: UsersService;
+    protected readonly teacherService: TeacherService;
+    protected readonly canvasResourcesService: CanvasResourcesService;
+    protected readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService;
+    protected readonly learningPeriodService: TrackLearningPeriodService;
+    protected readonly subjectService: SubjectService;
+    protected readonly studentLPEnrollmentService: StudentLPEnrollmentService;
+    protected readonly sampleService: SampleService;
+    protected readonly errorService: ErrorService;
+    constructor(tenantService: TenantService, studentService: StudentService, academicYearService: AcademicYearService, userService: UsersService, teacherService: TeacherService, canvasResourcesService: CanvasResourcesService, teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService, learningPeriodService: TrackLearningPeriodService, subjectService: SubjectService, studentLPEnrollmentService: StudentLPEnrollmentService, sampleService: SampleService, errorService: ErrorService);
+    processCanvasEvent(event: CanvasEventDto): Promise<void>;
+    private handleEventByType;
+    private handleSubmissionCreated;
+    private handleSubmissionUpdated;
+}

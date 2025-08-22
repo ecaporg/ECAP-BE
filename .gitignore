@@ -1,6 +1,6 @@
 # compiled output
 /node_modules
-/dist
+# /dist  # Commented out for Render deployment
 /migrations/*/*.json
 
 # Logs
