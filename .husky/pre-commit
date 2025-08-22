@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+echo "Building project..."
+
+# Build the project
+npm run build
+
+# Check if build was successful
+if [ $? -ne 0 ]; then
+  echo "Build failed! Commit aborted."
+  exit 1
+fi
+
+echo "Build successful!"
+
+# Add dist folder to staging area
+git add dist/
+
+echo "Added dist/ to commit"
+
+echo "Pre-commit checks passed!"

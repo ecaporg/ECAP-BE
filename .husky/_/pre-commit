@@ -1,22 +1,2 @@
 #!/usr/bin/env sh
 . "$(dirname "$0")/h"
-
-echo "🔨 Building project..."
-
-# Збираємо проект
-npm run build
-
-# Перевіряємо чи збірка успішна
-if [ $? -ne 0 ]; then
-  echo "❌ Build failed! Commit aborted."
-  exit 1
-fi
-
-echo "✅ Build successful!"
-
-# Додаємо dist папку до staging area
-git add dist/
-
-echo "📦 Added dist/ to commit"
-
-echo "✅ Pre-commit checks passed!"
