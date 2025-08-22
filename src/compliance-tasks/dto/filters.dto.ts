@@ -6,8 +6,8 @@ import {
   BaseFilterDto,
   IdDecorator,
   RecordStringAndDotNotation,
-} from 'src/core';
-import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+} from '../../core';
+import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 
 const FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'learning_period_id',

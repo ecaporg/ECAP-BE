@@ -2,10 +2,10 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from 'src/core';
-import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
-import { StudentEntity } from 'src/students/entities/student.entity';
-import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { GenericEntity } from '../../core';
+import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
+import { StudentEntity } from '../../students/entities/student.entity';
+import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 @Entity({ name: 'schools' })
 export class SchoolEntity extends GenericEntity {

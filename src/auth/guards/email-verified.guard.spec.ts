@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext } from '@nestjs/common';
 
-import { UnauthorizedException } from 'src/core';
+import { UnauthorizedException } from '../../core';
 
 import { EmailVerifiedGuard } from './email-verified.guard';
 

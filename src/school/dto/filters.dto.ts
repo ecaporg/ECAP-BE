@@ -6,7 +6,7 @@ import {
   BaseFilterDto,
   IdDecorator,
   RecordStringAndDotNotation,
-} from 'src/core';
+} from '../../core';
 
 import { AcademyEntity } from '../entities/academy.entity';
 import { SchoolEntity } from '../entities/school.entity';

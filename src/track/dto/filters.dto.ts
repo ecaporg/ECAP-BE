@@ -6,7 +6,7 @@ import {
   BaseFilterDto,
   IdDecorator,
   RecordStringAndDotNotation,
-} from 'src/core';
+} from '../../core';
 
 import { TrackEntity } from '../entities/track.entity';
 import { TrackCalendarEntity } from '../entities/track-calendar.entity';

@@ -3,9 +3,9 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from 'src/core';
-import { AdminService } from 'src/staff/services/staff.service';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { BaseService } from '../../core';
+import { AdminService } from '../../staff/services/staff.service';
+import { UserEntity } from '../../users/entities/user.entity';
 
 import { AcademyEntity } from '../entities/academy.entity';
 

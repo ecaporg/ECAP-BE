@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
-import { KeyEntity } from 'src/tenant/entities/key.entity';
+import { KeyEntity } from '../../tenant/entities/key.entity';
 
 import {
   CanvasAssignmentDto,

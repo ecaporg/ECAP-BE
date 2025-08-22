@@ -6,7 +6,7 @@ import {
   BaseFilterDto,
   IdDecorator,
   RecordStringAndDotNotation,
-} from 'src/core';
+} from '../../core';
 
 import { SampleEntity, SampleFlagCategory } from '../entities/sample.entity';
 

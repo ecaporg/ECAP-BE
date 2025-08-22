@@ -22,7 +22,7 @@ import {
   GenericEntity,
   PaginatedResult,
   PaginationOptions,
-} from 'src/core';
+} from '../../core';
 
 class GenericEntityClass implements GenericEntity {
   id: number;

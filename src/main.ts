@@ -1,7 +1,7 @@
 // Інші імпорти
 import { useContainer } from 'class-validator';
-import { DataSource } from 'typeorm';
 
+// import { DataSource } from 'typeorm';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';

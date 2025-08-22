@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { DatedGenericEntity } from 'src/core';
+import { DatedGenericEntity } from '../../core';
 
 import { TrackEntity } from './track.entity';
 

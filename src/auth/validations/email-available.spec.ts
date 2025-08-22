@@ -1,4 +1,4 @@
-import type { UsersService } from 'src/users/users.service';
+import type { UsersService } from '../../users/users.service';
 
 import { EmailAvailableConstraint } from './email-available';
 

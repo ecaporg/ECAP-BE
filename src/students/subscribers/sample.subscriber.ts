@@ -8,11 +8,11 @@ import {
 
 import { Injectable, Logger } from '@nestjs/common';
 
-import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 import {
   SampleEntity,
   SampleStatus,
-} from 'src/students/entities/sample.entity';
+} from '../../students/entities/sample.entity';
 
 @Injectable()
 @EventSubscriber()

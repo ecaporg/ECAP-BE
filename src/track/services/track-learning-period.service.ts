@@ -3,8 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from 'src/core';
-
+import { BaseService } from '../../core';
 import { TrackLearningPeriodEntity } from '../entities/track-learning-period.entity';
 
 @Injectable()

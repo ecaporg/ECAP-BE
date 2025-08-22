@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { StaffModule } from 'src/staff/staff.module';
+import { StaffModule } from '../staff/staff.module';
 
 import { TrackController } from './controllers/track.controller';
 import { TrackCalendarController } from './controllers/track-calendar.controller';

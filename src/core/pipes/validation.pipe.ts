@@ -4,7 +4,7 @@ import { validate } from 'class-validator';
 
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 
-import { BadRequestException } from 'src/core';
+import { BadRequestException } from '../../core';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {

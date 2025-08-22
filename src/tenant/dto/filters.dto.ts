@@ -4,7 +4,7 @@ import {
   BaseFilterDto,
   IdDecorator,
   RecordStringAndDotNotation,
-} from 'src/core';
+} from '../../core';
 
 import { TenantEntity } from '../entities/tenant.entity';
 

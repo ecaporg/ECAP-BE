@@ -9,9 +9,9 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from 'src/core';
-import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
-import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { GenericEntity } from '../../core';
+import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
+import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
 import { SemesterEntity } from './semester.entity';

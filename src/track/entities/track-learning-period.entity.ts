@@ -2,8 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from 'src/core';
-import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { GenericEntity } from '../../core';
+import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 
 import { TrackEntity } from './track.entity';
 

@@ -3,8 +3,8 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { extractPaginationOptions } from 'src/core';
-import { BaseService } from 'src/core';
+import { extractPaginationOptions } from '../../core';
+import { BaseService } from '../../core';
 
 import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {

@@ -2,11 +2,11 @@ import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from 'src/core';
-import { AcademyEntity } from 'src/school/entities/academy.entity';
-import { SchoolEntity } from 'src/school/entities/school.entity';
-import { AdminEntity, DirectorEntity } from 'src/staff/entities/staff.entity';
-import { TrackEntity } from 'src/track/entities/track.entity';
+import { GenericEntity } from '../../core';
+import { AcademyEntity } from '../../school/entities/academy.entity';
+import { SchoolEntity } from '../../school/entities/school.entity';
+import { AdminEntity, DirectorEntity } from '../../staff/entities/staff.entity';
+import { TrackEntity } from '../../track/entities/track.entity';
 
 import { ErrorEntity } from './error.entity';
 import { KeyEntity } from './key.entity';

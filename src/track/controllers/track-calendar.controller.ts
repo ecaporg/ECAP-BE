@@ -20,8 +20,8 @@ import {
   EntityId,
   PaginatedResult,
   Roles,
-} from 'src/core';
-import { RolesEnum } from 'src/users/enums/roles.enum';
+} from '../../core';
+import { RolesEnum } from '../../users/enums/roles.enum';
 
 import { TrackCalendarFilterDto } from '../dto/filters.dto';
 import {

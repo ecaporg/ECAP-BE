@@ -3,7 +3,7 @@ import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from 'src/core';
+import { BaseService } from '../../core';
 
 import { AcademicYearEntity } from '../entities/academic-year.entity';
 

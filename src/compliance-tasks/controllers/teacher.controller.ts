@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { AuthUser } from 'src/auth/types/auth-user';
+import { AuthUser } from '../../auth/types/auth-user';
 import {
   ApiArrayResponse,
   ApiCrudResponse,
@@ -9,11 +9,11 @@ import {
   ApiPaginatedCrudResponse,
   CurrentUser,
   Roles,
-} from 'src/core';
-import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
-import { StudentEntity } from 'src/students/entities/student.entity';
-import { TenantEntity } from 'src/tenant/entities/tenant.entity';
-import { RolesEnum } from 'src/users/enums/roles.enum';
+} from '../../core';
+import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
+import { StudentEntity } from '../../students/entities/student.entity';
+import { TenantEntity } from '../../tenant/entities/tenant.entity';
+import { RolesEnum } from '../../users/enums/roles.enum';
 
 import {
   StudentSamplesFilterDto,

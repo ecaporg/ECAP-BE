@@ -2,9 +2,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from 'src/core';
-import { DirectorEntity } from 'src/staff/entities/staff.entity';
-import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { GenericEntity } from '../../core';
+import { DirectorEntity } from '../../staff/entities/staff.entity';
+import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 @Entity({ name: 'academies' })
 export class AcademyEntity extends GenericEntity {

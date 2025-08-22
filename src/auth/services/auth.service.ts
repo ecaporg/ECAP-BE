@@ -1,5 +1,5 @@
 import * as argon2 from 'argon2';
-import { CreateUserDTO } from 'src/users/dtos/create-user.dto';
+import { CreateUserDTO } from '../../users/dtos/create-user.dto';
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -10,9 +10,9 @@ import {
   ForbiddenException,
   NotFoundException,
   UnauthorizedException,
-} from 'src/core';
-import { UserEntity } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
+} from '../../core';
+import { UserEntity } from '../../users/entities/user.entity';
+import { UsersService } from '../../users/users.service';
 
 import { AuthTokensDTO } from '../dtos/auth-tokens.dto';
 import { ChangeEmailPasswordDTO } from '../dtos/change-email.dto';
