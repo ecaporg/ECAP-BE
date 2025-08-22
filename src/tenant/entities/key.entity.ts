@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
-import { DatedGenericEntity } from '@/core';
+import { DatedGenericEntity } from 'src/core';
 
 import { TenantEntity } from './tenant.entity';
 
@@ -25,3 +25,4 @@ export class KeyEntity extends DatedGenericEntity {
   @JoinColumn({ name: 'id' })
   tenant: TenantEntity;
 }
+

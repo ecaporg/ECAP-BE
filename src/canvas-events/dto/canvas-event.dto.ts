@@ -33,3 +33,4 @@ export enum CanvasEventType {
 export type CanvasEventDto =
   | CanvasSubmissionCreatedEventDto
   | CanvasSubmissionUpdatedEventDto;
+

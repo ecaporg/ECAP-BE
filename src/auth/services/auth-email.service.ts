@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 
-import { BadRequestException, UnauthorizedException } from '@/core';
-import { UsersService } from '@/users/users.service';
+import { BadRequestException, UnauthorizedException } from 'src/core';
+import { UsersService } from 'src/users/users.service';
 
 import { ChangeEmailDTO } from '../dtos/change-email.dto';
 import { AuthUser } from '../types/auth-user';
@@ -158,3 +158,4 @@ export class AuthEmailService {
     return true;
   }
 }
+

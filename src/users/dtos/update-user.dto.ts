@@ -7,3 +7,4 @@ export class UpdateUserDTO extends PartialType(CreateUserDTO) {
   emailVerified?: boolean;
   refreshToken?: string;
 }
+

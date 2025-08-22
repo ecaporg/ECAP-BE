@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import { TrackLearningPeriodEntity } from '../entities/track-learning-period.entity';
 
@@ -22,3 +22,4 @@ export class TrackLearningPeriodService extends BaseService<TrackLearningPeriodE
     return this.trackLearningPeriodRepository;
   }
 }
+

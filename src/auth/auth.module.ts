@@ -25,3 +25,4 @@ import commonImports from './common-imports';
   controllers: [AuthController, AuthEmailController],
 })
 export class AuthModule {}
+

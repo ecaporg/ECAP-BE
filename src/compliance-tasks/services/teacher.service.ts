@@ -3,14 +3,14 @@ import { Equal, FindOptionsWhere, ILike, In, LessThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
-import { AuthUser } from '@/auth/types/auth-user';
-import { BadRequestException, extractPaginationOptions } from '@/core';
-import { StudentLPEnrollmentService } from '@/enrollment/services/student-enrollment.service';
-import { StudentService } from '@/students/services/student.service';
-import { TenantEntity } from '@/tenant/entities/tenant.entity';
-import { TenantService } from '@/tenant/services/tenant.service';
-import { AcademicYearService } from '@/track/services/academic-year.service';
-import { RolesEnum } from '@/users/enums/roles.enum';
+import { AuthUser } from 'src/auth/types/auth-user';
+import { BadRequestException, extractPaginationOptions } from 'src/core';
+import { StudentLPEnrollmentService } from 'src/enrollment/services/student-enrollment.service';
+import { StudentService } from 'src/students/services/student.service';
+import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { TenantService } from 'src/tenant/services/tenant.service';
+import { AcademicYearService } from 'src/track/services/academic-year.service';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import {
   StudentSamplesFilterDto,
@@ -155,3 +155,4 @@ export class TeacherComplianceTaskService {
     return query;
   }
 }
+

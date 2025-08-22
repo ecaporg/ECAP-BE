@@ -2,12 +2,12 @@ import { In } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
-import { extractPaginationOptions } from '@/core';
-import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
-import { AcademicYearService } from '@/track/services/academic-year.service';
-import { TrackLearningPeriodService } from '@/track/services/track-learning-period.service';
-import { UserEntity } from '@/users/entities/user.entity';
-import { RolesEnum } from '@/users/enums/roles.enum';
+import { extractPaginationOptions } from 'src/core';
+import { TrackLearningPeriodEntity } from 'src/track/entities/track-learning-period.entity';
+import { AcademicYearService } from 'src/track/services/academic-year.service';
+import { TrackLearningPeriodService } from 'src/track/services/track-learning-period.service';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import {
   AcademyStatItemDto,
@@ -397,3 +397,4 @@ export class DashboardService {
     return `${year}-${month}-${day}`;
   }
 }
+

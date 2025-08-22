@@ -74,3 +74,4 @@ export class CanvasUserDto {
   @IsString()
   pronouns?: string;
 }
+

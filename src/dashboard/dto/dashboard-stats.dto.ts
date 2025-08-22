@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
-import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
+import { AcademicYearEntity } from 'src/track/entities/academic-year.entity';
+import { TrackLearningPeriodEntity } from 'src/track/entities/track-learning-period.entity';
 
 export class DashboardStatItemDto {
   @ApiProperty({
@@ -92,3 +92,4 @@ export class DashboardStatsResponseDto {
   })
   academies?: AcademyStatItemDto[];
 }
+

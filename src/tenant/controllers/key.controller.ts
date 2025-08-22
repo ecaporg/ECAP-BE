@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ApiCrudResponse, extractPaginationOptions, Roles } from '@/core';
-import { RolesEnum } from '@/users/enums/roles.enum';
+import { ApiCrudResponse, extractPaginationOptions, Roles } from 'src/core';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { TenantKeyFilterDto } from '../dto/filters.dto';
 import { KeyEntity } from '../entities/key.entity';
@@ -70,3 +70,4 @@ export class KeyController {
     return this.service.refreshSessionToken(tenant, body.session_token);
   }
 }
+

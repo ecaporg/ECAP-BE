@@ -3,7 +3,7 @@ import { In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import { StudentLPEnrollmentEntity } from '../entities/student-enrollment.entity';
 
@@ -52,3 +52,4 @@ export class StudentLPEnrollmentService extends BaseService<StudentLPEnrollmentE
     return this.studentLPEnrollmentRepository;
   }
 }
+

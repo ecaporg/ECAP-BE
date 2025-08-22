@@ -24,8 +24,8 @@ import {
   PaginatedResult,
   PaginationOptions,
   Roles,
-} from '@/core';
-import { RolesEnum } from '@/users/enums/roles.enum';
+} from 'src/core';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { TeacherEntity } from '../entities/staff.entity';
 import { TeacherService } from '../services/staff.service';
@@ -88,3 +88,4 @@ export class TeacherController {
   //   return this.service.delete(id);
   // }
 }
+

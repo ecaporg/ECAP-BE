@@ -88,3 +88,4 @@ export class CreateSampleFlagCompletedDto {
   @IsNotEmpty()
   message: string;
 }
+

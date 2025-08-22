@@ -2,7 +2,7 @@ import { IsNumber } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
+import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from 'src/core';
 
 import { AcademyEntity } from '../entities/academy.entity';
 import { SchoolEntity } from '../entities/school.entity';
@@ -56,3 +56,4 @@ export class AcademyFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   [FILTER_ACADEMY_KEYS.TEACHER_ID]: number[];
 }
+

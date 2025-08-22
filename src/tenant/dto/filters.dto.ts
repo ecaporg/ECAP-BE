@@ -1,6 +1,6 @@
 import { IsNumber } from 'class-validator';
 
-import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from '@/core';
+import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from 'src/core';
 
 import { TenantEntity } from '../entities/tenant.entity';
 
@@ -23,3 +23,4 @@ export class TenantKeyFilterDto extends BaseFilterDto {
   @IsNumber({}, { each: true })
   [FILTER_KEYS.TEACHER_ID]: number[];
 }
+

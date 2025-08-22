@@ -1,4 +1,4 @@
-import { AuthEmailService } from '@/auth/services/auth-email.service';
+import { AuthEmailService } from 'src/auth/services/auth-email.service';
 
 export const mockEmailService = () => {
   const authEmailService = {
@@ -17,3 +17,4 @@ export const mockEmailService = () => {
 
   return authEmailService;
 };
+

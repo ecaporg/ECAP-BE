@@ -9,12 +9,12 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core';
-import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
-import { SampleEntity } from '@/students/entities/sample.entity';
-import { StudentEntity } from '@/students/entities/student.entity';
-import { TrackEntity } from '@/track/entities/track.entity';
-import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
+import { GenericEntity } from 'src/core';
+import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
+import { SampleEntity } from 'src/students/entities/sample.entity';
+import { StudentEntity } from 'src/students/entities/student.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
+import { TrackLearningPeriodEntity } from 'src/track/entities/track-learning-period.entity';
 
 @Entity('student_lp_enrollments')
 export class StudentLPEnrollmentEntity extends GenericEntity {
@@ -103,3 +103,4 @@ export class StudentLPEnrollmentEntity extends GenericEntity {
   @JoinTable()
   samples: SampleEntity[];
 }
+

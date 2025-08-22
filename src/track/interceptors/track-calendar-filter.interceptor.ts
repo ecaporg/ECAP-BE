@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { AttachUserIdInterceptor } from '@/core';
-import { RolesEnum } from '@/users/enums/roles.enum';
+import { AttachUserIdInterceptor } from 'src/core';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { TrackCalendarEntity } from '../entities/track-calendar.entity';
 
@@ -19,3 +19,4 @@ export class TrackCalendarFilterInterceptor extends AttachUserIdInterceptor<Trac
     ]);
   }
 }
+

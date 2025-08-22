@@ -16,3 +16,4 @@ export class CanvasEventProcessorController {
     return this.canvasEventProcessorService.processCanvasEvent(event);
   }
 }
+

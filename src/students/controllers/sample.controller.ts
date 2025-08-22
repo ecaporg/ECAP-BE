@@ -23,9 +23,9 @@ import {
   PaginatedResult,
   PaginationOptions,
   Roles,
-} from '@/core';
-import { UserEntity } from '@/users/entities/user.entity';
-import { RolesEnum } from '@/users/enums/roles.enum';
+} from 'src/core';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
@@ -167,3 +167,4 @@ export class SampleController {
     return this.sampleService.flagCompleted(id, user_id, createDto);
   }
 }
+

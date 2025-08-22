@@ -3,12 +3,12 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 import {
   AdminEntity,
   DirectorEntity,
   TeacherEntity,
-} from '@/staff/entities/staff.entity';
+} from 'src/staff/entities/staff.entity';
 
 @Injectable()
 export class TeacherService extends BaseService<TeacherEntity> {
@@ -45,3 +45,4 @@ export class DirectorService extends BaseService<DirectorEntity> {
     });
   }
 }
+

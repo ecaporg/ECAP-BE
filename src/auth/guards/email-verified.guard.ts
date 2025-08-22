@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
-import { UnauthorizedException } from '@/core';
+import { UnauthorizedException } from 'src/core';
 
 import { IAuthRequest } from '../types/auth-request';
 
@@ -20,3 +20,4 @@ export class EmailVerifiedGuard implements CanActivate {
     return true;
   }
 }
+

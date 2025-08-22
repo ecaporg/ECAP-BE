@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { AuthUser } from '@/auth/types/auth-user';
-import { extractPaginationOptions } from '@/core';
-import { StudentLPEnrollmentService } from '@/enrollment/services/student-enrollment.service';
-import { TeacherService } from '@/staff/services/staff.service';
+import { AuthUser } from 'src/auth/types/auth-user';
+import { extractPaginationOptions } from 'src/core';
+import { StudentLPEnrollmentService } from 'src/enrollment/services/student-enrollment.service';
+import { TeacherService } from 'src/staff/services/staff.service';
 import {
   SampleFlagCategory,
   SampleStatus,
-} from '@/students/entities/sample.entity';
-import { RolesEnum } from '@/users/enums/roles.enum';
+} from 'src/students/entities/sample.entity';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { TeachersTableFilterDto } from '../dto/filters.dto';
 
@@ -183,3 +183,4 @@ export class AdminComplianceService {
     return teachers;
   }
 }
+

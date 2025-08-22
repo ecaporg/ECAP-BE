@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EnrollmentModule } from '@/enrollment/enrollment.module';
-import { StaffModule } from '@/staff/staff.module';
-import { StudentsModule } from '@/students/students.module';
-import { TenantModule } from '@/tenant/tenant.module';
-import { TrackModule } from '@/track/track.module';
+import { EnrollmentModule } from 'src/enrollment/enrollment.module';
+import { StaffModule } from 'src/staff/staff.module';
+import { StudentsModule } from 'src/students/students.module';
+import { TenantModule } from 'src/tenant/tenant.module';
+import { TrackModule } from 'src/track/track.module';
 
 import { AcademyController } from './controllers/academy.controller';
 import { SchoolController } from './controllers/school.controller';
@@ -36,3 +36,4 @@ import { SchoolService } from './services/school.service';
   ],
 })
 export class SchoolModule {}
+

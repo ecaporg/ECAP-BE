@@ -47,3 +47,4 @@ export class CreateTrackCalendarDto
 export class UpdateTrackCalendarDto extends PartialType(
   CreateTrackCalendarDto,
 ) {}
+

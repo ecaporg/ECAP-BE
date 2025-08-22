@@ -45,3 +45,4 @@ export class ForbiddenException extends ApplicationException {
     super(message, HttpStatus.FORBIDDEN, details);
   }
 }
+

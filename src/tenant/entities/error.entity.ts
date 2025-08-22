@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core';
+import { GenericEntity } from 'src/core';
 
 import { TenantEntity } from './tenant.entity';
 
@@ -32,3 +32,4 @@ export class ErrorEntity extends GenericEntity {
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
 }
+

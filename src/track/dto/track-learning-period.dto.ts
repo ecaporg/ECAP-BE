@@ -36,3 +36,4 @@ export class CreateTrackLearningPeriodDto
 export class UpdateTrackLearningPeriodDto extends PartialType(
   CreateTrackLearningPeriodDto,
 ) {}
+

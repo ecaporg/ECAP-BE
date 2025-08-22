@@ -6,7 +6,7 @@ import { PassportModule } from '@nestjs/passport';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
-import { UsersModule } from '@/users/users.module';
+import { UsersModule } from 'src/users/users.module';
 
 export default [
   UsersModule,
@@ -37,3 +37,4 @@ export default [
     inject: [ConfigService],
   }),
 ];
+

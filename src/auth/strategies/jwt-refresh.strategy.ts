@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
-import { ForbiddenException } from '@/core';
+import { ForbiddenException } from 'src/core';
 
 import { AuthService } from '../services/auth.service';
 import { AuthUser, IAuthUserRefreshToken } from '../types/auth-user';
@@ -40,3 +40,4 @@ export class JwtRefreshStrategy extends PassportStrategy(
     return { ...user, refreshToken };
   }
 }
+

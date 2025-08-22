@@ -10,11 +10,11 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { DatedGenericEntity } from '@/core';
-import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
-import { AcademyEntity } from '@/school/entities/academy.entity';
-import { SchoolEntity } from '@/school/entities/school.entity';
-import { UserEntity } from '@/users/entities/user.entity';
+import { DatedGenericEntity } from 'src/core';
+import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { AcademyEntity } from 'src/school/entities/academy.entity';
+import { SchoolEntity } from 'src/school/entities/school.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 // TODO: move track_id, academy_id, and school_id to student_enrollment_entity
 @Entity({ name: 'students' })
@@ -77,3 +77,4 @@ export class StudentEntity extends DatedGenericEntity {
   )
   student_lp_enrollments: StudentLPEnrollmentEntity[];
 }
+

@@ -20,8 +20,8 @@ import {
   EntityId,
   PaginatedResult,
   Roles,
-} from '@/core';
-import { RolesEnum } from '@/users/enums/roles.enum';
+} from 'src/core';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { TrackCalendarFilterDto } from '../dto/filters.dto';
 import {
@@ -105,3 +105,4 @@ export class TrackCalendarController {
     return this.trackCalendarService.delete(id);
   }
 }
+

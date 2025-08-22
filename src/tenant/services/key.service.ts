@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import { KeyEntity } from '../entities/key.entity';
 import { TenantEntity } from '../entities/tenant.entity';
@@ -25,3 +25,4 @@ export class KeyService extends BaseService<KeyEntity> {
     return tenant.key;
   }
 }
+

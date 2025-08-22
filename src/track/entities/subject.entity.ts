@@ -2,8 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core';
-import { SampleEntity } from '@/students/entities/sample.entity';
+import { GenericEntity } from 'src/core';
+import { SampleEntity } from 'src/students/entities/sample.entity';
 
 import { TrackEntity } from './track.entity';
 
@@ -44,3 +44,4 @@ export class SubjectEntity extends GenericEntity {
   @OneToMany(() => SampleEntity, (sample) => sample.subject)
   samples: SampleEntity[];
 }
+

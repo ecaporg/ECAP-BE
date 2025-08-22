@@ -9,10 +9,10 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core';
-import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
-import { SubjectEntity } from '@/track/entities/subject.entity';
-import { UserEntity } from '@/users/entities/user.entity';
+import { GenericEntity } from 'src/core';
+import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { SubjectEntity } from 'src/track/entities/subject.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 import {
   SampleFlagCompletedEntity,
@@ -189,3 +189,4 @@ export class SampleEntity extends GenericEntity {
   @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample)
   flag_completed: SampleFlagCompletedEntity;
 }
+

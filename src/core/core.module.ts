@@ -41,3 +41,4 @@ export class CoreModule implements NestModule {
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }
+

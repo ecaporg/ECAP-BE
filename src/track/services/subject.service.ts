@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import { SubjectEntity } from '../entities/subject.entity';
 
@@ -23,3 +23,4 @@ export class SubjectService extends BaseService<SubjectEntity> {
     });
   }
 }
+

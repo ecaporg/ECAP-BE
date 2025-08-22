@@ -8,7 +8,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { EmailAvailable } from '@/auth/validations/email-available';
+import { EmailAvailable } from 'src/auth/validations/email-available';
 
 import { RolesEnum } from '../enums/roles.enum';
 
@@ -47,3 +47,4 @@ export class CreateUserDTO {
   @IsString()
   role: RolesEnum;
 }
+

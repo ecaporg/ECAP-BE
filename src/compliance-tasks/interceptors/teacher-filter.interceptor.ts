@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
-import { RolesEnum } from '@/users/enums/roles.enum';
+import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { AttachUserIdInterceptor } from '../../core/interceptors/attach-user-id.interceptor';
 
@@ -21,3 +21,4 @@ export class TeacherFilterInterceptor extends AttachUserIdInterceptor<StudentLPE
     ]);
   }
 }
+

@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ForbiddenException } from '@/core';
+import { ForbiddenException } from 'src/core';
 
 import { mockEmailService } from '../../test-utils/auth-service.mock';
 import { mockConfigService } from '../../test-utils/config-service.mock';
@@ -115,3 +115,4 @@ describe('JwtStrategy tests', () => {
     });
   });
 });
+

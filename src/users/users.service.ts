@@ -3,7 +3,7 @@ import { ILike, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { UpdateUserDTO } from './dtos/update-user.dto';
@@ -60,3 +60,4 @@ export class UsersService extends BaseService<UserEntity> {
     );
   }
 }
+

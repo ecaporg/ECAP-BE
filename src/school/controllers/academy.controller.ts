@@ -21,9 +21,9 @@ import {
   EntityId,
   PaginatedResult,
   Roles,
-} from '@/core';
-import { UserEntity } from '@/users/entities/user.entity';
-import { RolesEnum } from '@/users/enums/roles.enum';
+} from 'src/core';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { CreateAcademyDto, UpdateAcademyDto } from '../dto/academy.dto';
 import { SchoolFilterDto } from '../dto/filters.dto';
@@ -100,3 +100,4 @@ export class AcademyController {
     return this.academyService.delete(id);
   }
 }
+

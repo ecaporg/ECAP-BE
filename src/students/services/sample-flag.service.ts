@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import {
   SampleFlagCompletedEntity,
@@ -51,3 +51,4 @@ export class SampleFlagRejectedService extends BaseService<SampleFlagRejectedEnt
     super(sampleFlagRejectedRepository);
   }
 }
+

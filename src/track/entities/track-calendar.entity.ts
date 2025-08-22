@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { DatedGenericEntity } from '@/core';
+import { DatedGenericEntity } from 'src/core';
 
 import { TrackEntity } from './track.entity';
 
@@ -32,3 +32,4 @@ export class TrackCalendarEntity extends DatedGenericEntity {
   @JoinColumn({ name: 'id' })
   track: TrackEntity;
 }
+

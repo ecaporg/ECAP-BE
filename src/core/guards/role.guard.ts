@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { IAuthRequest } from '@/auth/types/auth-request';
+import { IAuthRequest } from 'src/auth/types/auth-request';
 
 export const ROLES_KEY = 'roles';
 
@@ -39,3 +39,4 @@ export class RoleGuard implements CanActivate {
     return roles.includes(userRole);
   }
 }
+

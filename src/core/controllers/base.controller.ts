@@ -22,7 +22,7 @@ import {
   GenericEntity,
   PaginatedResult,
   PaginationOptions,
-} from '@/core';
+} from 'src/core';
 
 class GenericEntityClass implements GenericEntity {
   id: number;
@@ -115,3 +115,4 @@ export class TemplateController {
     return this.service.delete(id);
   }
 }
+

@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger';
 
-import { UserEntity } from '@/users/entities/user.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 export class AuthUser extends OmitType(UserEntity, [
   'password',
@@ -10,3 +10,4 @@ export class AuthUser extends OmitType(UserEntity, [
 export interface IAuthUserRefreshToken extends AuthUser {
   refreshToken: string;
 }
+

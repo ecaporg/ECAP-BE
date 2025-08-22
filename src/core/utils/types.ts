@@ -1,4 +1,4 @@
-import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
+import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
 
 import { BaseFilterDto } from '../dto/base-filter.dto';
 
@@ -72,3 +72,4 @@ type Test = UnnestObjectFromDotNotation<{
   'key.key.key': number;
   'key2.key3': number;
 }>; // { key: { key: { key: number } }; key2: { key3: number } }
+

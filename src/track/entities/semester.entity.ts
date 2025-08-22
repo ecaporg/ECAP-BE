@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core';
+import { GenericEntity } from 'src/core';
 
 import { TrackEntity } from './track.entity';
 
@@ -35,3 +35,4 @@ export class SemesterEntity extends GenericEntity {
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
 }
+

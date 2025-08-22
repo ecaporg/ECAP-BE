@@ -3,30 +3,30 @@ import { DeepPartial, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
-import { NotFoundException } from '@/core';
-import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
-import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
-import { StudentLPEnrollmentService } from '@/enrollment/services/student-enrollment.service';
-import { TeacherSchoolYearEnrollmentService } from '@/enrollment/services/teacher-enrollment.service';
-import { TeacherEntity } from '@/staff/entities/staff.entity';
-import { TeacherService } from '@/staff/services/staff.service';
-import { SampleEntity, SampleStatus } from '@/students/entities/sample.entity';
-import { StudentEntity } from '@/students/entities/student.entity';
-import { SampleService } from '@/students/services/sample.service';
-import { StudentService } from '@/students/services/student.service';
-import { KeyEntity } from '@/tenant/entities/key.entity';
-import { TenantEntity } from '@/tenant/entities/tenant.entity';
-import { ErrorService } from '@/tenant/services/error.service';
-import { TenantService } from '@/tenant/services/tenant.service';
-import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
-import { SubjectEntity } from '@/track/entities/subject.entity';
-import { TrackEntity } from '@/track/entities/track.entity';
-import { TrackLearningPeriodEntity } from '@/track/entities/track-learning-period.entity';
-import { AcademicYearService } from '@/track/services/academic-year.service';
-import { SubjectService } from '@/track/services/subject.service';
-import { TrackLearningPeriodService } from '@/track/services/track-learning-period.service';
-import { RolesEnum } from '@/users/enums/roles.enum';
-import { UsersService } from '@/users/users.service';
+import { NotFoundException } from 'src/core';
+import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
+import { StudentLPEnrollmentService } from 'src/enrollment/services/student-enrollment.service';
+import { TeacherSchoolYearEnrollmentService } from 'src/enrollment/services/teacher-enrollment.service';
+import { TeacherEntity } from 'src/staff/entities/staff.entity';
+import { TeacherService } from 'src/staff/services/staff.service';
+import { SampleEntity, SampleStatus } from 'src/students/entities/sample.entity';
+import { StudentEntity } from 'src/students/entities/student.entity';
+import { SampleService } from 'src/students/services/sample.service';
+import { StudentService } from 'src/students/services/student.service';
+import { KeyEntity } from 'src/tenant/entities/key.entity';
+import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { ErrorService } from 'src/tenant/services/error.service';
+import { TenantService } from 'src/tenant/services/tenant.service';
+import { AcademicYearEntity } from 'src/track/entities/academic-year.entity';
+import { SubjectEntity } from 'src/track/entities/subject.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
+import { TrackLearningPeriodEntity } from 'src/track/entities/track-learning-period.entity';
+import { AcademicYearService } from 'src/track/services/academic-year.service';
+import { SubjectService } from 'src/track/services/subject.service';
+import { TrackLearningPeriodService } from 'src/track/services/track-learning-period.service';
+import { RolesEnum } from 'src/users/enums/roles.enum';
+import { UsersService } from 'src/users/users.service';
 
 import {
   CanvasAssignmentDto,
@@ -616,3 +616,4 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
     await this.updateSample(submission, assignment, teachers);
   }
 }
+

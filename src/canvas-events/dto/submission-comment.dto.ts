@@ -36,3 +36,4 @@ export class SubmissionCommentDto {
   @Type(() => MediaCommentDto)
   media_comment?: MediaCommentDto;
 }
+

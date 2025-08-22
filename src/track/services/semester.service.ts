@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import { SemesterEntity } from '../../track/entities/semester.entity';
 
@@ -16,3 +16,4 @@ export class SemesterService extends BaseService<SemesterEntity> {
     super(semesterRepository);
   }
 }
+

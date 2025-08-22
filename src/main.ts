@@ -1,12 +1,3 @@
-import * as moduleAlias from 'module-alias';
-
-import 'module-alias/register';
-
-moduleAlias.addAliases({
-  '@': __dirname,
-  '@/core': __dirname + '/core',
-});
-
 // Інші імпорти
 import { useContainer } from 'class-validator';
 import { DataSource } from 'typeorm';
@@ -53,3 +44,5 @@ async function bootstrap() {
   await app.listen(configService.get('PORT'));
 }
 bootstrap();
+
+

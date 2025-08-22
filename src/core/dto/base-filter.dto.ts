@@ -59,3 +59,4 @@ export class BaseFilterDto {
   @IsString()
   search?: string;
 }
+

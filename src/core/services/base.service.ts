@@ -6,7 +6,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { NotFoundException } from '@/core';
+import { NotFoundException } from 'src/core';
 
 import { DatedGenericEntity } from '../entity/generic-entity';
 import {
@@ -224,3 +224,4 @@ export class BaseService<
     return query;
   }
 }
+

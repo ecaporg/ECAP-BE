@@ -5,7 +5,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 
-import { UsersService } from '@/users/users.service';
+import { UsersService } from 'src/users/users.service';
 
 @ValidatorConstraint({ async: true })
 export class EmailAvailableConstraint implements ValidatorConstraintInterface {
@@ -28,3 +28,4 @@ export function EmailAvailable(validationOptions?: ValidationOptions) {
     });
   };
 }
+

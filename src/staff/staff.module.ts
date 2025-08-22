@@ -22,3 +22,4 @@ import {
   exports: [TeacherService, AdminService, DirectorService],
 })
 export class StaffModule {}
+

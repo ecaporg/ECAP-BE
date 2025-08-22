@@ -10,3 +10,4 @@ export const ExtractBaseUrl = createParamDecorator(
     return `${protocol}://${host}`;
   },
 );
+

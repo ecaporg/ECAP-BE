@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { AuthUser } from '@/auth/types/auth-user';
+import { AuthUser } from 'src/auth/types/auth-user';
 import {
   ApiArrayResponse,
   ApiCrudResponse,
@@ -9,11 +9,11 @@ import {
   ApiPaginatedCrudResponse,
   CurrentUser,
   Roles,
-} from '@/core';
-import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
-import { TeacherEntity } from '@/staff/entities/staff.entity';
-import { TenantEntity } from '@/tenant/entities/tenant.entity';
-import { RolesEnum } from '@/users/enums/roles.enum';
+} from 'src/core';
+import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
+import { TeacherEntity } from 'src/staff/entities/staff.entity';
+import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 import { TeachersTableFilterDto } from '../dto/filters.dto';
 import { AdminComplianceService } from '../services/admin.service';
@@ -54,3 +54,4 @@ export class AdminComplianceController {
     return this.adminComplianceService.searchTeachers(user, search);
   }
 }
+

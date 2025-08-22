@@ -1,6 +1,6 @@
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { RolesEnum } from '@/users/enums/roles.enum';
+import { RolesEnum } from 'src/users/enums/roles.enum';
 
 @ApiTags('Authentication')
 export class AuthUserDTO {
@@ -41,3 +41,4 @@ export class AuthUserDTO {
   })
   role: RolesEnum;
 }
+

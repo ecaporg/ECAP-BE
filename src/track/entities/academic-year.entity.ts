@@ -2,9 +2,9 @@ import { Column, Entity, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '@/core';
-import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
-import { TrackEntity } from '@/track/entities/track.entity';
+import { GenericEntity } from 'src/core';
+import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
 
 @Entity({ name: 'academic_years' })
 export class AcademicYearEntity extends GenericEntity {
@@ -40,3 +40,4 @@ export class AcademicYearEntity extends GenericEntity {
   )
   teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
 }
+

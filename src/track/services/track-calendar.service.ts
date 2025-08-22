@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '@/core';
+import { BaseService } from 'src/core';
 
 import { TrackCalendarEntity } from '../entities/track-calendar.entity';
 
@@ -18,3 +18,4 @@ export class TrackCalendarService extends BaseService<TrackCalendarEntity> {
     });
   }
 }
+

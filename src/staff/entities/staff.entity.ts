@@ -10,11 +10,11 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { DatedGenericEntity } from '@/core';
-import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
-import { AcademyEntity } from '@/school/entities/academy.entity';
-import { TenantEntity } from '@/tenant/entities/tenant.entity';
-import { UserEntity } from '@/users/entities/user.entity';
+import { DatedGenericEntity } from 'src/core';
+import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
+import { AcademyEntity } from 'src/school/entities/academy.entity';
+import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 export abstract class StaffEntity extends DatedGenericEntity {
   @ApiProperty({ description: 'User ID associated with this staff member' })
@@ -86,3 +86,4 @@ export class DirectorEntity extends AdminEntity {
   @JoinColumn({ name: 'academy_id' })
   academy: AcademyEntity;
 }
+

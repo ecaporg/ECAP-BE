@@ -14,3 +14,4 @@ export { CanvasEventMetadataDto } from './canvas-event-metadata.dto';
 export { CanvasSubmissionEventBodyDto } from './canvas-event-body.dto';
 
 export * from './canvas-event.dto';
+

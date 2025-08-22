@@ -238,3 +238,4 @@ export class CanvasAssignmentDto {
   @IsOptional()
   rubric_settings?: any;
 }
+
