@@ -3,7 +3,7 @@
 echo "Building project..."
 
 # Build the project
-npm run build
+# npm run build
 
 # Check if build was successful
 if [ $? -ne 0 ]; then

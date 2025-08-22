@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "name": "ecap-api",
+  "functions": {
+    "dist/src/main.js": {
+      "runtime": "@vercel/node@2"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "dist/src/main.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "dist/src/main.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
