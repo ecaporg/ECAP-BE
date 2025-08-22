@@ -36,4 +36,3 @@ export class AcademyEntity extends GenericEntity {
   @OneToMany(() => DirectorEntity, (director) => director.academy)
   directors: DirectorEntity[];
 }
-

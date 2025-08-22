@@ -70,4 +70,3 @@ export class TeacherSchoolYearEnrollmentEntity extends GenericEntity {
   )
   student_lp_enrollments: StudentLPEnrollmentEntity[];
 }
-

@@ -51,4 +51,3 @@ import { SampleSubscriber } from './subscribers/sample.subscriber';
   ],
 })
 export class StudentsModule {}
-

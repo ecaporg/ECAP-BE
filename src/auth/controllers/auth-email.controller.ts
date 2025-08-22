@@ -33,4 +33,3 @@ export class AuthEmailController {
   //   return this.authEmailService.changeEmail(user.id, user.newEmail);
   // }
 }
-

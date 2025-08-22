@@ -22,4 +22,3 @@ export class DashboardFilterDto extends BaseFilterDto {
   @IsNumber()
   [FILTER_KEYS.TEACHER]?: number;
 }
-

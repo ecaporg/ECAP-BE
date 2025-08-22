@@ -32,4 +32,3 @@ export class TrackCalendarEntity extends DatedGenericEntity {
   @JoinColumn({ name: 'id' })
   track: TrackEntity;
 }
-

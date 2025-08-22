@@ -12,4 +12,3 @@ export class EmailDTO {
   @IsNotEmpty({ message: 'Email is required' })
   email: string;
 }
-

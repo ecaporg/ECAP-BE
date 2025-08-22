@@ -1,7 +1,3 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { AppController } from 'src/app.controller';
 import { AppService } from 'src/app.service';
 import { AuthModule } from 'src/auth/auth.module';
@@ -11,6 +7,10 @@ import { CoreModule } from 'src/core/core.module';
 import { DashboardModule } from 'src/dashboard/dashboard.module';
 import { SchoolModule } from 'src/school/school.module';
 import { UsersModule } from 'src/users/users.module';
+
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [
     CoreModule,
@@ -32,7 +32,7 @@ import { UsersModule } from 'src/users/users.module';
         url: configService.get('POSTGRES_URL'),
         synchronize: false,
         dropSchema: false,
-        ssl: true,
+        ssl: false,
         logging: false,
         logger: 'advanced-console',
         subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
@@ -46,4 +46,3 @@ import { UsersModule } from 'src/users/users.module';
   providers: [AppService],
 })
 export class AppModule {}
-

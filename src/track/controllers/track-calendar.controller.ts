@@ -105,4 +105,3 @@ export class TrackCalendarController {
     return this.trackCalendarService.delete(id);
   }
 }
-

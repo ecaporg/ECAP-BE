@@ -21,4 +21,3 @@ export class TeacherFilterInterceptor extends AttachUserIdInterceptor<StudentLPE
     ]);
   }
 }
-

@@ -16,4 +16,3 @@ export class SemesterService extends BaseService<SemesterEntity> {
     super(semesterRepository);
   }
 }
-

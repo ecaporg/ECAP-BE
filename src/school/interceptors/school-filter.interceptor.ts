@@ -19,4 +19,3 @@ export class SchoolFilterInterceptor extends AttachUserIdInterceptor<SchoolEntit
     ]);
   }
 }
-

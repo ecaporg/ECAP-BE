@@ -103,4 +103,3 @@ export class TrackEntity extends GenericEntity {
   @OneToMany(() => SemesterEntity, (semester) => semester.track)
   semesters: SemesterEntity[];
 }
-

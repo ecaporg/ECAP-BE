@@ -60,4 +60,3 @@ export class UsersService extends BaseService<UserEntity> {
     );
   }
 }
-

@@ -25,4 +25,3 @@ export class KeyService extends BaseService<KeyEntity> {
     return tenant.key;
   }
 }
-

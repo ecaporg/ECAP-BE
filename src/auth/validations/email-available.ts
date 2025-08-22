@@ -28,4 +28,3 @@ export function EmailAvailable(validationOptions?: ValidationOptions) {
     });
   };
 }
-

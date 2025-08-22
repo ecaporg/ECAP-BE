@@ -10,4 +10,3 @@ export class AuthUser extends OmitType(UserEntity, [
 export interface IAuthUserRefreshToken extends AuthUser {
   refreshToken: string;
 }
-

@@ -10,7 +10,10 @@ import { StudentLPEnrollmentService } from 'src/enrollment/services/student-enro
 import { TeacherSchoolYearEnrollmentService } from 'src/enrollment/services/teacher-enrollment.service';
 import { TeacherEntity } from 'src/staff/entities/staff.entity';
 import { TeacherService } from 'src/staff/services/staff.service';
-import { SampleEntity, SampleStatus } from 'src/students/entities/sample.entity';
+import {
+  SampleEntity,
+  SampleStatus,
+} from 'src/students/entities/sample.entity';
 import { StudentEntity } from 'src/students/entities/student.entity';
 import { SampleService } from 'src/students/services/sample.service';
 import { StudentService } from 'src/students/services/student.service';
@@ -616,4 +619,3 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
     await this.updateSample(submission, assignment, teachers);
   }
 }
-

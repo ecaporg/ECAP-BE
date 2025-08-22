@@ -46,4 +46,3 @@ export class TrackLearningPeriodEntity extends GenericEntity {
   )
   student_lp_enrollments: StudentLPEnrollmentEntity[];
 }
-

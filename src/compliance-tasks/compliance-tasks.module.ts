@@ -19,4 +19,3 @@ import { TeacherComplianceTaskService } from './services/teacher.service';
   exports: [TeacherComplianceTaskService, AdminComplianceService],
 })
 export class ComplianceTasksModule {}
-

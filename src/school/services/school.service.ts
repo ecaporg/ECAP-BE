@@ -32,4 +32,3 @@ export class SchoolService extends BaseService<SchoolEntity> {
     return school;
   }
 }
-

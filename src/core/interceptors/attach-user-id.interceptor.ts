@@ -45,4 +45,3 @@ export class AttachUserIdInterceptor<T extends object>
     return next.handle();
   }
 }
-

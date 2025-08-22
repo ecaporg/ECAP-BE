@@ -22,4 +22,3 @@ import { TeacherSchoolYearEnrollmentService } from './services/teacher-enrollmen
   exports: [TeacherSchoolYearEnrollmentService, StudentLPEnrollmentService],
 })
 export class EnrollmentModule {}
-

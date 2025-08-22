@@ -30,4 +30,3 @@ export class AcademyService extends BaseService<AcademyEntity> {
     return academy;
   }
 }
-

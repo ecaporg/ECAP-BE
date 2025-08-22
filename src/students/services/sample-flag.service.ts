@@ -51,4 +51,3 @@ export class SampleFlagRejectedService extends BaseService<SampleFlagRejectedEnt
     super(sampleFlagRejectedRepository);
   }
 }
-

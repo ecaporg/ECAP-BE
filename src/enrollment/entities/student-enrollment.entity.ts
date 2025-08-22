@@ -103,4 +103,3 @@ export class StudentLPEnrollmentEntity extends GenericEntity {
   @JoinTable()
   samples: SampleEntity[];
 }
-

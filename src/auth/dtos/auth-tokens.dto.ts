@@ -14,4 +14,3 @@ export class AuthTokensDTO {
   })
   refreshToken: string;
 }
-

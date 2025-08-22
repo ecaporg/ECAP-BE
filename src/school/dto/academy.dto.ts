@@ -36,4 +36,3 @@ export class CreateAcademyDto implements Pick<Academy, 'name'> {
 }
 
 export class UpdateAcademyDto extends PartialType(CreateAcademyDto) {}
-

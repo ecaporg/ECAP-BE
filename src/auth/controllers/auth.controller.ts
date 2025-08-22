@@ -111,4 +111,3 @@ export class AuthController {
   //   return this.authService.handleEmailUpdate(user.id, changeEmailPasswordDTO);
   // }
 }
-

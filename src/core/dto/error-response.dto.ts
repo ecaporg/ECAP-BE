@@ -26,4 +26,3 @@ export class ErrorResponseDto implements ErrorResponse {
   })
   details?: Record<string, any>;
 }
-

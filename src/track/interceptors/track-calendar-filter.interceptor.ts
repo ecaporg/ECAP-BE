@@ -19,4 +19,3 @@ export class TrackCalendarFilterInterceptor extends AttachUserIdInterceptor<Trac
     ]);
   }
 }
-

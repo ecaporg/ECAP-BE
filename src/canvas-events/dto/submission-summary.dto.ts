@@ -10,4 +10,3 @@ export class SubmissionSummaryDto {
   @IsNumber()
   not_submitted: number;
 }
-

@@ -121,4 +121,3 @@ export class CanvasCourseDto {
   @IsOptional()
   overridden_course_visibility?: string;
 }
-

@@ -169,4 +169,3 @@
 //     expect(value).toStrictEqual({ token: 'some-token' });
 //   });
 // });
-

@@ -397,4 +397,3 @@ export class DashboardService {
     return `${year}-${month}-${day}`;
   }
 }
-

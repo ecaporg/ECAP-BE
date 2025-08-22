@@ -58,4 +58,3 @@ import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber
   ],
 })
 export class TrackModule {}
-

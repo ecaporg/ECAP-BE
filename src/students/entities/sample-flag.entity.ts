@@ -67,4 +67,3 @@ export class SampleFlagRejectedEntity extends SampleFlagEntity {
   @ApiProperty({ description: 'Reason' })
   reason: string;
 }
-

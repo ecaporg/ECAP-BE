@@ -35,4 +35,3 @@ export class SemesterEntity extends GenericEntity {
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
 }
-

@@ -77,4 +77,3 @@ export class StudentEntity extends DatedGenericEntity {
   )
   student_lp_enrollments: StudentLPEnrollmentEntity[];
 }
-

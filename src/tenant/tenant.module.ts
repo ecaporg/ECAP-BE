@@ -16,4 +16,3 @@ import { TenantService } from './services/tenant.service';
   exports: [TenantService, KeyService, ErrorService],
 })
 export class TenantModule {}
-

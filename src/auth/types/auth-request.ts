@@ -9,4 +9,3 @@ export interface IAuthRequest extends Request {
 export interface IAuthRefreshRequest extends Request {
   user: AuthUser & { refreshToken: string };
 }
-

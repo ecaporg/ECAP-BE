@@ -86,4 +86,3 @@ export class DirectorEntity extends AdminEntity {
   @JoinColumn({ name: 'academy_id' })
   academy: AcademyEntity;
 }
-

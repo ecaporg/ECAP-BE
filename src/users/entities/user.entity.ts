@@ -81,4 +81,3 @@ export class UserEntity extends GenericEntity {
   @OneToOne(() => AdminEntity, (admin) => admin.user)
   admin?: AdminEntity;
 }
-

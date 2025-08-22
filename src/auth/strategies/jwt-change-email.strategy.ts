@@ -37,4 +37,3 @@ export class JwtChangeEmailStrategy extends PassportStrategy(
     };
   }
 }
-

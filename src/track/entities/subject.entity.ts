@@ -44,4 +44,3 @@ export class SubjectEntity extends GenericEntity {
   @OneToMany(() => SampleEntity, (sample) => sample.subject)
   samples: SampleEntity[];
 }
-

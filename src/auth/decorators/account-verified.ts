@@ -15,4 +15,3 @@ export function AccountVerified(strategyType: IStrategyType) {
     UseGuards(AuthGuard(strategyType), EmailVerifiedGuard),
   );
 }
-

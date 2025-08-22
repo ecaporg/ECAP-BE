@@ -31,4 +31,3 @@ export class JwtForgotPasswordStrategy extends PassportStrategy(
     return user;
   }
 }
-

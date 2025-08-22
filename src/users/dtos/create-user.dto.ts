@@ -47,4 +47,3 @@ export class CreateUserDTO {
   @IsString()
   role: RolesEnum;
 }
-

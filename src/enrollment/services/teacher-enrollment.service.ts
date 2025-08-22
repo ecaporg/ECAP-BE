@@ -16,4 +16,3 @@ export class TeacherSchoolYearEnrollmentService extends BaseService<TeacherSchoo
     super(courseRepository);
   }
 }
-

@@ -27,4 +27,3 @@ export class TenantService extends BaseService<TenantEntity> {
     });
   }
 }
-

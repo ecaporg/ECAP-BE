@@ -37,4 +37,3 @@ export class CreateTrackSemesterDto
 export class UpdateTrackSemesterDto extends PartialType(
   CreateTrackSemesterDto,
 ) {}
-

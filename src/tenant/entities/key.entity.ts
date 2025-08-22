@@ -25,4 +25,3 @@ export class KeyEntity extends DatedGenericEntity {
   @JoinColumn({ name: 'id' })
   tenant: TenantEntity;
 }
-

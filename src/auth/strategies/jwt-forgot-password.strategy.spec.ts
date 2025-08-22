@@ -115,4 +115,3 @@ describe('JwtStrategy tests', () => {
     });
   });
 });
-

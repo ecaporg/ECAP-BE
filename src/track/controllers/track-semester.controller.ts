@@ -105,4 +105,3 @@ export class TrackSemesterController {
     return this.semesterService.delete(id);
   }
 }
-

@@ -167,4 +167,3 @@ export class SampleController {
     return this.sampleService.flagCompleted(id, user_id, createDto);
   }
 }
-

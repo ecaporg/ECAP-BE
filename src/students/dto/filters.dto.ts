@@ -2,7 +2,11 @@ import { IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from 'src/core';
+import {
+  BaseFilterDto,
+  IdDecorator,
+  RecordStringAndDotNotation,
+} from 'src/core';
 
 import { SampleEntity, SampleFlagCategory } from '../entities/sample.entity';
 
@@ -76,4 +80,3 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     SampleFlagCategory.MISSING_SAMPLE,
   ];
 }
-

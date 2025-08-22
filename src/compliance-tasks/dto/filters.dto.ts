@@ -2,7 +2,11 @@ import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 
-import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from 'src/core';
+import {
+  BaseFilterDto,
+  IdDecorator,
+  RecordStringAndDotNotation,
+} from 'src/core';
 import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
 
 const FILTER_KEYS = {
@@ -185,4 +189,3 @@ export class TeachersTableFilterDto extends OmitType(StudentsTableFilterDto, [
   @IsString({ each: true })
   [FILTER_KEYS.SAMPLE_SUBJECT]?: string[];
 }
-

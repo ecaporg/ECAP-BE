@@ -115,4 +115,3 @@ export class TemplateController {
     return this.service.delete(id);
   }
 }
-

@@ -189,4 +189,3 @@ export class SampleEntity extends GenericEntity {
   @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample)
   flag_completed: SampleFlagCompletedEntity;
 }
-

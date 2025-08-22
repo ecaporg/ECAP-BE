@@ -100,4 +100,3 @@ export class AcademyController {
     return this.academyService.delete(id);
   }
 }
-

@@ -2,7 +2,11 @@ import { IsNumber } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { BaseFilterDto, IdDecorator, RecordStringAndDotNotation } from 'src/core';
+import {
+  BaseFilterDto,
+  IdDecorator,
+  RecordStringAndDotNotation,
+} from 'src/core';
 
 import { TrackEntity } from '../entities/track.entity';
 import { TrackCalendarEntity } from '../entities/track-calendar.entity';
@@ -60,4 +64,3 @@ export class TrackCalendarFilterDto extends BaseFilterDto {
 export class TrackLearningPeriodFilterDto extends TrackCalendarFilterDto {}
 
 export class TrackSemesterFilterDto extends TrackCalendarFilterDto {}
-

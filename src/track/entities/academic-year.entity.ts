@@ -40,4 +40,3 @@ export class AcademicYearEntity extends GenericEntity {
   )
   teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
 }
-

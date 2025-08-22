@@ -42,4 +42,3 @@ export class SchoolEntity extends GenericEntity {
   @OneToMany(() => TeacherSchoolYearEnrollmentEntity, (course) => course.school)
   teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
 }
-

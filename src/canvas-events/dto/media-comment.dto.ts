@@ -16,4 +16,3 @@ export class MediaCommentDto {
   @IsString()
   url: string;
 }
-

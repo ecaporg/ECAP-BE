@@ -210,4 +210,3 @@ export class CanvasEnrollmentDto {
   @IsString()
   current_period_unposted_final_grade?: string;
 }
-

@@ -16,4 +16,3 @@ export class StudentService extends BaseService<StudentEntity> {
     super(studentRepository, { defaultRelations: { user: true } });
   }
 }
-

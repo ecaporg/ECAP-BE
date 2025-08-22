@@ -15,4 +15,3 @@ export abstract class GenericEntity extends DatedGenericEntity {
   @PrimaryGeneratedColumn()
   id: number;
 }
-

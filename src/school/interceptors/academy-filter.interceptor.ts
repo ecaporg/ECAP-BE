@@ -19,4 +19,3 @@ export class AcademyFilterInterceptor extends AttachUserIdInterceptor<AcademyEnt
     ]);
   }
 }
-

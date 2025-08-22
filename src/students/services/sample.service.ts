@@ -131,4 +131,3 @@ export class SampleService extends BaseService<SampleEntity> {
     return sample;
   }
 }
-

@@ -70,4 +70,3 @@ export class KeyController {
     return this.service.refreshSessionToken(tenant, body.session_token);
   }
 }
-

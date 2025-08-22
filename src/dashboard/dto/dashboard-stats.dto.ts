@@ -92,4 +92,3 @@ export class DashboardStatsResponseDto {
   })
   academies?: AcademyStatItemDto[];
 }
-

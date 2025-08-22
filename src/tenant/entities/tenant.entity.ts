@@ -69,4 +69,3 @@ export class TenantEntity extends GenericEntity {
   @OneToOne(() => KeyEntity, (key) => key.tenant)
   key: KeyEntity;
 }
-

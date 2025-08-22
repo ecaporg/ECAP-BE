@@ -105,4 +105,3 @@ export class SchoolController {
     return this.schoolService.delete(id);
   }
 }
-

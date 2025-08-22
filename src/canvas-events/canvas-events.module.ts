@@ -30,4 +30,3 @@ import { SisResourcesService } from './services/sis-resources.service';
   ],
 })
 export class CanvasEventsModule {}
-

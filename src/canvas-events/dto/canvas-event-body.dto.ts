@@ -64,4 +64,3 @@ export class CanvasSubmissionEventBodyDto {
   @IsString()
   workflow_state: string;
 }
-

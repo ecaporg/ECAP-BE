@@ -68,4 +68,3 @@ export default {
   clearFixtures,
   closeConn,
 };
-

@@ -45,4 +45,3 @@ describe('RoleGuard', () => {
     expect(canActivate).toBe(false);
   });
 });
-

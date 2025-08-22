@@ -22,4 +22,3 @@ export class TrackLearningPeriodService extends BaseService<TrackLearningPeriodE
     return this.trackLearningPeriodRepository;
   }
 }
-

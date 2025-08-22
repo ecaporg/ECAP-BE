@@ -7,4 +7,3 @@ export class SisResourcesService {
 
   //   TODO: Implement SisResourcesService after we have a SIS API documentation
 }
-

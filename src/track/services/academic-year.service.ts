@@ -38,4 +38,3 @@ export class AcademicYearService extends BaseService<AcademicYearEntity> {
     return academicYears;
   }
 }
-

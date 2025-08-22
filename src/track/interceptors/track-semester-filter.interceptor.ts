@@ -19,4 +19,3 @@ export class TrackSemesterFilterInterceptor extends AttachUserIdInterceptor<Seme
     ]);
   }
 }
-

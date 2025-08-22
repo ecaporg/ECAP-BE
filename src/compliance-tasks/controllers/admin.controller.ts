@@ -54,4 +54,3 @@ export class AdminComplianceController {
     return this.adminComplianceService.searchTeachers(user, search);
   }
 }
-

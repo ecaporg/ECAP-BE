@@ -52,4 +52,3 @@ export class StudentLPEnrollmentService extends BaseService<StudentLPEnrollmentE
     return this.studentLPEnrollmentRepository;
   }
 }
-

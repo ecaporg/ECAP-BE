@@ -32,4 +32,3 @@ export class ErrorEntity extends GenericEntity {
   @JoinColumn({ name: 'tenant_id' })
   tenant: TenantEntity;
 }
-

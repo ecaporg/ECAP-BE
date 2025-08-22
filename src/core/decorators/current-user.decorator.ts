@@ -29,4 +29,3 @@ export const CurrentUser = createParamDecorator(
     return getNestedProperty(user, propertyPath);
   },
 );
-

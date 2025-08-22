@@ -224,4 +224,3 @@ export class BaseService<
     return query;
   }
 }
-

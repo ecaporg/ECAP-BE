@@ -23,4 +23,3 @@ export class SubjectService extends BaseService<SubjectEntity> {
     });
   }
 }
-

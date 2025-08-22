@@ -69,4 +69,3 @@ export class TeacherComplianceTaskController {
     return this.teacherComplianceTaskService.searchStudents(user, search);
   }
 }
-

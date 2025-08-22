@@ -16,4 +16,3 @@ export class ErrorService extends BaseService<ErrorEntity> {
     super(errorRepository);
   }
 }
-

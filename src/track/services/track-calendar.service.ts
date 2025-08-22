@@ -18,4 +18,3 @@ export class TrackCalendarService extends BaseService<TrackCalendarEntity> {
     });
   }
 }
-

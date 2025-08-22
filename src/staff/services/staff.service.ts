@@ -45,4 +45,3 @@ export class DirectorService extends BaseService<DirectorEntity> {
     });
   }
 }
-

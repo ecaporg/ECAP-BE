@@ -78,4 +78,3 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   SampleFlagRejectedEntity,
   SampleFlagCompletedEntity,
 ];
-

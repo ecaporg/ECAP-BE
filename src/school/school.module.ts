@@ -36,4 +36,3 @@ import { SchoolService } from './services/school.service';
   ],
 })
 export class SchoolModule {}
-

@@ -27,4 +27,3 @@ export class ChangeEmailPasswordDTO {
   @IsEmail()
   newEmail: string;
 }
-

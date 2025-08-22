@@ -98,4 +98,3 @@ describe('LocalStrategy tests', () => {
     });
   });
 });
-
