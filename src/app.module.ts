@@ -32,7 +32,7 @@ import { AppService } from './app.service';
         url: configService.get('POSTGRES_URL'),
         synchronize: false,
         dropSchema: false,
-        ssl: true,
+        ssl: false,
         logging: false,
         logger: 'advanced-console',
         subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],

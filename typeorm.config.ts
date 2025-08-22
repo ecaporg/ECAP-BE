@@ -15,7 +15,7 @@ export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   url: postgresUrl,
   entities: [__dirname + '/src/**/*.entity{.ts,.js}'],
-  ssl: true,
+  ssl: false,
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   synchronize: false,
   migrationsRun: false,
