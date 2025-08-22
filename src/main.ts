@@ -17,18 +17,21 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  const config = new DocumentBuilder()
-    .setTitle('ECAP API')
-    .setDescription('Documentation for endpoints')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .addTag('v1', 'API Version 1.0')
-    .build();
+  // Only enable Swagger in development
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('ECAP API')
+      .setDescription('Documentation for endpoints')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('v1', 'API Version 1.0')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config, {
-    extraModels: SWAGGER_API_MODELS,
-  });
-  SwaggerModule.setup('api/docs', app, document);
+    const document = SwaggerModule.createDocument(app, config, {
+      extraModels: SWAGGER_API_MODELS,
+    });
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   useContainer(app.select(AuthModule), { fallbackOnErrors: true });
 

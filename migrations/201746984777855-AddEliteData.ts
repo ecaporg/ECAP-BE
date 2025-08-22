@@ -100,14 +100,14 @@ export class AddEliteData201746984777855 implements MigrationInterface {
         // Create sample flags
         // await this.createSampleFlags(
         // queryRunner,
-        const samples = await this.createSamples(
-          queryRunner,
-          studentLPEnrollments,
-          subjects,
-        );
+        // const samples = await this.createSamples(
+        //   queryRunner,
+        //   studentLPEnrollments,
+        //   subjects,
+        // );
         // );
 
-        await this.deleteRedunantData(queryRunner, samples, subjects, track);
+        // await this.deleteRedunantData(queryRunner, samples, subjects, track);
       }
     }
 
