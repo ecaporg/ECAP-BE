@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { CanvasEventsModule } from './canvas-events/canvas-events.module';
 import { ComplianceTasksModule } from './compliance-tasks/compliance-tasks.module';
-import { createTypeOrmConfig } from './core/config/database.config';
 import { CoreModule } from './core/core.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { SchoolModule } from './school/school.module';
@@ -27,8 +26,20 @@ import { AppService } from './app.service';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        url: configService.get('POSTGRES_URL'),
+        synchronize: false,
+        dropSchema: false,
+        ssl: false,
+        logging: false,
+        logger: 'advanced-console',
+        subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
+        autoLoadEntities: true,
+        cache: { duration: 60000 },
+      }),
       inject: [ConfigService],
-      useFactory: createTypeOrmConfig,
     }),
   ],
   controllers: [AppController],
