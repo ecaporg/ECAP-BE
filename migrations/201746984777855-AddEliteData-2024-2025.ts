@@ -5,35 +5,35 @@ import { Assignment } from 'migrations/elite-data/assignments';
 import { Course } from 'migrations/elite-data/courses';
 import { People } from 'migrations/elite-data/students';
 import { Submission } from 'migrations/elite-data/submitions';
-import { MigrationInterface, QueryRunner } from 'typeorm';
-
-import { StudentLPEnrollmentEntity } from '@/enrollment/entities/student-enrollment.entity';
-import { TeacherSchoolYearEnrollmentEntity } from '@/enrollment/entities/teacher-enrollment.entity';
+import { StudentLPEnrollmentEntity } from 'src/enrollment/entities/student-enrollment.entity';
+import { TeacherSchoolYearEnrollmentEntity } from 'src/enrollment/entities/teacher-enrollment.entity';
+import { AcademyEntity } from 'src/school/entities/academy.entity';
+import { SchoolEntity } from 'src/school/entities/school.entity';
 import {
   AdminEntity,
   DirectorEntity,
   TeacherEntity,
-} from '@/staff/entities/staff.entity';
-import { SampleFlagMissingWorkEntity } from '@/students/entities/sample-flag.entity';
-import { SampleFlagErrorEntity } from '@/students/entities/sample-flag.entity';
-import { KeyEntity } from '@/tenant/entities/key.entity';
-import { AcademicYearEntity } from '@/track/entities/academic-year.entity';
-import { SemesterEntity } from '@/track/entities/semester.entity';
-import { TrackCalendarEntity } from '@/track/entities/track-calendar.entity';
-import { RolesEnum } from '@/users/enums/roles.enum';
-
-import { AcademyEntity } from '../src/school/entities/academy.entity';
-import { SchoolEntity } from '../src/school/entities/school.entity';
+} from 'src/staff/entities/staff.entity';
 import {
   SampleEntity,
   SampleStatus,
-} from '../src/students/entities/sample.entity';
-import { StudentEntity } from '../src/students/entities/student.entity';
-import { TenantEntity } from '../src/tenant/entities/tenant.entity';
-import { SubjectEntity } from '../src/track/entities/subject.entity';
-import { TrackEntity } from '../src/track/entities/track.entity';
-import { TrackLearningPeriodEntity } from '../src/track/entities/track-learning-period.entity';
-import { UserEntity } from '../src/users/entities/user.entity';
+} from 'src/students/entities/sample.entity';
+import {
+  SampleFlagErrorEntity,
+  SampleFlagMissingWorkEntity,
+} from 'src/students/entities/sample-flag.entity';
+import { StudentEntity } from 'src/students/entities/student.entity';
+import { KeyEntity } from 'src/tenant/entities/key.entity';
+import { TenantEntity } from 'src/tenant/entities/tenant.entity';
+import { AcademicYearEntity } from 'src/track/entities/academic-year.entity';
+import { SemesterEntity } from 'src/track/entities/semester.entity';
+import { SubjectEntity } from 'src/track/entities/subject.entity';
+import { TrackEntity } from 'src/track/entities/track.entity';
+import { TrackCalendarEntity } from 'src/track/entities/track-calendar.entity';
+import { TrackLearningPeriodEntity } from 'src/track/entities/track-learning-period.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { RolesEnum } from 'src/users/enums/roles.enum';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddEliteData201746984777855 implements MigrationInterface {
   private password: string;
