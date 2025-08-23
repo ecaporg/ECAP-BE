@@ -24,6 +24,7 @@ Ensure you are in the elita-date directory of the project (`nestjs\migrations\el
 
     ```bash
     npx ts-node assignments.ts
+    npx ts-node assignments-filtered.ts
     ```
 
     _(After execution, verify the existence and currency of `assignments-filtered.json`)_
@@ -36,7 +37,15 @@ Ensure you are in the elita-date directory of the project (`nestjs\migrations\el
     npx ts-node submitions.ts
     ```
 
-5.  **Generate `teacher-student-relation.json`:**
+5.  **Delete duplicated data if need**
+    Script: `migrations/elite-data/delete-dublicates.ts`
+    Command:
+
+    ```bash
+    npx ts-nodedelete-dublicates.ts
+    ```
+
+6.  **Generate `teacher-student-relation.json`:**
     Script: `migrations/elite-data/teacher-student-relation.ts`
     Command:
     ```bash

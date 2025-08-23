@@ -140,7 +140,7 @@ async function fetchAssignments(courseId) {
         'sec-fetch-site': 'same-origin',
         'x-requested-with': 'XMLHttpRequest',
         cookie:
-          '_gcl_au=1.1.1130948627.1747650265; _ga=GA1.1.670803082.1747650265; _clck=ojvuj3%7C2%7Cfw1%7C0%7C1965; _fbp=fb.1.1747650265761.736434457114054295; c99_user_id=9fb97f7d-cb36-419c-bb05-3eec71d2451b; __q_state_W7bJ3K1WBhKLn2tA=eyJ1dWlkIjoiNGMwZTQ4ZTktYmJjOS00N2ZkLWI4YmQtOWE1YTY1Nzc5YTIwIiwiY29va2llRG9tYWluIjoiaW5zdHJ1Y3R1cmUuY29tIiwiYWN0aXZlU2Vzc2lvbklkIjpudWxsLCJzY3JpcHRJZCI6IjE2NTU0NDM3MDEyMjg3NjY3MzMiLCJtZXNzZW5nZXJFeHBhbmRlZCI6bnVsbCwicHJvbXB0RGlzbWlzc2VkIjpmYWxzZSwiY29udmVyc2F0aW9uSWQiOiIxNjU3OTU0NTMyMzk1Mjc5OTI0In0=; __utmzz=utmccn=(not set); _mkto_trk=id:871-AUV-441&token:_mch-instructure.com-1261fb15c0ebbd00867a136414ae0516; _ga_75H5134F9J=GS2.1.s1747661704$o2$g0$t1747661707$j57$l1$h2147420910$diiMXZ1G3_saghptU3n3SRHgKOVfkwRg1DA; dpUseLegacy=false; ReadSpeakerFloatingSettings=detachPosition=3,725; log_session_id=12d64a5fa16017dc0c8bdc9090a8b4d4; _legacy_normandy_session=g21FLYYMYMC7RvMSPtyiwA+7NR-wqvHhqPphAA8qTcFbYmV6AV4MHUCtGZxzHNADumga3xond7X4M5nlRlxRRmrh3hMiSn1OpG2FMm4xdV2sGaQp6-gyy-B3Tl52MSkrLsvHvNeldn47xxTv4S0Lx5HFpopRx3o4XdgligcL3KJ-uctGiL1F6Qh3xD76CvD3_AvVH8AHlTn7VZjCgpr3IuFl8PxoXhfnoxIZJGxl0-EKLuZzEh_27Nd8sArTPxbVTLVKt4le4IYji91akLIGWcKpHPbmfNkNznrvQStdQnC4Z1wlSuFlgALYlWdixm6uwm3DxGJ0N3mfIEUehs47_ulyEg3Aw4XoD0nd4369pZPLynXTQYJLPV3GEi3-7KH0rg3dsMU6FRMCMAfmN5h0O0eLPofve1a_9tNrqwDMVoyiTQO_qqDUazXyWjXz2hLWe1La1Yv_0INvvUXRxZWvpN8OcSJf9CI5c2CFexaHcFB0Yj6i9UBABBePbiTgvT_W9o.vwYHgAJCCI8LxNW_XUZvCOUmgI4.aC4WOA; canvas_session=g21FLYYMYMC7RvMSPtyiwA+7NR-wqvHhqPphAA8qTcFbYmV6AV4MHUCtGZxzHNADumga3xond7X4M5nlRlxRRmrh3hMiSn1OpG2FMm4xdV2sGaQp6-gyy-B3Tl52MSkrLsvHvNeldn47xxTv4S0Lx5HFpopRx3o4XdgligcL3KJ-uctGiL1F6Qh3xD76CvD3_AvVH8AHlTn7VZjCgpr3IuFl8PxoXhfnoxIZJGxl0-EKLuZzEh_27Nd8sArTPxbVTLVKt4le4IYji91akLIGWcKpHPbmfNkNznrvQStdQnC4Z1wlSuFlgALYlWdixm6uwm3DxGJ0N3mfIEUehs47_ulyEg3Aw4XoD0nd4369pZPLynXTQYJLPV3GEi3-7KH0rg3dsMU6FRMCMAfmN5h0O0eLPofve1a_9tNrqwDMVoyiTQO_qqDUazXyWjXz2hLWe1La1Yv_0INvvUXRxZWvpN8OcSJf9CI5c2CFexaHcFB0Yj6i9UBABBePbiTgvT_W9o.vwYHgAJCCI8LxNW_XUZvCOUmgI4.aC4WOA; _csrf_token=RTbRmjXp7JLcfxgXam8PkFfMV6rBpLmOM0WVEvhB9ocOdIjqUo2o6LEVblo%2FXkTHP4Fv8puX2vh%2BA%2BRoqHGe5A%3D%3D',
+          '_ga=GA1.1.670803082.1747650265; _clck=ojvuj3%7C2%7Cfw1%7C0%7C1965; __utmzz=utmccn=(not set); _mkto_trk=id:871-AUV-441&token:_mch-instructure.com-1261fb15c0ebbd00867a136414ae0516; _ga_75H5134F9J=GS2.1.s1747661704$o2$g0$t1747661707$j57$l1$h2147420910$diiMXZ1G3_saghptU3n3SRHgKOVfkwRg1DA; dpUseLegacy=false; log_session_id=64b0aab48c1409f29f6433173c0c7c68; _legacy_normandy_session=yQPkM17MSFAwMtcH8GfBgg+agkwuBLM0JjPRoy8pVc0AlAB64IKhsEp4omq0PTyIkLhSvT6HXXpFDqInUOKIJbB1b3FpxpZ_AXmKbqx5RHyhfAqQDZx6L6UO9MHehmATEpwwlp_yZQ1HUhk7sZPj_qJeCF-VNumqUtNfe9lFydTQs8dRa3qZeE-VE8NtFgahmdSNjKbAsgJrsQojltJzasew1yDmk5R93OSY9HPHIVImvwUabAsiAkClIVsHYCYX4qinTgGZjSRPIq28e7_6a8-LOqIn_2ccwXmxI1ltavfBMQ_Lpv6D1_xl34CvXMouUKtDPkgsAzZ_ro3wE5SyW9Azl49vw_R82lZw1pXhYP4k3r7Cp3Wqgq6hekDSkhG6C8Xed58NEnQegC6vyUiP2AezQP7pFGbfFFEt8Izd3dijw._Why10BsgsaBBszoPve041HRbtE.aKlEJA; canvas_session=yQPkM17MSFAwMtcH8GfBgg+agkwuBLM0JjPRoy8pVc0AlAB64IKhsEp4omq0PTyIkLhSvT6HXXpFDqInUOKIJbB1b3FpxpZ_AXmKbqx5RHyhfAqQDZx6L6UO9MHehmATEpwwlp_yZQ1HUhk7sZPj_qJeCF-VNumqUtNfe9lFydTQs8dRa3qZeE-VE8NtFgahmdSNjKbAsgJrsQojltJzasew1yDmk5R93OSY9HPHIVImvwUabAsiAkClIVsHYCYX4qinTgGZjSRPIq28e7_6a8-LOqIn_2ccwXmxI1ltavfBMQ_Lpv6D1_xl34CvXMouUKtDPkgsAzZ_ro3wE5SyW9Azl49vw_R82lZw1pXhYP4k3r7Cp3Wqgq6hekDSkhG6C8Xed58NEnQegC6vyUiP2AezQP7pFGbfFFEt8Izd3dijw._Why10BsgsaBBszoPve041HRbtE.aKlEJA; _csrf_token=3jeCLT3OUa7ZSSXgh758z4R0XDAqwT5tjHnDWFStOBK9QM9cWogfmoBxE7r%2FlT%2BZ0Rc3dE%2F4XD%2B8LK4qH8FfWQ%3D%3D',
         Referer: `https://eliteaa.instructure.com/courses/${courseId}/assignments`,
         'Referrer-Policy': 'no-referrer-when-downgrade',
       },
@@ -150,7 +150,15 @@ async function fetchAssignments(courseId) {
   );
 
   const data = (await response.json()) as { assignments: any[] }[];
-  return data.flatMap((item) => item.assignments);
+  const assignments = data.flatMap((item) => item.assignments);
+  if (!Array.isArray(assignments) || assignments.length === 0) {
+    console.error(`No assignments found for course ${courseId}`);
+  } else {
+    console.log(
+      `Found ${assignments.length} assignments for course ${courseId}`,
+    );
+  }
+  return Array.isArray(assignments) ? assignments : [];
 }
 
 function saveAssignments(assignments: any[]) {

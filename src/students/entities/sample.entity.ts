@@ -72,7 +72,7 @@ export class SampleEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Sample status',
-    maxLength: 250,
+    maxLength: 50,
     enum: SampleStatus,
   })
   @Column({ type: 'enum', enum: SampleStatus })
@@ -80,7 +80,7 @@ export class SampleEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Sample flag category',
-    maxLength: 250,
+    maxLength: 50,
     enum: SampleFlagCategory,
   })
   @Column({ type: 'enum', enum: SampleFlagCategory, nullable: true })
@@ -102,6 +102,7 @@ export class SampleEntity extends GenericEntity {
 
   @ApiProperty({
     description: 'Sample grade (e.g. 1/5, 2/5, 3/5, 4/5, 5/5)',
+    maxLength: 50,
     nullable: true,
   })
   @Column({ nullable: true })
