@@ -26,11 +26,10 @@ export const createTypeOrmConfig = (
   if (isProduction || isVercel) {
     return {
       ...baseConfig,
-      ssl: { rejectUnauthorized: false },
+      ssl: false,
       keepConnectionAlive: false,
       extra: {
         // Serverless оптимізація
-        max: 1, // Один з'єднання на функцію
         min: 0,
         acquire: 30000,
         idle: 10000,
@@ -51,11 +50,5 @@ export const createTypeOrmConfig = (
     ...baseConfig,
     ssl: false,
     keepConnectionAlive: true,
-    extra: {
-      max: 10,
-      min: 1,
-      acquire: 30000,
-      idle: 10000,
-    },
   };
 };
