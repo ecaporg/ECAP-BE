@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { setupSwagger } from './core/config/swagger.setup';
 import { AppModule } from './app.module';
 
-export async function bootstrap() {
+async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.setGlobalPrefix('api');
