@@ -2,7 +2,7 @@
 export * from './core.module';
 
 // Cache
-export * from './cache/redis.module';
+// export * from './cache/redis.module';
 
 // Base entities
 export * from './entity/generic-entity';
