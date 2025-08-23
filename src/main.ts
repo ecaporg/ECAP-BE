@@ -29,8 +29,23 @@ async function bootstrap() {
   };
 
   app.enableCors(corsOptions);
-  await app.listen(configService.get('PORT'));
-}
-bootstrap();
 
-// export default bootstrap;
+  // Для Vercel serverless functions
+  const isVercel = process.env.VERCEL === '1';
+  if (isVercel) {
+    await app.init();
+    return app.getHttpAdapter().getInstance();
+  }
+
+  // Для локального розробки
+  await app.listen(configService.get('PORT') || 3001);
+  console.log(`Application is running on: ${await app.getUrl()}`);
+}
+
+// Для локального запуску
+if (require.main === module) {
+  bootstrap();
+}
+
+// Експорт для Vercel
+export default bootstrap;
