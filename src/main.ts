@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { setupSwagger } from './core/config/swagger.setup';
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.setGlobalPrefix('api');
@@ -32,3 +32,5 @@ async function bootstrap() {
   await app.listen(configService.get('PORT'));
 }
 bootstrap();
+
+export default bootstrap;
