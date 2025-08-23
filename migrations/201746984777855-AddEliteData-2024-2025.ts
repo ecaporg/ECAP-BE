@@ -173,7 +173,6 @@ export class AddEliteData201746984777855 implements MigrationInterface {
   private async createTenant(queryRunner: QueryRunner): Promise<TenantEntity> {
     const tenant = await queryRunner.manager.save(TenantEntity, {
       name: 'Elite',
-      root_id: 1,
     });
     await queryRunner.manager.save(KeyEntity, {
       access_token: process.env.ELITE_KEY,

@@ -1,5 +1,11 @@
 import { firstValueFrom } from 'rxjs';
-import { DeepPartial, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import {
+  DeepPartial,
+  ILike,
+  In,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+} from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
@@ -460,13 +466,12 @@ export class CanvasProcessorService {
     return this.sampleService.save(sample);
   }
 
-  protected async findTenantByRootAccountId(rootAccountId: string) {
+  protected async findTenantByDomain(domain: string) {
     const currentAcademicYear =
       await this.academicYearService.findCurrentAcademicYears();
 
     const tenant = await this.tenantService.findOneBy(
       {
-        root_id: Number(rootAccountId),
         schools: {
           teacher_school_year_enrollments: {
             academic_year: {
@@ -476,6 +481,9 @@ export class CanvasProcessorService {
         },
         tracks: {
           academic_year_id: currentAcademicYear[0].id,
+        },
+        key: {
+          url: ILike(`%${domain}%`),
         },
       },
       {
@@ -530,16 +538,16 @@ export class CanvasEventProcessorService extends CanvasProcessorService {
     );
   }
 
-  async processCanvasEvent(event: CanvasEventDto) {
+  async processCanvasEvent(event: CanvasEventDto, domain: string | null) {
     const { tenant, currentAcademicYear } =
-      await this.findTenantByRootAccountId('1'); //replace root_id on domain for more reliable search. Example:  eliteaa.instructure.com
+      await this.findTenantByDomain(domain);
 
     try {
       await this.handleEventByType(event, tenant, currentAcademicYear);
     } catch (error) {
       this.errorService.create({
         tenant,
-        message: `Error processing canvas event: ${error.message}, event: ${JSON.stringify(event)}`,
+        message: `Error processing canvas event: domain ${domain}, error: ${error.message}, event: ${JSON.stringify(event)}`,
       });
       throw error;
     }

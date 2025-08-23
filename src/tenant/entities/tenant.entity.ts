@@ -17,9 +17,6 @@ export class TenantEntity extends GenericEntity {
   @Column({ length: 250, nullable: true, default: null })
   name: string;
 
-  @Column({ nullable: true, default: null, type: 'bigint' })
-  root_id: number;
-
   @ApiProperty({
     description: 'Schools associated with this tenant',
     type: () => [{}],
