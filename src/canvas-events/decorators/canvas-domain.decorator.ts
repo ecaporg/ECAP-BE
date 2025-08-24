@@ -7,14 +7,12 @@ import { extractCanvasDomain } from '../utils/canvas-domain.util';
 export const CanvasDomain = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): string | null => {
     const request = ctx.switchToHttp().getRequest<Request>();
-    const headers = request.headers;
+    const body = request.body;
 
     const possibleSources = [
-      headers.origin,
-      headers.referer,
-      headers['x-forwarded-host'],
-      headers['x-original-host'],
-      headers.host,
+      body?.metadata?.hostname,
+      body?.metadata?.referer,
+      body?.metadata?.url,
     ].filter(Boolean) as string[];
 
     console.log(
