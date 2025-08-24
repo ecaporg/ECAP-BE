@@ -17,6 +17,10 @@ export const CanvasDomain = createParamDecorator(
       headers.host,
     ].filter(Boolean) as string[];
 
+    console.log(
+      `Extracted possible sources for canvas domain: ${JSON.stringify(possibleSources, null, 2)}`,
+    );
+
     return extractCanvasDomain(possibleSources);
   },
 );
