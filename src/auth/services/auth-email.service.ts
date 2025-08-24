@@ -13,7 +13,7 @@ export class AuthEmailService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly emailService: MailerService,
+    // private readonly emailService: MailerService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -32,19 +32,19 @@ export class AuthEmailService {
       'EMAIL_CONFIRMATION_URL',
     )}?token=${token}`;
 
-    try {
-      return await this.emailService.sendMail({
-        to: email,
-        subject: 'Welcome to the application. To confirm the email address',
-        template: './confirmation',
-        context: {
-          username: username || email,
-          link,
-        },
-      });
-    } catch (message) {
-      return console.error(message);
-    }
+    // try {
+    //   return await this.emailService.sendMail({
+    //     to: email,
+    //     subject: 'Welcome to the application. To confirm the email address',
+    //     template: './confirmation',
+    //     context: {
+    //       username: username || email,
+    //       link,
+    //     },
+    //   });
+    // } catch (message) {
+    //   return console.error(message);
+    // }
   }
 
   async sendNewEmailVerificationLink(
@@ -65,19 +65,19 @@ export class AuthEmailService {
       'NEW_EMAIL_CONFIRMATION_URL',
     )}?token=${token}`;
 
-    try {
-      return await this.emailService.sendMail({
-        to: changeEmailDto.newEmail,
-        subject: 'Confirm your new email address',
-        template: './confirmation',
-        context: {
-          username: username || changeEmailDto.newEmail,
-          link,
-        },
-      });
-    } catch (message) {
-      return console.error(message);
-    }
+    // try {
+    //   return await this.emailService.sendMail({
+    //     to: changeEmailDto.newEmail,
+    //     subject: 'Confirm your new email address',
+    //     template: './confirmation',
+    //     context: {
+    //       username: username || changeEmailDto.newEmail,
+    //       link,
+    //     },
+    //   });
+    // } catch (message) {
+    //   return console.error(message);
+    // }
   }
 
   validateConfirmEmailToken(token: string): string {
@@ -136,19 +136,19 @@ export class AuthEmailService {
       'FORGOT_PASSWORD_URL',
     )}?token=${token}`;
 
-    try {
-      return await this.emailService.sendMail({
-        to: email,
-        subject: 'Reset your password',
-        template: './restore-password',
-        context: {
-          username: username,
-          link,
-        },
-      });
-    } catch (message) {
-      return console.error(message);
-    }
+    // try {
+    //   return await this.emailService.sendMail({
+    //     to: email,
+    //     subject: 'Reset your password',
+    //     template: './restore-password',
+    //     context: {
+    //       username: username,
+    //       link,
+    //     },
+    //   });
+    // } catch (message) {
+    //   return console.error(message);
+    // }
   }
 
   async changeEmail(userId: number, newEmail: string): Promise<boolean> {
