@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { CanvasDomain } from '../decorators/canvas-domain.decorator';
@@ -8,6 +8,8 @@ import { CanvasEventProcessorService } from '../services/canvas-event-processor.
 @ApiTags('Canvas Event Processor')
 @Controller('canvas-events')
 export class CanvasEventProcessorController {
+  private readonly logger = new Logger(CanvasEventProcessorController.name);
+
   constructor(
     private readonly canvasEventProcessorService: CanvasEventProcessorService,
   ) {}
@@ -17,6 +19,10 @@ export class CanvasEventProcessorController {
     @Body() event: CanvasEventDto,
     @CanvasDomain() domain: string,
   ) {
+    this.logger.log(
+      `Processing canvas webhook for domain: ${domain}`,
+      JSON.stringify(event, null, 2),
+    );
     return this.canvasEventProcessorService.processCanvasEvent(event, domain);
   }
 }
