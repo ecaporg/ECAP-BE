@@ -22,7 +22,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "m:generate": "npm run typeorm -- migration:generate -d typeorm.config.ts",
     "m:run": "npm run typeorm -- migration:run -d typeorm.config.ts",
-    "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts"
+    "m:revert": "npm run typeorm -- migration:revert -d typeorm.config.ts",
+    "vercel-build": "npm run build && vercel --prod"
   },
   "dependencies": {
     "@golevelup/ts-jest": "^0.4.0",
