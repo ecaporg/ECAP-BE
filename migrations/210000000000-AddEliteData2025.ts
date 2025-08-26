@@ -79,9 +79,9 @@
 //     }
 
 //     // Create admin user
-//     await this.createAdmin(queryRunner, tenant);
+//     // await this.createAdmin(queryRunner, tenant);
 
-//     await this.recalculateAssignmentPeriods(queryRunner);
+//     // await this.recalculateAssignmentPeriods(queryRunner);
 //   }
 
 //   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -495,41 +495,41 @@
 //     return assignmentPeriods;
 //   }
 
-//   private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
-//     const cheredia = await queryRunner.manager.findOne(UserEntity, {
-//       where: { email: 'cheredia@eliteacademic.com' },
-//     });
-//     const admin = await queryRunner.manager.save(UserEntity, [
-//       {
-//         email: 'admin@test.com',
-//         password: await argon2.hash('password'),
-//         name: 'Admin',
-//         isActive: true,
-//         emailVerified: true,
-//         role: RolesEnum.SUPER_ADMIN,
-//       },
-//       {
-//         email: 'rgonzalez@eliteacademic.com',
-//         password: await argon2.hash('password'),
-//         name: 'Rachel Gonzalez',
-//         isActive: true,
-//         emailVerified: true,
-//         role: RolesEnum.ADMIN,
-//       },
-//       {
-//         ...cheredia,
-//         role: RolesEnum.ADMIN,
-//       },
-//     ]);
+//   // private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
+//   //   const cheredia = await queryRunner.manager.findOne(UserEntity, {
+//   //     where: { email: 'cheredia@eliteacademic.com' },
+//   //   });
+//   //   const admin = await queryRunner.manager.save(UserEntity, [
+//   //     {
+//   //       email: 'admin@test.com',
+//   //       password: await argon2.hash('password'),
+//   //       name: 'Admin',
+//   //       isActive: true,
+//   //       emailVerified: true,
+//   //       role: RolesEnum.SUPER_ADMIN,
+//   //     },
+//   //     {
+//   //       email: 'rgonzalez@eliteacademic.com',
+//   //       password: await argon2.hash('password'),
+//   //       name: 'Rachel Gonzalez',
+//   //       isActive: true,
+//   //       emailVerified: true,
+//   //       role: RolesEnum.ADMIN,
+//   //     },
+//   //     {
+//   //       ...cheredia,
+//   //       role: RolesEnum.ADMIN,
+//   //     },
+//   //   ]);
 
-//     await queryRunner.manager.save(
-//       AdminEntity,
-//       admin.map((user) => ({
-//         user,
-//         tenant,
-//       })),
-//     );
-//   }
+//   //   await queryRunner.manager.save(
+//   //     AdminEntity,
+//   //     admin.map((user) => ({
+//   //       user,
+//   //       tenant,
+//   //     })),
+//   //   );
+//   // }
 
 //   private async recalculateAssignmentPeriods(queryRunner: QueryRunner) {
 //     await queryRunner.manager.query(

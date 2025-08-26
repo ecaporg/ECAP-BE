@@ -954,7 +954,7 @@
 //     } else {
 //       await queryRunner.manager.delete(
 //         StudentLPEnrollmentEntity,
-//         emptyStudentLPEnrollments,
+//         emptyStudentLPEnrollments.map((e) => e.id),
 //       );
 //     }
 //   }
