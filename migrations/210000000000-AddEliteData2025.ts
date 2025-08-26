@@ -33,27 +33,18 @@
 // import { TrackLearningPeriodEntity } from 'src/track/entities/track-learning-period.entity';
 // import { UserEntity } from 'src/users/entities/user.entity';
 // import { RolesEnum } from 'src/users/enums/roles.enum';
-// import { MigrationInterface, QueryRunner } from 'typeorm';
+// import { In, MigrationInterface, QueryRunner } from 'typeorm';
 
-// export class AddEliteData201746984777855 implements MigrationInterface {
-//   private password: string;
+// export class AddEliteData2025210000000000 implements MigrationInterface {
+//   public name = 'AddEliteData2025210000000000';
 
 //   public async up(queryRunner: QueryRunner): Promise<void> {
-//     // Create a tenant
-//     this.password = await argon2.hash('password');
+//     const tenant = await this.getTenant(queryRunner);
 
-//     const tenant = await this.createTenant(queryRunner);
+//     const schools = await this.getSchools(queryRunner, tenant);
 
-//     // Create schools
-//     const schools = await this.createSchool(queryRunner, tenant);
+//     const academies = await this.getAcademies(queryRunner, tenant);
 
-//     // Create academies
-//     const academies = await this.createAcademy(queryRunner, tenant);
-
-//     // Create directors
-//     await this.createDirectors(queryRunner, academies, tenant);
-
-//     // Create academic years (including historical data)
 //     const academicYears = await this.createAcademicYears(queryRunner);
 
 //     // Create teachers and enrollments for all schools and academic years
@@ -64,7 +55,7 @@
 //     );
 
 //     // Create students
-//     const students = await this.createStudents(queryRunner, schools, academies);
+//     // const students = await this.createStudents(queryRunner, schools, academies);
 
 //     for (const academicYear of academicYears) {
 //       // Create tracks
@@ -83,31 +74,7 @@
 //           academicYear,
 //         );
 
-//         // Create student LP enrollments
-//         const studentLPEnrollments = await this.createStudentLPEnrollments(
-//           queryRunner,
-//           learningPeriods,
-//           students,
-//           enrollments,
-//           track,
-//           academicYear,
-//         );
-
-//         // Create subjects
 //         const subjects = await this.createSubjects(queryRunner, track);
-
-//         // Create samples for students
-//         // Create sample flags
-//         // await this.createSampleFlags(
-//         // queryRunner,
-//         // const samples = await this.createSamples(
-//         //   queryRunner,
-//         //   studentLPEnrollments,
-//         //   subjects,
-//         // );
-//         // );
-
-//         // await this.deleteRedunantData(queryRunner, samples, subjects, track);
 //       }
 //     }
 
@@ -170,78 +137,39 @@
 //     );
 //   }
 
-//   private async createTenant(queryRunner: QueryRunner): Promise<TenantEntity> {
-//     const tenant = await queryRunner.manager.save(TenantEntity, {
-//       name: 'Elite',
+//   private async getTenant(queryRunner: QueryRunner): Promise<TenantEntity> {
+//     const tenant = await queryRunner.manager.findOne(TenantEntity, {
+//       where: { name: 'Elite', key: { url: 'https://eliteaa.instructure.com' } },
 //     });
-//     await queryRunner.manager.save(KeyEntity, {
-//       access_token: process.env.ELITE_KEY,
-//       url: 'https://eliteaa.instructure.com',
-//       session_token: process.env.ELITE_SESSION_TOKEN,
-//       tenant,
-//     });
+//     if (!tenant) {
+//       throw new Error('Tenant not found');
+//     }
 //     return tenant;
 //   }
 
-//   private createSchool(
+//   private getSchools(
 //     queryRunner: QueryRunner,
 //     tenant: TenantEntity,
 //   ): Promise<SchoolEntity[]> {
-//     return queryRunner.manager.save(SchoolEntity, [
-//       { name: 'Mountain Empire', tenant } as SchoolEntity,
-//       { name: 'Lucerne', tenant } as SchoolEntity,
-//     ]);
+//     return queryRunner.manager.find(SchoolEntity, {
+//       where: { tenant },
+//     });
 //   }
 
-//   private createAcademy(
+//   private getAcademies(
 //     queryRunner: QueryRunner,
 //     tenant: TenantEntity,
 //   ): Promise<AcademyEntity[]> {
-//     return queryRunner.manager.save(AcademyEntity, [
-//       { name: 'Homeschool', tenant },
-//       { name: 'Flex', tenant },
-//       { name: 'Virtual', tenant },
-//     ]);
-//   }
-
-//   private async createDirectors(
-//     queryRunner: QueryRunner,
-//     academies: AcademyEntity[],
-//     tenant: TenantEntity,
-//   ): Promise<DirectorEntity[]> {
-//     const director_users = await queryRunner.manager.save(
-//       UserEntity,
-//       academies.map(
-//         (academy, idx) =>
-//           ({
-//             email: `director${idx}@test.com`,
-//             password: this.password,
-//             name: 'Director',
-//             isActive: true,
-//             emailVerified: true,
-//             role: RolesEnum.DIRECTOR,
-//           }) as UserEntity,
-//       ),
-//     );
-//     const directors = await queryRunner.manager.save(
-//       DirectorEntity,
-//       academies.map(
-//         (academy, idx) =>
-//           ({
-//             user: director_users[idx],
-//             academy,
-//             tenant,
-//           }) as DirectorEntity,
-//       ),
-//     );
-//     return directors;
+//     return queryRunner.manager.find(AcademyEntity, {
+//       where: { tenant },
+//     });
 //   }
 
 //   private createAcademicYears(
 //     queryRunner: QueryRunner,
 //   ): Promise<AcademicYearEntity[]> {
 //     return queryRunner.manager.save(AcademicYearEntity, [
-//       { from: 2024, to: 2025 },
+//       { from: 2025, to: 2026 },
 //     ]);
 //   }
 
@@ -280,55 +208,33 @@
 //     schools: SchoolEntity[],
 //     academicYears: AcademicYearEntity[],
 //   ) {
-//     const global_teachers = [] as TeacherEntity[];
 //     const enrollments = [] as TeacherSchoolYearEnrollmentEntity[];
-//     const peoples = JSON.parse(
-//       readFileSync('migrations/elite-data/teachers.json', 'utf8'),
-//     ) as People[];
-
-//     const teacher_users = await queryRunner.manager.save(
-//       UserEntity,
-//       peoples.map(
-//         (person) =>
-//           ({
-//             email: person.email,
-//             password: this.password,
-//             name: person.name,
-//             isActive: true,
-//             emailVerified: true,
-//             role: RolesEnum.TEACHER,
-//             canvas_additional_info: {
-//               canvas_id: person.id,
-//               sis_user_id: person.sis_user_id,
-//               sis_import_id: person.sis_import_id,
-//               avatar_url: person.avatar_url,
-//               time_zone: person.time_zone,
-//             } as Record<string, any>,
-//           }) as UserEntity,
-//       ),
+//     const prev_enrollments = await queryRunner.manager.find(
+//       TeacherSchoolYearEnrollmentEntity,
+//       {
+//         where: {
+//           school: In(schools),
+//           academic_year: {
+//             from: 2024,
+//             to: 2025,
+//           },
+//         },
+//         relations: {
+//           academic_year: true,
+//           school: true,
+//           teacher: { user: true },
+//         },
+//       },
 //     );
 
-//     const teachers = await queryRunner.manager.save(
-//       TeacherEntity,
-//       teacher_users.map(
-//         (user) =>
-//           ({
-//             user,
-//           }) as TeacherEntity,
-//       ),
-//     );
-
-//     for (const school of schools) {
+//     for (const enrollment of prev_enrollments) {
 //       for (const academicYear of academicYears) {
-//         for (const teacher of teachers) {
-//           enrollments.push({
-//             school,
-//             teacher,
-//             academic_year: academicYear,
-//           } as TeacherSchoolYearEnrollmentEntity);
-//         }
+//         enrollments.push({
+//           school: enrollment.school,
+//           teacher: enrollment.teacher,
+//           academic_year: academicYear,
+//         } as TeacherSchoolYearEnrollmentEntity);
 //       }
-//       global_teachers.push(...teachers);
 //     }
 
 //     await queryRunner.manager.save(
@@ -336,7 +242,7 @@
 //       enrollments,
 //     );
 
-//     return { global_teachers, enrollments };
+//     return { enrollments };
 //   }
 
 //   private async createTracks(
@@ -410,70 +316,6 @@
 //         } as Record<string, any>,
 //       })) as SubjectEntity[];
 //     return queryRunner.manager.save(SubjectEntity, subjects);
-//   }
-
-//   private async createStudents(
-//     queryRunner: QueryRunner,
-//     schools: SchoolEntity[],
-//     academies: AcademyEntity[],
-//   ) {
-//     const peoples = JSON.parse(
-//       readFileSync('migrations/elite-data/students.json', 'utf8'),
-//     ) as People[];
-//     const users = await queryRunner.manager.save(
-//       UserEntity,
-//       peoples.map(
-//         (person) =>
-//           ({
-//             email: person.email
-//               ? `${person.id}+${person.email}`
-//               : `${person.id}@test.com`,
-//             password: this.password,
-//             name: person.name,
-//             isActive: true,
-//             emailVerified: true,
-//             role: RolesEnum.STUDENT,
-//             canvas_additional_info: {
-//               canvas_id: person.id,
-//               sis_user_id: person.sis_user_id,
-//               sis_import_id: person.sis_import_id,
-//               avatar_url: person.avatar_url,
-//               time_zone: person.time_zone,
-//               track_name: person.sis?.schooltracks_title
-//                 ? `Track ${person.sis.schooltracks_title}`
-//                 : null,
-//               grade: person.sis?.lccgradelevels_gradelevel,
-//             } as Record<string, any>,
-//           }) as UserEntity,
-//       ),
-//     );
-
-//     const students = await queryRunner.manager.save(
-//       StudentEntity,
-//       users.map((user) => {
-//         const person = peoples.find(
-//           (p) => p.id == user.canvas_additional_info.canvas_id,
-//         );
-
-//         const school = schools.find(
-//           (s) =>
-//             s.name ==
-//             (person?.sis?.scope_title == 'mountainelite'
-//               ? 'Mountain Empire'
-//               : 'Lucerne'),
-//         );
-
-//         const academy = academies.find((a) => a.name == person?.sis?.lc_name);
-
-//         return {
-//           user,
-//           academy_id: academy?.id,
-//           school_id: school?.id,
-//         } as StudentEntity;
-//       }),
-//     );
-
-//     return students;
 //   }
 
 //   private async createLearningPeriods(
@@ -653,179 +495,6 @@
 //     return assignmentPeriods;
 //   }
 
-//   private async createSamples(
-//     queryRunner: QueryRunner,
-//     studentLPEnrollments: StudentLPEnrollmentEntity[],
-//     subjects: SubjectEntity[],
-//   ) {
-//     const samples: SampleEntity[] = [];
-
-//     const submissions = (
-//       JSON.parse(
-//         readFileSync('migrations/elite-data/submissions.json', 'utf8'),
-//       ) as Submission[][]
-//     ).flatMap((e) => e);
-
-//     const assignmentsMap = new Map<number, Assignment>(
-//       JSON.parse(
-//         readFileSync('migrations/elite-data/assignments-filtered.json', 'utf8'),
-//       ).map((assignment: Assignment) => [Number(assignment.id), assignment]),
-//     );
-
-//     const coursesMap = new Map<number, Course>(
-//       JSON.parse(
-//         readFileSync('migrations/elite-data/courses.json', 'utf8'),
-//       ).map((course: Course) => [Number(course.id), course]),
-//     );
-
-//     const subjectMap = new Map<number, SubjectEntity>(
-//       subjects.map((s) => [Number(s.canvas_course_id), s]),
-//     );
-
-//     const studentSubmitions = submissions.filter(
-//       (submission) =>
-//         !submission.excused &&
-//         submission.user_id &&
-//         studentLPEnrollments.some(
-//           (s) =>
-//             s.student.user.canvas_additional_info.canvas_id ==
-//             submission.user_id.toString(),
-//         ),
-//     );
-
-//     samples.push(
-//       ...(studentSubmitions.map((s) => {
-//         const assignment = assignmentsMap.get(Number(s.assignment_id));
-//         const due_at = new Date(assignment.due_at);
-
-//         const course = coursesMap.get(Number(assignment.course_id));
-//         const subject = subjectMap.get(Number(course.id));
-
-//         const enrollments = studentLPEnrollments.filter(
-//           (se) =>
-//             se.student.user.canvas_additional_info.canvas_id ==
-//               s.user_id.toString() &&
-//             due_at >= new Date(se.learning_period.start_date) &&
-//             due_at <= new Date(se.learning_period.end_date),
-//         );
-
-//         const status =
-//           s.missing || s.workflow_state === 'unsubmitted'
-//             ? SampleStatus.MISSING_SAMPLE
-//             : !s.grade || !assignment?.name
-//               ? SampleStatus.ERRORS_FOUND
-//               : s.workflow_state === 'graded'
-//                 ? SampleStatus.COMPLETED
-//                 : SampleStatus.PENDING;
-
-//         return {
-//           assignment_title: assignment?.name,
-//           grade: s.grade,
-//           date: s.submitted_at ? new Date(s.submitted_at) : undefined,
-//           status,
-//           subject,
-//           preview_url: s.preview_url,
-//           student_lp_enrollments: enrollments,
-//           canvas_submission_id: s.id ? Number(s.id) : undefined,
-//           done_by_id:
-//             status == SampleStatus.COMPLETED
-//               ? enrollments[0]?.teacher_school_year_enrollment?.teacher_id
-//               : undefined,
-//         } as SampleEntity;
-//       }) as SampleEntity[]),
-//     );
-//     const res = await queryRunner.manager.save(SampleEntity, samples, {
-//       chunk: 500,
-//     });
-
-//     // for (const studentLPEnrollment of studentLPEnrollments) {
-//     //   const assignmentPerLPMap = new Map<number, Assignment>(
-//     //     Array.from(assignmentsMap.values())
-//     //       .filter((a) => {
-//     //         const due_at = new Date(a.due_at);
-//     //         return (
-//     //           due_at >=
-//     //             new Date(studentLPEnrollment.learning_period.start_date) &&
-//     //           due_at <= new Date(studentLPEnrollment.learning_period.end_date)
-//     //         );
-//     //       })
-//     //       .map((a) => [Number(a.id), a]),
-//     //   );
-
-//     //   const studentSubmitions = submissions.filter(
-//     //     (s) =>
-//     //       s.user_id.toString() ==
-//     //         studentLPEnrollment.student.user.canvas_additional_info.canvas_id &&
-//     //       assignmentPerLPMap.has(Number(s.assignment_id)),
-//     //   );
-
-//     //   samples.push(
-//     //     ...(studentSubmitions.map((s) => {
-//     //       const assignment = assignmentPerLPMap.get(Number(s.assignment_id));
-//     //       const course = coursesMap.get(Number(assignment.course_id));
-//     //       const subject = subjectMap.get(Number(course.id));
-
-//     //       const status = !s.submitted_at
-//     //         ? SampleStatus.MISSING_SAMPLE
-//     //         : !s.grade || !assignment?.name
-//     //           ? SampleStatus.ERRORS_FOUND
-//     //           : SampleStatus.PENDING;
-
-//     //       return {
-//     //         assignment_title: assignment?.name,
-//     //         grade: s.grade,
-//     //         date: s.submitted_at ? new Date(s.submitted_at) : undefined,
-//     //         status,
-//     //         student_lp_enrollment: studentLPEnrollment,
-//     //         subject,
-//     //         preview_url: s.preview_url,
-//     //       } as SampleEntity;
-//     //     }) as SampleEntity[]),
-//     //   );
-//     // }
-
-//     return res.length ? res : samples;
-//   }
-
-//   private async createSampleFlags(
-//     queryRunner: QueryRunner,
-//     samples: SampleEntity[],
-//   ) {
-//     const sample_flag_errors = samples.filter(
-//       (sample) => sample.status == SampleStatus.ERRORS_FOUND,
-//     );
-//     const sample_flag_missing_work = samples.filter(
-//       (sample) => sample.status == SampleStatus.MISSING_SAMPLE,
-//     );
-
-//     await queryRunner.manager.save(
-//       SampleFlagErrorEntity,
-//       sample_flag_errors.map(
-//         (sample) =>
-//           ({
-//             sample,
-//             comment: 'Grade is missing',
-//           }) as SampleFlagErrorEntity,
-//       ),
-//       {
-//         chunk: 1000,
-//       },
-//     );
-//     await queryRunner.manager.save(
-//       SampleFlagMissingWorkEntity,
-//       sample_flag_missing_work.map(
-//         (sample) =>
-//           ({
-//             sample,
-//             reason: 'No submission',
-//           }) as SampleFlagMissingWorkEntity,
-//       ),
-//       {
-//         chunk: 1000,
-//       },
-//     );
-//   }
-
 //   private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
 //     const cheredia = await queryRunner.manager.findOne(UserEntity, {
 //       where: { email: 'cheredia@eliteacademic.com' },
@@ -922,38 +591,5 @@
 //     //     chunk: 1000,
 //     //   },
 //     // );
-//   }
-
-//   private async deleteRedunantData(
-//     queryRunner: QueryRunner,
-//     samples: SampleEntity[],
-//     subjects: SubjectEntity[],
-//     track: TrackEntity,
-//   ) {
-//     const subjectIds = new Set(samples.map((s) => s.subject_id));
-//     const subjectsToDelete = subjects.filter(
-//       (s) => !subjectIds.has(s.id) && s.track_id == track.id,
-//     );
-//     if (subjectsToDelete.length === subjectIds.size) {
-//       console.log('No subjects to delete');
-//     } else {
-//       await queryRunner.manager.delete(SubjectEntity, subjectsToDelete);
-//     }
-
-//     const emptyStudentLPEnrollments = await queryRunner.manager
-//       .getRepository(StudentLPEnrollmentEntity)
-//       .createQueryBuilder('studentLPEnrollment')
-//       .leftJoin('studentLPEnrollment.samples', 'sample')
-//       .where('sample.id IS NULL')
-//       .getMany();
-
-//     if (emptyStudentLPEnrollments.length === 0) {
-//       console.log('No empty student LP enrollments to delete');
-//     } else {
-//       await queryRunner.manager.delete(
-//         StudentLPEnrollmentEntity,
-//         emptyStudentLPEnrollments,
-//       );
-//     }
 //   }
 // }
