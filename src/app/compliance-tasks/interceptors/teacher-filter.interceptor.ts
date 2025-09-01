@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { AttachUserIdInterceptor } from '../../core/interceptors/attach-user-id.interceptor';
-import { StudentLPEnrollmentEntity } from '../../domain/enrollment/entities/student-enrollment.entity';
-import { RolesEnum } from '../../domain/users/enums/roles.enum';
+import { AttachUserIdInterceptor } from '../../../core/interceptors/attach-user-id.interceptor';
+import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
+import { RolesEnum } from '../../../domain/users/enums/roles.enum';
 
 @Injectable()
 export class TeacherFilterInterceptor extends AttachUserIdInterceptor<StudentLPEnrollmentEntity> {

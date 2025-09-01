@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { AuthUser } from '../../auth/types/auth-user';
-import { extractPaginationOptions } from '../../core';
-import { StudentLPEnrollmentService } from '../../domain/enrollment/services/student-enrollment.service';
-import { TeacherService } from '../../domain/staff/services/staff.service';
+import { AuthUser } from '../../../auth/types/auth-user';
+import { extractPaginationOptions } from '../../../core';
+import { StudentLPEnrollmentService } from '../../../domain/enrollment/services/student-enrollment.service';
+import { TeacherService } from '../../../domain/staff/services/staff.service';
 import {
   SampleFlagCategory,
   SampleStatus,
-} from '../../domain/students/entities/sample.entity';
-import { RolesEnum } from '../../domain/users/enums/roles.enum';
+} from '../../../domain/students/entities/sample.entity';
+import { RolesEnum } from '../../../domain/users/enums/roles.enum';
 import { TeachersTableFilterDto } from '../dto/filters.dto';
 
 import { TeacherComplianceTaskService } from './teacher.service';
