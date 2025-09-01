@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 
 import { NestedObjectToDotNotation } from '../../core';
-import { UserEntity } from '../../users/entities/user.entity';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { UserEntity } from '../../domain/users/entities/user.entity';
+import { RolesEnum } from '../../domain/users/enums/roles.enum';
 
 interface RolePathMapping<T extends object> {
   role: RolesEnum;

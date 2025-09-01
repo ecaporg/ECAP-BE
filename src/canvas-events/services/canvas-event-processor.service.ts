@@ -10,32 +10,32 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import { NotFoundException } from '../../core';
-import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
-import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
-import { StudentLPEnrollmentService } from '../../enrollment/services/student-enrollment.service';
-import { TeacherSchoolYearEnrollmentService } from '../../enrollment/services/teacher-enrollment.service';
-import { TeacherEntity } from '../../staff/entities/staff.entity';
-import { TeacherService } from '../../staff/services/staff.service';
+import { StudentLPEnrollmentEntity } from '../../domain/enrollment/entities/student-enrollment.entity';
+import { TeacherSchoolYearEnrollmentEntity } from '../../domain/enrollment/entities/teacher-enrollment.entity';
+import { StudentLPEnrollmentService } from '../../domain/enrollment/services/student-enrollment.service';
+import { TeacherSchoolYearEnrollmentService } from '../../domain/enrollment/services/teacher-enrollment.service';
+import { TeacherEntity } from '../../domain/staff/entities/staff.entity';
+import { TeacherService } from '../../domain/staff/services/staff.service';
 import {
   SampleEntity,
   SampleStatus,
-} from '../../students/entities/sample.entity';
-import { StudentEntity } from '../../students/entities/student.entity';
-import { SampleService } from '../../students/services/sample.service';
-import { StudentService } from '../../students/services/student.service';
-import { KeyEntity } from '../../tenant/entities/key.entity';
-import { TenantEntity } from '../../tenant/entities/tenant.entity';
-import { ErrorService } from '../../tenant/services/error.service';
-import { TenantService } from '../../tenant/services/tenant.service';
-import { AcademicYearEntity } from '../../track/entities/academic-year.entity';
-import { SubjectEntity } from '../../track/entities/subject.entity';
-import { TrackEntity } from '../../track/entities/track.entity';
-import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-period.entity';
-import { AcademicYearService } from '../../track/services/academic-year.service';
-import { SubjectService } from '../../track/services/subject.service';
-import { TrackLearningPeriodService } from '../../track/services/track-learning-period.service';
-import { RolesEnum } from '../../users/enums/roles.enum';
-import { UsersService } from '../../users/users.service';
+} from '../../domain/students/entities/sample.entity';
+import { StudentEntity } from '../../domain/students/entities/student.entity';
+import { SampleService } from '../../domain/students/services/sample.service';
+import { StudentService } from '../../domain/students/services/student.service';
+import { KeyEntity } from '../../domain/tenant/entities/key.entity';
+import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
+import { ErrorService } from '../../domain/tenant/services/error.service';
+import { TenantService } from '../../domain/tenant/services/tenant.service';
+import { AcademicYearEntity } from '../../domain/track/entities/academic-year.entity';
+import { SubjectEntity } from '../../domain/track/entities/subject.entity';
+import { TrackEntity } from '../../domain/track/entities/track.entity';
+import { TrackLearningPeriodEntity } from '../../domain/track/entities/track-learning-period.entity';
+import { AcademicYearService } from '../../domain/track/services/academic-year.service';
+import { SubjectService } from '../../domain/track/services/subject.service';
+import { TrackLearningPeriodService } from '../../domain/track/services/track-learning-period.service';
+import { RolesEnum } from '../../domain/users/enums/roles.enum';
+import { UsersService } from '../../domain/users/users.service';
 import {
   CanvasAssignmentDto,
   CanvasCourseDto,

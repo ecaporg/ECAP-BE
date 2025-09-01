@@ -7,7 +7,7 @@ import {
   IdDecorator,
   RecordStringAndDotNotation,
 } from '../../core';
-import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
+import { StudentLPEnrollmentEntity } from '../../domain/enrollment/entities/student-enrollment.entity';
 
 const FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'learning_period_id',

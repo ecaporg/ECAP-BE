@@ -5,12 +5,12 @@ import { Injectable } from '@nestjs/common';
 
 import { AuthUser } from '../../auth/types/auth-user';
 import { BadRequestException, extractPaginationOptions } from '../../core';
-import { StudentLPEnrollmentService } from '../../enrollment/services/student-enrollment.service';
-import { StudentService } from '../../students/services/student.service';
-import { TenantEntity } from '../../tenant/entities/tenant.entity';
-import { TenantService } from '../../tenant/services/tenant.service';
-import { AcademicYearService } from '../../track/services/academic-year.service';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { StudentLPEnrollmentService } from '../../domain/enrollment/services/student-enrollment.service';
+import { StudentService } from '../../domain/students/services/student.service';
+import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
+import { TenantService } from '../../domain/tenant/services/tenant.service';
+import { AcademicYearService } from '../../domain/track/services/academic-year.service';
+import { RolesEnum } from '../../domain/users/enums/roles.enum';
 import {
   StudentSamplesFilterDto,
   StudentsTableFilterDto,

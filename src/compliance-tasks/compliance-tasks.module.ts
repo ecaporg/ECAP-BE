@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { SchoolModule } from '../school/school.module';
+import { SchoolModule } from '../domain/school/school.module';
 
 import { AdminComplianceController } from './controllers/admin.controller';
 import { TeacherComplianceTaskController } from './controllers/teacher.controller';

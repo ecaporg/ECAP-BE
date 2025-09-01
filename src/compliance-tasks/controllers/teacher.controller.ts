@@ -10,10 +10,10 @@ import {
   CurrentUser,
   Roles,
 } from '../../core';
-import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
-import { StudentEntity } from '../../students/entities/student.entity';
-import { TenantEntity } from '../../tenant/entities/tenant.entity';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { StudentLPEnrollmentEntity } from '../../domain/enrollment/entities/student-enrollment.entity';
+import { StudentEntity } from '../../domain/students/entities/student.entity';
+import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
+import { RolesEnum } from '../../domain/users/enums/roles.enum';
 import {
   StudentSamplesFilterDto,
   StudentsTableFilterDto,

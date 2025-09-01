@@ -10,10 +10,10 @@ import {
   CurrentUser,
   Roles,
 } from '../../core';
-import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
-import { TeacherEntity } from '../../staff/entities/staff.entity';
-import { TenantEntity } from '../../tenant/entities/tenant.entity';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { TeacherSchoolYearEnrollmentEntity } from '../../domain/enrollment/entities/teacher-enrollment.entity';
+import { TeacherEntity } from '../../domain/staff/entities/staff.entity';
+import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
+import { RolesEnum } from '../../domain/users/enums/roles.enum';
 import { TeachersTableFilterDto } from '../dto/filters.dto';
 import { AdminComplianceService } from '../services/admin.service';
 

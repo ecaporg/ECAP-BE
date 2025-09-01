@@ -10,9 +10,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '../../core';
-import { CreateUserDTO } from '../../users/dtos/create-user.dto';
-import { UserEntity } from '../../users/entities/user.entity';
-import { UsersService } from '../../users/users.service';
+import { CreateUserDTO } from '../../domain/users/dtos/create-user.dto';
+import { UserEntity } from '../../domain/users/entities/user.entity';
+import { UsersService } from '../../domain/users/users.service';
 import { AuthTokensDTO } from '../dtos/auth-tokens.dto';
 import { ChangeEmailPasswordDTO } from '../dtos/change-email.dto';
 import { LoginResponseDTO } from '../dtos/login-response.dto';

@@ -7,8 +7,8 @@ import { CanvasEventsModule } from './canvas-events/canvas-events.module';
 import { ComplianceTasksModule } from './compliance-tasks/compliance-tasks.module';
 import { CoreModule } from './core/core.module';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { SchoolModule } from './school/school.module';
-import { UsersModule } from './users/users.module';
+import { SchoolModule } from './domain/school/school.module';
+import { UsersModule } from './domain/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 @Module({

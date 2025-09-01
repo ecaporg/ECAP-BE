@@ -1,7 +1,7 @@
 import { IsNumber, IsOptional } from 'class-validator';
 
 import { BaseFilterDto, RecordStringAndDotNotation } from '../../core';
-import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-period.entity';
+import { TrackLearningPeriodEntity } from '../../domain/track/entities/track-learning-period.entity';
 
 const FILTER_KEYS = {
   ADMIN: 'track.tenant.admins.id',

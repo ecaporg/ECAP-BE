@@ -2,36 +2,36 @@ import { Type } from '@nestjs/common';
 
 // Auth models
 import { AuthUser } from '../../auth/types/auth-user';
-import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
-import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
+import { StudentLPEnrollmentEntity } from '../../domain/enrollment/entities/student-enrollment.entity';
+import { TeacherSchoolYearEnrollmentEntity } from '../../domain/enrollment/entities/teacher-enrollment.entity';
 // School entities
-import { AcademyEntity } from '../../school/entities/academy.entity';
-import { SchoolEntity } from '../../school/entities/school.entity';
+import { AcademyEntity } from '../../domain/school/entities/academy.entity';
+import { SchoolEntity } from '../../domain/school/entities/school.entity';
 // Staff entities
 import {
   AdminEntity,
   DirectorEntity,
   TeacherEntity,
-} from '../../staff/entities/staff.entity';
+} from '../../domain/staff/entities/staff.entity';
 // Student entities
-import { SampleEntity } from '../../students/entities/sample.entity';
+import { SampleEntity } from '../../domain/students/entities/sample.entity';
 import {
   SampleFlagCompletedEntity,
   SampleFlagErrorEntity,
   SampleFlagMissingWorkEntity,
   SampleFlagRejectedEntity,
-} from '../../students/entities/sample-flag.entity';
-import { StudentEntity } from '../../students/entities/student.entity';
-import { TenantEntity } from '../../tenant/entities/tenant.entity';
-import { AcademicYearEntity } from '../../track/entities/academic-year.entity';
-import { SemesterEntity } from '../../track/entities/semester.entity';
+} from '../../domain/students/entities/sample-flag.entity';
+import { StudentEntity } from '../../domain/students/entities/student.entity';
+import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
+import { AcademicYearEntity } from '../../domain/track/entities/academic-year.entity';
+import { SemesterEntity } from '../../domain/track/entities/semester.entity';
 // Track entities
-import { SubjectEntity } from '../../track/entities/subject.entity';
-import { TrackEntity } from '../../track/entities/track.entity';
-import { TrackCalendarEntity } from '../../track/entities/track-calendar.entity';
-import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-period.entity';
+import { SubjectEntity } from '../../domain/track/entities/subject.entity';
+import { TrackEntity } from '../../domain/track/entities/track.entity';
+import { TrackCalendarEntity } from '../../domain/track/entities/track-calendar.entity';
+import { TrackLearningPeriodEntity } from '../../domain/track/entities/track-learning-period.entity';
 // User entities
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserEntity } from '../../domain/users/entities/user.entity';
 // Core models
 import { ErrorResponseDto } from '../dto/error-response.dto';
 
