@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthModule } from './auth/auth.module';
-import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module';
 import { ComplianceTasksModule } from './app/compliance-tasks/compliance-tasks.module';
-import { CoreModule } from './core/core.module';
 import { DashboardModule } from './app/dashboard/dashboard.module';
+import { AuthModule } from './auth/auth.module';
+import { CoreModule } from './core/core.module';
 import { SchoolModule } from './domain/school/school.module';
 import { UsersModule } from './domain/users/users.module';
+import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 @Module({
