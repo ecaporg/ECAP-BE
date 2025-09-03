@@ -10,7 +10,6 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '../../../core';
-import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 import { SubjectEntity } from '../../subject/entities/subject.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
@@ -34,7 +33,6 @@ interface ITrackEntity {
   semesters: SemesterEntity[];
   calendar: TrackCalendarEntity;
 
-  studentLPEnrollments: StudentLPEnrollmentEntity[];
   subjects: SubjectEntity[];
 }
 
@@ -104,16 +102,6 @@ export class TrackEntity extends GenericEntity implements ITrackEntity {
   })
   @OneToMany(() => TrackLearningPeriodEntity, (period) => period.track)
   learningPeriods: TrackLearningPeriodEntity[];
-
-  @ApiProperty({
-    description: 'Students enrolled in this track',
-    type: () => [{}],
-  })
-  @OneToMany(
-    () => StudentLPEnrollmentEntity,
-    (student_lp_enrollment) => student_lp_enrollment.track,
-  )
-  studentLPEnrollments: StudentLPEnrollmentEntity[];
 
   @ApiProperty({
     description: 'Semesters in this track',

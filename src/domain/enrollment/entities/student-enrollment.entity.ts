@@ -5,7 +5,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GenericEntity } from '../../../core';
 import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
-import { TrackEntity } from '../../track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-period.entity';
 
 import { StudentLPEnrollmentAssignmentEntity } from './student-enrollment-assignment.entity';
@@ -20,9 +19,6 @@ interface IStudentLPEnrollmentEntity {
 
   teacher_school_year_enrollment_id: number;
   teacher_school_year_enrollment: TeacherSchoolYearEnrollmentEntity;
-
-  track: TrackEntity;
-  track_id: number;
 
   learning_period: TrackLearningPeriodEntity;
   learning_period_id: number;
@@ -65,18 +61,6 @@ export class StudentLPEnrollmentEntity
   @ApiProperty({ description: 'Percentage of completed samples' })
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   percentage: number;
-
-  @ApiProperty({ description: 'Track ID associated with this enrollment' })
-  @Column()
-  track_id: number;
-
-  @ApiProperty({ description: 'Track associated with this enrollment' })
-  @ManyToOne(() => TrackEntity, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'track_id' })
-  track: TrackEntity;
 
   @ApiProperty({
     description: 'Learning period associated with this enrollment',

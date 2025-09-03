@@ -11,8 +11,17 @@ export interface CalendarDay {
   type: string;
 }
 
+interface ITrackCalendarEntity {
+  id: number;
+  days: CalendarDay[];
+  track: TrackEntity;
+}
+
 @Entity({ name: 'track_calendar' })
-export class TrackCalendarEntity extends DatedGenericEntity {
+export class TrackCalendarEntity
+  extends DatedGenericEntity
+  implements ITrackCalendarEntity
+{
   @ApiProperty({ description: 'Track ID associated with this calendar entry' })
   @PrimaryColumn()
   id: number;

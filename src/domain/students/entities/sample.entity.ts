@@ -2,9 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { CanvasGenericEntity } from '../../../core';
 import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/student-enrollment-assignment.entity';
-import { SubjectEntity } from '../../subject/entities/subject.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
 import {
@@ -58,30 +57,26 @@ export enum SampleFlagCategory {
  */
 
 interface ISampleEntity {
-  assignment_title: string;
-  canvas_submission_id?: number;
+  canvas_id?: string;
   date?: Date;
+  status: SampleStatus;
+  grade?: string;
+  preview_url?: string;
+
   done_by: UserEntity;
   done_by_id: number;
-  enrollmentAssignments: StudentLPEnrollmentAssignmentEntity;
+
   flag_category: SampleFlagCategory;
   flag_completed: SampleFlagCompletedEntity;
   flag_errors: SampleFlagErrorEntity;
   flag_missing_work: SampleFlagMissingWorkEntity;
   flag_rejected: SampleFlagRejectedEntity;
-  grade?: string;
-  preview_url?: string;
-  status: SampleStatus;
-  subject: SubjectEntity;
-  subject_id?: number;
+
+  enrollmentAssignment: StudentLPEnrollmentAssignmentEntity;
 }
 
 @Entity({ name: 'samples' })
-export class SampleEntity extends GenericEntity implements ISampleEntity {
-  @ApiProperty({ description: 'Assignment title', maxLength: 250 })
-  @Column({ length: 250 })
-  assignment_title: string;
-
+export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
   @ApiProperty({
     description: 'Sample status',
     maxLength: 50,
@@ -104,13 +99,6 @@ export class SampleEntity extends GenericEntity implements ISampleEntity {
   })
   @Column({ nullable: true })
   done_by_id: number;
-
-  @ApiProperty({
-    description: 'Subject ID associated with this sample',
-    nullable: true,
-  })
-  @Column({ nullable: true })
-  subject_id?: number;
 
   @ApiProperty({
     description: 'Sample grade (e.g. 1/5, 2/5, 3/5, 4/5, 5/5)',
@@ -140,14 +128,6 @@ export class SampleEntity extends GenericEntity implements ISampleEntity {
   })
   @Column({ nullable: true, type: 'bigint' })
   canvas_submission_id?: number;
-
-  @ApiProperty({
-    description: 'Subject associated with this sample',
-    type: () => SubjectEntity,
-  })
-  @ManyToOne(() => SubjectEntity, (subject) => subject.samples)
-  @JoinColumn({ name: 'subject_id' })
-  subject: SubjectEntity;
 
   @ApiProperty({
     description: 'User who set completed status of this sample',
@@ -192,5 +172,5 @@ export class SampleEntity extends GenericEntity implements ISampleEntity {
     () => StudentLPEnrollmentAssignmentEntity,
     (assignment) => assignment.sample,
   )
-  enrollmentAssignments: StudentLPEnrollmentAssignmentEntity;
+  enrollmentAssignment: StudentLPEnrollmentAssignmentEntity;
 }

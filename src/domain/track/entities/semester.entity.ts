@@ -6,8 +6,17 @@ import { GenericEntity } from '../../../core';
 
 import { TrackEntity } from './track.entity';
 
+interface ISemesterEntity {
+  start_date: Date;
+  end_date: Date;
+  name: string;
+
+  track: TrackEntity;
+  track_id: number;
+}
+
 @Entity({ name: 'semesters' })
-export class SemesterEntity extends GenericEntity {
+export class SemesterEntity extends GenericEntity implements ISemesterEntity {
   @ApiProperty({ description: 'Track ID associated with this semester' })
   @Column()
   track_id: number;

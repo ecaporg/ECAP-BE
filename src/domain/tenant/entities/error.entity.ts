@@ -6,8 +6,15 @@ import { GenericEntity } from '../../../core';
 
 import { TenantEntity } from './tenant.entity';
 
+interface IErrorEntity {
+  message: string;
+
+  tenant: TenantEntity;
+  tenant_id: number;
+}
+
 @Entity({ name: 'errors' })
-export class ErrorEntity extends GenericEntity {
+export class ErrorEntity extends GenericEntity implements IErrorEntity {
   @ApiProperty({
     description: 'Error message',
     type: 'string',

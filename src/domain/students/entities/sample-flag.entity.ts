@@ -77,21 +77,30 @@ export class SampleFlagErrorEntity
 }
 
 @Entity({ name: 'sample_flag_missing_work' })
-export class SampleFlagMissingWorkEntity extends SampleFlagEntity {
+export class SampleFlagMissingWorkEntity
+  extends SampleFlagEntity
+  implements ISampleFlagMissingWorkEntity
+{
   @Column()
   @ApiProperty({ description: 'Reason' })
   reason: string;
 }
 
 @Entity({ name: 'sample_flag_completed' })
-export class SampleFlagCompletedEntity extends SampleFlagEntity {
+export class SampleFlagCompletedEntity
+  extends SampleFlagEntity
+  implements ISampleFlagCompletedEntity
+{
   @Column()
   @ApiProperty({ description: 'Message' })
   message: string;
 }
 
 @Entity({ name: 'sample_flag_rejected' })
-export class SampleFlagRejectedEntity extends SampleFlagEntity {
+export class SampleFlagRejectedEntity
+  extends SampleFlagEntity
+  implements ISampleFlagRejectedEntity
+{
   @Column()
   @ApiProperty({ description: 'Reason' })
   reason: string;

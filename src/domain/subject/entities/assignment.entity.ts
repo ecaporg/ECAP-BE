@@ -8,10 +8,11 @@ import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/s
 import { CourseEntity } from './course.entity';
 
 interface IAssignmentEntity {
+  name: string;
+  canvas_id?: string;
+
   course: CourseEntity;
   course_id: number;
-
-  name: string;
 
   enrollmentAssignments: StudentLPEnrollmentAssignmentEntity[];
 }

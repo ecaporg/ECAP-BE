@@ -16,8 +16,6 @@ interface ISubjectEntity {
 
   track: TrackEntity;
   track_id: number;
-
-  samples: SampleEntity[];
 }
 
 @Entity({ name: 'subjects' })
@@ -43,13 +41,6 @@ export class SubjectEntity extends GenericEntity implements ISubjectEntity {
   })
   @JoinColumn({ name: 'track_id' })
   track: TrackEntity;
-
-  @ApiProperty({
-    description: 'Samples associated with this subject',
-    type: () => [{}],
-  })
-  @OneToMany(() => SampleEntity, (sample) => sample.subject)
-  samples: SampleEntity[];
 
   @ManyToOne(() => CourseEntity, (course) => course.subjects, {
     onDelete: 'CASCADE',

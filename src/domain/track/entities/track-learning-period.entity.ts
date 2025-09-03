@@ -7,8 +7,22 @@ import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enr
 
 import { TrackEntity } from './track.entity';
 
+interface ITrackLearningPeriodEntity {
+  start_date: Date;
+  end_date: Date;
+  name: string;
+
+  track: TrackEntity;
+  track_id: number;
+
+  student_lp_enrollments: StudentLPEnrollmentEntity[];
+}
+
 @Entity({ name: 'track_learning_periods' })
-export class TrackLearningPeriodEntity extends GenericEntity {
+export class TrackLearningPeriodEntity
+  extends GenericEntity
+  implements ITrackLearningPeriodEntity
+{
   @ApiProperty({ description: 'Track ID associated with this learning period' })
   @Column()
   track_id: number;

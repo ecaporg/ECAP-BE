@@ -18,6 +18,6 @@ export abstract class GenericEntity extends DatedGenericEntity {
 }
 
 export abstract class CanvasGenericEntity extends GenericEntity {
-  @Column({ nullable: true, length: 50 })
+  @Column({ nullable: true, length: 20 })
   canvas_id?: string;
 }

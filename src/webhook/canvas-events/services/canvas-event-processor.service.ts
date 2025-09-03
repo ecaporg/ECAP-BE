@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { firstValueFrom } from 'rxjs';
 import {
   DeepPartial,
@@ -23,16 +24,16 @@ import {
 import { StudentEntity } from '../../../domain/students/entities/student.entity';
 import { SampleService } from '../../../domain/students/services/sample.service';
 import { StudentService } from '../../../domain/students/services/student.service';
+import { SubjectEntity } from '../../../domain/subject/entities/subject.entity';
+import { SubjectService } from '../../../domain/subject/services/subject.service';
 import { KeyEntity } from '../../../domain/tenant/entities/key.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { ErrorService } from '../../../domain/tenant/services/error.service';
 import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearEntity } from '../../../domain/track/entities/academic-year.entity';
-import { SubjectEntity } from '../../../domain/track/entities/subject.entity';
 import { TrackEntity } from '../../../domain/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
-import { SubjectService } from '../../../domain/track/services/subject.service';
 import { TrackLearningPeriodService } from '../../../domain/track/services/track-learning-period.service';
 import { RolesEnum } from '../../../domain/users/enums/roles.enum';
 import { UsersService } from '../../../domain/users/users.service';
@@ -299,6 +300,7 @@ export class CanvasProcessorService {
   ): Promise<SubjectEntity[]> {
     const subjects = await this.subjectService.findBy({
       where: {
+        //@ts-ignore
         canvas_course_id: course.id.toString(),
         track: {
           learningPeriods: {
@@ -316,6 +318,7 @@ export class CanvasProcessorService {
 
     if (subjects.length === 0) {
       await this.subjectService.create({
+        //@ts-ignore
         name: course.name
           .replaceAll(/\b\d{0,2}[ABKX]\b/g, '')
           .replaceAll('Flex', '')
