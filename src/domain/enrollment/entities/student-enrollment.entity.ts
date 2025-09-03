@@ -2,6 +2,7 @@
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   Relation,
@@ -24,8 +25,9 @@ interface IStudentLPEnrollmentEntity {
   student_id: number;
   student: Relation<StudentEntity>;
 
-  teacher_school_year_enrollment_id: number;
-  teacher_school_year_enrollment: Relation<TeacherSchoolYearEnrollmentEntity>;
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
 
   learning_period: Relation<TrackLearningPeriodEntity>;
   learning_period_id: number;
@@ -38,13 +40,6 @@ export class StudentLPEnrollmentEntity
   extends GenericEntity
   implements IStudentLPEnrollmentEntity
 {
-  @ApiProperty({
-    description:
-      'Teacher school year enrollment ID associated with this learning period',
-  })
-  @Column()
-  teacher_school_year_enrollment_id: number;
-
   @ApiProperty({
     description: 'Student ID associated with this learning period',
   })
@@ -82,15 +77,17 @@ export class StudentLPEnrollmentEntity
 
   @ApiProperty({
     description:
-      'Teacher school year enrollment associated with this enrollment',
+      'Teacher school year enrollments associated with this enrollment',
     type: () => Object,
   })
-  @ManyToOne(() => TeacherSchoolYearEnrollmentEntity, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'teacher_school_year_enrollment_id' })
-  teacher_school_year_enrollment: Relation<TeacherSchoolYearEnrollmentEntity>;
+  @ManyToMany(
+    () => TeacherSchoolYearEnrollmentEntity,
+    (teacherSchoolYearEnrollment) =>
+      teacherSchoolYearEnrollment.student_lp_enrollments,
+  )
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
 
   @ApiProperty({
     description: 'Student associated with this enrollment',

@@ -90,7 +90,7 @@ export class TeacherComplianceTaskService {
           ...property,
         },
         student_lp_enrollments: {
-          teacher_school_year_enrollment: {
+          teacher_school_year_enrollments: {
             teacher: {
               user: {
                 id: user.id,

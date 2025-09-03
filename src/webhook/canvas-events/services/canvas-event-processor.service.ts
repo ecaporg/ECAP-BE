@@ -370,7 +370,7 @@ export class CanvasProcessorService {
         learning_period: In(
           learning_periods.map((learning_period) => learning_period.id),
         ),
-        teacher_school_year_enrollment_id: In(
+        teacher_school_year_enrollments: In(
           teacher_enrolemts.map((enrolemt) => enrolemt.id),
         ),
       },
@@ -383,7 +383,7 @@ export class CanvasProcessorService {
             this.studentLPEnrollmentService.create({
               student,
               learning_period,
-              teacher_school_year_enrollment: enrolemt,
+              teacher_school_year_enrollments: [enrolemt],
               completed: false,
               //@ts-ignore
               track_id: learning_period.track_id,

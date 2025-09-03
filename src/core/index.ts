@@ -23,6 +23,7 @@ export * from './interceptors/attach-to-body.interceptor';
 export * from './middleware/logger.middleware';
 
 // Pipes
+export * from './pipes/filter-transform.pipe';
 
 // Exceptions
 export * from './exceptions/application.exception';
@@ -33,6 +34,7 @@ export * from './decorators/current-user.decorator';
 export * from './decorators/roles.decorator';
 export * from './decorators/filter-dto.decorators';
 export * from './decorators/extract-base-url.decorator';
+export * from './decorators/transform-query.decorator';
 
 // Guards
 export * from './guards/role.guard';

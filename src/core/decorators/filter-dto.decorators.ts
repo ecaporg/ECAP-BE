@@ -3,6 +3,9 @@ import { IsArray, IsOptional } from 'class-validator';
 
 import { applyDecorators } from '@nestjs/common';
 
+// Ключ метадати для маппінгу полів
+export const OUT_FIELD_KEY = 'out-field';
+
 export function IdDecorator(Obj: any) {
   return applyDecorators(
     Transform(({ value }) =>
@@ -18,37 +21,26 @@ export function IdDecorator(Obj: any) {
 }
 
 /**
- * Decorator that takes value from another field during transformation.
- * IMPORTANT: Must be the FIRST decorator in the chain to work properly!
+ * Decorator to mark a field for output transformation.
+ * Uses NestJS metadata mechanism.
  *
- * @param sourceFieldName - Name of the field from which to take the value
+ * @param outputFieldName - Name of the field in the output DTO
  *
  * @example
  * ```typescript
- * class MyDto {
- *   originalField: string;
- *
- *   // Correct: InField is first, then other decorators
- *   @InField('originalField')
+ * class InFilterDto {
+ *   @Out('targetField')
  *   @IsString()
- *   @MinLength(5)
- *   derivedField: string; // First copies the value, then applies validation
+ *   sourceField: string;
+ * }
  *
- *   // Incorrect: InField is not first
- *   // @IsString()
- *   // @InField('originalField')
- *   // wrongField: string;
+ * class OutFilterDto {
+ *   targetField: string;
  * }
  * ```
  */
-export function InField(sourceFieldName: string) {
-  return applyDecorators(
-    Transform(({ obj }) => {
-      const sourceValue = obj[sourceFieldName];
-      // Видаляємо оригінальне поле після копіювання
-      delete obj[sourceFieldName];
-      return sourceValue;
-    }),
-    IsOptional(),
-  );
+export function Out(outputFieldName: string) {
+  return function (target: any, propertyKey: string | symbol) {
+    Reflect.defineMetadata(OUT_FIELD_KEY, outputFieldName, target, propertyKey);
+  };
 }

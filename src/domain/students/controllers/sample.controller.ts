@@ -76,7 +76,7 @@ export class SampleController {
       },
       {
         role: RolesEnum.TEACHER,
-        path: 'student_lp_enrollment_assignment.student_lp_enrollment.teacher_school_year_enrollment.teacher_id',
+        path: 'student_lp_enrollment_assignment.student_lp_enrollment.teacher_school_year_enrollments.teacher_id',
       },
     ]),
   )

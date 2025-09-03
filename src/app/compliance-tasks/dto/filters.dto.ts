@@ -5,6 +5,7 @@ import { ApiProperty, OmitType } from '@nestjs/swagger';
 import {
   BaseFilterDto,
   IdDecorator,
+  InField,
   RecordStringAndDotNotation,
 } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
@@ -12,15 +13,15 @@ import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/s
 const FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'learning_period_id',
   ACADEMY_ID: 'student.academy_id',
-  SCHOOL_ID: 'teacher_school_year_enrollment.school_id',
+  SCHOOL_ID: 'teacher_school_year_enrollments.school_id',
   TRACK_ID: 'learning_period.track_id',
   STUDENT_GRADE: 'student_grade',
   COMPLETED: 'completed',
-  TEACHER_ID: 'teacher_school_year_enrollment.teacher_id',
+  TEACHER_ID: 'teacher_school_year_enrollments.teacher_id',
   SAMPLE_STATUS: 'assignments.sample.status',
   STUDENT_ID: 'student_id',
   DONE_BY_ID: 'assignments.sample.done_by_id',
-  ACADEMIC_YEAR: 'teacher_school_year_enrollment.academic_year_id',
+  ACADEMIC_YEAR: 'teacher_school_year_enrollments.academic_year_id',
   SEMESTER_ID: 'learning_period.track.semesters.id',
   SAMPLE_SUBJECT: 'assignments.sample.subject.id',
 } satisfies RecordStringAndDotNotation<StudentLPEnrollmentEntity>;

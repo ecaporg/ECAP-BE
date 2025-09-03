@@ -52,6 +52,7 @@ import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber
     TrackLearningPeriodService,
     AcademicYearService,
     SemesterService,
+    SubjectModule,
   ],
 })
 export class TrackModule {}

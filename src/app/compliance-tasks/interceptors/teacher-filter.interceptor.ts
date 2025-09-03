@@ -10,7 +10,7 @@ export class TeacherFilterInterceptor extends AttachUserIdInterceptor<StudentLPE
     super([
       {
         role: RolesEnum.TEACHER,
-        path: 'teacher_school_year_enrollment.teacher_id',
+        path: 'teacher_school_year_enrollments.teacher_id',
       },
       {
         role: RolesEnum.DIRECTOR,

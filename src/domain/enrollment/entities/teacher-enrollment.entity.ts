@@ -2,8 +2,8 @@
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
   Relation,
 } from 'typeorm';
 
@@ -84,10 +84,10 @@ export class TeacherSchoolYearEnrollmentEntity
     description: 'Assignment periods associated with this enrollment',
     type: () => [{}],
   })
-  @OneToMany(
+  @ManyToMany(
     () => StudentLPEnrollmentEntity,
     (student_lp_enrollment) =>
-      student_lp_enrollment.teacher_school_year_enrollment,
+      student_lp_enrollment.teacher_school_year_enrollments,
   )
   student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }

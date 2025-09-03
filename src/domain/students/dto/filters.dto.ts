@@ -13,11 +13,11 @@ const FILTER_KEYS = {
   LEARNING_PERIOD_ID:
     'student_lp_enrollment_assignment.student_lp_enrollment.learning_period_id',
   TEACHER_ID:
-    'student_lp_enrollment_assignment.student_lp_enrollment.teacher_school_year_enrollment.teacher_id',
+    'student_lp_enrollment_assignment.student_lp_enrollment.teacher_school_year_enrollments.teacher_id',
   ACADEMY_ID:
     'student_lp_enrollment_assignment.student_lp_enrollment.student.academy_id',
   ACADEMIC_YEAR:
-    'student_lp_enrollment_assignment.student_lp_enrollment.teacher_school_year_enrollment.academic_year_id',
+    'student_lp_enrollment_assignment.student_lp_enrollment.teacher_school_year_enrollments.academic_year_id',
   STATUS: 'status',
   FLAG_CATEGORY: 'flag_category',
 } satisfies RecordStringAndDotNotation<SampleEntity>;
