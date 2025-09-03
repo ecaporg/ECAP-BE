@@ -7,8 +7,18 @@ import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/tea
 import { StudentEntity } from '../../students/entities/student.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
+interface ISchoolEntity {
+  name: string;
+
+  tenant: TenantEntity;
+  tenant_id: number;
+
+  students: StudentEntity[];
+  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+}
+
 @Entity({ name: 'schools' })
-export class SchoolEntity extends GenericEntity {
+export class SchoolEntity extends GenericEntity implements ISchoolEntity {
   @ApiProperty({ description: 'School name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;

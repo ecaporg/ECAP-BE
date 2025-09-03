@@ -16,7 +16,29 @@ import { AcademyEntity } from '../../school/entities/academy.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
-export abstract class StaffEntity extends DatedGenericEntity {
+interface IStaffEntity {
+  id: number;
+  user: UserEntity;
+}
+
+interface ITeacherEntity extends IStaffEntity {
+  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+}
+
+interface IAdminEntity extends IStaffEntity {
+  tenant: TenantEntity;
+  tenant_id: number;
+}
+
+interface IDirectorEntity extends IAdminEntity {
+  academy: AcademyEntity;
+  academy_id: number;
+}
+
+export abstract class StaffEntity
+  extends DatedGenericEntity
+  implements IStaffEntity
+{
   @ApiProperty({ description: 'User ID associated with this staff member' })
   @PrimaryColumn()
   id: number;
@@ -34,7 +56,7 @@ export abstract class StaffEntity extends DatedGenericEntity {
 }
 
 @Entity({ name: 'teachers' })
-export class TeacherEntity extends StaffEntity {
+export class TeacherEntity extends StaffEntity implements ITeacherEntity {
   @ApiProperty({
     description: 'Teacher school year enrollments for this teacher',
     type: () => [{}],
@@ -50,7 +72,7 @@ export class TeacherEntity extends StaffEntity {
   name: 'admins',
   comment: 'Admins and superadmins table',
 })
-export class AdminEntity extends StaffEntity {
+export class AdminEntity extends StaffEntity implements IAdminEntity {
   @ApiProperty({
     description: 'Tenant ID associated with this admin/superadmin',
   })
@@ -70,7 +92,7 @@ export class AdminEntity extends StaffEntity {
 }
 
 @Entity({ name: 'directors' })
-export class DirectorEntity extends AdminEntity {
+export class DirectorEntity extends AdminEntity implements IDirectorEntity {
   @ApiProperty({ description: 'Academy ID associated with this director' })
   @Column()
   academy_id: number;

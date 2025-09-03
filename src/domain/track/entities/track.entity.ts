@@ -11,16 +11,35 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
+import { SubjectEntity } from '../../subject/entities/subject.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
 import { SemesterEntity } from './semester.entity';
-import { SubjectEntity } from './subject.entity';
 import { TrackCalendarEntity } from './track-calendar.entity';
 import { TrackLearningPeriodEntity } from './track-learning-period.entity';
 
+interface ITrackEntity {
+  name: string;
+  start_date: Date;
+  end_date: Date;
+
+  academicYear: AcademicYearEntity;
+  academic_year_id: number;
+
+  tenant: TenantEntity;
+  tenant_id: number;
+
+  learningPeriods: TrackLearningPeriodEntity[];
+  semesters: SemesterEntity[];
+  calendar: TrackCalendarEntity;
+
+  studentLPEnrollments: StudentLPEnrollmentEntity[];
+  subjects: SubjectEntity[];
+}
+
 @Entity({ name: 'tracks' })
-export class TrackEntity extends GenericEntity {
+export class TrackEntity extends GenericEntity implements ITrackEntity {
   @ApiProperty({ description: 'Tenant ID associated with this track' })
   @Column()
   tenant_id: number;

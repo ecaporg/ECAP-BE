@@ -6,8 +6,17 @@ import { GenericEntity } from '../../../core';
 import { DirectorEntity } from '../../staff/entities/staff.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
+interface IAcademyEntity {
+  name: string;
+
+  tenant: TenantEntity;
+  tenant_id: number;
+
+  directors: DirectorEntity[];
+}
+
 @Entity({ name: 'academies' })
-export class AcademyEntity extends GenericEntity {
+export class AcademyEntity extends GenericEntity implements IAcademyEntity {
   @ApiProperty({ description: 'Academy name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;

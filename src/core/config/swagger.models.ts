@@ -26,7 +26,7 @@ import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
 import { AcademicYearEntity } from '../../domain/track/entities/academic-year.entity';
 import { SemesterEntity } from '../../domain/track/entities/semester.entity';
 // Track entities
-import { SubjectEntity } from '../../domain/track/entities/subject.entity';
+import { SubjectEntity } from '../../domain/subject/entities/subject.entity';
 import { TrackEntity } from '../../domain/track/entities/track.entity';
 import { TrackCalendarEntity } from '../../domain/track/entities/track-calendar.entity';
 import { TrackLearningPeriodEntity } from '../../domain/track/entities/track-learning-period.entity';

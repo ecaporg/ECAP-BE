@@ -14,7 +14,33 @@ import { UserEntity } from '../../users/entities/user.entity';
 
 import { SampleEntity } from './sample.entity';
 
-export class SampleFlagEntity extends DatedGenericEntity {
+interface ISampleFlagEntity {
+  id: number;
+  sample: SampleEntity;
+  user: UserEntity;
+  user_id: number;
+}
+
+interface ISampleFlagErrorEntity extends ISampleFlagEntity {
+  comment: string;
+}
+
+interface ISampleFlagMissingWorkEntity extends ISampleFlagEntity {
+  reason: string;
+}
+
+interface ISampleFlagCompletedEntity extends ISampleFlagEntity {
+  message: string;
+}
+
+interface ISampleFlagRejectedEntity extends ISampleFlagEntity {
+  reason: string;
+}
+
+export class SampleFlagEntity
+  extends DatedGenericEntity
+  implements ISampleFlagEntity
+{
   @ApiProperty({ description: 'Sample ID' })
   @PrimaryColumn()
   id: number;
@@ -41,7 +67,10 @@ export class SampleFlagEntity extends DatedGenericEntity {
 }
 
 @Entity({ name: 'sample_flag_errors' })
-export class SampleFlagErrorEntity extends SampleFlagEntity {
+export class SampleFlagErrorEntity
+  extends SampleFlagEntity
+  implements ISampleFlagErrorEntity
+{
   @Column()
   @ApiProperty({ description: 'Comment' })
   comment: string;

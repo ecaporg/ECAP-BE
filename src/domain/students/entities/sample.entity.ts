@@ -1,17 +1,10 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToMany,
-  ManyToOne,
-  OneToOne,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '../../../core';
-import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
-import { SubjectEntity } from '../../track/entities/subject.entity';
+import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/student-enrollment-assignment.entity';
+import { SubjectEntity } from '../../subject/entities/subject.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
 import {
@@ -64,8 +57,27 @@ export enum SampleFlagCategory {
  * or terminal states depending on the specific business logic.
  */
 
+interface ISampleEntity {
+  assignment_title: string;
+  canvas_submission_id?: number;
+  date?: Date;
+  done_by: UserEntity;
+  done_by_id: number;
+  enrollmentAssignments: StudentLPEnrollmentAssignmentEntity;
+  flag_category: SampleFlagCategory;
+  flag_completed: SampleFlagCompletedEntity;
+  flag_errors: SampleFlagErrorEntity;
+  flag_missing_work: SampleFlagMissingWorkEntity;
+  flag_rejected: SampleFlagRejectedEntity;
+  grade?: string;
+  preview_url?: string;
+  status: SampleStatus;
+  subject: SubjectEntity;
+  subject_id?: number;
+}
+
 @Entity({ name: 'samples' })
-export class SampleEntity extends GenericEntity {
+export class SampleEntity extends GenericEntity implements ISampleEntity {
   @ApiProperty({ description: 'Assignment title', maxLength: 250 })
   @Column({ length: 250 })
   assignment_title: string;
@@ -138,20 +150,6 @@ export class SampleEntity extends GenericEntity {
   subject: SubjectEntity;
 
   @ApiProperty({
-    description: 'Student LP enrollments associated with this sample',
-    type: () => [Object],
-  })
-  @ManyToMany(
-    () => StudentLPEnrollmentEntity,
-    (student_lp_enrollment) => student_lp_enrollment.samples,
-    {
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    },
-  )
-  student_lp_enrollments: StudentLPEnrollmentEntity[];
-
-  @ApiProperty({
     description: 'User who set completed status of this sample',
     type: () => Object,
   })
@@ -189,4 +187,10 @@ export class SampleEntity extends GenericEntity {
   })
   @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample)
   flag_completed: SampleFlagCompletedEntity;
+
+  @OneToOne(
+    () => StudentLPEnrollmentAssignmentEntity,
+    (assignment) => assignment.sample,
+  )
+  enrollmentAssignments: StudentLPEnrollmentAssignmentEntity;
 }

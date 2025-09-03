@@ -1,23 +1,40 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '../../../core';
 import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
-import { SampleEntity } from '../../students/entities/sample.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { TrackEntity } from '../../track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-period.entity';
 
+import { StudentLPEnrollmentAssignmentEntity } from './student-enrollment-assignment.entity';
+
+interface IStudentLPEnrollmentEntity {
+  completed: boolean;
+  percentage: number;
+  student_grade: string;
+
+  student_id: number;
+  student: StudentEntity;
+
+  teacher_school_year_enrollment_id: number;
+  teacher_school_year_enrollment: TeacherSchoolYearEnrollmentEntity;
+
+  track: TrackEntity;
+  track_id: number;
+
+  learning_period: TrackLearningPeriodEntity;
+  learning_period_id: number;
+
+  assignments: StudentLPEnrollmentAssignmentEntity[];
+}
+
 @Entity('student_lp_enrollments')
-export class StudentLPEnrollmentEntity extends GenericEntity {
+export class StudentLPEnrollmentEntity
+  extends GenericEntity
+  implements IStudentLPEnrollmentEntity
+{
   @ApiProperty({
     description:
       'Teacher school year enrollment ID associated with this learning period',
@@ -96,10 +113,12 @@ export class StudentLPEnrollmentEntity extends GenericEntity {
   student: StudentEntity;
 
   @ApiProperty({
-    description: 'Samples associated with this period',
-    type: () => [{}],
+    description: 'Assignment enrollments associated with this learning period',
+    type: () => [StudentLPEnrollmentAssignmentEntity],
   })
-  @ManyToMany(() => SampleEntity, (sample) => sample.student_lp_enrollments)
-  @JoinTable()
-  samples: SampleEntity[];
+  @OneToMany(
+    () => StudentLPEnrollmentAssignmentEntity,
+    (assignment) => assignment.studentLPEnrollment,
+  )
+  assignments: StudentLPEnrollmentAssignmentEntity[];
 }

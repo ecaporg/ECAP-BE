@@ -11,8 +11,22 @@ import { TrackEntity } from '../../track/entities/track.entity';
 import { ErrorEntity } from './error.entity';
 import { KeyEntity } from './key.entity';
 
+interface ITenantEntity {
+  name: string;
+
+  key: KeyEntity;
+  errors: ErrorEntity[];
+
+  schools: SchoolEntity[];
+  academies: AcademyEntity[];
+  tracks: TrackEntity[];
+
+  admins: AdminEntity[];
+  directors: DirectorEntity[];
+}
+
 @Entity({ name: 'tenants' })
-export class TenantEntity extends GenericEntity {
+export class TenantEntity extends GenericEntity implements ITenantEntity {
   @ApiProperty({ description: 'Tenant name', maxLength: 250, nullable: true })
   @Column({ length: 250, nullable: true, default: null })
   name: string;

@@ -8,8 +8,26 @@ import { DirectorEntity } from '../../staff/entities/staff.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { RolesEnum } from '../enums/roles.enum';
 
+interface IUserEntity {
+  name: string;
+  email: string;
+  password: string;
+  emailVerified: boolean;
+  isActive: boolean;
+  refreshToken?: string;
+
+  canvas_additional_info?: Record<string, any>;
+
+  role?: RolesEnum;
+
+  student?: StudentEntity;
+  teacher?: TeacherEntity;
+  director?: DirectorEntity;
+  admin?: AdminEntity;
+}
+
 @Entity({ name: 'users' })
-export class UserEntity extends GenericEntity {
+export class UserEntity extends GenericEntity implements IUserEntity {
   @ApiProperty({ description: 'User email address', uniqueItems: true })
   @Column({ unique: true })
   email: string;

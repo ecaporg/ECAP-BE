@@ -6,8 +6,19 @@ import { GenericEntity } from '../../../core';
 import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { TrackEntity } from '../../track/entities/track.entity';
 
+interface IAcademicYearEntity {
+  from: number;
+  to: number;
+
+  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+  tracks: TrackEntity[];
+}
+
 @Entity({ name: 'academic_years' })
-export class AcademicYearEntity extends GenericEntity {
+export class AcademicYearEntity
+  extends GenericEntity
+  implements IAcademicYearEntity
+{
   @ApiProperty({
     description: 'Start year of the academic year',
     type: 'integer',

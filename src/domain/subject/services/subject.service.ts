@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '../../../core';
-import { SubjectEntity } from '../entities/subject.entity';
+import { SubjectEntity } from '../../subject/entities/subject.entity';
 
 @Injectable()
 export class SubjectService extends BaseService<SubjectEntity> {

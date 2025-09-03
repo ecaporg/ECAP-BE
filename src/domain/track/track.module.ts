@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { StaffModule } from '../staff/staff.module';
+import { SubjectModule } from '../subject/subject.module';
 
 import { TrackController } from './controllers/track.controller';
 import { TrackCalendarController } from './controllers/track-calendar.controller';
@@ -9,13 +10,11 @@ import { TrackLearningPeriodController } from './controllers/track-learning-peri
 import { TrackSemesterController } from './controllers/track-semester.controller';
 import { AcademicYearEntity } from './entities/academic-year.entity';
 import { SemesterEntity } from './entities/semester.entity';
-import { SubjectEntity } from './entities/subject.entity';
 import { TrackEntity } from './entities/track.entity';
 import { TrackCalendarEntity } from './entities/track-calendar.entity';
 import { TrackLearningPeriodEntity } from './entities/track-learning-period.entity';
 import { AcademicYearService } from './services/academic-year.service';
 import { SemesterService } from './services/semester.service';
-import { SubjectService } from './services/subject.service';
 import { TrackService } from './services/track.service';
 import { TrackCalendarService } from './services/track-calendar.service';
 import { TrackLearningPeriodService } from './services/track-learning-period.service';
@@ -27,11 +26,11 @@ import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber
       TrackEntity,
       TrackCalendarEntity,
       TrackLearningPeriodEntity,
-      SubjectEntity,
       AcademicYearEntity,
       SemesterEntity,
     ]),
     StaffModule,
+    SubjectModule,
   ],
   controllers: [
     TrackController,
@@ -43,7 +42,6 @@ import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber
     TrackService,
     TrackCalendarService,
     TrackLearningPeriodService,
-    SubjectService,
     AcademicYearService,
     SemesterService,
     TrackCalendarSubscriber,
@@ -52,7 +50,6 @@ import { TrackCalendarSubscriber } from './subscribers/track-calendar.subscriber
     TrackService,
     TrackCalendarService,
     TrackLearningPeriodService,
-    SubjectService,
     AcademicYearService,
     SemesterService,
   ],

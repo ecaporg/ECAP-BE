@@ -8,10 +8,24 @@ import { SchoolEntity } from '../../school/entities/school.entity';
 import { TeacherEntity } from '../../staff/entities/staff.entity';
 import { AcademicYearEntity } from '../../track/entities/academic-year.entity';
 
-// todo: rename to TeacherSchoolYearEnrollmentEntity
+interface ITeacherSchoolYearEnrollmentEntity {
+  teacher_id: number;
+
+  academic_year: AcademicYearEntity;
+  academic_year_id: number;
+
+  school: SchoolEntity;
+  school_id: number;
+
+  student_lp_enrollments: StudentLPEnrollmentEntity[];
+  teacher: TeacherEntity;
+}
 
 @Entity({ name: 'teacher_school_year_enrollments' })
-export class TeacherSchoolYearEnrollmentEntity extends GenericEntity {
+export class TeacherSchoolYearEnrollmentEntity
+  extends GenericEntity
+  implements ITeacherSchoolYearEnrollmentEntity
+{
   @ApiProperty({ description: 'School ID associated with this enrollment' })
   @Column()
   school_id: number;

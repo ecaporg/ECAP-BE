@@ -17,8 +17,25 @@ import { SchoolEntity } from '../../school/entities/school.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
 // TODO: move track_id, academy_id, and school_id to student_enrollment_entity
+
+interface IStudentEntity {
+  id: number;
+  user: UserEntity;
+
+  academy_id: number;
+  academy: AcademyEntity;
+
+  school_id: number;
+  school: SchoolEntity;
+
+  student_lp_enrollments: StudentLPEnrollmentEntity[];
+}
+
 @Entity({ name: 'students' })
-export class StudentEntity extends DatedGenericEntity {
+export class StudentEntity
+  extends DatedGenericEntity
+  implements IStudentEntity
+{
   @ApiProperty({ description: 'User ID associated with this student' })
   @PrimaryColumn()
   id: number;
