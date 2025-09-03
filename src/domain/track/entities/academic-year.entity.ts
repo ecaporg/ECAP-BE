@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+﻿import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -10,8 +10,10 @@ interface IAcademicYearEntity {
   from: number;
   to: number;
 
-  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
-  tracks: TrackEntity[];
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
+  tracks: Relation<TrackEntity[]>;
 }
 
 @Entity({ name: 'academic_years' })
@@ -38,7 +40,7 @@ export class AcademicYearEntity
     type: () => [{}],
   })
   @OneToMany(() => TrackEntity, (track) => track.academicYear)
-  tracks: TrackEntity[];
+  tracks: Relation<TrackEntity[]>;
 
   @ApiProperty({
     description: 'Teacher school year enrollments in this academic year',
@@ -49,5 +51,7 @@ export class AcademicYearEntity
     (teacher_school_year_enrollment) =>
       teacher_school_year_enrollment.academic_year,
   )
-  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
 }

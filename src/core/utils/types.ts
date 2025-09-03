@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export type NestedObjectToDotNotation<
   T,
-  Depth extends number[] = [0, 1, 2, 3, 4],
+  Depth extends number[] = [0, 1, 2, 3, 4, 5],
 > = Depth['length'] extends 0
   ? never
   : T extends Date

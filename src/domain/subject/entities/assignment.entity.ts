@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -11,10 +18,10 @@ interface IAssignmentEntity {
   name: string;
   canvas_id?: string;
 
-  course: CourseEntity;
+  course: Relation<CourseEntity>;
   course_id: number;
 
-  enrollmentAssignments: StudentLPEnrollmentAssignmentEntity[];
+  enrollmentAssignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
 }
 
 @Entity({ name: 'assignments' })
@@ -35,11 +42,11 @@ export class AssignmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'course_id' })
-  course: CourseEntity;
+  course: Relation<CourseEntity>;
 
   @OneToMany(
     () => StudentLPEnrollmentAssignmentEntity,
     (assignment) => assignment.assignment,
   )
-  enrollmentAssignments: StudentLPEnrollmentAssignmentEntity[];
+  enrollmentAssignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
 }

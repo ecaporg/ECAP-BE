@@ -1,0 +1,17 @@
+export const DEFAULT_FILTERS_KEYS = {
+  STUDENT_ID: 'student_id',
+  LEARNING_PERIOD_ID: 'learning_period_id',
+  SCHOOL_ID: 'school_id',
+  ACADEMY_ID: 'academy_id',
+  TRACK_ID: 'track_id',
+  ACADEMIC_YEAR: 'academic_year',
+  SEMESTER: 'semesters.id',
+  SUBJECT: 'subject_id',
+  GRADE: 'student_grade',
+  SEARCH: 'search',
+  COMPLETED: 'completed',
+  SAMPLE_STATUS: 'status',
+  DONE_BY: 'done_by',
+  TEACHER_ID: 'teacherSchoolYearEnrollment.teacher_id',
+  FLAG_CATEGORY: 'flag_category',
+} as const;

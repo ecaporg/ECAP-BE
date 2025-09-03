@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
 
 import { DatedGenericEntity } from '../../../core';
 
@@ -11,7 +18,7 @@ interface IKeyEntity {
   access_token: string;
   session_token: string;
 
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
 }
 
 @Entity({ name: 'keys' })
@@ -33,5 +40,5 @@ export class KeyEntity extends DatedGenericEntity implements IKeyEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'id' })
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
 }

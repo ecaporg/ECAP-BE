@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -11,10 +18,10 @@ import { CourseEntity } from './course.entity';
 // Subject equals to a course in the Canvas LMS
 
 interface ISubjectEntity {
-  course: CourseEntity;
+  course: Relation<CourseEntity>;
   course_id: number;
 
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
   track_id: number;
 }
 
@@ -40,12 +47,15 @@ export class SubjectEntity extends GenericEntity implements ISubjectEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'track_id' })
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
 
   @ManyToOne(() => CourseEntity, (course) => course.subjects, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'course_id' })
-  course: CourseEntity;
+  course: Relation<CourseEntity>;
+
+  @OneToMany(() => SampleEntity, (sample) => sample.subject)
+  samples: Relation<SampleEntity[]>;
 }

@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -11,14 +18,14 @@ import { AcademicYearEntity } from '../../track/entities/academic-year.entity';
 interface ITeacherSchoolYearEnrollmentEntity {
   teacher_id: number;
 
-  academic_year: AcademicYearEntity;
+  academic_year: Relation<AcademicYearEntity>;
   academic_year_id: number;
 
-  school: SchoolEntity;
+  school: Relation<SchoolEntity>;
   school_id: number;
 
-  student_lp_enrollments: StudentLPEnrollmentEntity[];
-  teacher: TeacherEntity;
+  student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
+  teacher: Relation<TeacherEntity>;
 }
 
 @Entity({ name: 'teacher_school_year_enrollments' })
@@ -49,7 +56,7 @@ export class TeacherSchoolYearEnrollmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'school_id' })
-  school: SchoolEntity;
+  school: Relation<SchoolEntity>;
 
   @ApiProperty({
     description: 'Teacher associated with this enrollment',
@@ -60,7 +67,7 @@ export class TeacherSchoolYearEnrollmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'teacher_id' })
-  teacher: TeacherEntity;
+  teacher: Relation<TeacherEntity>;
 
   @ApiProperty({
     description: 'Academic year associated with this enrollment',
@@ -71,7 +78,7 @@ export class TeacherSchoolYearEnrollmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'academic_year_id' })
-  academic_year: AcademicYearEntity;
+  academic_year: Relation<AcademicYearEntity>;
 
   @ApiProperty({
     description: 'Assignment periods associated with this enrollment',
@@ -82,5 +89,5 @@ export class TeacherSchoolYearEnrollmentEntity
     (student_lp_enrollment) =>
       student_lp_enrollment.teacher_school_year_enrollment,
   )
-  student_lp_enrollments: StudentLPEnrollmentEntity[];
+  student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }

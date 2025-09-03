@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -10,11 +17,13 @@ import { TenantEntity } from '../../tenant/entities/tenant.entity';
 interface ISchoolEntity {
   name: string;
 
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
   tenant_id: number;
 
-  students: StudentEntity[];
-  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+  students: Relation<StudentEntity[]>;
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
 }
 
 @Entity({ name: 'schools' })
@@ -36,19 +45,21 @@ export class SchoolEntity extends GenericEntity implements ISchoolEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'tenant_id' })
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
 
   @ApiProperty({
     description: 'Students enrolled in this school',
     type: () => [{}],
   })
   @OneToMany(() => StudentEntity, (student) => student.school)
-  students: StudentEntity[];
+  students: Relation<StudentEntity[]>;
 
   @ApiProperty({
     description: 'Teacher school year enrollments in this school',
     type: () => [{}],
   })
   @OneToMany(() => TeacherSchoolYearEnrollmentEntity, (course) => course.school)
-  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
 }

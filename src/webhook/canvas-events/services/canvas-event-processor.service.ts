@@ -385,6 +385,7 @@ export class CanvasProcessorService {
               learning_period,
               teacher_school_year_enrollment: enrolemt,
               completed: false,
+              //@ts-ignore
               track_id: learning_period.track_id,
             }),
           ),
@@ -410,7 +411,7 @@ export class CanvasProcessorService {
           : submission.workflow_state === 'graded'
             ? SampleStatus.COMPLETED
             : SampleStatus.PENDING;
-
+    //@ts-ignore
     return {
       assignment_title: assignment?.name,
       grade: submission.grade,
@@ -443,7 +444,7 @@ export class CanvasProcessorService {
           : submission.workflow_state === 'graded'
             ? SampleStatus.COMPLETED
             : SampleStatus.PENDING;
-
+    //@ts-ignore
     sample.assignment_title = assignment?.name;
     sample.grade = submission.grade;
     sample.date = submission.submitted_at

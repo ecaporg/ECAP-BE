@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -14,7 +21,7 @@ export interface CalendarDay {
 interface ITrackCalendarEntity {
   id: number;
   days: CalendarDay[];
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
 }
 
 @Entity({ name: 'track_calendar' })
@@ -39,5 +46,5 @@ export class TrackCalendarEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'id' })
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
 }

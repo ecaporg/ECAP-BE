@@ -1,4 +1,4 @@
-import {
+﻿import {
   Column,
   Entity,
   JoinColumn,
@@ -6,6 +6,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryColumn,
+  Relation,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -20,15 +21,15 @@ import { UserEntity } from '../../users/entities/user.entity';
 
 interface IStudentEntity {
   id: number;
-  user: UserEntity;
+  user: Relation<UserEntity>;
 
   academy_id: number;
-  academy: AcademyEntity;
+  academy: Relation<AcademyEntity>;
 
   school_id: number;
-  school: SchoolEntity;
+  school: Relation<SchoolEntity>;
 
-  student_lp_enrollments: StudentLPEnrollmentEntity[];
+  student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }
 
 @Entity({ name: 'students' })
@@ -60,7 +61,7 @@ export class StudentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'school_id' })
-  school: SchoolEntity;
+  school: Relation<SchoolEntity>;
 
   @ApiProperty({
     description: 'User associated with this student',
@@ -71,7 +72,7 @@ export class StudentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'id' })
-  user: UserEntity;
+  user: Relation<UserEntity>;
 
   @ApiProperty({
     description: 'Academy associated with this student',
@@ -82,7 +83,7 @@ export class StudentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'academy_id' })
-  academy: AcademyEntity;
+  academy: Relation<AcademyEntity>;
 
   @ApiProperty({
     description: 'Assignment periods for this student',
@@ -92,5 +93,5 @@ export class StudentEntity
     () => StudentLPEnrollmentEntity,
     (student_lp_enrollment) => student_lp_enrollment.student,
   )
-  student_lp_enrollments: StudentLPEnrollmentEntity[];
+  student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+﻿import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -12,8 +12,8 @@ interface ICourseEntity {
 
   name: string;
 
-  assignments: AssignmentEntity[];
-  subjects: SubjectEntity[];
+  assignments: Relation<AssignmentEntity[]>;
+  subjects: Relation<SubjectEntity[]>;
 }
 
 @Entity({ name: 'courses' })
@@ -27,8 +27,8 @@ export class CourseEntity extends CanvasGenericEntity implements ICourseEntity {
     type: () => [{}],
   })
   @OneToMany(() => AssignmentEntity, (assignment) => assignment.course)
-  assignments: AssignmentEntity[];
+  assignments: Relation<AssignmentEntity[]>;
 
   @OneToMany(() => SubjectEntity, (subject) => subject.course)
-  subjects: SubjectEntity[];
+  subjects: Relation<SubjectEntity[]>;
 }

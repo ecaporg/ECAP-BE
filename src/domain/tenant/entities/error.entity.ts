@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+﻿import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -9,7 +9,7 @@ import { TenantEntity } from './tenant.entity';
 interface IErrorEntity {
   message: string;
 
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
   tenant_id: number;
 }
 
@@ -37,5 +37,5 @@ export class ErrorEntity extends GenericEntity implements IErrorEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'tenant_id' })
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
 }

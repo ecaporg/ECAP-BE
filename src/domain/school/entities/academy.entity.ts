@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -9,10 +16,10 @@ import { TenantEntity } from '../../tenant/entities/tenant.entity';
 interface IAcademyEntity {
   name: string;
 
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
   tenant_id: number;
 
-  directors: DirectorEntity[];
+  directors: Relation<DirectorEntity[]>;
 }
 
 @Entity({ name: 'academies' })
@@ -36,12 +43,12 @@ export class AcademyEntity extends GenericEntity implements IAcademyEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'tenant_id' })
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
 
   @ApiProperty({
     description: 'Directors associated with this academy',
     type: () => [{}],
   })
   @OneToMany(() => DirectorEntity, (director) => director.academy)
-  directors: DirectorEntity[];
+  directors: Relation<DirectorEntity[]>;
 }

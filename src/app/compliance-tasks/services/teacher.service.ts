@@ -31,7 +31,9 @@ export class TeacherComplianceTaskService {
       await this.studentLPEnrollmentService.findAllWithCompletedCount(
         paginationOptions,
         {
-          track: true,
+          learning_period: {
+            track: true,
+          },
           student: {
             academy: true,
             school: true,
@@ -47,19 +49,21 @@ export class TeacherComplianceTaskService {
     const assignmentPeriods = await this.studentLPEnrollmentService.findAll(
       paginationOptions,
       {
-        samples: {
-          subject: true,
-          done_by: true,
-          flag_missing_work: {
-            user: true,
+        assignments: {
+          sample: {
+            subject: true,
+            done_by: true,
+            flag_missing_work: {
+              user: true,
+            },
+            flag_errors: {
+              user: true,
+            },
+            flag_rejected: {
+              user: true,
+            },
           },
-          flag_errors: {
-            user: true,
-          },
-          flag_rejected: {
-            user: true,
-          },
-          student_lp_enrollments: {
+          student_lp_enrollment: {
             student: {
               user: true,
             },

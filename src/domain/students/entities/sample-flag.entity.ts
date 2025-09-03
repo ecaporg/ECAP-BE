@@ -1,10 +1,11 @@
-import {
+﻿import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryColumn,
+  Relation,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -16,8 +17,8 @@ import { SampleEntity } from './sample.entity';
 
 interface ISampleFlagEntity {
   id: number;
-  sample: SampleEntity;
-  user: UserEntity;
+  sample: Relation<SampleEntity>;
+  user: Relation<UserEntity>;
   user_id: number;
 }
 
@@ -55,7 +56,7 @@ export class SampleFlagEntity
   })
   @JoinColumn({ name: 'user_id' })
   @ApiProperty({ description: 'User', type: () => Object })
-  user: UserEntity;
+  user: Relation<UserEntity>;
 
   @OneToOne(() => SampleEntity, (sample) => sample.id, {
     onDelete: 'CASCADE',
@@ -63,7 +64,7 @@ export class SampleFlagEntity
   })
   @JoinColumn({ name: 'id' })
   @ApiProperty({ description: 'Sample', type: () => Object })
-  sample: SampleEntity;
+  sample: Relation<SampleEntity>;
 }
 
 @Entity({ name: 'sample_flag_errors' })

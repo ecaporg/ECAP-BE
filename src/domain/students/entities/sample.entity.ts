@@ -1,9 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { CanvasGenericEntity } from '../../../core';
 import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/student-enrollment-assignment.entity';
+import { SubjectEntity } from '../../subject/entities/subject.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
 import {
@@ -63,16 +71,19 @@ interface ISampleEntity {
   grade?: string;
   preview_url?: string;
 
-  done_by: UserEntity;
+  done_by: Relation<UserEntity>;
   done_by_id: number;
 
   flag_category: SampleFlagCategory;
-  flag_completed: SampleFlagCompletedEntity;
-  flag_errors: SampleFlagErrorEntity;
-  flag_missing_work: SampleFlagMissingWorkEntity;
-  flag_rejected: SampleFlagRejectedEntity;
+  flag_completed: Relation<SampleFlagCompletedEntity>;
+  flag_errors: Relation<SampleFlagErrorEntity>;
+  flag_missing_work: Relation<SampleFlagMissingWorkEntity>;
+  flag_rejected: Relation<SampleFlagRejectedEntity>;
 
-  enrollmentAssignment: StudentLPEnrollmentAssignmentEntity;
+  subject: Relation<SubjectEntity>;
+  subject_id: number;
+
+  student_lp_enrollment_assignment: Relation<StudentLPEnrollmentAssignmentEntity>;
 }
 
 @Entity({ name: 'samples' })
@@ -129,6 +140,17 @@ export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
   @Column({ nullable: true, type: 'bigint' })
   canvas_submission_id?: number;
 
+  @ApiProperty({ description: 'Subject ID' })
+  @Column()
+  subject_id: number;
+
+  @ManyToOne(() => SubjectEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'subject_id' })
+  subject: Relation<SubjectEntity>;
+
   @ApiProperty({
     description: 'User who set completed status of this sample',
     type: () => Object,
@@ -138,39 +160,39 @@ export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'done_by_id' })
-  done_by: UserEntity;
+  done_by: Relation<UserEntity>;
 
   @ApiProperty({
     description: 'Sample flag errors',
     type: () => SampleFlagErrorEntity,
   })
   @OneToOne(() => SampleFlagErrorEntity, (flag) => flag.sample)
-  flag_errors: SampleFlagErrorEntity;
+  flag_errors: Relation<SampleFlagErrorEntity>;
 
   @ApiProperty({
     description: 'Sample flag missing work',
     type: () => SampleFlagMissingWorkEntity,
   })
   @OneToOne(() => SampleFlagMissingWorkEntity, (flag) => flag.sample)
-  flag_missing_work: SampleFlagMissingWorkEntity;
+  flag_missing_work: Relation<SampleFlagMissingWorkEntity>;
 
   @ApiProperty({
     description: 'Sample flag rejected',
     type: () => SampleFlagRejectedEntity,
   })
   @OneToOne(() => SampleFlagRejectedEntity, (flag) => flag.sample)
-  flag_rejected: SampleFlagRejectedEntity;
+  flag_rejected: Relation<SampleFlagRejectedEntity>;
 
   @ApiProperty({
     description: 'Sample flag completed',
     type: () => SampleFlagCompletedEntity,
   })
   @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample)
-  flag_completed: SampleFlagCompletedEntity;
+  flag_completed: Relation<SampleFlagCompletedEntity>;
 
   @OneToOne(
     () => StudentLPEnrollmentAssignmentEntity,
     (assignment) => assignment.sample,
   )
-  enrollmentAssignment: StudentLPEnrollmentAssignmentEntity;
+  student_lp_enrollment_assignment: Relation<StudentLPEnrollmentAssignmentEntity>;
 }

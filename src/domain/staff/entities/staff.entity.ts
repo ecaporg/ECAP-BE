@@ -1,4 +1,4 @@
-import {
+﻿import {
   Column,
   Entity,
   JoinColumn,
@@ -6,6 +6,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryColumn,
+  Relation,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -18,20 +19,22 @@ import { UserEntity } from '../../users/entities/user.entity';
 
 interface IStaffEntity {
   id: number;
-  user: UserEntity;
+  user: Relation<UserEntity>;
 }
 
 interface ITeacherEntity extends IStaffEntity {
-  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
 }
 
 interface IAdminEntity extends IStaffEntity {
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
   tenant_id: number;
 }
 
 interface IDirectorEntity extends IAdminEntity {
-  academy: AcademyEntity;
+  academy: Relation<AcademyEntity>;
   academy_id: number;
 }
 
@@ -52,7 +55,7 @@ export abstract class StaffEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'id' })
-  user: UserEntity;
+  user: Relation<UserEntity>;
 }
 
 @Entity({ name: 'teachers' })
@@ -65,7 +68,9 @@ export class TeacherEntity extends StaffEntity implements ITeacherEntity {
     () => TeacherSchoolYearEnrollmentEntity,
     (teacher_school_year_enrollment) => teacher_school_year_enrollment.teacher,
   )
-  teacher_school_year_enrollments: TeacherSchoolYearEnrollmentEntity[];
+  teacher_school_year_enrollments: Relation<
+    TeacherSchoolYearEnrollmentEntity[]
+  >;
 }
 
 @Entity({
@@ -88,7 +93,7 @@ export class AdminEntity extends StaffEntity implements IAdminEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'tenant_id' })
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
 }
 
 @Entity({ name: 'directors' })
@@ -106,5 +111,5 @@ export class DirectorEntity extends AdminEntity implements IDirectorEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'academy_id' })
-  academy: AcademyEntity;
+  academy: Relation<AcademyEntity>;
 }

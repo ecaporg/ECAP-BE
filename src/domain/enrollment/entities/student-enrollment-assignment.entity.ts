@@ -1,10 +1,11 @@
-import {
+﻿import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryColumn,
+  Relation,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -15,13 +16,13 @@ import { SampleEntity } from '../../students/entities/sample.entity';
 import { StudentLPEnrollmentEntity } from './student-enrollment.entity';
 
 interface IStudentLPEnrollmentAssignmentEntity {
-  assignment: AssignmentEntity;
+  assignment: Relation<AssignmentEntity>;
   assignment_id: number;
 
-  sample: SampleEntity;
+  sample: Relation<SampleEntity>;
   sample_id?: number;
 
-  studentLPEnrollment: StudentLPEnrollmentEntity;
+  student_lp_enrollment: Relation<StudentLPEnrollmentEntity>;
   student_lp_enrollment_id: number;
 }
 
@@ -54,7 +55,7 @@ export class StudentLPEnrollmentAssignmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'assignment_id' })
-  assignment: AssignmentEntity;
+  assignment: Relation<AssignmentEntity>;
 
   @ApiProperty({
     description: 'Sample associated with this enrollment',
@@ -65,7 +66,7 @@ export class StudentLPEnrollmentAssignmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'sample_id' })
-  sample: SampleEntity;
+  sample: Relation<SampleEntity>;
 
   @ApiProperty({
     description:
@@ -77,5 +78,5 @@ export class StudentLPEnrollmentAssignmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'student_lp_enrollment_id' })
-  studentLPEnrollment: StudentLPEnrollmentEntity;
+  student_lp_enrollment: Relation<StudentLPEnrollmentEntity>;
 }

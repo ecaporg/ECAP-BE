@@ -1,10 +1,11 @@
-import {
+﻿import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
+  Relation,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -23,17 +24,17 @@ interface ITrackEntity {
   start_date: Date;
   end_date: Date;
 
-  academicYear: AcademicYearEntity;
+  academicYear: Relation<AcademicYearEntity>;
   academic_year_id: number;
 
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
   tenant_id: number;
 
-  learningPeriods: TrackLearningPeriodEntity[];
-  semesters: SemesterEntity[];
-  calendar: TrackCalendarEntity;
+  learningPeriods: Relation<TrackLearningPeriodEntity[]>;
+  semesters: Relation<SemesterEntity[]>;
+  calendar: Relation<TrackCalendarEntity>;
 
-  subjects: SubjectEntity[];
+  subjects: Relation<SubjectEntity[]>;
 }
 
 @Entity({ name: 'tracks' })
@@ -69,7 +70,7 @@ export class TrackEntity extends GenericEntity implements ITrackEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'tenant_id' })
-  tenant: TenantEntity;
+  tenant: Relation<TenantEntity>;
 
   @ApiProperty({
     description: 'Academic year associated with this track',
@@ -80,33 +81,33 @@ export class TrackEntity extends GenericEntity implements ITrackEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'academic_year_id' })
-  academicYear: AcademicYearEntity;
+  academicYear: Relation<AcademicYearEntity>;
 
   @ApiProperty({
     description: 'Calendar entries for this track',
     type: () => TrackCalendarEntity,
   })
   @OneToOne(() => TrackCalendarEntity, (calendar) => calendar.track)
-  calendar: TrackCalendarEntity;
+  calendar: Relation<TrackCalendarEntity>;
 
   @ApiProperty({
     description: 'Subjects in this track',
     type: () => [{}],
   })
   @OneToMany(() => SubjectEntity, (subject) => subject.track)
-  subjects: SubjectEntity[];
+  subjects: Relation<SubjectEntity[]>;
 
   @ApiProperty({
     description: 'Learning periods in this track',
     type: () => [{}],
   })
   @OneToMany(() => TrackLearningPeriodEntity, (period) => period.track)
-  learningPeriods: TrackLearningPeriodEntity[];
+  learningPeriods: Relation<TrackLearningPeriodEntity[]>;
 
   @ApiProperty({
     description: 'Semesters in this track',
     type: () => [SemesterEntity],
   })
   @OneToMany(() => SemesterEntity, (semester) => semester.track)
-  semesters: SemesterEntity[];
+  semesters: Relation<SemesterEntity[]>;
 }

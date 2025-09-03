@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+﻿import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -11,7 +11,7 @@ interface ISemesterEntity {
   end_date: Date;
   name: string;
 
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
   track_id: number;
 }
 
@@ -42,5 +42,5 @@ export class SemesterEntity extends GenericEntity implements ISemesterEntity {
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'track_id' })
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
 }

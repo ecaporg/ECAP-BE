@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -15,15 +22,15 @@ interface IStudentLPEnrollmentEntity {
   student_grade: string;
 
   student_id: number;
-  student: StudentEntity;
+  student: Relation<StudentEntity>;
 
   teacher_school_year_enrollment_id: number;
-  teacher_school_year_enrollment: TeacherSchoolYearEnrollmentEntity;
+  teacher_school_year_enrollment: Relation<TeacherSchoolYearEnrollmentEntity>;
 
-  learning_period: TrackLearningPeriodEntity;
+  learning_period: Relation<TrackLearningPeriodEntity>;
   learning_period_id: number;
 
-  assignments: StudentLPEnrollmentAssignmentEntity[];
+  assignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
 }
 
 @Entity('student_lp_enrollments')
@@ -71,7 +78,7 @@ export class StudentLPEnrollmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'learning_period_id' })
-  learning_period: TrackLearningPeriodEntity;
+  learning_period: Relation<TrackLearningPeriodEntity>;
 
   @ApiProperty({
     description:
@@ -83,7 +90,7 @@ export class StudentLPEnrollmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'teacher_school_year_enrollment_id' })
-  teacher_school_year_enrollment: TeacherSchoolYearEnrollmentEntity;
+  teacher_school_year_enrollment: Relation<TeacherSchoolYearEnrollmentEntity>;
 
   @ApiProperty({
     description: 'Student associated with this enrollment',
@@ -94,7 +101,7 @@ export class StudentLPEnrollmentEntity
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'student_id' })
-  student: StudentEntity;
+  student: Relation<StudentEntity>;
 
   @ApiProperty({
     description: 'Assignment enrollments associated with this learning period',
@@ -102,7 +109,7 @@ export class StudentLPEnrollmentEntity
   })
   @OneToMany(
     () => StudentLPEnrollmentAssignmentEntity,
-    (assignment) => assignment.studentLPEnrollment,
+    (assignment) => assignment.student_lp_enrollment,
   )
-  assignments: StudentLPEnrollmentAssignmentEntity[];
+  assignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
 }

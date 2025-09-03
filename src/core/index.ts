@@ -23,7 +23,6 @@ export * from './interceptors/attach-to-body.interceptor';
 export * from './middleware/logger.middleware';
 
 // Pipes
-export * from './pipes/validation.pipe';
 
 // Exceptions
 export * from './exceptions/application.exception';

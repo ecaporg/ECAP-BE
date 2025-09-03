@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -12,10 +19,10 @@ interface ITrackLearningPeriodEntity {
   end_date: Date;
   name: string;
 
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
   track_id: number;
 
-  student_lp_enrollments: StudentLPEnrollmentEntity[];
+  student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }
 
 @Entity({ name: 'track_learning_periods' })
@@ -48,7 +55,7 @@ export class TrackLearningPeriodEntity
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'track_id' })
-  track: TrackEntity;
+  track: Relation<TrackEntity>;
 
   @ApiProperty({
     description: 'Student LP enrollments in this learning period',
@@ -58,5 +65,5 @@ export class TrackLearningPeriodEntity
     () => StudentLPEnrollmentEntity,
     (student_lp_enrollment) => student_lp_enrollment.learning_period,
   )
-  student_lp_enrollments: StudentLPEnrollmentEntity[];
+  student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }

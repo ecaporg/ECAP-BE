@@ -32,6 +32,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
         whitelist: true,
         transform: true,
         forbidNonWhitelisted: false,
+        validateCustomDecorators: true,
         transformOptions: {
           enableImplicitConversion: true,
         },

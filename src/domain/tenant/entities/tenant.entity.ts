@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+﻿import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -14,15 +14,15 @@ import { KeyEntity } from './key.entity';
 interface ITenantEntity {
   name: string;
 
-  key: KeyEntity;
-  errors: ErrorEntity[];
+  key: Relation<KeyEntity>;
+  errors: Relation<ErrorEntity[]>;
 
-  schools: SchoolEntity[];
-  academies: AcademyEntity[];
-  tracks: TrackEntity[];
+  schools: Relation<SchoolEntity[]>;
+  academies: Relation<AcademyEntity[]>;
+  tracks: Relation<TrackEntity[]>;
 
-  admins: AdminEntity[];
-  directors: DirectorEntity[];
+  admins: Relation<AdminEntity[]>;
+  directors: Relation<DirectorEntity[]>;
 }
 
 @Entity({ name: 'tenants' })
@@ -36,47 +36,47 @@ export class TenantEntity extends GenericEntity implements ITenantEntity {
     type: () => [{}],
   })
   @OneToMany(() => SchoolEntity, (school) => school.tenant)
-  schools: SchoolEntity[];
+  schools: Relation<SchoolEntity[]>;
 
   @ApiProperty({
     description: 'Admins associated with this tenant',
     type: () => [{}],
   })
   @OneToMany(() => AdminEntity, (admin) => admin.tenant)
-  admins: AdminEntity[];
+  admins: Relation<AdminEntity[]>;
 
   @ApiProperty({
     description: 'Academies associated with this tenant',
     type: () => [{}],
   })
   @OneToMany(() => AcademyEntity, (academy) => academy.tenant)
-  academies: AcademyEntity[];
+  academies: Relation<AcademyEntity[]>;
 
   @ApiProperty({
     description: 'Tracks associated with this tenant',
     type: () => [{}],
   })
   @OneToMany(() => TrackEntity, (track) => track.tenant)
-  tracks: TrackEntity[];
+  tracks: Relation<TrackEntity[]>;
 
   @ApiProperty({
     description: 'Directors associated with this tenant',
     type: () => [{}],
   })
   @OneToMany(() => DirectorEntity, (director) => director.tenant)
-  directors: DirectorEntity[];
+  directors: Relation<DirectorEntity[]>;
 
   @ApiProperty({
     description: 'Errors associated with this tenant',
     type: () => [{}],
   })
   @OneToMany(() => ErrorEntity, (error) => error.tenant)
-  errors: ErrorEntity[];
+  errors: Relation<ErrorEntity[]>;
 
   @ApiProperty({
     description: 'Keys associated with this tenant',
     type: () => [{}],
   })
   @OneToOne(() => KeyEntity, (key) => key.tenant)
-  key: KeyEntity;
+  key: Relation<KeyEntity>;
 }
