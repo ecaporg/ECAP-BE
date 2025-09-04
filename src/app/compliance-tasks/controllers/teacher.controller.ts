@@ -8,6 +8,7 @@ import {
   ApiErrorResponses,
   ApiPaginatedCrudResponse,
   CurrentUser,
+  QueryParamMapperInterceptor,
   Roles,
 } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
@@ -15,6 +16,7 @@ import { StudentEntity } from '../../../domain/students/entities/student.entity'
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { RolesEnum } from '../../../domain/users/enums/roles.enum';
 import {
+  filterMapping,
   StudentSamplesFilterDto,
   StudentsTableFilterDto,
 } from '../dto/filters.dto';
@@ -35,7 +37,10 @@ export class TeacherComplianceTaskController {
   ) {}
 
   @Get()
-  @UseInterceptors(TeacherFilterInterceptor)
+  @UseInterceptors(
+    TeacherFilterInterceptor,
+    new QueryParamMapperInterceptor(filterMapping),
+  )
   @ApiOperation({ summary: 'Get table with students' })
   @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)
   async getStudents(@Query() filters: StudentsTableFilterDto) {
@@ -50,7 +55,10 @@ export class TeacherComplianceTaskController {
   }
 
   @Get('subjects')
-  @UseInterceptors(TeacherFilterInterceptor)
+  @UseInterceptors(
+    TeacherFilterInterceptor,
+    new QueryParamMapperInterceptor(filterMapping),
+  )
   @ApiOperation({ summary: 'Get table with student samples' })
   @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)
   async getStudentSamples(@Query() filters: StudentSamplesFilterDto) {

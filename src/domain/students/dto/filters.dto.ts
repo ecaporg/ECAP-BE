@@ -4,6 +4,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import {
   BaseFilterDto,
+  DEFAULT_FILTERS_KEYS,
+  getFilterMappingRecord,
   IdDecorator,
   RecordStringAndDotNotation,
 } from '../../../core';
@@ -22,11 +24,14 @@ const FILTER_KEYS = {
   FLAG_CATEGORY: 'flag_category',
 } satisfies RecordStringAndDotNotation<SampleEntity>;
 
+export const filterMapping = getFilterMappingRecord(FILTER_KEYS);
+
 export class FlaggedSamplesFilterDto extends BaseFilterDto {
   @ApiProperty({
     required: false,
     description: 'Filter by learning period ID',
     type: [Number],
+    name: DEFAULT_FILTERS_KEYS.LEARNING_PERIOD_ID,
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
@@ -36,6 +41,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     required: false,
     description: 'Filter by teacher ID',
     type: [Number],
+    name: DEFAULT_FILTERS_KEYS.TEACHER_ID,
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
@@ -45,6 +51,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     required: false,
     description: 'Filter by academy ID',
     type: [Number],
+    name: DEFAULT_FILTERS_KEYS.ACADEMY_ID,
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
@@ -54,6 +61,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     required: false,
     description: 'Filter by academic year',
     type: [Number],
+    name: DEFAULT_FILTERS_KEYS.ACADEMIC_YEAR,
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
@@ -63,6 +71,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     required: false,
     description: 'Filter by status',
     type: [String],
+    name: DEFAULT_FILTERS_KEYS.STATUS,
   })
   @IdDecorator(String)
   @IsString({ each: true })
@@ -72,6 +81,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     required: false,
     description: 'Filter by flag category',
     type: [String],
+    name: DEFAULT_FILTERS_KEYS.FLAG_CATEGORY,
   })
   @IdDecorator(String)
   @IsString({ each: true })

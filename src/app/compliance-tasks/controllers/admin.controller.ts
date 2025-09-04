@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { AuthUser } from '../../../auth/types/auth-user';
@@ -8,13 +8,14 @@ import {
   ApiErrorResponses,
   ApiPaginatedCrudResponse,
   CurrentUser,
+  QueryParamMapperInterceptor,
   Roles,
 } from '../../../core';
 import { TeacherSchoolYearEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
 import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { RolesEnum } from '../../../domain/users/enums/roles.enum';
-import { TeachersTableFilterDto } from '../dto/filters.dto';
+import { filterMapping, TeachersTableFilterDto } from '../dto/filters.dto';
 import { AdminComplianceService } from '../services/admin.service';
 
 @ApiTags('Admin Compliance Tasks')
@@ -26,6 +27,7 @@ export class AdminComplianceController {
   ) {}
 
   @Get()
+  @UseInterceptors(new QueryParamMapperInterceptor(filterMapping))
   @ApiOperation({ summary: 'Get table with teachers' })
   @ApiPaginatedCrudResponse(TeacherSchoolYearEnrollmentEntity)
   async getTeachers(

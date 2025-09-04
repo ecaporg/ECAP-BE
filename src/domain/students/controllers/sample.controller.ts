@@ -22,11 +22,12 @@ import {
   EntityId,
   PaginatedResult,
   PaginationOptions,
+  QueryParamMapperInterceptor,
   Roles,
 } from '../../../core';
 import { UserEntity } from '../../users/entities/user.entity';
 import { RolesEnum } from '../../users/enums/roles.enum';
-import { FlaggedSamplesFilterDto } from '../dto/filters.dto';
+import { filterMapping, FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
   CreateSampleDto,
   CreateSampleFlagCompletedDto,
@@ -79,6 +80,7 @@ export class SampleController {
         path: 'student_lp_enrollment_assignment.student_lp_enrollment.teacher_school_year_enrollments.teacher_id',
       },
     ]),
+    new QueryParamMapperInterceptor(filterMapping),
   )
   @Get('flagged')
   @ApiOperation({ summary: 'Get all flagged samples' })
