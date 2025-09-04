@@ -9,14 +9,15 @@ Ensure you are in the elita-date directory of the project (`nestjs\migrations\el
 
     ```bash
     npx ts-node courses.ts
+    npx ts-node courses-filtered.ts
     ```
 
-2.  **Generate `students.json`:**
-    Script: `migrations/elite-data/students.ts`
+2.  **Generate `peoples.json`:**
+    Script: `migrations/elite-data/peoples.ts`
     Command:
 
     ```bash
-    npx ts-node students.ts
+    npx ts-node peoples.ts
     ```
 
 3.  **Generate `assignments.json`:**
@@ -42,7 +43,7 @@ Ensure you are in the elita-date directory of the project (`nestjs\migrations\el
     Command:
 
     ```bash
-    npx ts-nodedelete-dublicates.ts
+    npx ts-node delete-dublicates.ts
     ```
 
 6.  **Generate `teacher-student-relation.json`:**

@@ -8,8 +8,8 @@ const { readFileSync, writeFileSync } = require('fs');
 
 function getTwoAssigmentPerPeriod() {
   const academicYear = {
-    from: 2024,
-    to: 2025,
+    from: 2025,
+    to: 2026,
   };
 
   const learningPeriods = [
