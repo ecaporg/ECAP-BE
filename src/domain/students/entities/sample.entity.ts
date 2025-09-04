@@ -123,7 +123,7 @@ export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
     description: 'Sample submission date',
     nullable: true,
   })
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'date' })
   date?: Date;
 
   @ApiProperty({
@@ -132,13 +132,6 @@ export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
   })
   @Column({ nullable: true, length: 255 })
   preview_url?: string;
-
-  @ApiProperty({
-    description: 'Canvas submission ID',
-    nullable: true,
-  })
-  @Column({ nullable: true, type: 'bigint' })
-  canvas_submission_id?: number;
 
   @ApiProperty({ description: 'Subject ID' })
   @Column()
@@ -166,28 +159,36 @@ export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
     description: 'Sample flag errors',
     type: () => SampleFlagErrorEntity,
   })
-  @OneToOne(() => SampleFlagErrorEntity, (flag) => flag.sample)
+  @OneToOne(() => SampleFlagErrorEntity, (flag) => flag.sample, {
+    cascade: true,
+  })
   flag_errors: Relation<SampleFlagErrorEntity>;
 
   @ApiProperty({
     description: 'Sample flag missing work',
     type: () => SampleFlagMissingWorkEntity,
   })
-  @OneToOne(() => SampleFlagMissingWorkEntity, (flag) => flag.sample)
+  @OneToOne(() => SampleFlagMissingWorkEntity, (flag) => flag.sample, {
+    cascade: true,
+  })
   flag_missing_work: Relation<SampleFlagMissingWorkEntity>;
 
   @ApiProperty({
     description: 'Sample flag rejected',
     type: () => SampleFlagRejectedEntity,
   })
-  @OneToOne(() => SampleFlagRejectedEntity, (flag) => flag.sample)
+  @OneToOne(() => SampleFlagRejectedEntity, (flag) => flag.sample, {
+    cascade: true,
+  })
   flag_rejected: Relation<SampleFlagRejectedEntity>;
 
   @ApiProperty({
     description: 'Sample flag completed',
     type: () => SampleFlagCompletedEntity,
   })
-  @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample)
+  @OneToOne(() => SampleFlagCompletedEntity, (flag) => flag.sample, {
+    cascade: true,
+  })
   flag_completed: Relation<SampleFlagCompletedEntity>;
 
   @OneToOne(

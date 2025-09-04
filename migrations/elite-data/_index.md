@@ -45,10 +45,3 @@ Ensure you are in the elita-date directory of the project (`nestjs\migrations\el
     ```bash
     npx ts-node delete-dublicates.ts
     ```
-
-6.  **Generate `teacher-student-relation.json`:**
-    Script: `migrations/elite-data/teacher-student-relation.ts`
-    Command:
-    ```bash
-    npx ts-node teacher-student-relation.ts
-    ```

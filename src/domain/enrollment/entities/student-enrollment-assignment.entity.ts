@@ -62,6 +62,7 @@ export class StudentLPEnrollmentAssignmentEntity
     type: () => SampleEntity,
   })
   @OneToOne(() => SampleEntity, {
+    cascade: ['insert'],
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

@@ -26,9 +26,13 @@ export class CourseEntity extends CanvasGenericEntity implements ICourseEntity {
     description: 'Assignments associated with this course',
     type: () => [{}],
   })
-  @OneToMany(() => AssignmentEntity, (assignment) => assignment.course)
+  @OneToMany(() => AssignmentEntity, (assignment) => assignment.course, {
+    cascade: ['insert'],
+  })
   assignments: Relation<AssignmentEntity[]>;
 
-  @OneToMany(() => SubjectEntity, (subject) => subject.course)
+  @OneToMany(() => SubjectEntity, (subject) => subject.course, {
+    cascade: ['insert'],
+  })
   subjects: Relation<SubjectEntity[]>;
 }

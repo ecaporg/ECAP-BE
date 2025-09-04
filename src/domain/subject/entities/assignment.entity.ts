@@ -16,6 +16,7 @@ import { CourseEntity } from './course.entity';
 
 interface IAssignmentEntity {
   name: string;
+  due_at: Date;
   canvas_id?: string;
 
   course: Relation<CourseEntity>;
@@ -36,6 +37,14 @@ export class AssignmentEntity
   @ApiProperty({ description: 'Assignment name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;
+
+  @ApiProperty({
+    description: 'Assignment due date',
+    type: 'string',
+    format: 'date-time',
+  })
+  @Column({ type: 'date' })
+  due_at: Date;
 
   @ManyToOne(() => CourseEntity, (course) => course.assignments, {
     onDelete: 'CASCADE',

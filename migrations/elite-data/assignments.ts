@@ -158,4 +158,5 @@ export type Assignment = {
   require_lockdown_browser: boolean;
   restrict_quantitative_data: boolean;
   in_closed_grading_period: boolean;
+  learning_period?: { start_date: string; end_date: string; name: string };
 };

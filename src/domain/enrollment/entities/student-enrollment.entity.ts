@@ -2,6 +2,7 @@
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -85,6 +86,7 @@ export class StudentLPEnrollmentEntity
     (teacherSchoolYearEnrollment) =>
       teacherSchoolYearEnrollment.student_lp_enrollments,
   )
+  @JoinTable()
   teacher_school_year_enrollments: Relation<
     TeacherSchoolYearEnrollmentEntity[]
   >;
@@ -107,6 +109,9 @@ export class StudentLPEnrollmentEntity
   @OneToMany(
     () => StudentLPEnrollmentAssignmentEntity,
     (assignment) => assignment.student_lp_enrollment,
+    {
+      cascade: ['insert'],
+    },
   )
   assignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
 }

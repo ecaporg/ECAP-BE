@@ -205,9 +205,9 @@ export type SisStudent = {
     | 'Flex'
     | 'Virtual'
     | 'Homeschool'
-    | 'Flex new'
-    | 'Virtual new'
-    | 'Homeschool new';
+    | 'Flex - New'
+    | 'Virtual - New'
+    | 'Homeschool - New';
   scope_title: 'mountainelite' | 'eliteaa';
   lccgradelevels_gradelevel: string | number;
 };
