@@ -12,14 +12,13 @@ export const DEFAULT_FILTERS_KEYS = {
 
   LEARNING_PERIOD_ID: 'learning_period_id',
 
-  SAMPLE_STATUS: 'status',
   SCHOOL_ID: 'school_id',
   SEARCH: 'search',
-  SEMESTER: 'semesters.id',
+  SEMESTER_ID: 'semester_id',
   STATUS: 'status',
   STUDENT_GRADE: 'student_grade',
   STUDENT_ID: 'student_id',
-  SUBJECT: 'subject_id',
+  SUBJECT_ID: 'subject_id',
 
   TEACHER_ID: 'teacher_id',
   TRACK_ID: 'track_id',

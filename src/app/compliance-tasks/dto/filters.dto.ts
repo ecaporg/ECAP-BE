@@ -19,12 +19,12 @@ const FILTER_KEYS = {
   STUDENT_GRADE: 'student_grade',
   COMPLETED: 'completed',
   TEACHER_ID: 'teacher_school_year_enrollments.teacher_id',
-  SAMPLE_STATUS: 'assignments.sample.status',
+  STATUS: 'assignments.sample.status',
   STUDENT_ID: 'student_id',
   DONE_BY_ID: 'assignments.sample.done_by_id',
   ACADEMIC_YEAR: 'teacher_school_year_enrollments.academic_year_id',
   SEMESTER_ID: 'learning_period.track.semesters.id',
-  SAMPLE_SUBJECT: 'assignments.sample.subject.id',
+  SUBJECT_ID: 'assignments.sample.subject.id',
 } satisfies RecordStringAndDotNotation<StudentLPEnrollmentEntity>;
 
 export const filterMapping = getFilterMappingRecord(FILTER_KEYS);
@@ -116,11 +116,11 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
     required: false,
     description: 'Filter by sample status',
     type: [String],
-    name: DEFAULT_FILTERS_KEYS.SAMPLE_STATUS,
+    name: DEFAULT_FILTERS_KEYS.STATUS,
   })
   @IdDecorator(String)
   @IsString({ each: true })
-  [FILTER_KEYS.SAMPLE_STATUS]?: string[];
+  [FILTER_KEYS.STATUS]?: string[];
 
   @ApiProperty({
     required: false,
@@ -190,7 +190,7 @@ export class TeachersTableFilterDto extends OmitType(StudentsTableFilterDto, [
     required: false,
     description: 'Filter by semester',
     type: [Number],
-    name: DEFAULT_FILTERS_KEYS.SEMESTER,
+    name: DEFAULT_FILTERS_KEYS.SEMESTER_ID,
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
@@ -200,19 +200,19 @@ export class TeachersTableFilterDto extends OmitType(StudentsTableFilterDto, [
     required: false,
     description: 'Filter by sample status',
     type: [String],
-    name: DEFAULT_FILTERS_KEYS.SAMPLE_STATUS,
+    name: DEFAULT_FILTERS_KEYS.STATUS,
   })
   @IdDecorator(String)
   @IsString({ each: true })
-  [FILTER_KEYS.SAMPLE_STATUS]?: string[];
+  [FILTER_KEYS.STATUS]?: string[];
 
   @ApiProperty({
     required: false,
     description: 'Filter by subject',
     type: [String],
-    name: DEFAULT_FILTERS_KEYS.SUBJECT,
+    name: DEFAULT_FILTERS_KEYS.SUBJECT_ID,
   })
   @IdDecorator(String)
   @IsString({ each: true })
-  [FILTER_KEYS.SAMPLE_SUBJECT]?: string[];
+  [FILTER_KEYS.SUBJECT_ID]?: string[];
 }
