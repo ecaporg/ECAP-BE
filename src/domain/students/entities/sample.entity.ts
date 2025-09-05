@@ -11,7 +11,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { CanvasGenericEntity } from '../../../core';
 import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/student-enrollment-assignment.entity';
-import { SubjectEntity } from '../../subject/entities/subject.entity';
 import { UserEntity } from '../../users/entities/user.entity';
 
 import {
@@ -80,9 +79,6 @@ interface ISampleEntity {
   flag_missing_work: Relation<SampleFlagMissingWorkEntity>;
   flag_rejected: Relation<SampleFlagRejectedEntity>;
 
-  subject: Relation<SubjectEntity>;
-  subject_id: number;
-
   student_lp_enrollment_assignment: Relation<StudentLPEnrollmentAssignmentEntity>;
 }
 
@@ -132,17 +128,6 @@ export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
   })
   @Column({ nullable: true, length: 255 })
   preview_url?: string;
-
-  @ApiProperty({ description: 'Subject ID' })
-  @Column()
-  subject_id: number;
-
-  @ManyToOne(() => SubjectEntity, {
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'subject_id' })
-  subject: Relation<SubjectEntity>;
 
   @ApiProperty({
     description: 'User who set completed status of this sample',

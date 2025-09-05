@@ -6,6 +6,7 @@ import { GenericEntity } from '../../../core';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
 import { AdminEntity, DirectorEntity } from '../../staff/entities/staff.entity';
+import { CourseEntity } from '../../subject/entities/course.entity';
 import { TrackEntity } from '../../track/entities/track.entity';
 
 import { ErrorEntity } from './error.entity';
@@ -23,6 +24,7 @@ interface ITenantEntity {
 
   admins: Relation<AdminEntity[]>;
   directors: Relation<DirectorEntity[]>;
+  courses: Relation<CourseEntity[]>;
 }
 
 @Entity({ name: 'tenants' })
@@ -79,4 +81,11 @@ export class TenantEntity extends GenericEntity implements ITenantEntity {
   })
   @OneToOne(() => KeyEntity, (key) => key.tenant)
   key: Relation<KeyEntity>;
+
+  @ApiProperty({
+    description: 'Courses associated with this tenant',
+    type: () => [{}],
+  })
+  @OneToMany(() => CourseEntity, (course) => course.tenant)
+  courses: Relation<CourseEntity[]>;
 }

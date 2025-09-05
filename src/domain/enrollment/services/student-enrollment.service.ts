@@ -25,8 +25,6 @@ export class StudentLPEnrollmentService extends BaseService<StudentLPEnrollmentE
       ...options.filters,
     } as any;
 
-    console.log(where, where.completed);
-
     if (
       where.completed.value.length === 1 &&
       where.completed.value[0] === false
@@ -43,7 +41,6 @@ export class StudentLPEnrollmentService extends BaseService<StudentLPEnrollmentE
       completedCount,
     };
 
-    console.log(assignmentPeriods);
     return assignmentPeriods;
   }
 

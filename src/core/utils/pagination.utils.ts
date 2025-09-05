@@ -53,17 +53,9 @@ export function extractPaginationOptions<T extends BaseFilterType>(
         current = current[part];
       }
 
-      if (Array.isArray(value)) {
-        current[parts[parts.length - 1]] = In(value);
-      } else {
-        current[parts[parts.length - 1]] = Equal(value);
-      }
+      assignFilterValue(current, parts[parts.length - 1], value);
     } else {
-      if (Array.isArray(value)) {
-        filtersObject[key] = In(value);
-      } else {
-        filtersObject[key] = Equal(value);
-      }
+      assignFilterValue(filtersObject, key, value);
     }
   }
 
@@ -125,4 +117,39 @@ export function createOrderCondition(
     }
     return conditions;
   }, {});
+}
+
+/** Get and delete a field from an object
+ * @param obj Object to extract the field from
+ * @param field Field to extract
+ * @returns Value of the extracted field or undefined if not found
+ */
+export function getAndDeleteField<T, K extends keyof T>(
+  obj: T,
+  field: K,
+): T[K] | undefined {
+  if (obj.hasOwnProperty(field)) {
+    const value = obj[field];
+    delete obj[field];
+    return value;
+  }
+  return undefined;
+}
+
+/**
+ * Assign a filter value to a filters object
+ * @param filtersObject Filters object to assign the value to
+ * @param key Key of the filter
+ * @param value Value of the filter
+ */
+export function assignFilterValue(
+  filtersObject: Record<string, any>,
+  key: string,
+  value: any,
+) {
+  if (Array.isArray(value) && value.length > 0) {
+    filtersObject[key] = value.length === 1 ? Equal(value[0]) : In(value);
+  } else if (!Array.isArray(value)) {
+    filtersObject[key] = Equal(value);
+  }
 }

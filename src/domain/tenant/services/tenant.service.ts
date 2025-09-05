@@ -18,9 +18,9 @@ export class TenantService extends BaseService<TenantEntity> {
         tracks: {
           academicYear: true,
           semesters: true,
-          subjects: true,
           learningPeriods: true,
         },
+        courses: true,
         schools: true,
       },
     });

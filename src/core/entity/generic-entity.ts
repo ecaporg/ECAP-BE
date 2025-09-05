@@ -21,3 +21,8 @@ export abstract class CanvasGenericEntity extends GenericEntity {
   @Column({ nullable: true, length: 20 })
   canvas_id?: string;
 }
+
+export abstract class TenantGenericEntity extends GenericEntity {
+  @Column()
+  tenant_id: number;
+}

@@ -50,8 +50,10 @@ export class TeacherComplianceTaskService {
       paginationOptions,
       {
         assignments: {
+          assignment: {
+            course: true,
+          },
           sample: {
-            subject: true,
             done_by: true,
             flag_missing_work: {
               user: true,

@@ -1,11 +1,18 @@
-﻿import { Column, Entity, OneToMany, Relation } from 'typeorm';
+﻿import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 import { CanvasGenericEntity } from '../../../core';
+import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 import { AssignmentEntity } from './assignment.entity';
-import { SubjectEntity } from './subject.entity';
 
 interface ICourseEntity {
   canvas_id?: string;
@@ -13,7 +20,6 @@ interface ICourseEntity {
   name: string;
 
   assignments: Relation<AssignmentEntity[]>;
-  subjects: Relation<SubjectEntity[]>;
 }
 
 @Entity({ name: 'courses' })
@@ -31,8 +37,18 @@ export class CourseEntity extends CanvasGenericEntity implements ICourseEntity {
   })
   assignments: Relation<AssignmentEntity[]>;
 
-  @OneToMany(() => SubjectEntity, (subject) => subject.course, {
-    cascade: ['insert'],
+  @ApiProperty({ description: 'Tenant ID associated with this course' })
+  @Column()
+  tenant_id: number;
+
+  @ApiProperty({
+    description: 'Tenant associated with this course',
+    type: () => Object,
   })
-  subjects: Relation<SubjectEntity[]>;
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.courses, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Relation<TenantEntity>;
 }

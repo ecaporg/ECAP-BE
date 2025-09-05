@@ -24,7 +24,7 @@ const FILTER_KEYS = {
   DONE_BY_ID: 'assignments.sample.done_by_id',
   ACADEMIC_YEAR: 'teacher_school_year_enrollments.academic_year_id',
   SEMESTER_ID: 'learning_period.track.semesters.id',
-  SUBJECT_ID: 'assignments.sample.subject.id',
+  SUBJECT_ID: 'assignments.assignment.course_id',
 } satisfies RecordStringAndDotNotation<StudentLPEnrollmentEntity>;
 
 export const filterMapping = getFilterMappingRecord(FILTER_KEYS);

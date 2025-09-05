@@ -2,7 +2,9 @@ import { Type } from '@nestjs/common';
 
 // Auth models
 import { AuthUser } from '../../auth/types/auth-user';
+// Enrollment entities
 import { StudentLPEnrollmentEntity } from '../../domain/enrollment/entities/student-enrollment.entity';
+import { StudentLPEnrollmentAssignmentEntity } from '../../domain/enrollment/entities/student-enrollment-assignment.entity';
 import { TeacherSchoolYearEnrollmentEntity } from '../../domain/enrollment/entities/teacher-enrollment.entity';
 // School entities
 import { AcademyEntity } from '../../domain/school/entities/academy.entity';
@@ -22,9 +24,14 @@ import {
   SampleFlagRejectedEntity,
 } from '../../domain/students/entities/sample-flag.entity';
 import { StudentEntity } from '../../domain/students/entities/student.entity';
-// Track entities
-import { SubjectEntity } from '../../domain/subject/entities/subject.entity';
+// Subject entities
+import { AssignmentEntity } from '../../domain/subject/entities/assignment.entity';
+import { CourseEntity } from '../../domain/subject/entities/course.entity';
+// Tenant entities
+import { ErrorEntity } from '../../domain/tenant/entities/error.entity';
+import { KeyEntity } from '../../domain/tenant/entities/key.entity';
 import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
+// Track entities
 import { AcademicYearEntity } from '../../domain/track/entities/academic-year.entity';
 import { SemesterEntity } from '../../domain/track/entities/semester.entity';
 import { TrackEntity } from '../../domain/track/entities/track.entity';
@@ -51,18 +58,28 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
 
   // School
   AcademyEntity,
-  AcademicYearEntity,
   SchoolEntity,
-  SemesterEntity,
-  TeacherSchoolYearEnrollmentEntity,
-  StudentLPEnrollmentEntity,
+
+  // Tenant
   TenantEntity,
+  KeyEntity,
+  ErrorEntity,
 
   // Track
-  SubjectEntity,
+  AcademicYearEntity,
+  SemesterEntity,
   TrackCalendarEntity,
   TrackLearningPeriodEntity,
   TrackEntity,
+
+  // Enrollment
+  TeacherSchoolYearEnrollmentEntity,
+  StudentLPEnrollmentEntity,
+  StudentLPEnrollmentAssignmentEntity,
+
+  // Subject
+  CourseEntity,
+  AssignmentEntity,
 
   // Staff
   DirectorEntity,

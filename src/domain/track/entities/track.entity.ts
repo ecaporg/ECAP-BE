@@ -10,8 +10,7 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
-import { SubjectEntity } from '../../subject/entities/subject.entity';
+import { TenantGenericEntity } from '../../../core';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 import { AcademicYearEntity } from './academic-year.entity';
@@ -33,16 +32,10 @@ interface ITrackEntity {
   learningPeriods: Relation<TrackLearningPeriodEntity[]>;
   semesters: Relation<SemesterEntity[]>;
   calendar: Relation<TrackCalendarEntity>;
-
-  subjects: Relation<SubjectEntity[]>;
 }
 
 @Entity({ name: 'tracks' })
-export class TrackEntity extends GenericEntity implements ITrackEntity {
-  @ApiProperty({ description: 'Tenant ID associated with this track' })
-  @Column()
-  tenant_id: number;
-
+export class TrackEntity extends TenantGenericEntity implements ITrackEntity {
   @ApiProperty({ description: 'Track name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;
@@ -89,13 +82,6 @@ export class TrackEntity extends GenericEntity implements ITrackEntity {
   })
   @OneToOne(() => TrackCalendarEntity, (calendar) => calendar.track)
   calendar: Relation<TrackCalendarEntity>;
-
-  @ApiProperty({
-    description: 'Subjects in this track',
-    type: () => [{}],
-  })
-  @OneToMany(() => SubjectEntity, (subject) => subject.track)
-  subjects: Relation<SubjectEntity[]>;
 
   @ApiProperty({
     description: 'Learning periods in this track',

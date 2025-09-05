@@ -4,8 +4,8 @@ import { Module } from '@nestjs/common';
 import { SchoolModule } from '../../domain/school/school.module';
 import { UsersModule } from '../../domain/users/users.module';
 
-import { CanvasEventProcessorController } from './controllers/canvas-event-processor.controller';
-import { CanvasEventProcessorService } from './services/canvas-event-processor.service';
+// import { CanvasEventProcessorController } from './controllers/canvas-event-processor.controller';
+// import { CanvasEventProcessorService } from './services/canvas-event-processor.service';
 import { CanvasResourcesService } from './services/canvas-resources.service';
 import { SisResourcesService } from './services/sis-resources.service';
 
@@ -20,13 +20,13 @@ import { SisResourcesService } from './services/sis-resources.service';
   providers: [
     CanvasResourcesService,
     SisResourcesService,
-    CanvasEventProcessorService,
+    // CanvasEventProcessorService,
   ],
-  controllers: [CanvasEventProcessorController],
+  // controllers: [CanvasEventProcessorController],
   exports: [
     CanvasResourcesService,
     SisResourcesService,
-    CanvasEventProcessorService,
+    // CanvasEventProcessorService,
   ],
 })
 export class CanvasEventsModule {}

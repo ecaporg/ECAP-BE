@@ -25,7 +25,6 @@ import {
 } from 'src/domain/students/entities/sample-flag.entity';
 import { StudentEntity } from 'src/domain/students/entities/student.entity';
 import { CourseEntity } from 'src/domain/subject/entities/course.entity';
-import { SubjectEntity } from 'src/domain/subject/entities/subject.entity';
 import { KeyEntity } from 'src/domain/tenant/entities/key.entity';
 import { TenantEntity } from 'src/domain/tenant/entities/tenant.entity';
 import { AcademicYearEntity } from 'src/domain/track/entities/academic-year.entity';
@@ -74,13 +73,13 @@ export class Elite20261757021698364 implements MigrationInterface {
     // Create students
     const students = await this.createStudents(queryRunner, schools, academies);
 
+    // Create subjects for each track, create courses and assignments in canvas
+    const canvasCoursesWithAssignments =
+      await this.createCanvasCoursesWithAssignments(queryRunner, tenant);
+
     for (const academicYear of academicYears) {
       // Create tracks
       const tracks = await this.createTracks(queryRunner, academicYear, tenant);
-
-      // Create subjects for each track, create courses and assignments in canvas
-      const canvasCoursesWithAssignments =
-        await this.createCanvasCoursesWithAssignments(queryRunner, tracks);
 
       // Create semesters for these tracks
       await this.createSemesters(queryRunner, tracks);
@@ -154,9 +153,6 @@ export class Elite20261757021698364 implements MigrationInterface {
     );
     await queryRunner.query(
       `TRUNCATE TABLE "academic_years" RESTART IDENTITY CASCADE`,
-    );
-    await queryRunner.query(
-      `TRUNCATE TABLE "subjects" RESTART IDENTITY CASCADE`,
     );
     await queryRunner.query(
       `TRUNCATE TABLE "samples" RESTART IDENTITY CASCADE`,
@@ -670,7 +666,6 @@ export class Elite20261757021698364 implements MigrationInterface {
             canvasCoursesWithAssignments,
             assignmentsInLP,
             work_samples,
-            track,
             student,
           );
 
@@ -701,7 +696,7 @@ export class Elite20261757021698364 implements MigrationInterface {
 
   private async createCanvasCoursesWithAssignments(
     queryRunner: QueryRunner,
-    tracks: TrackEntity[],
+    tenant: TenantEntity,
   ) {
     const assignmentsMap: Assignment[] = JSON.parse(
       readFileSync('migrations/elite-data/assignments-filtered.json', 'utf8'),
@@ -724,32 +719,11 @@ export class Elite20261757021698364 implements MigrationInterface {
             }) as CourseEntity['assignments'][number],
         );
 
-      let filteredTracks = tracks.filter((t) => {
-        const character = t.name.split('Track ')[1];
-        const regex = new RegExp(
-          `\\b\\d*${character}\\b|[\\(\\[]${character}[\\)\\]]`,
-        );
-        const res = regex.test(course.name) || regex.test(course.course_code);
-        return res;
-      });
-
-      if (filteredTracks.length == 0) filteredTracks = tracks;
-
-      const subjects: SubjectEntity[] = filteredTracks.map(
-        (t) =>
-          ({
-            track_id: t.id,
-          }) as SubjectEntity,
-      );
-
       courses.push({
         canvas_id: course.id,
-        name: course.name
-          .replaceAll(/\b\d{0,2}[ABKX]\b/g, '')
-          .replaceAll('Flex', '')
-          .trim(),
+        name: course.name,
         assignments: courseAssignments,
-        subjects,
+        tenant,
       } as CourseEntity);
     }
 
@@ -762,14 +736,11 @@ export class Elite20261757021698364 implements MigrationInterface {
     courseEntities: CourseEntity[],
     assignmentsInLP: Assignment[],
     submissions: Map<string, Submission[]>,
-    track: TrackEntity,
     student: StudentEntity,
   ) {
     const filteredCourses = courseEntities.filter((course) =>
       assignmentsInLP.find((assignment) =>
-        course.assignments.find(
-          (a) => a.canvas_id == assignment.id && course.subjects.length > 0,
-        ),
+        course.assignments.find((a) => a.canvas_id == assignment.id),
       ),
     );
 
@@ -784,25 +755,21 @@ export class Elite20261757021698364 implements MigrationInterface {
               student.user.canvas_additional_info.canvas_id,
           );
 
-        const subject = filteredCourses
-          .find((course) =>
-            course.assignments.find((a) => a.canvas_id == assignment.canvas_id),
-          )
-          .subjects.find((s) => s.track_id == track.id);
+        const subject = filteredCourses.find((course) =>
+          course.assignments.find((a) => a.canvas_id == assignment.canvas_id),
+        );
 
         if (!subject) return null;
 
         return {
           assignment,
-          sample: submission
-            ? this.createSamples(submission, subject)
-            : undefined,
+          sample: submission ? this.createSamples(submission) : undefined,
         } as StudentLPEnrollmentAssignmentEntity;
       })
       .filter(Boolean);
   }
 
-  private createSamples(s: Submission, subjects: SubjectEntity): SampleEntity {
+  private createSamples(s: Submission): SampleEntity {
     const status =
       s.missing || s.workflow_state === 'unsubmitted'
         ? SampleStatus.MISSING_SAMPLE
@@ -816,7 +783,6 @@ export class Elite20261757021698364 implements MigrationInterface {
       grade: s.grade,
       date: s.submitted_at ? new Date(s.submitted_at) : undefined,
       status,
-      subject: subjects,
       preview_url: s.preview_url,
       done_by_id: undefined,
     } as SampleEntity;
@@ -908,52 +874,13 @@ export class Elite20261757021698364 implements MigrationInterface {
   WHERE student_lp_enrollments.id = assignment_stats.id;
       `,
     );
-    // const assignment_periods = await queryRunner.manager.find(
-    //   StudentLPEnrollmentEntity,
-    //   {
-    //     where: {
-    //       completed: false,
-    //     },
-    //     relations: { samples: true },
-    //   },
-    // );
-    // for (const assignment_period of assignment_periods) {
-    //   assignment_period.percentage =
-    //     (assignment_period.samples.filter(
-    //       (sample) => sample.status == SampleStatus.COMPLETED,
-    //     ).length /
-    //       assignment_period.samples.length) *
-    //     100;
-    //   assignment_period.completed = assignment_period.samples.every(
-    //     (sample) => sample.status == SampleStatus.COMPLETED,
-    //   );
-    // }
-    // await queryRunner.manager.save(
-    //   StudentLPEnrollmentEntity,
-    //   assignment_periods,
-    //   {
-    //     chunk: 1000,
-    //   },
-    // );
   }
 
   private async deleteRedunantData(
     queryRunner: QueryRunner,
     samples: SampleEntity[],
-    subjects: SubjectEntity[],
     track: TrackEntity,
   ) {
-    const subjectIds = new Set(samples.map((s) => s.subject_id));
-    const subjectsToDelete = subjects.filter(
-      (s) => !subjectIds.has(s.id) && s.track_id == track.id,
-    );
-    if (subjectsToDelete.length === subjectIds.size) {
-      console.log('No subjects to delete');
-    } else {
-      const subjectIdsToDelete = subjectsToDelete.map((s) => s.id);
-      await queryRunner.manager.delete(SubjectEntity, subjectIdsToDelete);
-    }
-
     const emptyStudentLPEnrollments = await queryRunner.manager
       .getRepository(StudentLPEnrollmentEntity)
       .createQueryBuilder('studentLPEnrollment')

@@ -97,7 +97,24 @@ export class AdminEntity extends StaffEntity implements IAdminEntity {
 }
 
 @Entity({ name: 'directors' })
-export class DirectorEntity extends AdminEntity implements IDirectorEntity {
+export class DirectorEntity extends StaffEntity implements IDirectorEntity {
+  @ApiProperty({
+    description: 'Tenant ID associated with this director',
+  })
+  @PrimaryColumn()
+  tenant_id: number;
+
+  @ApiProperty({
+    description: 'Tenant associated with this director',
+    type: () => TenantEntity,
+  })
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.directors, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Relation<TenantEntity>;
+
   @ApiProperty({ description: 'Academy ID associated with this director' })
   @Column()
   academy_id: number;

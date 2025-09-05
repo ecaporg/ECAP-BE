@@ -9,7 +9,7 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { TenantGenericEntity } from '../../../core';
 import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
@@ -27,14 +27,10 @@ interface ISchoolEntity {
 }
 
 @Entity({ name: 'schools' })
-export class SchoolEntity extends GenericEntity implements ISchoolEntity {
+export class SchoolEntity extends TenantGenericEntity implements ISchoolEntity {
   @ApiProperty({ description: 'School name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;
-
-  @ApiProperty({ description: 'Tenant ID associated with this school' })
-  @Column()
-  tenant_id: number;
 
   @ApiProperty({
     description: 'Tenant associated with this school',
