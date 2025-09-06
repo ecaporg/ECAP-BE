@@ -118,8 +118,6 @@ export class AdminComplianceService {
       LIMIT ${query.take} OFFSET ${query.skip}
     `;
 
-    console.log(sql, subQueryParams); // --- IGNORE ---
-
     const items = await this.studentLPEnrollmentService
       .getRepository()
       .query(sql, subQueryParams);

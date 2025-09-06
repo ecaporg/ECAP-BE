@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { first } from 'rxjs';
 import { Assignment } from './assignments';
 import { Course } from './courses';
 import { deleteDublicatesAssignmentsFiltered } from './delete-dublicates';

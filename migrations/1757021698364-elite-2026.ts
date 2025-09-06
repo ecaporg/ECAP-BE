@@ -644,8 +644,8 @@ export class Elite20261757021698364 implements MigrationInterface {
           const lpEndDate = new Date(learningPeriod.end_date);
 
           return (
-            assignmentStartDate.toDateString() === lpStartDate.toDateString() &&
-            assignmentEndDate.toDateString() === lpEndDate.toDateString()
+            assignmentStartDate.toDateString() == lpStartDate.toDateString() &&
+            assignmentEndDate.toDateString() == lpEndDate.toDateString()
           );
         });
 
@@ -690,7 +690,7 @@ export class Elite20261757021698364 implements MigrationInterface {
     return queryRunner.manager.save(
       StudentLPEnrollmentEntity,
       studentLPEnrollmentPeriods,
-      { chunk: 300 },
+      { chunk: 600 },
     );
   }
 
@@ -746,6 +746,9 @@ export class Elite20261757021698364 implements MigrationInterface {
 
     return filteredCourses
       .flatMap((course) => course.assignments)
+      .filter((assignment) =>
+        assignmentsInLP.find((a) => a.id == assignment.canvas_id),
+      )
       .map((assignment) => {
         const submission = submissions
           .get(assignment.canvas_id.toString())
@@ -763,15 +766,15 @@ export class Elite20261757021698364 implements MigrationInterface {
 
         return {
           assignment,
-          sample: submission ? this.createSamples(submission) : undefined,
+          sample: this.createSamples(submission),
         } as StudentLPEnrollmentAssignmentEntity;
       })
       .filter(Boolean);
   }
 
-  private createSamples(s: Submission): SampleEntity {
+  private createSamples(s?: Submission): SampleEntity {
     const status =
-      s.missing || s.workflow_state === 'unsubmitted'
+      !s || s?.missing || s?.workflow_state === 'unsubmitted'
         ? SampleStatus.MISSING_SAMPLE
         : !s.grade
           ? SampleStatus.ERRORS_FOUND
@@ -780,10 +783,10 @@ export class Elite20261757021698364 implements MigrationInterface {
             : SampleStatus.PENDING;
 
     const sample = {
-      grade: s.grade,
-      date: s.submitted_at ? new Date(s.submitted_at) : undefined,
+      grade: s?.grade,
+      date: s?.submitted_at ? new Date(s.submitted_at) : undefined,
       status,
-      preview_url: s.preview_url,
+      preview_url: s?.preview_url,
       done_by_id: undefined,
     } as SampleEntity;
 
