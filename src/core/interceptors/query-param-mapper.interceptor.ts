@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 
 interface QueryParamMapping {
-  [sourceParam: string]: string; 
+  [sourceParam: string]: string;
 }
 
 @Injectable()

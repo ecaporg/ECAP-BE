@@ -193,7 +193,7 @@ export class BaseService<
     relations?: BaseServiceOptions<T, IDKey>['defaultRelations'],
   ): FindManyOptions<T> {
     const page = options?.page || 1;
-    const limit = options?.limit || 12;
+    const limit = options?.limit || 15;
     const sortBy = options?.sortBy || ['createdAt'];
     const sortDirection = options?.sortDirection || ['DESC'];
     const search = options?.search || '';

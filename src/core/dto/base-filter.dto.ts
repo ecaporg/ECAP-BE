@@ -10,6 +10,8 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
+import { FILTER_SEPARATOR_FOR_MULTIPLE_VALUES } from '../constants';
+
 export enum SortDirectionEnum {
   ASC = 'ASC',
   DESC = 'DESC',
@@ -28,14 +30,16 @@ export class BaseFilterDto {
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  limit?: number = 12;
+  limit?: number = 15;
 
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()
   @IsString({ each: true })
   @IsArray()
   @Transform(({ value }) =>
-    typeof value === 'string' ? value.split(',') : value,
+    typeof value === 'string'
+      ? value.split(FILTER_SEPARATOR_FOR_MULTIPLE_VALUES)
+      : value,
   )
   sortBy?: string[];
 
@@ -50,7 +54,9 @@ export class BaseFilterDto {
   @IsArray()
   @IsEnum(SortDirectionEnum, { each: true })
   @Transform(({ value }) =>
-    typeof value === 'string' ? value.split(',') : value,
+    typeof value === 'string'
+      ? value.split(FILTER_SEPARATOR_FOR_MULTIPLE_VALUES)
+      : value,
   )
   sortDirection?: SortDirectionEnum[];
 

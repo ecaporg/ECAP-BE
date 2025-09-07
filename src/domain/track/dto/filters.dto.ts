@@ -23,15 +23,15 @@ export class TrackFilterDto extends BaseFilterDto {
     type: [Number],
   })
   @IdDecorator(Number)
-  @IsNumber({}, { each: true })
+  @IsNumber()
   [FILTER_TRACK_KEYS.TENANT_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber({}, { each: true })
+  @IsNumber()
   [FILTER_TRACK_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber({}, { each: true })
+  @IsNumber()
   [FILTER_TRACK_KEYS.TEACHER_ID]: number[];
 }
 
@@ -48,15 +48,15 @@ export class TrackCalendarFilterDto extends BaseFilterDto {
     type: [Number],
   })
   @IdDecorator(Number)
-  @IsNumber({}, { each: true })
+  @IsNumber()
   [FILTER_TRACK_CALENDAR_KEYS.TENANT_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber({}, { each: true })
+  @IsNumber()
   [FILTER_TRACK_CALENDAR_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber({}, { each: true })
+  @IsNumber()
   [FILTER_TRACK_CALENDAR_KEYS.TEACHER_ID]: number[];
 }
 

@@ -110,6 +110,8 @@ export class Elite20261757021698364 implements MigrationInterface {
     // Create admin user
     await this.createAdmin(queryRunner, tenant);
 
+    await this.addAdminIdToComplatedSemples(queryRunner);
+
     await this.recalculateAssignmentPeriods(queryRunner);
   }
 
@@ -788,6 +790,7 @@ export class Elite20261757021698364 implements MigrationInterface {
       status,
       preview_url: s?.preview_url,
       done_by_id: undefined,
+      canvas_id: s?.id,
     } as SampleEntity;
 
     this.createSampleFlags(sample);
@@ -877,6 +880,18 @@ export class Elite20261757021698364 implements MigrationInterface {
   WHERE student_lp_enrollments.id = assignment_stats.id;
       `,
     );
+  }
+
+  private async addAdminIdToComplatedSemples(queryRunner: QueryRunner) {
+    queryRunner.manager.query(`
+      UPDATE samples
+      SET done_by_id = admin.id
+      FROM admins AS admin
+      JOIN users AS user ON admin.user_id = user.id
+      WHERE samples.status = 'COMPLETED'
+      AND samples.done_by_id IS NULL
+      AND user.email = 'cheredia@eliteacademic.com'
+    `);
   }
 
   private async deleteRedunantData(
