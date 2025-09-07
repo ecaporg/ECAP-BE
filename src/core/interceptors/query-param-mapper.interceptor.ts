@@ -12,11 +12,15 @@ interface QueryParamMapping {
 }
 
 @Injectable()
-export class QueryParamMapperInterceptor implements NestInterceptor {
-  private paramMapping: QueryParamMapping = {};
+export class QueryParamMapperInterceptor<T extends QueryParamMapping>
+  implements NestInterceptor<T, any>
+{
+  private paramMapping: T = {} as T;
+  private defaultValues: T = {} as T;
 
-  constructor(paramMapping: QueryParamMapping) {
+  constructor(paramMapping: T, defaultValues?: T) {
     this.paramMapping = paramMapping;
+    this.defaultValues = defaultValues;
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -30,6 +34,12 @@ export class QueryParamMapperInterceptor implements NestInterceptor {
         delete query[sourceParam];
 
         query[targetParam] = value;
+      }
+    });
+
+    Object.entries(this.defaultValues).forEach(([param, defaultValue]) => {
+      if (!query.hasOwnProperty(param)) {
+        query[param] = defaultValue;
       }
     });
 

@@ -566,7 +566,7 @@ export class Elite20261757021698364 implements MigrationInterface {
           name: `LP6`,
           track,
           start_date: new Date(academicYear.to, 2, 23),
-          end_date: new Date(academicYear.to, 4, 1),
+          end_date: new Date(academicYear.to, 4, 2),
         },
         {
           name: `LP7`,

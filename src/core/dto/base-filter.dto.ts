@@ -32,7 +32,7 @@ export class BaseFilterDto {
   @Min(1)
   limit?: number = 15;
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiProperty({ required: false, type: [String], default: ['updatedAt'] })
   @IsOptional()
   @IsString({ each: true })
   @IsArray()

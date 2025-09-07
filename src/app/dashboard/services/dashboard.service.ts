@@ -76,7 +76,7 @@ export class DashboardService {
 
     if (currentAcademicYears.length)
       filters.track = {
-        ...filters.track,
+        ...(filters.track as any),
         academic_year_id: In(currentAcademicYears.map((year) => year.id)),
       };
 

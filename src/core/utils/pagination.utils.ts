@@ -1,7 +1,9 @@
 import { Equal, In } from 'typeorm';
 
 import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
-import { PaginationOptions } from '../services/base.service';
+import { PaginationOptions } from '../interfaces';
+
+import { Prettify, UnnestObjectFromDotNotation } from './types';
 
 type BaseFilterType = BaseFilterDto;
 
@@ -31,13 +33,6 @@ export function extractPaginationOptions<T extends BaseFilterType>(
       : [sortDirection as SortDirectionEnum];
   }
 
-  let searchFieldsArray: string[] = [];
-  if (searchFields) {
-    searchFieldsArray = Array.isArray(searchFields)
-      ? searchFields.map((item) => item as string)
-      : [searchFields as string];
-  }
-
   const filtersObject: Record<string, any> = {};
 
   for (const [key, value] of Object.entries(filters)) {
@@ -65,7 +60,7 @@ export function extractPaginationOptions<T extends BaseFilterType>(
     sortBy: sortByArray,
     sortDirection: sortDirectionArray,
     search: search as string,
-    searchFields: searchFieldsArray,
+    searchFields: searchFields,
     filters: filtersObject,
   };
 }
@@ -99,24 +94,31 @@ export function createSearchCondition(
 export function createOrderCondition(
   sortBy: string[],
   sortDirection: ('ASC' | 'DESC')[],
+  createNested = true,
 ): Record<string, any> {
-  return sortBy.reduce((conditions, field, index) => {
-    if (field.includes('.')) {
-      const parts = field.split('.');
-      let current = conditions;
-      for (let i = 0; i < parts.length - 1; i++) {
-        const part = parts[i];
-        if (!current[part]) {
-          current[part] = {};
+  if (createNested) {
+    return sortBy.reduce((conditions, field, index) => {
+      if (field.includes('.')) {
+        const parts = field.split('.');
+        let current = conditions;
+        for (let i = 0; i < parts.length - 1; i++) {
+          const part = parts[i];
+          if (!current[part]) {
+            current[part] = {};
+          }
+          current = current[part];
         }
-        current = current[part];
+        current[parts[parts.length - 1]] = sortDirection[index] || 'ASC';
+      } else {
+        conditions[field] = sortDirection[index] || 'ASC';
       }
-      current[parts[parts.length - 1]] = sortDirection[index] || 'ASC';
-    } else {
-      conditions[field] = sortDirection[index] || 'ASC';
-    }
-    return conditions;
-  }, {});
+      return conditions;
+    }, {});
+  } else {
+    return sortBy
+      .map((field, index) => field + ' ' + (sortDirection[index] || 'ASC'))
+      .join(', ') as any;
+  }
 }
 
 /** Get and delete a field from an object

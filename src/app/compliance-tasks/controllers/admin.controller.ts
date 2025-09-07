@@ -15,7 +15,10 @@ import { TeacherSchoolYearEnrollmentEntity } from '../../../domain/enrollment/en
 import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { RolesEnum } from '../../../domain/users/enums/roles.enum';
-import { filterMapping, TeachersTableFilterDto } from '../dto/filters.dto';
+import {
+  assignmentFilterMapping,
+  TeachersTableFilterDto,
+} from '../dto/filters.dto';
 import { AdminComplianceService } from '../services/admin.service';
 
 @ApiTags('Admin Compliance Tasks')
@@ -27,7 +30,13 @@ export class AdminComplianceController {
   ) {}
 
   @Get()
-  @UseInterceptors(new QueryParamMapperInterceptor(filterMapping))
+  @UseInterceptors(
+    new QueryParamMapperInterceptor(assignmentFilterMapping, {
+      sortBy:
+        'student_lp_enrollment.teacher_school_year_enrollments.teacher.name',
+      sortDirection: 'DESC',
+    } as Partial<{ [key in keyof TeachersTableFilterDto]: any }> as any),
+  )
   @ApiOperation({ summary: 'Get table with teachers' })
   @ApiPaginatedCrudResponse(TeacherSchoolYearEnrollmentEntity)
   async getTeachers(

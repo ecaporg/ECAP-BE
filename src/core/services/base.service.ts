@@ -6,42 +6,22 @@ import {
   Repository,
 } from 'typeorm';
 
-import { NotFoundException } from '../../core';
+import {
+  EntityKey,
+  NotFoundException,
+  PaginatedResult,
+  PaginationOptions,
+} from '../../core';
 import { DatedGenericEntity } from '../entity/generic-entity';
 import {
   createOrderCondition,
   createSearchCondition,
 } from '../utils/pagination.utils';
 
-export interface PaginationOptions<T = any> {
-  page?: number;
-  limit?: number;
-  sortBy?: string[];
-  sortDirection?: ('ASC' | 'DESC')[];
-  search?: string;
-  searchFields?: string[];
-  filters?: FindOptionsWhere<T>;
-}
-
-export interface PaginatedResult<T, D = any> {
-  items: T[];
-  meta: {
-    totalItems: number;
-    itemCount: number;
-    itemsPerPage: number;
-    totalPages: number;
-    currentPage: number;
-    additionalData?: D;
-  };
-}
-
-export type EntityId = string | number;
-
-export type EntityKey<T> = EntityId | Partial<T>;
-
 export type BaseServiceOptions<T, IDKey> = {
   primaryKeys?: IDKey[];
   defaultRelations?: FindOptionsRelations<T> | string[];
+  defaultSortBy?: keyof T;
 };
 
 export class BaseService<
@@ -50,16 +30,15 @@ export class BaseService<
 > {
   protected readonly primaryKeys: IDKey[];
   protected defaultRelations: FindOptionsRelations<T> | string[];
+  protected defaultSortBy: keyof T;
 
   constructor(
     protected readonly repository: Repository<T>,
     options: BaseServiceOptions<T, IDKey> = {},
   ) {
-    this.primaryKeys = Array.isArray(options.primaryKeys)
-      ? options.primaryKeys
-      : ['id' as IDKey];
-
+    this.primaryKeys = options.primaryKeys || ['id' as IDKey];
     this.defaultRelations = options.defaultRelations || [];
+    this.defaultSortBy = options.defaultSortBy || 'updatedAt';
   }
 
   protected createWhereCondition(id: EntityKey<T>): FindOptionsWhere<T> {
@@ -194,7 +173,7 @@ export class BaseService<
   ): FindManyOptions<T> {
     const page = options?.page || 1;
     const limit = options?.limit || 15;
-    const sortBy = options?.sortBy || ['createdAt'];
+    const sortBy = options?.sortBy || [this.defaultSortBy as string];
     const sortDirection = options?.sortDirection || ['DESC'];
     const search = options?.search || '';
     const searchFields = options?.searchFields || [];

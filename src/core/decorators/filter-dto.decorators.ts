@@ -5,9 +5,6 @@ import { applyDecorators } from '@nestjs/common';
 
 import { FILTER_SEPARATOR_FOR_MULTIPLE_VALUES } from '../constants';
 
-// Ключ метадати для маппінгу полів
-export const OUT_FIELD_KEY = 'out-field';
-
 export function IdDecorator(Obj: any, validationOptions?: ValidationOptions) {
   return applyDecorators(
     Transform(({ value }) =>

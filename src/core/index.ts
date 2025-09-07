@@ -49,3 +49,6 @@ export * from './dto/base-filter.dto';
 
 // Constants
 export * from './constants/index';
+
+// Interfaces
+export * from './interfaces/index';
