@@ -93,7 +93,11 @@ export class AdminComplianceService {
     }
 
     if (semesters && semesters.length > 0) {
-      subQuery.leftJoin('track', 'track');
+      subQuery.leftJoin(
+        'student_lp_enrollment.learning_period',
+        'learning_period',
+      );
+      subQuery.leftJoin('learning_period.track', 'track');
       subQuery.leftJoin('track.semesters', 'semesters');
       subQuery.andWhere('semesters.id IN (:...ids)', {
         ids: semesters,

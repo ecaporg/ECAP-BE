@@ -15,10 +15,10 @@ interface QueryParamMapping {
 export class QueryParamMapperInterceptor<T extends QueryParamMapping>
   implements NestInterceptor<T, any>
 {
-  private paramMapping: T = {} as T;
-  private defaultValues: T = {} as T;
+  private paramMapping: T;
+  private defaultValues: T;
 
-  constructor(paramMapping: T, defaultValues?: T) {
+  constructor(paramMapping: T, defaultValues: T = {} as T) {
     this.paramMapping = paramMapping;
     this.defaultValues = defaultValues;
   }
