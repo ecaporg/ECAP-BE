@@ -1,10 +1,10 @@
+import { SortDirectionEnum } from '../constants';
+
 export interface PaginationOptions<T = any> {
   page?: number;
   limit?: number;
   sortBy?: string[];
-  sortDirection?: ('ASC' | 'DESC')[];
-  search?: string;
-  searchFields?: string[];
+  sortDirection?: SortDirectionEnum[];
   filters?: T;
 }
 

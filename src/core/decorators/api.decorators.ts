@@ -12,6 +12,7 @@ import {
 } from '@nestjs/swagger';
 
 import { ErrorResponseDto } from '../dto/error-response.dto';
+import { SortDirectionEnum } from '../constants';
 
 /**
  * Interface for API responses options
@@ -208,7 +209,7 @@ export const ApiPaginationQueries = () => {
     ApiQuery({
       name: 'sortDirection',
       required: false,
-      enum: ['ASC', 'DESC'],
+      enum: SortDirectionEnum,
       isArray: true,
       description: 'Sort direction for each sortBy field',
     }),

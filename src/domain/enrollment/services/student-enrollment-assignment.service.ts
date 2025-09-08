@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '../../../core';
+import { BaseService, SortDirectionEnum } from '../../../core';
 import {} from '../entities/student-enrollment.entity';
 import { StudentLPEnrollmentAssignmentEntity } from '../entities/student-enrollment-assignment.entity';
 
@@ -19,7 +19,7 @@ export class StudentLPEnrollmentAssignmentService extends BaseService<
   ) {
     super(studentLPEnrollmentAssignmentRepository, {
       primaryKeys: ['assignment_id', 'student_lp_enrollment_id'],
-      defaultSortBy: 'assignment_id',
+      defaultSortByOptions: { assignment_id: SortDirectionEnum.ASC },
     });
   }
 

@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { BaseService } from '../../../core';
+import { BaseService, SortDirectionEnum } from '../../../core';
 import {
   AdminEntity,
   DirectorEntity,
@@ -18,6 +18,9 @@ export class TeacherService extends BaseService<TeacherEntity> {
   ) {
     super(teacherRepository, {
       defaultRelations: ['user'],
+      defaultSortByOptions: {
+        'user.name': SortDirectionEnum.ASC,
+      },
     });
   }
 }

@@ -10,12 +10,11 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { FILTER_SEPARATOR_FOR_MULTIPLE_VALUES } from '../constants';
-
-export enum SortDirectionEnum {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
+import {
+  FILTER_SEPARATOR_FOR_MULTIPLE_VALUES,
+  SortDirectionEnum,
+} from '../constants';
+import { IdDecorator } from '../decorators/filter-dto.decorators';
 
 export class BaseFilterDto {
   @ApiProperty({ required: false, default: 1, minimum: 1 })
@@ -45,23 +44,20 @@ export class BaseFilterDto {
 
   @ApiProperty({
     required: false,
-    enum: ['ASC', 'DESC'],
+    enum: SortDirectionEnum,
     default: ['ASC'],
     isArray: true,
   })
-  @IsOptional()
-  @IsString({ each: true })
-  @IsArray()
-  @IsEnum(SortDirectionEnum, { each: true })
-  @Transform(({ value }) =>
-    typeof value === 'string'
-      ? value.split(FILTER_SEPARATOR_FOR_MULTIPLE_VALUES)
-      : value,
-  )
+  @IdDecorator(SortDirectionEnum)
+  @IsEnum({ each: true })
   sortDirection?: SortDirectionEnum[];
 
   @ApiProperty({ required: false, description: 'Search query' })
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IdDecorator(String)
+  @IsString({ each: true })
+  searchFields?: string[];
 }

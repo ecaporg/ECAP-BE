@@ -1,9 +1,8 @@
-import { Equal, In } from 'typeorm';
+import { Equal, ILike, In } from 'typeorm';
 
-import { BaseFilterDto, SortDirectionEnum } from '../dto/base-filter.dto';
+import { SortDirectionEnum } from '../constants';
+import { BaseFilterDto } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../interfaces';
-
-import { Prettify, UnnestObjectFromDotNotation } from './types';
 
 type BaseFilterType = BaseFilterDto;
 
@@ -15,9 +14,16 @@ type BaseFilterType = BaseFilterDto;
  */
 export function extractPaginationOptions<T extends BaseFilterType>(
   options: T,
-  searchFields?: string[],
 ): PaginationOptions<any> {
-  const { page, limit, sortBy, sortDirection, search, ...filters } = options;
+  const {
+    page,
+    limit,
+    sortBy,
+    sortDirection,
+    search,
+    searchFields,
+    ...filters
+  } = options;
 
   let sortByArray: string[] = [];
   if (sortBy) {
@@ -54,13 +60,30 @@ export function extractPaginationOptions<T extends BaseFilterType>(
     }
   }
 
+  for (const key of searchFields || []) {
+    if (key.includes('.')) {
+      const parts = key.split('.');
+
+      let current = filtersObject;
+      for (let i = 0; i < parts.length - 1; i++) {
+        const part = parts[i];
+        if (!current[part]) {
+          current[part] = {};
+        }
+        current = current[part];
+      }
+
+      filtersObject[key] = ILike(search);
+    } else {
+      filtersObject[key] = ILike(search);
+    }
+  }
+
   return {
     page: page,
     limit: limit,
     sortBy: sortByArray,
     sortDirection: sortDirectionArray,
-    search: search as string,
-    searchFields: searchFields,
     filters: filtersObject,
   };
 }
@@ -93,7 +116,7 @@ export function createSearchCondition(
  */
 export function createOrderCondition(
   sortBy: string[],
-  sortDirection: ('ASC' | 'DESC')[],
+  sortDirection: SortDirectionEnum[],
   createNested = true,
 ): Record<string, any> {
   if (createNested) {
@@ -108,15 +131,15 @@ export function createOrderCondition(
           }
           current = current[part];
         }
-        current[parts[parts.length - 1]] = sortDirection[index] || 'ASC';
+        current[parts[parts.length - 1]] = sortDirection?.[index] || 'ASC';
       } else {
-        conditions[field] = sortDirection[index] || 'ASC';
+        conditions[field] = sortDirection?.[index] || 'ASC';
       }
       return conditions;
     }, {});
   } else {
     return sortBy
-      .map((field, index) => field + ' ' + (sortDirection[index] || 'ASC'))
+      .map((field, index) => field + ' ' + (sortDirection?.[index] || 'ASC'))
       .join(', ') as any;
   }
 }

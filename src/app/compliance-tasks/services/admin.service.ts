@@ -76,9 +76,7 @@ export class AdminComplianceService {
       .addGroupBy('user.name')
       .addGroupBy('academy.id')
       .addGroupBy('academy.name')
-      .orderBy(
-        createOrderCondition(filters.sortBy, filters.sortDirection, false),
-      );
+      .orderBy(createOrderCondition(filters.sortBy, filters.sortDirection));
 
     if (user.role === RolesEnum.DIRECTOR) {
       subQuery.leftJoin('academy.directors', 'directors');

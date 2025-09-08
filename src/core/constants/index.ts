@@ -1,5 +1,10 @@
 export const FILTER_SEPARATOR_FOR_MULTIPLE_VALUES = ',';
 
+export enum SortDirectionEnum {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export const DEFAULT_FILTERS_KEYS = {
   ACADEMY_ID: 'academy_id',
   ACADEMIC_YEAR: 'academic_year',

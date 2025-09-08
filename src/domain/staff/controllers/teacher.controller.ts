@@ -5,10 +5,12 @@ import {
   Controller,
   Delete,
   Get,
+  Injectable,
   Param,
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,13 +22,18 @@ import {
   ApiPaginationQueries,
   BaseService,
   EntityId,
+  FILTER_SEPARATOR_FOR_MULTIPLE_VALUES,
   GenericEntity,
   PaginatedResult,
   PaginationOptions,
+  QueryParamMapperInterceptor,
   Roles,
 } from '../../../core';
+import { AttachASearchFieldsInterceptor } from '../../../core/interceptors/attach-search_fields.interceptor';
 import { RolesEnum } from '../../users/enums/roles.enum';
+import { TeachersFilterDto } from '../dto/filters.dto';
 import { TeacherEntity } from '../entities/staff.entity';
+import { TeacherFilterInterceptor } from '../interceptors/teacher-filter.interceptor';
 import { TeacherService } from '../services/staff.service';
 
 @ApiTags('Teacher')
@@ -40,15 +47,22 @@ import { TeacherService } from '../services/staff.service';
 export class TeacherController {
   constructor(private readonly service: TeacherService) {}
 
-  // @Get()
-  // @ApiOperation({ summary: 'Get all entities with pagination' })
-  // @ApiPaginationQueries()
-  // @ApiPaginatedCrudResponse(TeacherEntity)
-  // async findAll(
-  //   @Query() options?: PaginationOptions,
-  // ): Promise<PaginatedResult<GenericEntity>> {
-  //   return this.service.findAll(options);
-  // }
+  @Get()
+  @UseInterceptors(
+    new AttachASearchFieldsInterceptor<TeacherEntity>([
+      'user.name',
+      'user.email',
+    ]),
+    TeacherFilterInterceptor,
+  )
+  @ApiOperation({ summary: 'Get all entities with pagination' })
+  @ApiPaginationQueries()
+  @ApiPaginatedCrudResponse(TeacherEntity)
+  async findAll(
+    @Query() options?: TeachersFilterDto,
+  ): Promise<PaginatedResult<GenericEntity>> {
+    return this.service.findAll(options, { user: true });
+  }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get entity by ID' })

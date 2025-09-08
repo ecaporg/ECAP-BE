@@ -11,6 +11,7 @@ import {
   NotFoundException,
   PaginatedResult,
   PaginationOptions,
+  SortDirectionEnum,
 } from '../../core';
 import { DatedGenericEntity } from '../entity/generic-entity';
 import {
@@ -21,7 +22,9 @@ import {
 export type BaseServiceOptions<T, IDKey> = {
   primaryKeys?: IDKey[];
   defaultRelations?: FindOptionsRelations<T> | string[];
-  defaultSortBy?: keyof T;
+  defaultSortByOptions?: {
+    [key: string]: SortDirectionEnum;
+  };
 };
 
 export class BaseService<
@@ -30,7 +33,9 @@ export class BaseService<
 > {
   protected readonly primaryKeys: IDKey[];
   protected defaultRelations: FindOptionsRelations<T> | string[];
-  protected defaultSortBy: keyof T;
+  protected defaultSortByOptions: {
+    [key: string]: SortDirectionEnum;
+  };
 
   constructor(
     protected readonly repository: Repository<T>,
@@ -38,7 +43,9 @@ export class BaseService<
   ) {
     this.primaryKeys = options.primaryKeys || ['id' as IDKey];
     this.defaultRelations = options.defaultRelations || [];
-    this.defaultSortBy = options.defaultSortBy || 'updatedAt';
+    this.defaultSortByOptions = options.defaultSortByOptions || {
+      updatedAt: SortDirectionEnum.ASC,
+    };
   }
 
   protected createWhereCondition(id: EntityKey<T>): FindOptionsWhere<T> {
@@ -173,10 +180,9 @@ export class BaseService<
   ): FindManyOptions<T> {
     const page = options?.page || 1;
     const limit = options?.limit || 15;
-    const sortBy = options?.sortBy || [this.defaultSortBy as string];
-    const sortDirection = options?.sortDirection || ['DESC'];
-    const search = options?.search || '';
-    const searchFields = options?.searchFields || [];
+    const sortBy = options?.sortBy || Object.keys(this.defaultSortByOptions);
+    const sortDirection =
+      options?.sortDirection || Object.values(this.defaultSortByOptions);
     const filters = options?.filters || {};
 
     const query: FindManyOptions<T> = {
@@ -186,18 +192,6 @@ export class BaseService<
       relations: relations || this.defaultRelations,
       where: filters,
     };
-
-    if (search && searchFields.length > 0) {
-      const searchConditions: FindOptionsWhere<T> = createSearchCondition(
-        search,
-        searchFields,
-      );
-
-      query.where = {
-        ...query.where,
-        ...searchConditions,
-      };
-    }
 
     return query;
   }

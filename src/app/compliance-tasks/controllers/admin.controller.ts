@@ -32,9 +32,7 @@ export class AdminComplianceController {
   @Get()
   @UseInterceptors(
     new QueryParamMapperInterceptor(assignmentFilterMapping, {
-      sortBy:
-        'student_lp_enrollment.teacher_school_year_enrollments.teacher.name',
-      sortDirection: 'DESC',
+      sortBy: 'teacher_name',
     } as Partial<{ [key in keyof TeachersTableFilterDto]: any }> as any),
   )
   @ApiOperation({ summary: 'Get table with teachers' })
