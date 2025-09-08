@@ -8,8 +8,8 @@ import { TrackLearningPeriodEntity } from '../entities/track-learning-period.ent
 export class TrackLearningPeriodFilterInterceptor extends AttachUserIdInterceptor<TrackLearningPeriodEntity> {
   constructor() {
     super([
-      { role: RolesEnum.ADMIN, path: 'track_id' },
-      { role: RolesEnum.SUPER_ADMIN, path: 'track.tenant_id' },
+      { role: RolesEnum.ADMIN, path: 'track.tenant.admins.id' },
+      { role: RolesEnum.SUPER_ADMIN, path: 'track.tenant.admins.id' },
       { role: RolesEnum.DIRECTOR, path: 'track.tenant.directors.id' },
       {
         role: RolesEnum.TEACHER,

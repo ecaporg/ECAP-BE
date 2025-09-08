@@ -8,8 +8,8 @@ import { SemesterEntity } from '../entities/semester.entity';
 export class TrackSemesterFilterInterceptor extends AttachUserIdInterceptor<SemesterEntity> {
   constructor() {
     super([
-      { role: RolesEnum.ADMIN, path: 'track_id' },
-      { role: RolesEnum.SUPER_ADMIN, path: 'track.tenant_id' },
+      { role: RolesEnum.ADMIN, path: 'track.tenant.admins.id' },
+      { role: RolesEnum.SUPER_ADMIN, path: 'track.tenant.admins.id' },
       { role: RolesEnum.DIRECTOR, path: 'track.tenant.directors.id' },
       {
         role: RolesEnum.TEACHER,

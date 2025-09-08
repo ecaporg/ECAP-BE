@@ -887,7 +887,7 @@ export class Elite20261757021698364 implements MigrationInterface {
       UPDATE samples
       SET done_by_id = admin.id
       FROM admins AS admin
-      JOIN users AS user ON admin.user_id = user.id
+      JOIN users AS user ON admin.id = user.id
       WHERE samples.status = 'COMPLETED'
       AND samples.done_by_id IS NULL
       AND user.email = 'cheredia@eliteacademic.com'

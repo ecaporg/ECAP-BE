@@ -11,52 +11,42 @@ import { TrackEntity } from '../entities/track.entity';
 import { TrackCalendarEntity } from '../entities/track-calendar.entity';
 
 const FILTER_TRACK_KEYS = {
-  TENANT_ID: 'tenant_id',
+  ADMIN_ID: 'tenant.admins.id',
   DIRECTOR_ID: 'tenant.directors.id',
   TEACHER_ID: 'tenant.schools.teacher_school_year_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<TrackEntity>;
 
 export class TrackFilterDto extends BaseFilterDto {
-  @ApiProperty({
-    required: true,
-    description: 'Filter by tenant ID',
-    type: [Number],
-  })
   @IdDecorator(Number)
-  @IsNumber()
-  [FILTER_TRACK_KEYS.TENANT_ID]: number[];
+  @IsNumber({}, { each: true })
+  [FILTER_TRACK_KEYS.ADMIN_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber()
+  @IsNumber({}, { each: true })
   [FILTER_TRACK_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber()
+  @IsNumber({}, { each: true })
   [FILTER_TRACK_KEYS.TEACHER_ID]: number[];
 }
 
 const FILTER_TRACK_CALENDAR_KEYS = {
-  TENANT_ID: 'track.tenant_id',
+  ADMIN_ID: 'track.tenant.admins.id',
   DIRECTOR_ID: 'track.tenant.directors.id',
   TEACHER_ID: 'track.tenant.schools.teacher_school_year_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<TrackCalendarEntity>;
 
 export class TrackCalendarFilterDto extends BaseFilterDto {
-  @ApiProperty({
-    required: true,
-    description: 'Filter by track ID',
-    type: [Number],
-  })
   @IdDecorator(Number)
-  @IsNumber()
-  [FILTER_TRACK_CALENDAR_KEYS.TENANT_ID]: number[];
+  @IsNumber({}, { each: true })
+  [FILTER_TRACK_CALENDAR_KEYS.ADMIN_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber()
+  @IsNumber({}, { each: true })
   [FILTER_TRACK_CALENDAR_KEYS.DIRECTOR_ID]: number[];
 
   @IdDecorator(Number)
-  @IsNumber()
+  @IsNumber({}, { each: true })
   [FILTER_TRACK_CALENDAR_KEYS.TEACHER_ID]: number[];
 }
 

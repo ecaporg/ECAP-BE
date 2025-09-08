@@ -8,8 +8,8 @@ import { SchoolEntity } from '../entities/school.entity';
 export class SchoolFilterInterceptor extends AttachUserIdInterceptor<SchoolEntity> {
   constructor() {
     super([
-      { role: RolesEnum.ADMIN, path: 'tenant_id' },
-      { role: RolesEnum.SUPER_ADMIN, path: 'tenant_id' },
+      { role: RolesEnum.ADMIN, path: 'tenant.admins.id' },
+      { role: RolesEnum.SUPER_ADMIN, path: 'tenant.admins.id' },
       { role: RolesEnum.DIRECTOR, path: 'tenant.directors.id' },
       {
         role: RolesEnum.TEACHER,
