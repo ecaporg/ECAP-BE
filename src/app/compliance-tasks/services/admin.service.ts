@@ -78,7 +78,6 @@ export class AdminComplianceService {
     this.buildTeacherFilters(filters, user, subQuery);
     const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
 
-    console.log('subQuerySql', subQuerySql);
 
     const completedQuery =
       completed && completed.length > 0
