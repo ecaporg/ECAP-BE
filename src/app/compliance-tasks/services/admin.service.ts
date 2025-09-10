@@ -1,11 +1,14 @@
+import { SelectQueryBuilder } from 'typeorm';
+
 import { Injectable } from '@nestjs/common';
 
 import { AuthUser } from '../../../auth/types/auth-user';
 import {
+  addInOrEqualsCondition,
   createOrderCondition,
-  extractPaginationOptions,
   getAndDeleteField,
 } from '../../../core';
+import { StudentLPEnrollmentAssignmentEntity } from '../../../domain/enrollment/entities/student-enrollment-assignment.entity';
 import { StudentLPEnrollmentAssignmentService } from '../../../domain/enrollment/services/student-enrollment-assignment.service';
 import { TeacherService } from '../../../domain/staff/services/staff.service';
 import {
@@ -26,21 +29,15 @@ export class AdminComplianceService {
   ) {}
 
   async getTeachers(filters: TeachersTableFilterDto, user: AuthUser) {
-    const semesters = getAndDeleteField(
-      filters,
-      'student_lp_enrollment.learning_period.track.semesters.id',
-    );
     const completed = getAndDeleteField(
       filters,
       'student_lp_enrollment.completed',
     );
-    const subject = getAndDeleteField(filters, 'assignment.course_id');
 
-    const paginationOptions = extractPaginationOptions(filters);
-    const query =
-      this.studentLPEnrollmentAssignmentService.getDefaultQuery(
-        paginationOptions,
-      );
+    const query = this.studentLPEnrollmentAssignmentService.getDefaultQuery({
+      page: filters.page,
+      limit: filters.limit,
+    });
 
     const subQuery = this.studentLPEnrollmentAssignmentService
       .getRepository()
@@ -70,7 +67,7 @@ export class AdminComplianceService {
       .leftJoin('assignments.sample', 'sample')
       .leftJoin('student_lp_enrollment.student', 'student')
       .leftJoin('student.academy', 'academy')
-      .where(query.where)
+      .leftJoin('student_lp_enrollment.learning_period', 'learning_period')
       .groupBy('t_s_y_e.id')
       .addGroupBy('teacher.id')
       .addGroupBy('user.name')
@@ -78,40 +75,10 @@ export class AdminComplianceService {
       .addGroupBy('academy.name')
       .orderBy(createOrderCondition(filters.sortBy, filters.sortDirection));
 
-    if (user.role === RolesEnum.DIRECTOR) {
-      subQuery.leftJoin('academy.directors', 'directors');
-      subQuery.andWhere('directors.id = :id', {
-        id: user.id,
-      });
-    } else if (user.role === RolesEnum.ADMIN) {
-      subQuery.leftJoin('school.tenant', 'tenant');
-      subQuery.leftJoin('tenant.admins', 'admins');
-      subQuery.leftJoin('admins.user', 'admin_user');
-      subQuery.andWhere('admin_user.id = :id', {
-        id: user.id,
-      });
-    }
-
-    if (semesters && semesters.length > 0) {
-      subQuery.leftJoin(
-        'student_lp_enrollment.learning_period',
-        'learning_period',
-      );
-      subQuery.leftJoin('learning_period.track', 'track');
-      subQuery.leftJoin('track.semesters', 'semesters');
-      subQuery.andWhere('semesters.id IN (:...ids)', {
-        ids: semesters,
-      });
-    }
-
-    if (subject && subject.length > 0) {
-      subQuery.leftJoin('assignments.assignment', 'assignment');
-      subQuery.andWhere('assignment.course_id IN (:...ids)', {
-        ids: subject,
-      });
-    }
-
+    this.buildTeacherFilters(filters, user, subQuery);
     const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
+
+    console.log('subQuerySql', subQuerySql);
 
     const completedQuery =
       completed && completed.length > 0
@@ -187,5 +154,105 @@ export class AdminComplianceService {
       take: 10,
     });
     return teachers;
+  }
+
+  buildTeacherFilters(
+    filters: TeachersTableFilterDto,
+    user: AuthUser,
+    query: SelectQueryBuilder<StudentLPEnrollmentAssignmentEntity>,
+  ) {
+    const academicYear = getAndDeleteField(
+      filters,
+      'student_lp_enrollment.teacher_school_year_enrollments.academic_year_id',
+    );
+    const learningPeriod = getAndDeleteField(
+      filters,
+      'student_lp_enrollment.learning_period_id',
+    );
+
+    const academy = getAndDeleteField(
+      filters,
+      'student_lp_enrollment.student.academy_id',
+    );
+
+    const school = getAndDeleteField(
+      filters,
+      'student_lp_enrollment.teacher_school_year_enrollments.school_id',
+    );
+    const track = getAndDeleteField(
+      filters,
+      'student_lp_enrollment.learning_period.track_id',
+    );
+    const semesters = getAndDeleteField(
+      filters,
+      'student_lp_enrollment.learning_period.track.semesters.id',
+    );
+    const subject = getAndDeleteField(filters, 'assignment.course_id');
+
+    const gradeSpan = getAndDeleteField(
+      filters,
+      'student_lp_enrollment.student_grade',
+    );
+    const status = getAndDeleteField(filters, 'sample.status');
+
+    if (user.role === RolesEnum.DIRECTOR) {
+      query.leftJoin('academy.directors', 'directors');
+      query.andWhere('directors.id = :id', {
+        id: user.id,
+      });
+    } else if (user.role === RolesEnum.ADMIN) {
+      query.leftJoin('school.tenant', 'tenant');
+      query.leftJoin('tenant.admins', 'admins');
+      query.leftJoin('admins.user', 'admin_user');
+      query.andWhere('admin_user.id = :id', {
+        id: user.id,
+      });
+    }
+
+    if (academicYear) {
+      addInOrEqualsCondition(query, 't_s_y_e.academic_year_id', academicYear);
+    }
+
+    if (learningPeriod) {
+      addInOrEqualsCondition(query, 'learning_period.id', learningPeriod);
+    }
+
+    if (academy) {
+      addInOrEqualsCondition(query, 'academy.id', academy);
+    }
+
+    if (school) {
+      addInOrEqualsCondition(query, 'school.id', school);
+    }
+
+    if (track) {
+      query.leftJoin('learning_period.track', 'track');
+      addInOrEqualsCondition(query, 'track.id', track);
+    }
+
+    if (semesters) {
+      if (!track) {
+        query.leftJoin('learning_period.track', 'track');
+      }
+      query.leftJoin('track.semesters', 'semesters');
+      addInOrEqualsCondition(query, 'semesters.id', semesters);
+    }
+
+    if (subject) {
+      query.leftJoin('assignments.assignment', 'assignment');
+      addInOrEqualsCondition(query, 'assignment.course_id', subject);
+    }
+
+    if (gradeSpan) {
+      addInOrEqualsCondition(
+        query,
+        'student_lp_enrollment.student_grade',
+        gradeSpan,
+      );
+    }
+
+    if (status) {
+      addInOrEqualsCondition(query, 'sample.status', status);
+    }
   }
 }
