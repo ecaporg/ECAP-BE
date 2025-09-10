@@ -99,7 +99,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.STUDENT_GRADE,
   })
-  @IdDecorator()
+  @IdDecorator((value: string) => `Grade ${value}`)
   @IsString({ each: true })
   [FILTER_KEYS.STUDENT_GRADE]?: string[];
 
@@ -223,7 +223,7 @@ export class TeachersTableFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.STUDENT_GRADE,
   })
-  @IdDecorator()
+  @IdDecorator((value: string) => `Grade ${value}`)
   @IsString({ each: true })
   [ASSIGNMENT_FILTER_KEYS.STUDENT_GRADE]?: string[];
 
