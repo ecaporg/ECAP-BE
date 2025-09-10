@@ -99,7 +99,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.STUDENT_GRADE,
   })
-  @IdDecorator(String)
+  @IdDecorator()
   @IsString({ each: true })
   [FILTER_KEYS.STUDENT_GRADE]?: string[];
 
@@ -141,7 +141,7 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.STATUS,
   })
-  @IdDecorator(String)
+  @IdDecorator()
   @IsString({ each: true })
   [FILTER_KEYS.STATUS]?: string[];
 
@@ -223,7 +223,7 @@ export class TeachersTableFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.STUDENT_GRADE,
   })
-  @IdDecorator(String)
+  @IdDecorator()
   @IsString({ each: true })
   [ASSIGNMENT_FILTER_KEYS.STUDENT_GRADE]?: string[];
 
@@ -283,7 +283,7 @@ export class TeachersTableFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.STATUS,
   })
-  @IdDecorator(String)
+  @IdDecorator()
   @IsString({ each: true })
   [ASSIGNMENT_FILTER_KEYS.STATUS]?: string[];
 

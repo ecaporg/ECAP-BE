@@ -48,8 +48,8 @@ export class BaseFilterDto {
     default: ['ASC'],
     isArray: true,
   })
-  @IdDecorator(SortDirectionEnum)
-  @IsEnum({ each: true })
+  @IdDecorator()
+  @IsEnum(SortDirectionEnum, { each: true })
   sortDirection?: SortDirectionEnum[];
 
   @ApiProperty({ required: false, description: 'Search query' })
@@ -57,7 +57,7 @@ export class BaseFilterDto {
   @IsString()
   search?: string;
 
-  @IdDecorator(String)
+  @IdDecorator()
   @IsString({ each: true })
   searchFields?: string[];
 }

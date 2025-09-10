@@ -5,7 +5,10 @@ import { applyDecorators } from '@nestjs/common';
 
 import { FILTER_SEPARATOR_FOR_MULTIPLE_VALUES } from '../constants';
 
-export function IdDecorator(Obj: any, validationOptions?: ValidationOptions) {
+export function IdDecorator(
+  Obj: any = String,
+  validationOptions?: ValidationOptions,
+) {
   return applyDecorators(
     Transform(({ value }) =>
       typeof value === 'string'

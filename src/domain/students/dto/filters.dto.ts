@@ -73,7 +73,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.STATUS,
   })
-  @IdDecorator(String)
+  @IdDecorator()
   @IsString({ each: true })
   [FILTER_KEYS.STATUS]?: string[];
 
@@ -83,7 +83,7 @@ export class FlaggedSamplesFilterDto extends BaseFilterDto {
     type: [String],
     name: DEFAULT_FILTERS_KEYS.FLAG_CATEGORY,
   })
-  @IdDecorator(String)
+  @IdDecorator()
   @IsString({ each: true })
   [FILTER_KEYS.FLAG_CATEGORY]?: string[] = [
     SampleFlagCategory.REASON_REJECTED,
