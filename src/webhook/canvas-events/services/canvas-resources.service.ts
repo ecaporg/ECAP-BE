@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
@@ -34,89 +34,103 @@ export class CanvasResourcesService {
     key: KeyEntity,
     courseId: string | number,
     assignmentId: string | number,
-  ): Observable<CanvasAssignmentDto> {
+  ): Promise<CanvasAssignmentDto> {
     const url = `${key.url}/api/v1/courses/${courseId}/assignments/${assignmentId}`;
 
-    return this.httpService
-      .get<CanvasAssignmentDto>(url, {
-        headers: this.getHeaders(key),
-      })
-      .pipe(
-        map((response: AxiosResponse<CanvasAssignmentDto>) => response.data),
-      );
+    return firstValueFrom(
+      this.httpService
+        .get<CanvasAssignmentDto>(url, {
+          headers: this.getHeaders(key),
+        })
+        .pipe(
+          map((response: AxiosResponse<CanvasAssignmentDto>) => response.data),
+        ),
+    );
   }
 
   /**
    * Fetch course details
    * @param courseId - Course ID
    */
-  fetchCourse(
+  async fetchCourse(
     key: KeyEntity,
     courseId: string | number,
-  ): Observable<CanvasCourseDto> {
+  ): Promise<CanvasCourseDto> {
     const url = `${key.url}/api/v1/courses/${courseId}`;
 
-    return this.httpService
-      .get<CanvasCourseDto>(url, {
-        headers: this.getHeaders(key),
-      })
-      .pipe(map((response: AxiosResponse<CanvasCourseDto>) => response.data));
+    return firstValueFrom(
+      this.httpService
+        .get<CanvasCourseDto>(url, {
+          headers: this.getHeaders(key),
+        })
+        .pipe(map((response: AxiosResponse<CanvasCourseDto>) => response.data)),
+    );
   }
 
   /**
-   * Fetch enrollment details
-   * @param accountId - Account ID
-   * @param enrollmentId - Enrollment ID
+   * Fetch assignments in a course
+   * @param courseId - Course ID
    */
-  fetchEnrollment(
+  async fetchAssignmentsInCourse(
     key: KeyEntity,
-    accountId: string | number,
-    enrollmentId: string | number,
-  ): Observable<CanvasEnrollmentDto> {
-    const url = `${key.url}/api/v1/accounts/${accountId}/enrollments/${enrollmentId}`;
+    courseId: string | number,
+  ): Promise<CanvasAssignmentDto[]> {
+    const url = `${key.url}/api/v1/courses/${courseId}/assignment_groups?exclude_assignment_submission_types%5B%5D=wiki_page&exclude_response_fields%5B%5D=description&exclude_response_fields%5B%5D=rubric&include%5B%5D=assignments&include%5B%5D=discussion_topic&include%5B%5D=all_dates&include%5B%5D=module_ids&override_assignment_dates=false&per_page=50`;
 
-    return this.httpService
-      .get<CanvasEnrollmentDto>(url, {
-        headers: this.getHeaders(key),
-      })
-      .pipe(
-        map((response: AxiosResponse<CanvasEnrollmentDto>) => response.data),
-      );
+    return firstValueFrom(
+      this.httpService
+        .get<{ assignments: CanvasAssignmentDto[] }[]>(url, {
+          headers: this.getHeaders(key),
+        })
+        .pipe(
+          map(
+            (
+              response: AxiosResponse<{ assignments: CanvasAssignmentDto[] }[]>,
+            ) => response.data,
+          ),
+          map((data: { assignments: CanvasAssignmentDto[] }[]) =>
+            data.flatMap((item) => item.assignments),
+          ),
+        ),
+    );
   }
 
   fetchTeachersInCourse(
     key: KeyEntity,
     courseId: string | number,
-  ): Observable<CanvasUserDto[]> {
+  ): Promise<CanvasUserDto[]> {
     const url = `${key.url}/api/v1/courses/${courseId}/users`;
     const params = {
       enrollment_type: 'teacher',
     };
 
-    return this.httpService
-      .get<CanvasUserDto[]>(url, {
-        headers: this.getHeaders(key),
-        params,
-      })
-      .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data));
+    return firstValueFrom(
+      this.httpService
+        .get<CanvasUserDto[]>(url, {
+          headers: this.getHeaders(key),
+          params,
+        })
+        .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data)),
+    );
   }
 
-  fetchUsersInAccount(
+  fetchStudentsInCourse(
     key: KeyEntity,
-    accountId: string | number,
-    userId: string,
-  ): Observable<CanvasUserDto[]> {
-    const url = `${key.url}/api/v1/accounts/${accountId}/users`;
+    courseId: string | number,
+  ): Promise<CanvasUserDto[]> {
+    const url = `${key.url}/api/v1/courses/${courseId}/users`;
     const params = {
-      search_term: userId,
+      enrollment_type: 'student',
     };
 
-    return this.httpService
-      .get<CanvasUserDto[]>(url, {
-        headers: this.getHeaders(key),
-        params,
-      })
-      .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data));
+    return firstValueFrom(
+      this.httpService
+        .get<CanvasUserDto[]>(url, {
+          headers: this.getHeaders(key),
+          params,
+        })
+        .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data)),
+    );
   }
 
   /**

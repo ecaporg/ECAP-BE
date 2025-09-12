@@ -78,7 +78,6 @@ export class AdminComplianceService {
     this.buildTeacherFilters(filters, user, subQuery);
     const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
 
-
     const completedQuery =
       completed && completed.length > 0
         ? `WHERE is_complated IN (${completed.join(',')})`

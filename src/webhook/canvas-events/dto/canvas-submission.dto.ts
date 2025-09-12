@@ -1,14 +1,10 @@
-import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsNumber,
   IsOptional,
   IsString,
-  ValidateNested,
 } from 'class-validator';
-
-import { SubmissionCommentDto } from './submission-comment.dto';
 
 export class CanvasSubmissionDto {
   @IsNumber()
@@ -49,9 +45,7 @@ export class CanvasSubmissionDto {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => SubmissionCommentDto)
-  submission_comments?: SubmissionCommentDto[];
+  submission_comments?: any[];
 
   @IsOptional()
   @IsString()
