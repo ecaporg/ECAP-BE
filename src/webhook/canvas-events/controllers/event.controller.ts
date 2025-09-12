@@ -1,29 +1,39 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { CanvasCourseEventDto } from '../dto';
+import {
+  CanvasAssignmentEventDto,
+  CanvasCourseEventDto,
+  CanvasSubmissionEventDto,
+} from '../dto';
 import { CanvasEventService } from '../services/canvas-event.service';
 
 @ApiTags('Canvas Event Processor')
 @Controller('canvas-events/:domain')
 export class CanvasEventController {
-  constructor(private readonly canvasEventService: CanvasEventService) {}
+  constructor(private readonly service: CanvasEventService) {}
 
   @Post('course')
   courseEvent(
     @Body() event: CanvasCourseEventDto,
     @Param('domain') domain: string,
   ) {
-    return this.canvasEventService.processCourseEvent(event, domain);
+    return this.service.processCourseEvent(event, domain);
   }
 
   @Post('assignment')
-  assignmentEvent(@Body() event: any, @Param('domain') domain: string) {
-    return this.canvasEventService.processAssignmentEvent(event, domain);
+  assignmentEvent(
+    @Body() event: CanvasAssignmentEventDto,
+    @Param('domain') domain: string,
+  ) {
+    return this.service.processAssignmentEvent(event, domain);
   }
 
   @Post('submission')
-  submissionEvent(@Body() event: any, @Param('domain') domain: string) {
-    return this.canvasEventService.processSubmissionEvent(event, domain);
+  submissionEvent(
+    @Body() event: CanvasSubmissionEventDto,
+    @Param('domain') domain: string,
+  ) {
+    return this.service.processSubmissionEvent(event, domain);
   }
 }

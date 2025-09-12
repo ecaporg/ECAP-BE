@@ -1,11 +1,4 @@
-import { firstValueFrom } from 'rxjs';
-import {
-  DeepPartial,
-  ILike,
-  In,
-  LessThanOrEqual,
-  MoreThanOrEqual,
-} from 'typeorm';
+import { DeepPartial, ILike, In } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
@@ -13,8 +6,8 @@ import { NotFoundException } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
 import { TeacherSchoolYearEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
 import { StudentLPEnrollmentService } from '../../../domain/enrollment/services/student-enrollment.service';
+import { StudentLPEnrollmentAssignmentService } from '../../../domain/enrollment/services/student-enrollment-assignment.service';
 import { TeacherSchoolYearEnrollmentService } from '../../../domain/enrollment/services/teacher-enrollment.service';
-import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
 import { TeacherService } from '../../../domain/staff/services/staff.service';
 import {
   SampleEntity,
@@ -23,7 +16,9 @@ import {
 import { StudentEntity } from '../../../domain/students/entities/student.entity';
 import { SampleService } from '../../../domain/students/services/sample.service';
 import { StudentService } from '../../../domain/students/services/student.service';
-import { KeyEntity } from '../../../domain/tenant/entities/key.entity';
+import { CourseEntity } from '../../../domain/subject/entities/course.entity';
+import { CourseAssignmentService } from '../../../domain/subject/services/assignment.service';
+import { CourseService } from '../../../domain/subject/services/course.service';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { ErrorService } from '../../../domain/tenant/services/error.service';
 import { TenantService } from '../../../domain/tenant/services/tenant.service';
@@ -37,12 +32,11 @@ import { UsersService } from '../../../domain/users/users.service';
 import {
   CanvasAssignmentDto,
   CanvasCourseDto,
-  CanvasEventDto,
-  CanvasEventType,
-  CanvasSubmissionCreatedEventDto,
   CanvasSubmissionDto,
-  CanvasSubmissionUpdatedEventDto,
   CanvasUserDto,
+  ProcessCourseDto,
+  ProcessErrorDto,
+  ProcessSubmissionDto,
 } from '../dto';
 
 import { CanvasResourcesService } from './canvas-resources.service';
@@ -59,56 +53,183 @@ export class CanvasProcessorService {
     protected readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService,
     protected readonly learningPeriodService: TrackLearningPeriodService,
     protected readonly studentLPEnrollmentService: StudentLPEnrollmentService,
+    protected readonly studentLPEnrollmentAssignmentService: StudentLPEnrollmentAssignmentService,
     protected readonly sampleService: SampleService,
     protected readonly errorService: ErrorService,
+    protected readonly courseService: CourseService,
+    protected readonly courseAssignmentService: CourseAssignmentService,
   ) {}
 
-  public async getAllData(event: CanvasEventDto, key: KeyEntity) {
-    const enrollment = await firstValueFrom(
-      this.canvasResourcesService.fetchEnrollment(
-        key,
-        event.body.user_id,
-        event.metadata.context_id,
+  public async updateCourse(data: ProcessCourseDto) {
+    const subject = await this.courseService
+      .findOneBy({
+        canvas_id: data.course.id.toString(),
+      })
+      .catch(() => null);
+
+    if (subject) {
+      return this.courseService.save({
+        ...subject,
+        name: data.course.name,
+      });
+    }
+
+    const [assignments, learningPeriods] = this.filterAssignmentsWithDueDate(
+      data.tenant.tracks.flatMap((track) => track.learningPeriods),
+      data.assignments,
+      data.course,
+    );
+
+    const course = await this.courseService.create({
+      canvas_id: data.course.id.toString(),
+      name: data.course.name,
+      assignments: assignments.map((assignment) => ({
+        canvas_id: assignment.id.toString(),
+        name: assignment.name,
+        due_at: assignment.due_at,
+      })),
+      tenant: data.tenant,
+    });
+
+    const filteredTeachers = await this.getOrCreateTeachersEnrolemts(
+      data.teachers,
+      data.tenant,
+      data.currentAcademicYear,
+    );
+
+    await this.createStudentLPEnrollments(
+      course,
+      assignments,
+      learningPeriods,
+      data.students,
+      filteredTeachers,
+    );
+  }
+
+  public async updateAssignment(
+    tenant: TenantEntity,
+    assignment: CanvasAssignmentDto,
+  ) {
+    const assignments = await this.courseAssignmentService
+      .findOneBy({
+        canvas_id: assignment.id.toString(),
+      })
+      .catch(() => null);
+
+    if (assignments) {
+      return this.courseAssignmentService.save({
+        ...assignments,
+        name: assignment.name,
+      });
+    }
+
+    if (!this.isAssignmentValid(assignment)) return null;
+
+    const course = await this.courseService.findOneBy({
+      canvas_id: assignment.course_id.toString(),
+    });
+
+    const newAssignment = this.courseAssignmentService.create({
+      due_at: assignment.due_at,
+      name: assignment.name,
+      canvas_id: assignment.id.toString(),
+      course,
+    });
+
+    return newAssignment;
+  }
+
+  public async updateSubmission(data: ProcessSubmissionDto) {
+    const sample = await this.sampleService
+      .findOneBy({
+        canvas_id: data.submission.id.toString(),
+      })
+      .catch(() => null);
+
+    if (sample) {
+      return await this.updateSample(
+        sample,
+        data.submission,
+        data.assignment,
+        data.teachers,
+      );
+    }
+
+    const student_lp_enrollment_assignment =
+      await this.studentLPEnrollmentAssignmentService.findOneBy({
+        student_lp_enrollment: {
+          student: {
+            user: {
+              email: data.user.email,
+            },
+          },
+        },
+        assignment: {
+          canvas_id: data.assignment.id.toString(),
+        },
+      });
+
+    return await this.updateSample(
+      {
+        student_lp_enrollment_assignment: student_lp_enrollment_assignment,
+        canvas_id: data.submission.id.toString(),
+      } as SampleEntity,
+      data.submission,
+      data.assignment,
+      data.teachers,
+    );
+  }
+
+  public filterAssignmentsWithDueDate(
+    learning_periods: TrackLearningPeriodEntity[],
+    assignments: CanvasAssignmentDto[],
+    course: CanvasCourseDto,
+  ): [CanvasAssignmentDto[], TrackLearningPeriodEntity[]] {
+    const courseTrackMatch = course.name.match(
+      /\b\d*([A-C])\b|[\(\[]([A-C])[\)\]]/,
+    );
+    const trackLetter = courseTrackMatch
+      ? courseTrackMatch[1] || courseTrackMatch[2]
+      : 'A';
+
+    const filteredLearningPeriods = learning_periods.filter((lp) =>
+      lp.name.match(
+        new RegExp(
+          `\\b\\d*${trackLetter}\\b|[\\(\\[]${trackLetter}[\\)\\]]`,
+          'g',
+        ),
       ),
     );
 
-    const assignment = await firstValueFrom(
-      this.canvasResourcesService.fetchAssignment(
-        key,
-        enrollment.course_id,
-        event.body.assignment_id,
-      ),
-    );
+    assignments = assignments.filter(this.isAssignmentValid).sort((a, b) => {
+      return new Date(b.due_at).getTime() - new Date(a.due_at).getTime();
+    });
 
-    const course = await firstValueFrom(
-      this.canvasResourcesService.fetchCourse(key, enrollment.course_id),
-    );
+    const twoAssignmentsPerPeriodPerCourse: CanvasAssignmentDto[] = [];
+    const usedLPs: TrackLearningPeriodEntity[] = [];
+    for (const period of filteredLearningPeriods) {
+      const firstAssignment = assignments.find((assignment) => {
+        return new Date(assignment.due_at) <= new Date(period.end_date);
+      });
 
-    const submission = await firstValueFrom(
-      this.canvasResourcesService.fetchSubmission(
-        key,
-        enrollment.course_id,
-        event.body.assignment_id,
-        event.body.user_id,
-      ),
-    );
+      const secondAssignment = assignments.find((assignment) => {
+        return (
+          new Date(assignment.due_at) <= new Date(period.end_date) &&
+          assignment.id !== firstAssignment?.id
+        );
+      });
 
-    const teachers = await firstValueFrom(
-      this.canvasResourcesService.fetchTeachersInCourse(
-        key,
-        enrollment.course_id,
-      ),
-    );
+      if (!firstAssignment || !secondAssignment) {
+        continue;
+      }
+      firstAssignment['learning_period'] = period as any;
+      secondAssignment['learning_period'] = period as any;
 
-    const user = await firstValueFrom(
-      this.canvasResourcesService.fetchUsersInAccount(
-        key,
-        event.metadata.user_account_id,
-        event.metadata.user_id,
-      ),
-    );
+      usedLPs.push(period);
+      twoAssignmentsPerPeriodPerCourse.push(firstAssignment, secondAssignment);
+    }
 
-    return { enrollment, assignment, course, teachers, user, submission };
+    return [twoAssignmentsPerPeriodPerCourse.filter(Boolean), usedLPs];
   }
 
   public async getOrCreateTeachersEnrolemts(
@@ -237,124 +358,98 @@ export class CanvasProcessorService {
     }
   }
 
-  public async getOrCreateStudent(
-    person: CanvasUserDto,
-    tenant: TenantEntity,
-  ): Promise<StudentEntity> {
-    try {
-      return await this.studentService.findOneBy({
-        user: {
-          canvas_additional_info: {
-            canvas_id: person.id,
-          },
-        },
-      });
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        const user = await this.userService.create({
-          email: person.email
-            ? `${person.id}+${person.email}`
-            : `${person.id}@test.com`,
-          password: '',
-          name: person.name,
-          isActive: true,
-          emailVerified: true,
-          role: RolesEnum.STUDENT,
-          canvas_additional_info: {
-            canvas_id: person.id,
-            sis_user_id: person.sis_user_id,
-            sis_import_id: person.sis_import_id,
-            avatar_url: person.avatar_url,
-            time_zone: person.time_zone,
-            track_name: null,
-            grade: -1,
-          },
-        });
+  public async createStudentLPEnrollments(
+    course: CourseEntity,
+    canvasAssignments: CanvasAssignmentDto[],
+    learningPeriods: TrackLearningPeriodEntity[],
+    students: CanvasUserDto[],
+    teacher_school_enrollment: TeacherSchoolYearEnrollmentEntity[],
+  ) {
+    const studentLPEnrollmentPeriods: StudentLPEnrollmentEntity[] = [];
+    const db_students = await this.getAndCreateStudents(
+      students,
+      teacher_school_enrollment[0].school_id,
+    );
 
-        const student = await this.studentService.create({
-          user,
-        } as StudentEntity);
+    for (const person of students) {
+      const student = db_students.find((s) => s.user.email === person.email);
 
-        await this.errorService.create({
-          tenant,
-          message:
-            'Create new student without academy, school, and track. JSON: ' +
-            JSON.stringify(user),
-        });
+      for (const learningPeriod of learningPeriods) {
+        const assignments = course.assignments
+          .filter(
+            (assignment) =>
+              canvasAssignments.find(
+                (a) => a.id.toString() === assignment.canvas_id,
+              )?.['learning_period']?.id === learningPeriod.id,
+          )
+          .map((assignment) => ({ assignment }));
 
-        return student;
-      } else {
-        throw error;
+        studentLPEnrollmentPeriods.push({
+          student,
+          learning_period: learningPeriod,
+          completed: false,
+          percentage: 0,
+          student_grade: `Grade ${student.user.canvas_additional_info.grade}`,
+          teacher_school_year_enrollments: teacher_school_enrollment,
+          assignments: assignments,
+        } as StudentLPEnrollmentEntity);
       }
     }
+    return await this.studentLPEnrollmentService.bulkCreate(
+      studentLPEnrollmentPeriods,
+    );
   }
 
-  public async findSubjectWithLearningPeriod(
-    assignment: CanvasAssignmentDto,
-    course: CanvasCourseDto,
-    tracks: TrackEntity[],
-    student: StudentEntity,
-  ): Promise<CourseEntity[]> {
-    return [];
-    // const subjects = await this.subjectService.findBy({
-    //   where: {
-    //     //@ts-ignore
-    //     canvas_course_id: course.id.toString(),
-    //     track: {
-    //       learningPeriods: {
-    //         start_date: LessThanOrEqual(new Date(assignment.due_at)),
-    //         end_date: MoreThanOrEqual(new Date(assignment.due_at)),
-    //       },
-    //     },
-    //   },
-    //   relations: {
-    //     track: {
-    //       learningPeriods: true,
-    //     },
-    //   },
-    // });
+  public async getAndCreateStudents(
+    students: CanvasUserDto[],
+    school_id: number,
+  ): Promise<StudentEntity[]> {
+    const db_students = await this.studentService.findBy({
+      where: {
+        user: {
+          email: In(students.map((student) => student.email)),
+        },
+      },
+    });
+    const newStudents = students.filter(
+      (student) => !db_students.some((s) => s.user.email === student.email),
+    );
+    const createdStudents = await this.studentService.bulkCreate(
+      newStudents.map((person) => this.createStudent(person, school_id)),
+    );
+    return [...db_students, ...createdStudents];
+  }
 
-    // if (subjects.length === 0) {
-    //   await this.subjectService.create({
-    //     //@ts-ignore
-    //     name: course.name
-    //       .replaceAll(/\b\d{0,2}[ABKX]\b/g, '')
-    //       .replaceAll('Flex', '')
-    //       .trim(),
-    //     track: tracks.find((track) =>
-    //       student.user.canvas_additional_info.track_name
-    //         ? track.name === student.user.canvas_additional_info.track_name
-    //         : true,
-    //     ),
-    //     canvas_course_id: course.id.toString(),
-    //     canvas_additional_info: {
-    //       account_id: course.account_id,
-    //       course_code: course.course_code,
-    //       enrollment_term_id: course.enrollment_term_id,
-    //       uuid: course.uuid,
-    //     } as Record<string, any>,
-    //   });
+  public createStudent(
+    person: CanvasUserDto,
+    school_id: number,
+  ): StudentEntity {
+    const user = {
+      email: person.email
+        ? `${person.id}+${person.email}`
+        : `${person.id}@test.com`,
+      password: '',
+      name: person.name,
+      isActive: true,
+      emailVerified: true,
+      role: RolesEnum.STUDENT,
+      canvas_additional_info: {
+        canvas_id: person.id,
+        sis_user_id: person.sis_user_id,
+        sis_import_id: person.sis_import_id,
+        avatar_url: person.avatar_url,
+        time_zone: person.time_zone,
+        track_name: null,
+        grade: -1,
+      },
+    } as any;
 
-    //   return this.findSubjectWithLearningPeriod(
-    //     assignment,
-    //     course,
-    //     tracks,
-    //     student,
-    //   );
-    // }
+    const student = {
+      user,
+      school_id,
+    } as StudentEntity;
 
-    // return subjects.map((subject) => ({
-    //   ...subject,
-    //   track: {
-    //     ...subject.track,
-    //     learningPeriods: subject.track.learningPeriods.filter(
-    //       (learning_period) =>
-    //         new Date(learning_period.start_date) <=
-    //           new Date(assignment.due_at) &&
-    //         new Date(learning_period.end_date) >= new Date(assignment.due_at),
-    //     ),
-    //   },
-    // }));
+    return student;
   }
 
   public async getOrCreateStudentEnrolemts(
@@ -394,46 +489,12 @@ export class CanvasProcessorService {
     return student_enrolemts;
   }
 
-  public async createSamples(
-    student_enrolemts: StudentLPEnrollmentEntity[],
-    subjects: SubjectEntity[],
-    assignment: CanvasAssignmentDto,
-    submission: CanvasSubmissionDto,
-    teacher: TeacherEntity,
-  ) {
-    const status =
-      submission.missing || submission.workflow_state === 'unsubmitted'
-        ? SampleStatus.MISSING_SAMPLE
-        : !submission.grade || !assignment?.name
-          ? SampleStatus.ERRORS_FOUND
-          : submission.workflow_state === 'graded'
-            ? SampleStatus.COMPLETED
-            : SampleStatus.PENDING;
-    //@ts-ignore
-    return {
-      assignment_title: assignment?.name,
-      grade: submission.grade,
-      date: submission.submitted_at
-        ? new Date(submission.submitted_at)
-        : undefined,
-      status,
-      subject: subjects[0],
-      preview_url: submission.preview_url,
-      student_lp_enrollments: student_enrolemts,
-      canvas_submission_id: submission.id ? Number(submission.id) : undefined,
-      done_by_id: status == SampleStatus.COMPLETED ? teacher.id : undefined,
-    } as SampleEntity;
-  }
-
   public async updateSample(
+    sample: SampleEntity,
     submission: CanvasSubmissionDto,
     assignment: CanvasAssignmentDto,
     teachers: CanvasUserDto[],
   ) {
-    const sample = await this.sampleService.findOneBy({
-      canvas_id: submission.id ? String(submission.id) : undefined,
-    });
-
     sample.status =
       submission.missing || submission.workflow_state === 'unsubmitted'
         ? SampleStatus.MISSING_SAMPLE
@@ -442,8 +503,6 @@ export class CanvasProcessorService {
           : submission.workflow_state === 'graded'
             ? SampleStatus.COMPLETED
             : SampleStatus.PENDING;
-    //@ts-ignore
-    sample.assignment_title = assignment?.name;
     sample.grade = submission.grade;
     sample.date = submission.submitted_at
       ? new Date(submission.submitted_at)
@@ -455,14 +514,26 @@ export class CanvasProcessorService {
       );
 
       if (teacherDto) {
-        const teacher = await this.teacherService.findOneBy({
-          user: {
-            email: teacherDto.email,
-          },
+        const teacher = await this.userService.findOneBy({
+          email: teacherDto.email,
         });
 
         sample.done_by_id = teacher ? teacher.id : undefined;
       }
+    } else if (
+      sample.status === SampleStatus.ERRORS_FOUND &&
+      !sample.flag_errors
+    ) {
+      sample.flag_errors = {
+        comment: 'Errors found in work sample',
+      } as any;
+    } else if (
+      sample.status === SampleStatus.MISSING_SAMPLE &&
+      !sample.flag_missing_work
+    ) {
+      sample.flag_missing_work = {
+        reason: 'Missing work',
+      } as any;
     }
 
     return this.sampleService.save(sample);
@@ -505,5 +576,23 @@ export class CanvasProcessorService {
     );
 
     return { tenant, currentAcademicYear: currentAcademicYear[0] };
+  }
+
+  public async logError({ tenant, domain, event, error }: ProcessErrorDto) {
+    await this.errorService.create({
+      tenant,
+      message: `Error processing canvas event: domain ${domain}, error: ${error.message}, event: ${JSON.stringify(
+        event,
+      )}`,
+    });
+  }
+
+  public isAssignmentValid(assignment: CanvasAssignmentDto): boolean {
+    return (
+      !!assignment.due_at &&
+      assignment.published &&
+      !assignment.anonymize_students &&
+      !assignment.anonymous_submissions
+    );
   }
 }

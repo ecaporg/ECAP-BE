@@ -40,7 +40,6 @@ export class CanvasCourseEventDto {
     event_name: string;
   };
   body: {
-    account_id: string;
     course_id: string;
     created_at: string;
     name: string;

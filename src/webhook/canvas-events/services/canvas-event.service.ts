@@ -2,7 +2,12 @@
 
 import { Injectable } from '@nestjs/common';
 
-import { CanvasCourseEventDto } from '../dto';
+import { BadRequestException } from '../../../core';
+import {
+  CanvasAssignmentEventDto,
+  CanvasCourseEventDto,
+  CanvasSubmissionEventDto,
+} from '../dto';
 
 import { CanvasProcessorService } from './canvas-processor.service';
 import { CanvasResourcesService } from './canvas-resources.service';
@@ -18,15 +23,114 @@ export class CanvasEventService {
     if (typeof event.body.published === 'boolean' && event.body.published) {
       const { tenant, currentAcademicYear } =
         await this.processor.findTenantByDomain(domain);
+      try {
+        const course = await this.resources.fetchCourse(
+          tenant.key,
+          event.body.course_id,
+        );
+        const [assignments, teachers, students] = await Promise.all([
+          this.resources.fetchAssignmentsInCourse(tenant.key, course.id),
+          this.resources.fetchTeachersInCourse(tenant.key, course.id),
+          this.resources.fetchStudentsInCourse(tenant.key, course.id),
+        ]);
+        await this.processor.updateCourse({
+          tenant,
+          currentAcademicYear,
+          course,
+          assignments,
+          teachers,
+          students,
+        });
+
+        // Log error
+      } catch (error) {
+        this.processor.logError({ tenant, domain, event, error });
+        throw new BadRequestException(error.message, error?.response?.data);
+      }
+    }
+  }
+
+  async processAssignmentEvent(
+    event: CanvasAssignmentEventDto,
+    domain: string,
+  ) {
+    const { tenant } = await this.processor.findTenantByDomain(domain);
+    const course_id = event.metadata.url.match(
+      /courses\/(\d+)\/assignments\/(\d+)/,
+    )?.[1];
+    try {
+      const assignment = await this.resources.fetchAssignment(
+        tenant.key,
+        course_id,
+        event.body.assignment_id,
+      );
+      await this.processor.updateAssignment(tenant, assignment);
+
+      // Log error
+    } catch (error) {
+      this.processor.logError({ tenant, domain, event, error });
+      throw new BadRequestException(error.message, error?.response?.data);
+    }
+  }
+
+  async processSubmissionEvent(
+    event: CanvasSubmissionEventDto,
+    domain: string,
+  ) {
+    const { tenant, currentAcademicYear } =
+      await this.processor.findTenantByDomain(domain);
+
+    try {
+      const enrollment = await this.resources.fetchEnrollment(
+        tenant.key,
+        event.body.user_id,
+        event.metadata.context_id,
+      );
+
+      const assignment = await this.resources.fetchAssignment(
+        tenant.key,
+        enrollment.course_id,
+        event.body.assignment_id,
+      );
+
       const course = await this.resources.fetchCourse(
         tenant.key,
-        event.body.course_id,
+        enrollment.course_id,
       );
-      const [assignments, teachers, students] = await Promise.all([
-        this.resources.fetchAssignmentsInCourse(tenant.key, course.id),
-        this.resources.fetchTeachersInCourse(tenant.key, course.id),
-        this.resources.fetchStudentsInCourse(tenant.key, course.id),
-      ]);
+
+      const submission = await this.resources.fetchSubmission(
+        tenant.key,
+        enrollment.course_id,
+        event.body.assignment_id,
+        event.body.user_id,
+      );
+
+      const teachers = await this.resources.fetchTeachersInCourse(
+        tenant.key,
+        enrollment.course_id,
+      );
+
+      const [user] = await this.resources.fetchUsersInAccount(
+        tenant.key,
+        event.metadata.user_account_id,
+        event.metadata.user_id,
+      );
+
+      await this.processor.updateSubmission({
+        tenant,
+        currentAcademicYear,
+        enrollment,
+        assignment,
+        course,
+        teachers,
+        user,
+        submission,
+      });
+
+      // Log error
+    } catch (error) {
+      this.processor.logError({ tenant, domain, event, error });
+      throw new BadRequestException(error.message, error?.response?.data);
     }
   }
 

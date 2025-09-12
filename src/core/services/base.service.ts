@@ -142,6 +142,11 @@ export class BaseService<
     return this.repository.save(entity);
   }
 
+  async bulkCreate(data: DeepPartial<T>[]): Promise<T[]> {
+    const entities = this.repository.create(data);
+    return this.repository.save(entities);
+  }
+
   async update(id: EntityKey<T>, data: DeepPartial<T>): Promise<T> {
     const entity = await this.findOne(id);
     const updated = this.repository.merge(entity, data);

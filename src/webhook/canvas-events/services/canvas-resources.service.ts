@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
@@ -144,15 +144,60 @@ export class CanvasResourcesService {
     courseId: string | number,
     assignmentId: string | number,
     userId: string | number,
-  ): Observable<CanvasSubmissionDto> {
+  ): Promise<CanvasSubmissionDto> {
     const url = `${key.url}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions/${userId}`;
 
-    return this.httpService
-      .get<CanvasSubmissionDto>(url, {
-        headers: this.getHeaders(key),
-      })
-      .pipe(
-        map((response: AxiosResponse<CanvasSubmissionDto>) => response.data),
-      );
+    return firstValueFrom(
+      this.httpService
+        .get<CanvasSubmissionDto>(url, {
+          headers: this.getHeaders(key),
+        })
+        .pipe(
+          map((response: AxiosResponse<CanvasSubmissionDto>) => response.data),
+        ),
+    );
+  }
+
+  /**
+   * Fetch enrollment details
+   * @param accountId - Account ID
+   * @param enrollmentId - Enrollment ID
+   */
+  fetchEnrollment(
+    key: KeyEntity,
+    accountId: string | number,
+    enrollmentId: string | number,
+  ): Promise<CanvasEnrollmentDto> {
+    const url = `${key.url}/api/v1/accounts/${accountId}/enrollments/${enrollmentId}`;
+
+    return firstValueFrom(
+      this.httpService
+        .get<CanvasEnrollmentDto>(url, {
+          headers: this.getHeaders(key),
+        })
+        .pipe(
+          map((response: AxiosResponse<CanvasEnrollmentDto>) => response.data),
+        ),
+    );
+  }
+
+  fetchUsersInAccount(
+    key: KeyEntity,
+    accountId: string | number,
+    userId: string,
+  ): Promise<CanvasUserDto[]> {
+    const url = `${key.url}/api/v1/accounts/${accountId}/users`;
+    const params = {
+      search_term: userId,
+    };
+
+    return firstValueFrom(
+      this.httpService
+        .get<CanvasUserDto[]>(url, {
+          headers: this.getHeaders(key),
+          params,
+        })
+        .pipe(map((response: AxiosResponse<CanvasUserDto[]>) => response.data)),
+    );
   }
 }

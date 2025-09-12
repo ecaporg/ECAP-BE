@@ -5,6 +5,7 @@ import { StaffModule } from '../staff/staff.module';
 
 import { AssignmentEntity } from './entities/assignment.entity';
 import { CourseEntity } from './entities/course.entity';
+import { CourseAssignmentService } from './services/assignment.service';
 import { CourseService } from './services/course.service';
 
 @Module({
@@ -13,7 +14,7 @@ import { CourseService } from './services/course.service';
     StaffModule,
   ],
   controllers: [],
-  providers: [CourseService],
-  exports: [CourseService],
+  providers: [CourseService, CourseAssignmentService],
+  exports: [CourseService, CourseAssignmentService],
 })
 export class SubjectModule {}

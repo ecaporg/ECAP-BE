@@ -5,7 +5,8 @@ import { SchoolModule } from '../../domain/school/school.module';
 import { UsersModule } from '../../domain/users/users.module';
 
 import { CanvasEventController } from './controllers/event.controller';
-// import { CanvasEventProcessorService } from './services/canvas-event-processor.service';
+import { CanvasEventService } from './services/canvas-event.service';
+import { CanvasProcessorService } from './services/canvas-processor.service';
 import { CanvasResourcesService } from './services/canvas-resources.service';
 import { SisResourcesService } from './services/sis-resources.service';
 
@@ -20,13 +21,15 @@ import { SisResourcesService } from './services/sis-resources.service';
   providers: [
     CanvasResourcesService,
     SisResourcesService,
-    // CanvasEventProcessorService,
+    CanvasProcessorService,
+    CanvasEventService,
   ],
   controllers: [CanvasEventController],
   exports: [
     CanvasResourcesService,
     SisResourcesService,
-    // CanvasEventProcessorService,
+    CanvasProcessorService,
+    CanvasEventService,
   ],
 })
 export class CanvasEventsModule {}

@@ -131,6 +131,7 @@ function getTwoAssigmentPerPeriod() {
     if (
       !assignment.course_id ||
       !assignment.due_at ||
+      !assignment.published ||
       assignment.anonymize_students ||
       assignment.anonymous_submissions
     ) {
