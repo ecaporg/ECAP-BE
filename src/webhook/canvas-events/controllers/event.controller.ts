@@ -46,7 +46,6 @@ export class CanvasEventController {
     this.logger.log(
       `Processing submission event for domain: ${domain}, event: ${JSON.stringify(event, null, 2)}`,
     );
-    return true;
-    // return this.service.processSubmissionEvent(event, domain);
+    return this.service.processSubmissionEvent(event, domain);
   }
 }

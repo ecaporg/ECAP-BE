@@ -15,8 +15,8 @@ import { CanvasResourcesService } from './canvas-resources.service';
 @Injectable()
 export class CanvasEventService {
   constructor(
-    protected readonly processor: CanvasProcessorService,
-    protected readonly resources: CanvasResourcesService,
+    private readonly processor: CanvasProcessorService,
+    private readonly resources: CanvasResourcesService,
   ) {}
 
   async processCourseEvent(event: CanvasCourseEventDto, domain: string) {

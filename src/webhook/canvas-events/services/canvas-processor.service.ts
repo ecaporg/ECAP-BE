@@ -41,23 +41,21 @@ import {
 
 import { CanvasResourcesService } from './canvas-resources.service';
 
-Injectable();
+@Injectable()
 export class CanvasProcessorService {
   constructor(
-    protected readonly tenantService: TenantService,
-    protected readonly studentService: StudentService,
-    protected readonly academicYearService: AcademicYearService,
-    protected readonly userService: UsersService,
-    protected readonly teacherService: TeacherService,
-    protected readonly canvasResourcesService: CanvasResourcesService,
-    protected readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService,
-    protected readonly learningPeriodService: TrackLearningPeriodService,
-    protected readonly studentLPEnrollmentService: StudentLPEnrollmentService,
-    protected readonly studentLPEnrollmentAssignmentService: StudentLPEnrollmentAssignmentService,
-    protected readonly sampleService: SampleService,
-    protected readonly errorService: ErrorService,
-    protected readonly courseService: CourseService,
-    protected readonly courseAssignmentService: CourseAssignmentService,
+    private readonly tenantService: TenantService,
+    private readonly studentService: StudentService,
+    private readonly academicYearService: AcademicYearService,
+    private readonly userService: UsersService,
+    private readonly teacherService: TeacherService,
+    private readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService,
+    private readonly studentLPEnrollmentService: StudentLPEnrollmentService,
+    private readonly studentLPEnrollmentAssignmentService: StudentLPEnrollmentAssignmentService,
+    private readonly sampleService: SampleService,
+    private readonly errorService: ErrorService,
+    private readonly courseService: CourseService,
+    private readonly courseAssignmentService: CourseAssignmentService,
   ) {}
 
   public async updateCourse(data: ProcessCourseDto) {
