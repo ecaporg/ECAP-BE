@@ -10,6 +10,7 @@ Ensure you are in the elita-date directory of the project (`nestjs\migrations\el
     ```bash
     npx ts-node courses.ts
     npx ts-node courses-filtered.ts
+    npx ts-node courses-students.ts
     ```
 
 2.  **Generate `peoples.json`:**

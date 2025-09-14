@@ -66,7 +66,14 @@ async function fetchDirectors(page = '1') {
   }
 }
 
-async function fetchSISStudent() {
+async function fetchSISStudent(fromFile = false) {
+  if (fromFile) {
+    const data = readFileSync('./students.json', 'utf-8');
+    return JSON.parse(data)
+      .filter((p) => p.sis)
+      .map((p) => p.sis);
+  }
+
   try {
     const response = await fetch(
       'https://mountainelite.plsis.com/mod.php/admin/registration/studentlist.php?action[getEntityListPageJson]=1',
@@ -83,7 +90,7 @@ async function fetchSISStudent() {
           'sec-fetch-mode': 'cors',
           'sec-fetch-site': 'same-origin',
           'x-requested-with': 'XMLHttpRequest',
-          cookie: 'PHPSESSID=fDXX8mNfcyx4ecA6ibAdTg',
+          cookie: 'PHPSESSID=kbB8xmiB7uUd0GJC362syw',
           Referer:
             'https://mountainelite.plsis.com/mod.php/admin/registration/studentlist.php?action[Prompt][list]=1&__sp_window_id__=1895903786',
           'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -101,7 +108,14 @@ async function fetchSISStudent() {
   }
 }
 
-async function fetchSISTeacher() {
+async function fetchSISTeacher(fromFile = false) {
+  if (fromFile) {
+    const data = readFileSync('./teachers.json', 'utf-8');
+    return JSON.parse(data)
+      .filter((p) => p.sis)
+      .map((p) => p.sis);
+  }
+
   try {
     const response = await fetch(
       'https://mountainelite.plsis.com/mod.php/admin/staff_list.php?action[getEntityListPageJson]=1',
@@ -118,7 +132,7 @@ async function fetchSISTeacher() {
           'sec-fetch-mode': 'cors',
           'sec-fetch-site': 'same-origin',
           'x-requested-with': 'XMLHttpRequest',
-          cookie: 'PHPSESSID=fDXX8mNfcyx4ecA6ibAdTg',
+          cookie: 'PHPSESSID=kbB8xmiB7uUd0GJC362syw',
           Referer:
             'https://mountainelite.plsis.com/mod.php/admin/staff_list.php?action[prompt]%5Blist%5D=1&&__sp_window_id__=1895903786',
           'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -191,6 +205,31 @@ async function fetchAll() {
 }
 
 fetchAll();
+
+function uniqueEmails() {
+  const students: People[] = JSON.parse(readFileSync('students.json', 'utf8'));
+  const studentsMap = new Map();
+  students.forEach((student) => {
+    if (!student.email) student.email = student.login_id;
+
+    if (!studentsMap.has(student.email)) {
+      studentsMap.set(student.email, student);
+    } else {
+      const existingStudent = studentsMap.get(student.email);
+      const mergedStudent = {
+        ...existingStudent,
+        ...student,
+      };
+      studentsMap.set(student.email, mergedStudent);
+    }
+  });
+  const uniqueStudents = Array.from(studentsMap.values());
+  console.log('Original count:', students.length);
+  console.log('Unique count:', uniqueStudents.length);
+  writeFileSync('students.json', JSON.stringify(uniqueStudents, null, 2));
+}
+
+uniqueEmails();
 
 // run
 // npx ts-node peoples.ts
