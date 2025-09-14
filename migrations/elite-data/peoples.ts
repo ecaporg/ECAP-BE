@@ -187,7 +187,7 @@ async function fetchAll() {
 
   writeFileSync('students.json', JSON.stringify(filteredStudents, null, 2));
   writeFileSync('teachers.json', JSON.stringify(teachersWithSIS, null, 2));
-  writeFileSync('directors.json', JSON.stringify(directors, null, 2));
+  // writeFileSync('directors.json', JSON.stringify(directors, null, 2));
 }
 
 fetchAll();
