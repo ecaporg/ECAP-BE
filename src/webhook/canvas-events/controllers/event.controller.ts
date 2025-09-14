@@ -28,7 +28,8 @@ export class CanvasEventController {
     this.logger.log(
       `Processing assignment event for domain: ${domain}, event: ${JSON.stringify(event, null, 2)}`,
     );
-    return this.service.processAssignmentEvent(event, domain);
+    return true;
+    // return this.service.processAssignmentEvent(event, domain);
   }
 
   @Post('submission')

@@ -47,56 +47,56 @@
 
 //   public async up(queryRunner: QueryRunner): Promise<void> {
 //     // Create a tenant
-//     // this.password = await argon2.hash('password');
-//     // const tenant = await this.createTenant(queryRunner);
-//     // // Create schools
-//     // const schools = await this.createSchool(queryRunner, tenant);
-//     // // Create academies
-//     // const academies = await this.createAcademy(queryRunner, tenant);
-//     // // Create directors
-//     // await this.createDirectors(queryRunner, academies, tenant);
-//     // // Create academic years (including historical data)
-//     // const academicYears = await this.createAcademicYears(queryRunner);
-//     // // Create teachers and enrollments for all schools and academic years
-//     // const { enrollments } = await this.createTeachersAndEnrollments(
-//     //   queryRunner,
-//     //   schools,
-//     //   academicYears,
-//     // );
-//     // // Create students
-//     // const students = await this.createStudents(queryRunner, schools, academies);
-//     // // Create subjects for each track, create courses and assignments in canvas
-//     // const canvasCoursesWithAssignments =
-//     //   await this.createCanvasCoursesWithAssignments(queryRunner, tenant);
-//     // for (const academicYear of academicYears) {
-//     //   // Create tracks
-//     //   const tracks = await this.createTracks(queryRunner, academicYear, tenant);
-//     //   // Create semesters for these tracks
-//     //   await this.createSemesters(queryRunner, tracks);
-//     //   for (const track of tracks) {
-//     //     // Create learning periods
-//     //     const learningPeriods = await this.createLearningPeriods(
-//     //       queryRunner,
-//     //       track,
-//     //       academicYear,
-//     //     );
-//     //     // Create student LP enrollments, and assignments for each enrollment, including submissions
-//     //     const studentLPEnrollments = await this.createStudentLPEnrollments(
-//     //       queryRunner,
-//     //       learningPeriods,
-//     //       students,
-//     //       enrollments,
-//     //       track,
-//     //       academicYear,
-//     //       canvasCoursesWithAssignments,
-//     //     );
-//     //     // await this.deleteRedunantData(queryRunner, samples, subjects, track);
-//     //   }
-//     // }
-//     // // Create admin user
-//     // await this.createAdmin(queryRunner, tenant);
-//     // await this.addAdminIdToComplatedSemples(queryRunner);
-//     // await this.recalculateAssignmentPeriods(queryRunner);
+//     this.password = await argon2.hash('password');
+//     const tenant = await this.createTenant(queryRunner);
+//     // Create schools
+//     const schools = await this.createSchool(queryRunner, tenant);
+//     // Create academies
+//     const academies = await this.createAcademy(queryRunner, tenant);
+//     // Create directors
+//     await this.createDirectors(queryRunner, academies, tenant);
+//     // Create academic years (including historical data)
+//     const academicYears = await this.createAcademicYears(queryRunner);
+//     // Create teachers and enrollments for all schools and academic years
+//     const { enrollments } = await this.createTeachersAndEnrollments(
+//       queryRunner,
+//       schools,
+//       academicYears,
+//     );
+//     // Create students
+//     const students = await this.createStudents(queryRunner, schools, academies);
+//     // Create subjects for each track, create courses and assignments in canvas
+//     const canvasCoursesWithAssignments =
+//       await this.createCanvasCoursesWithAssignments(queryRunner, tenant);
+//     for (const academicYear of academicYears) {
+//       // Create tracks
+//       const tracks = await this.createTracks(queryRunner, academicYear, tenant);
+//       // Create semesters for these tracks
+//       await this.createSemesters(queryRunner, tracks);
+//       for (const track of tracks) {
+//         // Create learning periods
+//         const learningPeriods = await this.createLearningPeriods(
+//           queryRunner,
+//           track,
+//           academicYear,
+//         );
+//         // Create student LP enrollments, and assignments for each enrollment, including submissions
+//         const studentLPEnrollments = await this.createStudentLPEnrollments(
+//           queryRunner,
+//           learningPeriods,
+//           students,
+//           enrollments,
+//           track,
+//           academicYear,
+//           canvasCoursesWithAssignments,
+//         );
+//         // await this.deleteRedunantData(queryRunner, samples, subjects, track);
+//       }
+//     }
+//     // Create admin user
+//     await this.createAdmin(queryRunner, tenant);
+//     await this.addAdminIdToComplatedSemples(queryRunner);
+//     await this.recalculateAssignmentPeriods(queryRunner);
 //   }
 
 //   public async down(queryRunner: QueryRunner): Promise<void> {
