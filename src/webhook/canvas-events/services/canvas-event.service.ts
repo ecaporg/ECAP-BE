@@ -79,34 +79,30 @@ export class CanvasEventService {
       await this.processor.findTenantByDomain(domain);
 
     try {
-      const assignment = await this.resources.fetchAssignment(
-        tenant.key,
-        event.metadata.context_id,
-        event.body.assignment_id,
-      );
-
-      const course = await this.resources.fetchCourse(
-        tenant.key,
-        event.metadata.context_id,
-      );
-
-      const submission = await this.resources.fetchSubmission(
-        tenant.key,
-        event.metadata.context_id,
-        event.body.assignment_id,
-        event.body.user_id,
-      );
-
-      const teachers = await this.resources.fetchTeachersInCourse(
-        tenant.key,
-        event.metadata.context_id,
-      );
-
-      const [user] = await this.resources.fetchUsersInAccount(
-        tenant.key,
-        event.metadata.user_account_id,
-        event.body.user_id,
-      );
+      const [assignment, course, submission, teachers, [user]] =
+        await Promise.all([
+          this.resources.fetchAssignment(
+            tenant.key,
+            event.metadata.context_id,
+            event.body.assignment_id,
+          ),
+          this.resources.fetchCourse(tenant.key, event.metadata.context_id),
+          this.resources.fetchSubmission(
+            tenant.key,
+            event.metadata.context_id,
+            event.body.assignment_id,
+            event.body.user_id,
+          ),
+          this.resources.fetchTeachersInCourse(
+            tenant.key,
+            event.metadata.context_id,
+          ),
+          this.resources.fetchUsersInAccount(
+            tenant.key,
+            event.metadata.user_account_id,
+            event.body.user_id,
+          ),
+        ]);
 
       await this.processor.updateSubmission({
         tenant,
