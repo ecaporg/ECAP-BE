@@ -409,14 +409,14 @@ export class CanvasProcessorService {
         if (assignments.length === 0) continue;
 
         const currentLPEnrollment = student.student_lp_enrollments.find(
-          (enrollment) => enrollment.learning_period.id === learningPeriod.id,
+          (enrollment) => enrollment.learning_period_id == learningPeriod.id,
         );
 
         if (currentLPEnrollment) {
           assignments.forEach((a) => {
             if (
               !currentLPEnrollment.assignments.find(
-                (existing) => existing.assignment.id === a.assignment.id,
+                (existing) => existing.assignment_id == a.assignment.id,
               )
             )
               studentLPEnrollmentAssignments.push({
