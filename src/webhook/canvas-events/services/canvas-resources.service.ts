@@ -99,7 +99,7 @@ export class CanvasResourcesService {
     key: KeyEntity,
     courseId: string | number,
   ): Promise<CanvasUserDto[]> {
-    const url = `${key.url}/api/v1/courses/${courseId}/users`;
+    const url = `${key.url}/api/v1/courses/${courseId}/users?include%5B%5D=last_login&include%5B%5D=avatar_url&include%5B%5D=pronouns&include%5B%5D=email&include%5B%5D=time_zone&include%5B%5D=ui_invoked`;
     const params = {
       enrollment_type: 'teacher',
     };
@@ -118,7 +118,7 @@ export class CanvasResourcesService {
     key: KeyEntity,
     courseId: string | number,
   ): Promise<CanvasUserDto[]> {
-    const url = `${key.url}/api/v1/courses/${courseId}/users`;
+    const url = `${key.url}/api/v1/courses/${courseId}/users?include%5B%5D=last_login&include%5B%5D=avatar_url&include%5B%5D=pronouns&include%5B%5D=email&include%5B%5D=time_zone&include%5B%5D=ui_invoked`;
     const params = {
       enrollment_type: 'student',
     };
@@ -186,7 +186,7 @@ export class CanvasResourcesService {
     accountId: string | number,
     userId: string,
   ): Promise<CanvasUserDto[]> {
-    const url = `${key.url}/api/v1/accounts/${accountId}/users`;
+    const url = `${key.url}/api/v1/accounts/${accountId}/users?include%5B%5D=last_login&include%5B%5D=avatar_url&include%5B%5D=pronouns&include%5B%5D=email&include%5B%5D=time_zone&include%5B%5D=ui_invoked`;
     const params = {
       search_term: userId,
     };

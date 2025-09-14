@@ -58,20 +58,28 @@ export class CanvasProcessorService {
 
   public async updateCourse(data: ProcessCourseDto) {
     const subject = await this.courseService
-      .findOneBy({
-        canvas_id: data.course.id.toString(),
-      })
+      .findOneBy(
+        {
+          canvas_id: data.course.id.toString(),
+        },
+        {
+          assignments: true,
+        },
+      )
       .catch(() => null);
 
-    if (subject) {
+    if (subject && subject.assignments && subject.assignments.length > 0) {
       return this.courseService.save({
         ...subject,
         name: data.course.name,
       });
+    } else if (subject) {
     }
 
     const [assignments, learningPeriods] = this.filterAssignmentsWithDueDate(
-      data.tenant.tracks.flatMap((track) => track.learningPeriods),
+      data.tenant.tracks.flatMap((track) =>
+        track.learningPeriods.map((lp) => ({ ...lp, track })),
+      ),
       data.assignments,
       data.course,
     );
@@ -195,7 +203,7 @@ export class CanvasProcessorService {
       : 'A';
 
     const filteredLearningPeriods = learning_periods.filter((lp) =>
-      lp.name.match(
+      lp.track.name.match(
         new RegExp(
           `\\b\\d*${trackLetter}\\b|[\\(\\[]${trackLetter}[\\)\\]]`,
           'g',
@@ -417,7 +425,9 @@ export class CanvasProcessorService {
       (student) => !db_students.some((s) => s.user.email === student.email),
     );
     const createdStudents = await this.studentService.bulkCreate(
-      newStudents.map((person) => this.createStudent(person, school_id)),
+      newStudents
+        .filter((person) => person.email)
+        .map((person) => this.createStudent(person, school_id)),
     );
     return [...db_students, ...createdStudents];
   }
@@ -427,9 +437,7 @@ export class CanvasProcessorService {
     school_id: number,
   ): StudentEntity {
     const user = {
-      email: person.email
-        ? `${person.id}+${person.email}`
-        : `${person.id}@test.com`,
+      email: person.email,
       password: '',
       name: person.name,
       isActive: true,
@@ -552,7 +560,7 @@ export class CanvasProcessorService {
         event,
       )}`,
     });
-    this.logger.error(JSON.stringify(savedError, null, 2));
+    this.logger.error(JSON.stringify(savedError.message, null, 2));
   }
 
   public isAssignmentValid(assignment: CanvasAssignmentDto): boolean {

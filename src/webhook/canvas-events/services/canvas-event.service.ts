@@ -20,7 +20,7 @@ export class CanvasEventService {
   ) {}
 
   async processCourseEvent(event: CanvasCourseEventDto, domain: string) {
-    if (typeof event.body.published === 'boolean' && event.body.published) {
+    if (event.body.workflow_state === 'available') {
       const { tenant, currentAcademicYear } =
         await this.processor.findTenantByDomain(domain);
       try {
