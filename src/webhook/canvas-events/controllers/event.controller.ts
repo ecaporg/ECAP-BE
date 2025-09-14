@@ -22,7 +22,8 @@ export class CanvasEventController {
     this.logger.log(
       `Processing course event for domain: ${domain}, event: ${JSON.stringify(event, null, 2)}`,
     );
-    return this.service.processCourseEvent(event, domain);
+    return true;
+    // return this.service.processCourseEvent(event, domain);
   }
 
   @Post('assignment')
@@ -33,7 +34,8 @@ export class CanvasEventController {
     this.logger.log(
       `Processing assignment event for domain: ${domain}, event: ${JSON.stringify(event, null, 2)}`,
     );
-    return this.service.processAssignmentEvent(event, domain);
+    return true;
+    // return this.service.processAssignmentEvent(event, domain);
   }
 
   @Post('submission')
@@ -44,6 +46,7 @@ export class CanvasEventController {
     this.logger.log(
       `Processing submission event for domain: ${domain}, event: ${JSON.stringify(event, null, 2)}`,
     );
-    return this.service.processSubmissionEvent(event, domain);
+    return true;
+    // return this.service.processSubmissionEvent(event, domain);
   }
 }
