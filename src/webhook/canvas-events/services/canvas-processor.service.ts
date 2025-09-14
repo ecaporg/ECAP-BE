@@ -200,7 +200,7 @@ export class CanvasProcessorService {
     );
   }
 
-  public filterAssignmentsWithDueDate(
+  protected filterAssignmentsWithDueDate(
     learning_periods: TrackLearningPeriodEntity[],
     assignments: CanvasAssignmentDto[],
     course: CanvasCourseDto,
@@ -252,7 +252,7 @@ export class CanvasProcessorService {
     return [twoAssignmentsPerPeriodPerCourse.filter(Boolean), usedLPs];
   }
 
-  public async getOrCreateTeachersEnrolemts(
+  protected async getOrCreateTeachersEnrolemts(
     teachers: CanvasUserDto[],
     tenant: TenantEntity,
     currentAcademicYear: AcademicYearEntity,
@@ -291,7 +291,7 @@ export class CanvasProcessorService {
     return Array.from(setOfTeacherEnrolemts.values()).flat();
   }
 
-  public async createTeacherAndEnrolemt(
+  protected async createTeacherAndEnrolemt(
     teacher: CanvasUserDto,
     tenant: TenantEntity,
     currentAcademicYear: AcademicYearEntity,
@@ -378,7 +378,7 @@ export class CanvasProcessorService {
     }
   }
 
-  public async createStudentLPEnrollments(
+  protected async createStudentLPEnrollments(
     course: CourseEntity,
     canvasAssignments: CanvasAssignmentDto[],
     learningPeriods: TrackLearningPeriodEntity[],
@@ -446,7 +446,7 @@ export class CanvasProcessorService {
     );
   }
 
-  public async getAndCreateStudents(
+  protected async getAndCreateStudents(
     students: CanvasUserDto[],
     school_id: number,
   ): Promise<StudentEntity[]> {
@@ -605,7 +605,7 @@ export class CanvasProcessorService {
     this.logger.error(JSON.stringify(savedError.message, null, 2));
   }
 
-  public isAssignmentValid(assignment: CanvasAssignmentDto): boolean {
+  protected isAssignmentValid(assignment: CanvasAssignmentDto): boolean {
     return (
       !!assignment.due_at &&
       assignment.published &&
@@ -616,5 +616,15 @@ export class CanvasProcessorService {
 
   public async processEnrollmentCreated(data: ProcessEnrollmentDto) {
     return this.updateCourse(data);
+  }
+
+  public async handleCourseDeletion(
+    tenant: TenantEntity,
+    course: CanvasCourseDto,
+  ) {
+    return this.courseService.delete({
+      canvas_id: course.id.toString(),
+      tenant_id: tenant.id,
+    });
   }
 }

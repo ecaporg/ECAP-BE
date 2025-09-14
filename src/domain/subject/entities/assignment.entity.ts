@@ -56,6 +56,7 @@ export class AssignmentEntity
   @OneToMany(
     () => StudentLPEnrollmentAssignmentEntity,
     (assignment) => assignment.assignment,
+    { onDelete: 'CASCADE' },
   )
   enrollmentAssignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
 }

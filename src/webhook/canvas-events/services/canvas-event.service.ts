@@ -21,7 +21,10 @@ export class CanvasEventService {
   ) {}
 
   async processCourseEvent(event: CanvasCourseEventDto, domain: string) {
-    if (event.body.workflow_state === 'available') {
+    if (
+      event.body.workflow_state === 'available' ||
+      event.body.workflow_state == 'deleted'
+    ) {
       const { tenant, currentAcademicYear } =
         await this.processor.findTenantByDomain(domain);
       try {
@@ -29,6 +32,11 @@ export class CanvasEventService {
           tenant.key,
           event.body.course_id,
         );
+
+        if (event.body.workflow_state == 'deleted') {
+          await this.processor.handleCourseDeletion(tenant, course);
+        }
+
         const [assignments, teachers, students] = await Promise.all([
           this.resources.fetchAssignmentsInCourse(tenant.key, course.id),
           this.resources.fetchTeachersInCourse(tenant.key, course.id),

@@ -162,6 +162,11 @@ export class BaseService<
     await this.repository.remove(entity);
   }
 
+  async deleteBy(where: FindOptionsWhere<T>): Promise<void> {
+    const entities = await this.repository.find({ where });
+    await this.repository.remove(entities);
+  }
+
   async exists(id: EntityKey<T>): Promise<boolean> {
     const where = this.createWhereCondition(id);
     const count = await this.repository.count({ where });

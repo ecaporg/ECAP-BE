@@ -74,10 +74,7 @@ export class StudentLPEnrollmentAssignmentEntity
       'Student learning plan enrollment associated with this assignment',
     type: () => StudentLPEnrollmentEntity,
   })
-  @ManyToOne(() => StudentLPEnrollmentEntity, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @ManyToOne(() => StudentLPEnrollmentEntity, {})
   @JoinColumn({ name: 'student_lp_enrollment_id' })
   student_lp_enrollment: Relation<StudentLPEnrollmentEntity>;
 }

@@ -33,6 +33,7 @@ export class CourseEntity extends CanvasGenericEntity implements ICourseEntity {
     type: () => [{}],
   })
   @OneToMany(() => AssignmentEntity, (assignment) => assignment.course, {
+    onDelete: 'CASCADE',
     cascade: ['insert'],
   })
   assignments: Relation<AssignmentEntity[]>;
