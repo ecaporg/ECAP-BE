@@ -224,27 +224,38 @@
 //     academies: AcademyEntity[],
 //     tenant: TenantEntity,
 //   ): Promise<DirectorEntity[]> {
+//     const directorsData = JSON.parse(
+//       readFileSync('migrations/elite-data/directors.json', 'utf8'),
+//     ) as People[];
+
 //     const director_users = await queryRunner.manager.save(
 //       UserEntity,
-//       academies.map(
-//         (academy, idx) =>
+//       directorsData.map(
+//         (director, idx) =>
 //           ({
-//             email: `director${idx}@test.com`,
+//             email: director.email,
 //             password: this.password,
-//             name: 'Director',
+//             name: director.name,
 //             isActive: true,
 //             emailVerified: true,
 //             role: RolesEnum.DIRECTOR,
+//             canvas_additional_info: {
+//               canvas_id: director.id,
+//               sis_user_id: director.sis_user_id,
+//               sis_import_id: director.sis_import_id,
+//               avatar_url: director.avatar_url,
+//               time_zone: director.time_zone,
+//             } as Record<string, any>,
 //           }) as UserEntity,
 //       ),
 //     );
 //     const directors = await queryRunner.manager.save(
 //       DirectorEntity,
-//       academies.map(
-//         (academy, idx) =>
+//       director_users.map(
+//         (user) =>
 //           ({
-//             user: director_users[idx],
-//             academy,
+//             id: user.id,
+//             academy: academies[0], // all directors assigned to first academy by default
 //             tenant,
 //           }) as DirectorEntity,
 //       ),
