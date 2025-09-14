@@ -520,9 +520,11 @@ export class CanvasProcessorService {
       );
 
       if (teacherDto) {
-        const teacher = await this.userService.findOneBy({
-          email: teacherDto.email,
-        });
+        const teacher = await this.userService
+          .findOneBy({
+            email: teacherDto.email,
+          })
+          .catch(() => null);
 
         sample.done_by_id = teacher ? teacher.id : undefined;
       }
