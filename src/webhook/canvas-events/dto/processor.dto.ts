@@ -3,6 +3,7 @@ import { AcademicYearEntity } from '../../../domain/track/entities/academic-year
 
 import { CanvasAssignmentDto } from './canvas-assignment.dto';
 import { CanvasCourseDto } from './canvas-course.dto';
+import { CanvasEnrollmentEventDto } from './canvas-enrollment-event.dto';
 import { CanvasEnrollmentDto } from './canvas-enrolment.dto';
 import { CanvasSubmissionDto } from './canvas-submission.dto';
 import { CanvasUserDto } from './canvas-user.dto';
@@ -31,4 +32,13 @@ export class ProcessSubmissionDto {
   teachers: CanvasUserDto[];
   user: CanvasUserDto;
   submission: CanvasSubmissionDto;
+}
+
+export class ProcessEnrollmentDto {
+  tenant: TenantEntity;
+  currentAcademicYear: AcademicYearEntity;
+  students: CanvasUserDto[];
+  course: CanvasCourseDto;
+  teachers: CanvasUserDto[];
+  assignments: CanvasAssignmentDto[];
 }

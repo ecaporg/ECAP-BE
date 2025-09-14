@@ -41,4 +41,15 @@ export class CanvasEventController {
     );
     return this.service.processSubmissionEvent(event, domain);
   }
+
+  @Post('enrolment')
+  enrolmentEvent(
+    @Body() event: any, //CanvasEnrollmentEventDto,
+    @Param('domain') domain: string,
+  ) {
+    this.logger.log(
+      `Processing enrolment event for domain: ${domain}, event: ${JSON.stringify(event, null, 2)}`,
+    );
+    return this.service.processEnrollmentEvent(event, domain);
+  }
 }

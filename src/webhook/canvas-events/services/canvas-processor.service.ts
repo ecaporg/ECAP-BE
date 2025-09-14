@@ -33,6 +33,7 @@ import {
   CanvasSubmissionDto,
   CanvasUserDto,
   ProcessCourseDto,
+  ProcessEnrollmentDto,
   ProcessErrorDto,
   ProcessSubmissionDto,
 } from '../dto';
@@ -611,5 +612,9 @@ export class CanvasProcessorService {
       !assignment.anonymize_students &&
       !assignment.anonymous_submissions
     );
+  }
+
+  public async processEnrollmentCreated(data: ProcessEnrollmentDto) {
+    return this.updateCourse(data);
   }
 }

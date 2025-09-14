@@ -77,6 +77,7 @@ export class CanvasAssignmentEventDto {
     event_name: string;
     event_time: string;
     url: string;
+    context_id: string;
   };
   body: {
     assignment_group_id: string;

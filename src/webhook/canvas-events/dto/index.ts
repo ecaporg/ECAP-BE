@@ -6,6 +6,7 @@ export * from './canvas-user.dto';
 export * from './canvas-submission.dto';
 
 export * from './canvas-enrolment.dto';
+export * from './canvas-enrollment-event.dto';
 
 // Processor DTOs
 export * from './processor.dto';
