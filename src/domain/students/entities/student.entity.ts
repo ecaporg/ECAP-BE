@@ -70,6 +70,7 @@ export class StudentEntity
   @OneToOne(() => UserEntity, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    cascade: ['insert'],
   })
   @JoinColumn({ name: 'id' })
   user: Relation<UserEntity>;

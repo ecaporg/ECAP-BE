@@ -23,10 +23,8 @@ import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { ErrorService } from '../../../domain/tenant/services/error.service';
 import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearEntity } from '../../../domain/track/entities/academic-year.entity';
-import { TrackEntity } from '../../../domain/track/entities/track.entity';
 import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
-import { TrackLearningPeriodService } from '../../../domain/track/services/track-learning-period.service';
 import { RolesEnum } from '../../../domain/users/enums/roles.enum';
 import { UsersService } from '../../../domain/users/users.service';
 import {
@@ -38,8 +36,6 @@ import {
   ProcessErrorDto,
   ProcessSubmissionDto,
 } from '../dto';
-
-import { CanvasResourcesService } from './canvas-resources.service';
 
 @Injectable()
 export class CanvasProcessorService {
@@ -340,7 +336,7 @@ export class CanvasProcessorService {
             canvas_id: teacher.id,
             avatar_url: teacher.avatar_url,
             time_zone: teacher.time_zone,
-          } as any,
+          },
         });
 
         const newTeacher = await this.teacherService.create({
@@ -456,43 +452,6 @@ export class CanvasProcessorService {
     } as StudentEntity;
 
     return student;
-  }
-
-  public async getOrCreateStudentEnrolemts(
-    student: StudentEntity,
-    learning_periods: TrackLearningPeriodEntity[],
-    teacher_enrolemts: TeacherSchoolYearEnrollmentEntity[],
-  ) {
-    const student_enrolemts = await this.studentLPEnrollmentService.findBy({
-      where: {
-        student,
-        learning_period: In(
-          learning_periods.map((learning_period) => learning_period.id),
-        ),
-        teacher_school_year_enrollments: In(
-          teacher_enrolemts.map((enrolemt) => enrolemt.id),
-        ),
-      },
-    });
-
-    if (student_enrolemts.length === 0) {
-      return await Promise.all(
-        teacher_enrolemts.flatMap((enrolemt) =>
-          learning_periods.map((learning_period) =>
-            this.studentLPEnrollmentService.create({
-              student,
-              learning_period,
-              teacher_school_year_enrollments: [enrolemt],
-              completed: false,
-              //@ts-ignore
-              track_id: learning_period.track_id,
-            }),
-          ),
-        ),
-      );
-    }
-
-    return student_enrolemts;
   }
 
   public async updateSample(
