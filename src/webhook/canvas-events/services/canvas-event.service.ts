@@ -79,45 +79,38 @@ export class CanvasEventService {
       await this.processor.findTenantByDomain(domain);
 
     try {
-      const enrollment = await this.resources.fetchEnrollment(
-        tenant.key,
-        event.body.user_id,
-        event.metadata.context_id,
-      );
-
       const assignment = await this.resources.fetchAssignment(
         tenant.key,
-        enrollment.course_id,
+        event.metadata.context_id,
         event.body.assignment_id,
       );
 
       const course = await this.resources.fetchCourse(
         tenant.key,
-        enrollment.course_id,
+        event.metadata.context_id,
       );
 
       const submission = await this.resources.fetchSubmission(
         tenant.key,
-        enrollment.course_id,
+        event.metadata.context_id,
         event.body.assignment_id,
         event.body.user_id,
       );
 
       const teachers = await this.resources.fetchTeachersInCourse(
         tenant.key,
-        enrollment.course_id,
+        event.metadata.context_id,
       );
 
       const [user] = await this.resources.fetchUsersInAccount(
         tenant.key,
         event.metadata.user_account_id,
-        event.metadata.user_id,
+        event.body.user_id,
       );
 
       await this.processor.updateSubmission({
         tenant,
         currentAcademicYear,
-        enrollment,
         assignment,
         course,
         teachers,

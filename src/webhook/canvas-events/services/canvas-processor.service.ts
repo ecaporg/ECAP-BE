@@ -1,6 +1,6 @@
 import { DeepPartial, ILike, In } from 'typeorm';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { NotFoundException } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
@@ -43,6 +43,8 @@ import { CanvasResourcesService } from './canvas-resources.service';
 
 @Injectable()
 export class CanvasProcessorService {
+  private readonly logger = new Logger(CanvasProcessorService.name);
+
   constructor(
     private readonly tenantService: TenantService,
     private readonly studentService: StudentService,
@@ -154,18 +156,24 @@ export class CanvasProcessorService {
     }
 
     const student_lp_enrollment_assignment =
-      await this.studentLPEnrollmentAssignmentService.findOneBy({
-        student_lp_enrollment: {
-          student: {
-            user: {
-              email: data.user.email,
+      await this.studentLPEnrollmentAssignmentService
+        .findOneBy({
+          student_lp_enrollment: {
+            student: {
+              user: {
+                email: data.user.email,
+              },
             },
           },
-        },
-        assignment: {
-          canvas_id: data.assignment.id.toString(),
-        },
-      });
+          assignment: {
+            canvas_id: data.assignment.id.toString(),
+          },
+        })
+        .catch(() => null);
+
+    if (!student_lp_enrollment_assignment) {
+      return;
+    }
 
     return await this.updateSample(
       {
@@ -577,12 +585,13 @@ export class CanvasProcessorService {
   }
 
   public async logError({ tenant, domain, event, error }: ProcessErrorDto) {
-    await this.errorService.create({
+    const savedError = await this.errorService.create({
       tenant,
       message: `Error processing canvas event: domain ${domain}, error: ${error.message}, event: ${JSON.stringify(
         event,
       )}`,
     });
+    this.logger.error(JSON.stringify(savedError, null, 2));
   }
 
   public isAssignmentValid(assignment: CanvasAssignmentDto): boolean {

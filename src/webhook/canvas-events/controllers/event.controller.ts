@@ -1,11 +1,6 @@
 import { Body, Controller, Logger, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import {
-  CanvasAssignmentEventDto,
-  CanvasCourseEventDto,
-  CanvasSubmissionEventDto,
-} from '../dto';
 import { CanvasEventService } from '../services/canvas-event.service';
 
 @ApiTags('Canvas Event Processor')
@@ -16,7 +11,7 @@ export class CanvasEventController {
 
   @Post('course')
   courseEvent(
-    @Body() event: CanvasCourseEventDto,
+    @Body() event: any, // CanvasCourseEventDto,
     @Param('domain') domain: string,
   ) {
     this.logger.log(
@@ -28,7 +23,7 @@ export class CanvasEventController {
 
   @Post('assignment')
   assignmentEvent(
-    @Body() event: CanvasAssignmentEventDto,
+    @Body() event: any, // CanvasAssignmentEventDto,
     @Param('domain') domain: string,
   ) {
     this.logger.log(
