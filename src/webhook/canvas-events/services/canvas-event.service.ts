@@ -45,7 +45,6 @@ export class CanvasEventService {
         // Log error
       } catch (error) {
         this.processor.logError({ tenant, domain, event, error });
-        throw new BadRequestException(error.message, error?.response?.data);
       }
     }
   }
@@ -69,7 +68,6 @@ export class CanvasEventService {
       // Log error
     } catch (error) {
       this.processor.logError({ tenant, domain, event, error });
-      throw new BadRequestException(error.message, error?.response?.data);
     }
   }
 
@@ -130,7 +128,6 @@ export class CanvasEventService {
       // Log error
     } catch (error) {
       this.processor.logError({ tenant, domain, event, error });
-      throw new BadRequestException(error.message, error?.response?.data);
     }
   }
 

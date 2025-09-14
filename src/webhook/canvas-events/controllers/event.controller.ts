@@ -40,7 +40,7 @@ export class CanvasEventController {
 
   @Post('submission')
   submissionEvent(
-    @Body() event: CanvasSubmissionEventDto,
+    @Body() event: any, //CanvasSubmissionEventDto,
     @Param('domain') domain: string,
   ) {
     this.logger.log(
