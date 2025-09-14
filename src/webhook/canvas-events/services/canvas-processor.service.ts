@@ -138,18 +138,18 @@ export class CanvasProcessorService {
 
     if (!this.isAssignmentValid(assignment)) return null;
 
-    const course = await this.courseService.findOneBy({
-      canvas_id: assignment.course_id.toString(),
-    });
+    // const course = await this.courseService.findOneBy({
+    //   canvas_id: assignment.course_id.toString(),
+    // });
 
-    const newAssignment = this.courseAssignmentService.create({
-      due_at: assignment.due_at,
-      name: assignment.name,
-      canvas_id: assignment.id.toString(),
-      course,
-    });
+    // const newAssignment = this.courseAssignmentService.create({
+    //   due_at: assignment.due_at,
+    //   name: assignment.name,
+    //   canvas_id: assignment.id.toString(),
+    //   course,
+    // });
 
-    return newAssignment;
+    // return newAssignment;
   }
 
   public async updateSubmission(data: ProcessSubmissionDto) {
