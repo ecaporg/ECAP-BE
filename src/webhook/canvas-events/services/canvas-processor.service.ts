@@ -57,7 +57,7 @@ export class CanvasProcessorService {
   ) {}
 
   public async updateCourse(data: ProcessCourseDto) {
-    const subject = await this.courseService
+    let course = await this.courseService
       .findOneBy(
         {
           canvas_id: data.course.id.toString(),
@@ -68,14 +68,6 @@ export class CanvasProcessorService {
       )
       .catch(() => null);
 
-    if (subject && subject.assignments && subject.assignments.length > 0) {
-      return this.courseService.save({
-        ...subject,
-        name: data.course.name,
-      });
-    } else if (subject) {
-    }
-
     const [assignments, learningPeriods] = this.filterAssignmentsWithDueDate(
       data.tenant.tracks.flatMap((track) =>
         track.learningPeriods.map((lp) => ({ ...lp, track })),
@@ -84,16 +76,33 @@ export class CanvasProcessorService {
       data.course,
     );
 
-    const course = await this.courseService.create({
-      canvas_id: data.course.id.toString(),
-      name: data.course.name,
-      assignments: assignments.map((assignment) => ({
-        canvas_id: assignment.id.toString(),
-        name: assignment.name,
-        due_at: assignment.due_at,
-      })),
-      tenant: data.tenant,
-    });
+    if (course && course.assignments && course.assignments.length > 0) {
+      this.courseService.save({
+        ...course,
+        name: data.course.name,
+      });
+    } else if (course) {
+      course = await this.courseService.save({
+        ...course,
+        name: data.course.name,
+        assignments: assignments.map((assignment) => ({
+          canvas_id: assignment.id.toString(),
+          name: assignment.name,
+          due_at: assignment.due_at,
+        })),
+      });
+    } else {
+      course = await this.courseService.create({
+        canvas_id: data.course.id.toString(),
+        name: data.course.name,
+        assignments: assignments.map((assignment) => ({
+          canvas_id: assignment.id.toString(),
+          name: assignment.name,
+          due_at: assignment.due_at,
+        })),
+        tenant: data.tenant,
+      });
+    }
 
     const filteredTeachers = await this.getOrCreateTeachersEnrolemts(
       data.teachers,
@@ -376,6 +385,8 @@ export class CanvasProcessorService {
     teacher_school_enrollment: TeacherSchoolYearEnrollmentEntity[],
   ) {
     const studentLPEnrollmentPeriods: StudentLPEnrollmentEntity[] = [];
+    const studentLPEnrollmentAssignments: StudentLPEnrollmentEntity['assignments'] =
+      [];
     const db_students = await this.getAndCreateStudents(
       students,
       teacher_school_enrollment[0].school_id,
@@ -383,6 +394,7 @@ export class CanvasProcessorService {
 
     for (const person of students) {
       const student = db_students.find((s) => s.user.email === person.email);
+      if (!student) continue;
 
       for (const learningPeriod of learningPeriods) {
         const assignments = course.assignments
@@ -394,19 +406,42 @@ export class CanvasProcessorService {
           )
           .map((assignment) => ({ assignment }));
 
-        studentLPEnrollmentPeriods.push({
-          student,
-          learning_period: learningPeriod,
-          completed: false,
-          percentage: 0,
-          student_grade: `Grade ${student.user.canvas_additional_info.grade}`,
-          teacher_school_year_enrollments: teacher_school_enrollment,
-          assignments: assignments,
-        } as StudentLPEnrollmentEntity);
+        if (assignments.length === 0) continue;
+
+        const currentLPEnrollment = student.student_lp_enrollments.find(
+          (enrollment) => enrollment.learning_period.id === learningPeriod.id,
+        );
+
+        if (currentLPEnrollment) {
+          assignments.forEach((a) => {
+            if (
+              !currentLPEnrollment.assignments.find(
+                (existing) => existing.assignment.id === a.assignment.id,
+              )
+            )
+              studentLPEnrollmentAssignments.push({
+                ...a,
+                student_lp_enrollment: currentLPEnrollment,
+              } as any);
+          });
+        } else {
+          studentLPEnrollmentPeriods.push({
+            student,
+            learning_period: learningPeriod,
+            completed: false,
+            percentage: 0,
+            student_grade: `Grade ${student.user.canvas_additional_info.grade}`,
+            teacher_school_year_enrollments: teacher_school_enrollment,
+            assignments: assignments,
+          } as StudentLPEnrollmentEntity);
+        }
       }
     }
-    return await this.studentLPEnrollmentService.bulkCreate(
+    await this.studentLPEnrollmentService.bulkCreate(
       studentLPEnrollmentPeriods,
+    );
+    await this.studentLPEnrollmentAssignmentService.bulkCreate(
+      studentLPEnrollmentAssignments,
     );
   }
 
@@ -419,6 +454,12 @@ export class CanvasProcessorService {
         user: {
           email: In(students.map((student) => student.email)),
         },
+      },
+      relations: {
+        student_lp_enrollments: {
+          assignments: true,
+        },
+        user: true,
       },
     });
     const newStudents = students.filter(
