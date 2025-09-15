@@ -6,6 +6,7 @@ import { AuthUser } from '../../../auth/types/auth-user';
 import {
   addInOrEqualsCondition,
   createOrderCondition,
+  formInOrEqualsCondition,
   getAndDeleteField,
 } from '../../../core';
 import { StudentLPEnrollmentAssignmentEntity } from '../../../domain/enrollment/entities/student-enrollment-assignment.entity';
@@ -67,7 +68,6 @@ export class AdminComplianceService {
       .leftJoin('assignments.sample', 'sample')
       .leftJoin('student_lp_enrollment.student', 'student')
       .leftJoin('student.academy', 'academy')
-      .leftJoin('student_lp_enrollment.learning_period', 'learning_period')
       .groupBy('t_s_y_e.id')
       .addGroupBy('teacher.id')
       .addGroupBy('user.name')
@@ -77,6 +77,10 @@ export class AdminComplianceService {
 
     this.buildTeacherFilters(filters, user, subQuery);
     const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
+
+    // Log the generated SQL for debugging
+    console.log('Generated subquery SQL:', subQuerySql);
+    console.log('Query parameters:', subQueryParams);
 
     const completedQuery =
       completed && completed.length > 0
@@ -193,6 +197,19 @@ export class AdminComplianceService {
     );
     const status = getAndDeleteField(filters, 'sample.status');
 
+    // Log filters for debugging
+    console.log('Applied filters:', {
+      academicYear,
+      learningPeriod,
+      academy,
+      school,
+      track,
+      semesters,
+      subject,
+      gradeSpan,
+      status,
+    });
+
     if (user.role === RolesEnum.DIRECTOR) {
       query.leftJoin('academy.directors', 'directors');
       query.andWhere('directors.id = :id', {
@@ -212,7 +229,35 @@ export class AdminComplianceService {
     }
 
     if (learningPeriod) {
-      addInOrEqualsCondition(query, 'learning_period.id', learningPeriod);
+      if (!track) {
+        const [condition, params] = formInOrEqualsCondition(
+          'learning_period.id',
+          learningPeriod,
+        );
+        query.innerJoin(
+          'student_lp_enrollment.learning_period',
+          'learning_period',
+          condition,
+          params,
+        );
+      } else {
+        const [condition_1, params_1] = formInOrEqualsCondition(
+          'learning_period.id',
+          learningPeriod,
+          'learning_period_ids',
+        );
+        const [condition_2, params_2] = formInOrEqualsCondition(
+          'learning_period.track_id',
+          track,
+          'track_ids',
+        );
+        query.innerJoin(
+          'student_lp_enrollment.learning_period',
+          'learning_period',
+          `${condition_1} AND ${condition_2}`,
+          { ...params_1, ...params_2 },
+        );
+      }
     }
 
     if (academy) {
@@ -221,10 +266,6 @@ export class AdminComplianceService {
 
     if (school) {
       addInOrEqualsCondition(query, 'school.id', school);
-    }
-
-    if (track) {
-      addInOrEqualsCondition(query, 'learning_period.track_id', track);
     }
 
     if (semesters) {

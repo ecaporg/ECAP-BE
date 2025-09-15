@@ -5,9 +5,25 @@ export function addInOrEqualsCondition<T>(
   field: string,
   value: (string | number)[],
 ) {
-  if (value.length > 1) {
-    query.andWhere(`${field} IN (:...ids)`, { ids: value });
-  } else if (value.length === 1) {
-    query.andWhere(`${field} = :id`, { id: value[0] });
+  const [condition, params] = formInOrEqualsCondition(
+    field,
+    value,
+    field.replace('.', '_') + '_ids',
+  );
+  if (value.length > 0) {
+    query.andWhere(condition, params);
   }
+}
+
+export function formInOrEqualsCondition(
+  field: string,
+  value: (string | number)[],
+  idsAlias: string = 'ids',
+): [string, Record<string, any>] {
+  if (value.length > 1) {
+    return [`${field} IN (:...${idsAlias})`, { [idsAlias]: value }];
+  } else if (value.length === 1) {
+    return [`${field} = :${idsAlias}`, { [idsAlias]: value[0] }];
+  }
+  return ['', {}];
 }
