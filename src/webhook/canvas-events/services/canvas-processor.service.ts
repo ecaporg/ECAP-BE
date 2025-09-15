@@ -491,7 +491,7 @@ export class CanvasProcessorService {
         sis_import_id: person.sis_import_id,
         avatar_url: person.avatar_url,
         time_zone: person.time_zone,
-        track_name: null,
+        track_name: `Track A`,
         grade: -1,
       },
     } as any;

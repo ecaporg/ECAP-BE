@@ -224,14 +224,11 @@ export class AdminComplianceService {
     }
 
     if (track) {
-      query.leftJoin('learning_period.track', 'track');
-      addInOrEqualsCondition(query, 'track.id', track);
+      addInOrEqualsCondition(query, 'learning_period.track_id', track);
     }
 
     if (semesters) {
-      if (!track) {
-        query.leftJoin('learning_period.track', 'track');
-      }
+      query.leftJoin('learning_period.track', 'track');
       query.leftJoin('track.semesters', 'semesters');
       addInOrEqualsCondition(query, 'semesters.id', semesters);
     }
