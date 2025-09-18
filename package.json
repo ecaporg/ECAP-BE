@@ -1,7 +1,7 @@
 {
-  "name": "ecap-api",
+  "name": "ecap-be",
   "version": "0.0.1",
-  "description": "ECAP API",
+  "description": "Backend for ECAP: automation system for education integrated with Canvas LMS and SIS.",
   "author": "",
   "private": true,
   "scripts": {
