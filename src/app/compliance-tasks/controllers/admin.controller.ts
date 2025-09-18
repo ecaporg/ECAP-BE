@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { AuthUser } from '../../../auth/types/auth-user';
 import {
   ApiArrayResponse,
@@ -14,7 +15,6 @@ import {
 import { TeacherSchoolYearEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
 import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   assignmentFilterMapping,
   TeachersTableFilterDto,

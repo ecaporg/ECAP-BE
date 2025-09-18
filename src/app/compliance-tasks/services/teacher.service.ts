@@ -3,6 +3,7 @@ import { Equal, FindOptionsWhere, ILike, In, LessThanOrEqual } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { AuthUser } from '../../../auth/types/auth-user';
 import { BadRequestException, extractPaginationOptions } from '../../../core';
 import { StudentLPEnrollmentService } from '../../../domain/enrollment/services/student-enrollment.service';
@@ -10,7 +11,6 @@ import { StudentService } from '../../../domain/students/services/student.servic
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   StudentSamplesFilterDto,
   StudentsTableFilterDto,
