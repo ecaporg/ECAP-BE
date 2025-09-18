@@ -11,7 +11,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { CanvasGenericEntity } from '../../../core';
 import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/student-enrollment-assignment.entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserEntity } from '../../../auth/entities/user.entity';
 
 import {
   SampleFlagCompletedEntity,

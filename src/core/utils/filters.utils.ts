@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import { DEFAULT_FILTERS_KEYS } from '../constants';
-
-interface QueryParamMapping
-  extends Partial<Record<keyof typeof DEFAULT_FILTERS_KEYS, string>> {}
+import { DEFAULT_FILTERS_KEYS } from 'ecap-lib/dist/constants';
+import { QueryParamMapping } from 'ecap-lib/dist/types';
 
 export function getFilterMappingRecord<T = QueryParamMapping>(
   FILTER_KEYS: T,

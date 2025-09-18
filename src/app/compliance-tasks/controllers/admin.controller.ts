@@ -14,7 +14,7 @@ import {
 import { TeacherSchoolYearEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
 import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
-import { RolesEnum } from '../../../domain/users/enums/roles.enum';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   assignmentFilterMapping,
   TeachersTableFilterDto,

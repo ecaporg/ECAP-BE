@@ -10,7 +10,7 @@ import { StudentService } from '../../../domain/students/services/student.servic
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
-import { RolesEnum } from '../../../domain/users/enums/roles.enum';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   StudentSamplesFilterDto,
   StudentsTableFilterDto,

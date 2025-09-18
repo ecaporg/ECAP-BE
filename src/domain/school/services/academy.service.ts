@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { BaseService } from '../../../core';
 import { AdminService } from '../../staff/services/staff.service';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserEntity } from '../../../auth/entities/user.entity';
 import { AcademyEntity } from '../entities/academy.entity';
 
 @Injectable()

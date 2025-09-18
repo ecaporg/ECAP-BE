@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
-import { UsersService } from '../../domain/users/users.service';
+import { UsersService } from '../services/users.service';
 import { EmailDTO } from '../dtos/email.dto';
 
 @Injectable()

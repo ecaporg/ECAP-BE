@@ -38,7 +38,7 @@ import { TrackEntity } from '../../domain/track/entities/track.entity';
 import { TrackCalendarEntity } from '../../domain/track/entities/track-calendar.entity';
 import { TrackLearningPeriodEntity } from '../../domain/track/entities/track-learning-period.entity';
 // User entities
-import { UserEntity } from '../../domain/users/entities/user.entity';
+import { UserEntity } from '../../auth/entities/user.entity';
 // Core models
 import { ErrorResponseDto } from '../dto/error-response.dto';
 

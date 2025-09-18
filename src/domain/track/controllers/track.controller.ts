@@ -22,8 +22,8 @@ import {
   PaginatedResult,
   Roles,
 } from '../../../core';
-import { UserEntity } from '../../users/entities/user.entity';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { UserEntity } from '../../../auth/entities/user.entity';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { TrackFilterDto } from '../dto/filters.dto'; // Using TrackFilterDto
 import { CreateTrackDto, UpdateTrackDto } from '../dto/track.dto';
 import { TrackEntity } from '../entities/track.entity';

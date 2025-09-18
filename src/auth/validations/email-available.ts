@@ -6,7 +6,7 @@ import {
 } from 'class-validator';
 
 import { NotFoundException } from '../../core';
-import { UsersService } from '../../domain/users/users.service';
+import { UsersService } from '../services/users.service';
 
 @ValidatorConstraint({ async: true })
 export class EmailAvailableConstraint implements ValidatorConstraintInterface {

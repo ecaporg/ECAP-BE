@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 import { EmailVerifiedGuard } from '../../auth/guards/email-verified.guard';
-import { RolesEnum } from '../../domain/users/enums/roles.enum';
+import { RolesEnum } from '../../auth/enums/roles.enum';
 import { RoleGuard, ROLES_KEY } from '../guards/role.guard';
 
 export function Roles(...roles: RolesEnum[]) {

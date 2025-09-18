@@ -7,8 +7,8 @@ import {
   CurrentUser,
   Roles,
 } from '../../../core';
-import { UserEntity } from '../../../domain/users/entities/user.entity';
-import { RolesEnum } from '../../../domain/users/enums/roles.enum';
+import { UserEntity } from '../../../auth/entities/user.entity';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
 import { DashboardFilterDto } from '../dto/filters.dto';
 import { DashboardService } from '../services/dashboard.service';

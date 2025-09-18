@@ -30,7 +30,7 @@ import {
   Roles,
 } from '../../../core';
 import { AttachASearchFieldsInterceptor } from '../../../core/interceptors/attach-search_fields.interceptor';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { TeachersFilterDto } from '../dto/filters.dto';
 import { TeacherEntity } from '../entities/staff.entity';
 import { TeacherFilterInterceptor } from '../interceptors/teacher-filter.interceptor';

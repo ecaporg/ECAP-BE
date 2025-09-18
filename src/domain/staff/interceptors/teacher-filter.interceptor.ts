@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { AttachUserIdInterceptor } from '../../../core/interceptors/attach-user-id.interceptor';
-import { RolesEnum } from '../../../domain/users/enums/roles.enum';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { TeacherEntity } from '../entities/staff.entity';
 
 @Injectable()

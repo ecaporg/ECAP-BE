@@ -8,8 +8,8 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { EmailAvailable } from '../../../auth/validations/email-available';
 import { RolesEnum } from '../enums/roles.enum';
+import { EmailAvailable } from '../validations/email-available';
 
 export class CreateUserDTO {
   @ApiProperty({

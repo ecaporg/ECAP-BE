@@ -15,7 +15,7 @@ import { DatedGenericEntity } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserEntity } from '../../../auth/entities/user.entity';
 
 // TODO: move track_id, academy_id, and school_id to student_enrollment_entity
 

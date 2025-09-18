@@ -21,7 +21,7 @@ import {
   PaginatedResult,
   Roles,
 } from '../../../core';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { TrackCalendarFilterDto } from '../dto/filters.dto';
 import {
   CreateTrackCalendarDto,

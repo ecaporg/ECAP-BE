@@ -15,7 +15,7 @@ import { DatedGenericEntity } from '../../../core';
 import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserEntity } from '../../../auth/entities/user.entity';
 
 interface IStaffEntity {
   id: number;

@@ -1,9 +1,6 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { ErrorResponse } from 'ecap-lib/dist/types';
 
-export interface ErrorResponse {
-  message: string;
-  details?: Record<string, any>;
-}
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class ApplicationException extends HttpException {
   constructor(

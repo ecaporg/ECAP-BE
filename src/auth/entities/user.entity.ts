@@ -2,10 +2,13 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
-import { AdminEntity, TeacherEntity } from '../../staff/entities/staff.entity';
-import { DirectorEntity } from '../../staff/entities/staff.entity';
-import { StudentEntity } from '../../students/entities/student.entity';
+import { GenericEntity } from '../../core';
+import {
+  AdminEntity,
+  DirectorEntity,
+  TeacherEntity,
+} from '../../domain/staff/entities/staff.entity';
+import { StudentEntity } from '../../domain/students/entities/student.entity';
 import { RolesEnum } from '../enums/roles.enum';
 
 interface IUserEntity {

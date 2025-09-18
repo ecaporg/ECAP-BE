@@ -25,8 +25,8 @@ import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearEntity } from '../../../domain/track/entities/academic-year.entity';
 import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
-import { RolesEnum } from '../../../domain/users/enums/roles.enum';
-import { UsersService } from '../../../domain/users/users.service';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
+import { UsersService } from '../../../auth/services/users.service';
 import {
   CanvasAssignmentDto,
   CanvasCourseDto,

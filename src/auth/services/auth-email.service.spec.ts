@@ -11,7 +11,7 @@
 // import { mockConfigService } from '../test-utils/config-service.mock';
 // import dbTestingUtils from '../test-utils/db-testing.utils';
 // import { RoleEntity } from '../users/entities/role.entity';
-// import { UserEntity } from '../users/entities/user.entity';
+// import { UserEntity } from '../entities/user.entity';
 // import { UserRoleEntity } from '../users/entities/user-role.entity';
 // import { UsersService } from '../users/users.service';
 

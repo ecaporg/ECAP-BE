@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from '../../../core';
 import { AdminService } from '../../staff/services/staff.service';
 import { AcademicYearService } from '../../track/services/academic-year.service';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserEntity } from '../../../auth/entities/user.entity';
 import { AcademicYearEntity } from '../entities/academic-year.entity';
 import { TrackEntity } from '../entities/track.entity';
 

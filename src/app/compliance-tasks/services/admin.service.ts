@@ -16,7 +16,7 @@ import {
   SampleFlagCategory,
   SampleStatus,
 } from '../../../domain/students/entities/sample.entity';
-import { RolesEnum } from '../../../domain/users/enums/roles.enum';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { TeachersTableFilterDto } from '../dto/filters.dto';
 
 import { TeacherComplianceTaskService } from './teacher.service';

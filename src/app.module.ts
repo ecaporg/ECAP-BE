@@ -7,7 +7,7 @@ import { DashboardModule } from './app/dashboard/dashboard.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
 import { SchoolModule } from './domain/school/school.module';
-import { UsersModule } from './domain/users/users.module';
+import { UsersModule } from './auth/users.module';
 import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

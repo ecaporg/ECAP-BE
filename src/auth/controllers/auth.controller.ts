@@ -9,8 +9,8 @@ import {
 } from '@nestjs/swagger';
 
 import { ApiCrudResponse, ApiErrorResponses, CurrentUser } from '../../core';
-import { CreateUserDTO } from '../../domain/users/dtos/create-user.dto';
-import { UserEntity } from '../../domain/users/entities/user.entity';
+import { CreateUserDTO } from '../dtos/create-user.dto';
+import { UserEntity } from '../entities/user.entity';
 import { AccountVerified } from '../decorators/account-verified';
 import { AuthTokensDTO } from '../dtos/auth-tokens.dto';
 import { EmailDTO } from '../dtos/email.dto';

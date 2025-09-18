@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { SchoolModule } from '../../domain/school/school.module';
-import { UsersModule } from '../../domain/users/users.module';
+import { UsersModule } from '../../auth/users.module';
 
 import { CanvasEventController } from './controllers/event.controller';
 import { CanvasEventService } from './services/canvas-event.service';

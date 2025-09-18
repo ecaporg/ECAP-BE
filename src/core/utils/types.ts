@@ -48,6 +48,9 @@ export type NestedObjectFromDotNotation<
   V,
 > = NestedObjectFromPath<Split<T, '.'>, V>;
 
+// example
+// type Test1 = NestedObjectFromDotNotation<'key.key.key', number>; // { key: { key: { key: number } } }
+
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
 ) => void

@@ -25,8 +25,8 @@ import {
   QueryParamMapperInterceptor,
   Roles,
 } from '../../../core';
-import { UserEntity } from '../../users/entities/user.entity';
-import { RolesEnum } from '../../users/enums/roles.enum';
+import { UserEntity } from '../../../auth/entities/user.entity';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { filterMapping, FlaggedSamplesFilterDto } from '../dto/filters.dto';
 import {
   CreateSampleDto,

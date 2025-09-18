@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ErrorResponse } from 'ecap-lib/dist/types';
 
-import { ErrorResponse } from '../exceptions/application.exception';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ErrorResponseDto implements ErrorResponse {
   @ApiProperty({
