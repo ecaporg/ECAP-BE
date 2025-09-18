@@ -1,4 +1,5 @@
-﻿import {
+﻿import { IAssignment } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -14,21 +15,10 @@ import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/s
 
 import { CourseEntity } from './course.entity';
 
-interface IAssignmentEntity {
-  name: string;
-  due_at: Date;
-  canvas_id?: string;
-
-  course: Relation<CourseEntity>;
-  course_id: number;
-
-  enrollmentAssignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
-}
-
 @Entity({ name: 'assignments' })
 export class AssignmentEntity
   extends CanvasGenericEntity
-  implements IAssignmentEntity
+  implements IAssignment
 {
   @ApiProperty({ description: 'Course ID' })
   @Column()

@@ -1,4 +1,5 @@
-﻿import {
+﻿import { IStudentLPEnrollment } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -18,28 +19,10 @@ import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-p
 
 import { StudentLPEnrollmentAssignmentEntity } from './student-enrollment-assignment.entity';
 
-interface IStudentLPEnrollmentEntity {
-  completed: boolean;
-  percentage: number;
-  student_grade: string;
-
-  student_id: number;
-  student: Relation<StudentEntity>;
-
-  teacher_school_year_enrollments: Relation<
-    TeacherSchoolYearEnrollmentEntity[]
-  >;
-
-  learning_period: Relation<TrackLearningPeriodEntity>;
-  learning_period_id: number;
-
-  assignments: Relation<StudentLPEnrollmentAssignmentEntity[]>;
-}
-
 @Entity('student_lp_enrollments')
 export class StudentLPEnrollmentEntity
   extends GenericEntity
-  implements IStudentLPEnrollmentEntity
+  implements IStudentLPEnrollment
 {
   @ApiProperty({
     description: 'Student ID associated with this learning period',

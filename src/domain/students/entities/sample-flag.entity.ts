@@ -1,4 +1,11 @@
 ﻿import {
+  ISampleFlag,
+  ISampleFlagCompleted,
+  ISampleFlagError,
+  ISampleFlagMissingWork,
+  ISampleFlagRejected,
+} from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -10,37 +17,14 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { DatedGenericEntity } from '../../../core';
 import { UserEntity } from '../../../auth/entities/user.entity';
+import { DatedGenericEntity } from '../../../core';
 
 import { SampleEntity } from './sample.entity';
 
-interface ISampleFlagEntity {
-  id: number;
-  sample: Relation<SampleEntity>;
-  user: Relation<UserEntity>;
-  user_id: number;
-}
-
-interface ISampleFlagErrorEntity extends ISampleFlagEntity {
-  comment: string;
-}
-
-interface ISampleFlagMissingWorkEntity extends ISampleFlagEntity {
-  reason: string;
-}
-
-interface ISampleFlagCompletedEntity extends ISampleFlagEntity {
-  message: string;
-}
-
-interface ISampleFlagRejectedEntity extends ISampleFlagEntity {
-  reason: string;
-}
-
 export class SampleFlagEntity
   extends DatedGenericEntity
-  implements ISampleFlagEntity
+  implements ISampleFlag
 {
   @ApiProperty({ description: 'Sample ID' })
   @PrimaryColumn()
@@ -70,7 +54,7 @@ export class SampleFlagEntity
 @Entity({ name: 'sample_flag_errors' })
 export class SampleFlagErrorEntity
   extends SampleFlagEntity
-  implements ISampleFlagErrorEntity
+  implements ISampleFlagError
 {
   @Column()
   @ApiProperty({ description: 'Comment' })
@@ -80,7 +64,7 @@ export class SampleFlagErrorEntity
 @Entity({ name: 'sample_flag_missing_work' })
 export class SampleFlagMissingWorkEntity
   extends SampleFlagEntity
-  implements ISampleFlagMissingWorkEntity
+  implements ISampleFlagMissingWork
 {
   @Column()
   @ApiProperty({ description: 'Reason' })
@@ -90,7 +74,7 @@ export class SampleFlagMissingWorkEntity
 @Entity({ name: 'sample_flag_completed' })
 export class SampleFlagCompletedEntity
   extends SampleFlagEntity
-  implements ISampleFlagCompletedEntity
+  implements ISampleFlagCompleted
 {
   @Column()
   @ApiProperty({ description: 'Message' })
@@ -100,7 +84,7 @@ export class SampleFlagCompletedEntity
 @Entity({ name: 'sample_flag_rejected' })
 export class SampleFlagRejectedEntity
   extends SampleFlagEntity
-  implements ISampleFlagRejectedEntity
+  implements ISampleFlagRejected
 {
   @Column()
   @ApiProperty({ description: 'Reason' })

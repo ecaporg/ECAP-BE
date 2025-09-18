@@ -1,4 +1,5 @@
-﻿import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
+﻿import { ITenant } from 'ecap-lib/dist/domain';
+import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -12,23 +13,8 @@ import { TrackEntity } from '../../track/entities/track.entity';
 import { ErrorEntity } from './error.entity';
 import { KeyEntity } from './key.entity';
 
-interface ITenantEntity {
-  name: string;
-
-  key: Relation<KeyEntity>;
-  errors: Relation<ErrorEntity[]>;
-
-  schools: Relation<SchoolEntity[]>;
-  academies: Relation<AcademyEntity[]>;
-  tracks: Relation<TrackEntity[]>;
-
-  admins: Relation<AdminEntity[]>;
-  directors: Relation<DirectorEntity[]>;
-  courses: Relation<CourseEntity[]>;
-}
-
 @Entity({ name: 'tenants' })
-export class TenantEntity extends GenericEntity implements ITenantEntity {
+export class TenantEntity extends GenericEntity implements ITenant {
   @ApiProperty({ description: 'Tenant name', maxLength: 250, nullable: true })
   @Column({ length: 250, nullable: true, default: null })
   name: string;

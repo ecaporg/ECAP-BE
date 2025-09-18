@@ -16,26 +16,15 @@ import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enr
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
 import { UserEntity } from '../../../auth/entities/user.entity';
+import { IStudent } from 'ecap-lib/dist/domain';
 
 // TODO: move track_id, academy_id, and school_id to student_enrollment_entity
 
-interface IStudentEntity {
-  id: number;
-  user: Relation<UserEntity>;
-
-  academy_id: number;
-  academy: Relation<AcademyEntity>;
-
-  school_id: number;
-  school: Relation<SchoolEntity>;
-
-  student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
-}
 
 @Entity({ name: 'students' })
 export class StudentEntity
   extends DatedGenericEntity
-  implements IStudentEntity
+  implements IStudent
 {
   @ApiProperty({ description: 'User ID associated with this student' })
   @PrimaryColumn()

@@ -1,4 +1,5 @@
-﻿import {
+﻿import { IAcademy } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -13,20 +14,8 @@ import { TenantGenericEntity } from '../../../core';
 import { DirectorEntity } from '../../staff/entities/staff.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
-interface IAcademyEntity {
-  name: string;
-
-  tenant: Relation<TenantEntity>;
-  tenant_id: number;
-
-  directors: Relation<DirectorEntity[]>;
-}
-
 @Entity({ name: 'academies' })
-export class AcademyEntity
-  extends TenantGenericEntity
-  implements IAcademyEntity
-{
+export class AcademyEntity extends TenantGenericEntity implements IAcademy {
   @ApiProperty({ description: 'Academy name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;

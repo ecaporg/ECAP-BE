@@ -1,4 +1,5 @@
-﻿import {
+﻿import { ICourse } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -14,16 +15,8 @@ import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 import { AssignmentEntity } from './assignment.entity';
 
-interface ICourseEntity {
-  canvas_id?: string;
-
-  name: string;
-
-  assignments: Relation<AssignmentEntity[]>;
-}
-
 @Entity({ name: 'courses' })
-export class CourseEntity extends CanvasGenericEntity implements ICourseEntity {
+export class CourseEntity extends CanvasGenericEntity implements ICourse {
   @ApiProperty({ description: 'Course name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;

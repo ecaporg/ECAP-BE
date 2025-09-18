@@ -1,4 +1,5 @@
-﻿import {
+﻿import { ISchool } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -14,20 +15,8 @@ import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/tea
 import { StudentEntity } from '../../students/entities/student.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
-interface ISchoolEntity {
-  name: string;
-
-  tenant: Relation<TenantEntity>;
-  tenant_id: number;
-
-  students: Relation<StudentEntity[]>;
-  teacher_school_year_enrollments: Relation<
-    TeacherSchoolYearEnrollmentEntity[]
-  >;
-}
-
 @Entity({ name: 'schools' })
-export class SchoolEntity extends TenantGenericEntity implements ISchoolEntity {
+export class SchoolEntity extends TenantGenericEntity implements ISchool {
   @ApiProperty({ description: 'School name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;

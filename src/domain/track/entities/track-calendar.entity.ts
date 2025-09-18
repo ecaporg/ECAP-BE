@@ -1,4 +1,5 @@
-﻿import {
+﻿import { ITrackCalendar } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -18,16 +19,10 @@ export interface CalendarDay {
   type: string;
 }
 
-interface ITrackCalendarEntity {
-  id: number;
-  days: CalendarDay[];
-  track: Relation<TrackEntity>;
-}
-
 @Entity({ name: 'track_calendar' })
 export class TrackCalendarEntity
   extends DatedGenericEntity
-  implements ITrackCalendarEntity
+  implements ITrackCalendar
 {
   @ApiProperty({ description: 'Track ID associated with this calendar entry' })
   @PrimaryColumn()

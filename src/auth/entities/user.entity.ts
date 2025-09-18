@@ -1,4 +1,5 @@
-﻿import { Column, Entity, OneToOne, Relation } from 'typeorm';
+﻿import { IUser } from 'ecap-lib/dist/domain';
+import { Column, Entity, OneToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -11,26 +12,8 @@ import {
 import { StudentEntity } from '../../domain/students/entities/student.entity';
 import { RolesEnum } from '../enums/roles.enum';
 
-interface IUserEntity {
-  name: string;
-  email: string;
-  password: string;
-  emailVerified: boolean;
-  isActive: boolean;
-  refreshToken?: string;
-
-  canvas_additional_info?: Record<string, any>;
-
-  role?: RolesEnum;
-
-  student?: Relation<StudentEntity>;
-  teacher?: Relation<TeacherEntity>;
-  director?: Relation<DirectorEntity>;
-  admin?: Relation<AdminEntity>;
-}
-
 @Entity({ name: 'users' })
-export class UserEntity extends GenericEntity implements IUserEntity {
+export class UserEntity extends GenericEntity implements IUser {
   @ApiProperty({ description: 'User email address', uniqueItems: true })
   @Column({ unique: true })
   email: string;

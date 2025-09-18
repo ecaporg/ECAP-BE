@@ -1,4 +1,5 @@
-﻿import {
+﻿import { IAdmin, IDirector, IStaff, ITeacher } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -11,37 +12,13 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
+import { UserEntity } from '../../../auth/entities/user.entity';
 import { DatedGenericEntity } from '../../../core';
 import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
-import { UserEntity } from '../../../auth/entities/user.entity';
 
-interface IStaffEntity {
-  id: number;
-  user: Relation<UserEntity>;
-}
-
-interface ITeacherEntity extends IStaffEntity {
-  teacher_school_year_enrollments: Relation<
-    TeacherSchoolYearEnrollmentEntity[]
-  >;
-}
-
-interface IAdminEntity extends IStaffEntity {
-  tenant: Relation<TenantEntity>;
-  tenant_id: number;
-}
-
-interface IDirectorEntity extends IAdminEntity {
-  academy: Relation<AcademyEntity>;
-  academy_id: number;
-}
-
-export abstract class StaffEntity
-  extends DatedGenericEntity
-  implements IStaffEntity
-{
+export abstract class StaffEntity extends DatedGenericEntity implements IStaff {
   @ApiProperty({ description: 'User ID associated with this staff member' })
   @PrimaryColumn()
   id: number;
@@ -59,7 +36,7 @@ export abstract class StaffEntity
 }
 
 @Entity({ name: 'teachers' })
-export class TeacherEntity extends StaffEntity implements ITeacherEntity {
+export class TeacherEntity extends StaffEntity implements ITeacher {
   @ApiProperty({
     description: 'Teacher school year enrollments for this teacher',
     type: () => [{}],
@@ -77,7 +54,7 @@ export class TeacherEntity extends StaffEntity implements ITeacherEntity {
   name: 'admins',
   comment: 'Admins and superadmins table',
 })
-export class AdminEntity extends StaffEntity implements IAdminEntity {
+export class AdminEntity extends StaffEntity implements IAdmin {
   @ApiProperty({
     description: 'Tenant ID associated with this admin/superadmin',
   })
@@ -97,7 +74,7 @@ export class AdminEntity extends StaffEntity implements IAdminEntity {
 }
 
 @Entity({ name: 'directors' })
-export class DirectorEntity extends StaffEntity implements IDirectorEntity {
+export class DirectorEntity extends StaffEntity implements IDirector {
   @ApiProperty({
     description: 'Tenant ID associated with this director',
   })

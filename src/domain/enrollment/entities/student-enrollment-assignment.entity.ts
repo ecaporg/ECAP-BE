@@ -1,4 +1,5 @@
-﻿import {
+﻿import { IStudentLPEnrollmentAssignment } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -15,20 +16,9 @@ import { SampleEntity } from '../../students/entities/sample.entity';
 
 import { StudentLPEnrollmentEntity } from './student-enrollment.entity';
 
-interface IStudentLPEnrollmentAssignmentEntity {
-  assignment: Relation<AssignmentEntity>;
-  assignment_id: number;
-
-  sample: Relation<SampleEntity>;
-  sample_id?: number;
-
-  student_lp_enrollment: Relation<StudentLPEnrollmentEntity>;
-  student_lp_enrollment_id: number;
-}
-
 @Entity('student_lp_enrollment_assignments')
 export class StudentLPEnrollmentAssignmentEntity
-  implements IStudentLPEnrollmentAssignmentEntity
+  implements IStudentLPEnrollmentAssignment
 {
   @ApiProperty({
     description:

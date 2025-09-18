@@ -1,4 +1,5 @@
-﻿import {
+﻿import { ITrack } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -18,24 +19,8 @@ import { SemesterEntity } from './semester.entity';
 import { TrackCalendarEntity } from './track-calendar.entity';
 import { TrackLearningPeriodEntity } from './track-learning-period.entity';
 
-interface ITrackEntity {
-  name: string;
-  start_date: Date;
-  end_date: Date;
-
-  academicYear: Relation<AcademicYearEntity>;
-  academic_year_id: number;
-
-  tenant: Relation<TenantEntity>;
-  tenant_id: number;
-
-  learningPeriods: Relation<TrackLearningPeriodEntity[]>;
-  semesters: Relation<SemesterEntity[]>;
-  calendar: Relation<TrackCalendarEntity>;
-}
-
 @Entity({ name: 'tracks' })
-export class TrackEntity extends TenantGenericEntity implements ITrackEntity {
+export class TrackEntity extends TenantGenericEntity implements ITrack {
   @ApiProperty({ description: 'Track name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;

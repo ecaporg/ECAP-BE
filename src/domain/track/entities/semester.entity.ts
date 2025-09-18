@@ -1,4 +1,5 @@
-﻿import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
+﻿import { ISemester } from 'ecap-lib/dist/domain';
+import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -6,17 +7,8 @@ import { GenericEntity } from '../../../core';
 
 import { TrackEntity } from './track.entity';
 
-interface ISemesterEntity {
-  start_date: Date;
-  end_date: Date;
-  name: string;
-
-  track: Relation<TrackEntity>;
-  track_id: number;
-}
-
 @Entity({ name: 'semesters' })
-export class SemesterEntity extends GenericEntity implements ISemesterEntity {
+export class SemesterEntity extends GenericEntity implements ISemester {
   @ApiProperty({ description: 'Track ID associated with this semester' })
   @Column()
   track_id: number;

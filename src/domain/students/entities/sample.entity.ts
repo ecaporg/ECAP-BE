@@ -1,4 +1,5 @@
-﻿import {
+﻿import { SampleFlagCategory, SampleStatus } from 'ecap-lib/dist/constants';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -9,9 +10,9 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
+import { UserEntity } from '../../../auth/entities/user.entity';
 import { CanvasGenericEntity } from '../../../core';
 import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/student-enrollment-assignment.entity';
-import { UserEntity } from '../../../auth/entities/user.entity';
 
 import {
   SampleFlagCompletedEntity,
@@ -19,22 +20,8 @@ import {
   SampleFlagMissingWorkEntity,
   SampleFlagRejectedEntity,
 } from './sample-flag.entity';
-
-export enum SampleStatus {
-  CREATED = 'CREATED', // when a sample is created, and doesn't have any status yet, DB only value
-  COMPLETED = 'COMPLETED',
-  FLAGGED_TO_ADMIN = 'FLAGGED_TO_ADMIN',
-  PENDING = 'PENDING',
-  ERRORS_FOUND = 'ERRORS_FOUND',
-  MISSING_SAMPLE = 'MISSING_SAMPLE',
-  REASON_REJECTED = 'REASON_REJECTED',
-}
-
-export enum SampleFlagCategory {
-  MISSING_SAMPLE = 'MISSING_SAMPLE',
-  REASON_REJECTED = 'REASON_REJECTED',
-  ERROR_IN_SAMPLE = 'ERROR_IN_SAMPLE',
-}
+import { ISample } from 'ecap-lib/dist/domain';
+export { SampleStatus, SampleFlagCategory };
 
 /**
  * Describes the common possible states of a sample and the transition flows between them.
@@ -63,27 +50,8 @@ export enum SampleFlagCategory {
  * or terminal states depending on the specific business logic.
  */
 
-interface ISampleEntity {
-  canvas_id?: string;
-  date?: Date;
-  status: SampleStatus;
-  grade?: string;
-  preview_url?: string;
-
-  done_by: Relation<UserEntity>;
-  done_by_id: number;
-
-  flag_category: SampleFlagCategory;
-  flag_completed: Relation<SampleFlagCompletedEntity>;
-  flag_errors: Relation<SampleFlagErrorEntity>;
-  flag_missing_work: Relation<SampleFlagMissingWorkEntity>;
-  flag_rejected: Relation<SampleFlagRejectedEntity>;
-
-  student_lp_enrollment_assignment: Relation<StudentLPEnrollmentAssignmentEntity>;
-}
-
 @Entity({ name: 'samples' })
-export class SampleEntity extends CanvasGenericEntity implements ISampleEntity {
+export class SampleEntity extends CanvasGenericEntity implements ISample {
   @ApiProperty({
     description: 'Sample status',
     maxLength: 50,
