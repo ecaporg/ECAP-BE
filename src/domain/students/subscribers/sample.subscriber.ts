@@ -75,60 +75,66 @@ export class SampleSubscriber
     sampleId: number,
     queryRunner: QueryRunner,
   ): Promise<void> {
-    //   const startedTransaction = !queryRunner.isTransactionActive;
-    //   if (startedTransaction) {
-    //     await queryRunner.connect();
-    //     await queryRunner.startTransaction();
-    //   }
-    //   try {
-    //     const sample = await queryRunner.manager.findOne(SampleEntity, {
-    //       where: { id: sampleId },
-    //       relations: {
-    //         student_lp_enrollment_assignment: {
-    //           student_lp_enrollment: true,
-    //         },
-    //       },
-    //     });
-    //     for (const studentLPEnrollment of [
-    //       sample.student_lp_enrollment_assignment.student_lp_enrollment,
-    //     ]) {
-    //       const samples = await queryRunner.manager.find(SampleEntity, {
-    //         where: { student_lp_enrollment: { id: studentLPEnrollment.id } },
-    //       });
-    //       const totalSamples = samples.length;
-    //       const completedSamples = samples.filter(
-    //         (sample) => sample.status === SampleStatus.COMPLETED,
-    //       ).length;
-    //       const percentage =
-    //         totalSamples > 0
-    //           ? parseFloat(((completedSamples * 100.0) / totalSamples).toFixed(2))
-    //           : 0;
-    //       const completed = totalSamples > 0 && completedSamples === totalSamples;
-    //       studentLPEnrollment.percentage = percentage;
-    //       studentLPEnrollment.completed = completed;
-    //       this.logger.log(
-    //         `Stats calculated for Student LP enrollment ${studentLPEnrollment.id}: completed=${completed}, percentage=${percentage}`,
-    //       );
-    //     }
-    //     await queryRunner.manager.save(
-    //       StudentLPEnrollmentEntity,
-    //       sample.student_lp_enrollments,
-    //     );
-    //     this.logger.log(
-    //       `Successfully updated stats for Student LP enrollment where sample id: ${sampleId}`,
-    //     );
-    //     if (startedTransaction) {
-    //       await queryRunner.commitTransaction();
-    //     }
-    //   } catch (error) {
-    //     if (startedTransaction) {
-    //       await queryRunner.rollbackTransaction();
-    //     }
-    //     this.logger.error(error);
-    //   } finally {
-    //     if (startedTransaction) {
-    //       await queryRunner.release();
-    //     }
-    //   }
+    const startedTransaction = !queryRunner.isTransactionActive;
+    if (startedTransaction) {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+    }
+    try {
+      const sample = await queryRunner.manager.findOne(SampleEntity, {
+        where: { id: sampleId },
+        relations: {
+          student_lp_enrollment_assignment: {
+            student_lp_enrollment: true,
+          },
+        },
+      });
+      for (const studentLPEnrollment of [
+        sample.student_lp_enrollment_assignment.student_lp_enrollment,
+      ]) {
+        const samples = await queryRunner.manager.find(SampleEntity, {
+          where: {
+            student_lp_enrollment_assignment: {
+              student_lp_enrollment: {
+                id: studentLPEnrollment.id,
+              },
+            },
+          },
+        });
+        const totalSamples = samples.length;
+        const completedSamples = samples.filter(
+          (sample) => sample.status === SampleStatus.COMPLETED,
+        ).length;
+        const percentage =
+          totalSamples > 0
+            ? parseFloat(((completedSamples * 100.0) / totalSamples).toFixed(2))
+            : 0;
+        const completed = totalSamples > 0 && completedSamples === totalSamples;
+        studentLPEnrollment.percentage = percentage;
+        studentLPEnrollment.completed = completed;
+        this.logger.log(
+          `Stats calculated for Student LP enrollment ${studentLPEnrollment.id}: completed=${completed}, percentage=${percentage}`,
+        );
+      }
+      await queryRunner.manager.save(
+        StudentLPEnrollmentEntity,
+        sample.student_lp_enrollment_assignment.student_lp_enrollment,
+      );
+      this.logger.log(
+        `Successfully updated stats for Student LP enrollment where sample id: ${sampleId}`,
+      );
+      if (startedTransaction) {
+        await queryRunner.commitTransaction();
+      }
+    } catch (error) {
+      if (startedTransaction) {
+        await queryRunner.rollbackTransaction();
+      }
+      this.logger.error(error);
+    } finally {
+      if (startedTransaction) {
+        await queryRunner.release();
+      }
+    }
   }
 }
