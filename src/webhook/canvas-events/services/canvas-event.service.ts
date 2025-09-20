@@ -81,6 +81,12 @@ export class CanvasEventService {
     event: CanvasSubmissionEventDto,
     domain: string,
   ) {
+    if (
+      (await this.processor.checkAssignment(event.body.assignment_id)) == null
+    ) {
+      return;
+    }
+
     const { tenant, currentAcademicYear } =
       await this.processor.findTenantByDomain(domain);
 

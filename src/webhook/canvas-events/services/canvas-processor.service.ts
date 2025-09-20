@@ -1,4 +1,4 @@
-import { DeepPartial, ILike, In } from 'typeorm';
+import { DeepPartial, ILike, In, Like } from 'typeorm';
 
 import { Injectable, Logger } from '@nestjs/common';
 
@@ -589,5 +589,13 @@ export class CanvasProcessorService {
       canvas_id: course.id.toString(),
       tenant_id: tenant.id,
     });
+  }
+
+  public async checkAssignment(id: string | number) {
+    return this.courseAssignmentService
+      .createBuilderQuery('course_assignment')
+      .where(":id ILIKE CONCAT('%', canvas_id, '%')", { id: id.toString() })
+      .getOne()
+      .catch(() => null);
   }
 }

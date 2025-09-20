@@ -205,4 +205,8 @@ export class BaseService<
 
     return query;
   }
+
+  createBuilderQuery(alias: string) {
+    return this.repository.createQueryBuilder(alias);
+  }
 }
