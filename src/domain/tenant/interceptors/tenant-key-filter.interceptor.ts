@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { AttachUserIdInterceptor } from '../../../core';
 import { RolesEnum } from '../../../auth/enums/roles.enum';
+import { AttachUserIdInterceptor } from '../../../core';
 import { TenantEntity } from '../entities/tenant.entity';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class TenantKeyFilterInterceptor extends AttachUserIdInterceptor<TenantEn
       { role: RolesEnum.DIRECTOR, path: 'directors.id' },
       {
         role: RolesEnum.TEACHER,
-        path: 'schools.teacher_school_year_enrollments.teacher_id',
+        path: 'teachers.id',
       },
     ]);
   }

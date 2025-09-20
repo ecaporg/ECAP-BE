@@ -2,12 +2,14 @@ import { DeepPartial, ILike, In } from 'typeorm';
 
 import { Injectable, Logger } from '@nestjs/common';
 
+import { RolesEnum } from '../../../auth/enums/roles.enum';
+import { UsersService } from '../../../auth/services/users.service';
 import { NotFoundException } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
-import { TeacherSchoolYearEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
+import { TeacherEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
 import { StudentLPEnrollmentService } from '../../../domain/enrollment/services/student-enrollment.service';
 import { StudentLPEnrollmentAssignmentService } from '../../../domain/enrollment/services/student-enrollment-assignment.service';
-import { TeacherSchoolYearEnrollmentService } from '../../../domain/enrollment/services/teacher-enrollment.service';
+import { TeacherEnrollmentService } from '../../../domain/enrollment/services/teacher-enrollment.service';
 import { TeacherService } from '../../../domain/staff/services/staff.service';
 import {
   SampleEntity,
@@ -20,13 +22,10 @@ import { CourseEntity } from '../../../domain/subject/entities/course.entity';
 import { CourseAssignmentService } from '../../../domain/subject/services/assignment.service';
 import { CourseService } from '../../../domain/subject/services/course.service';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
-import { ErrorService } from '../../../domain/tenant/services/error.service';
 import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearEntity } from '../../../domain/track/entities/academic-year.entity';
 import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
-import { UsersService } from '../../../auth/services/users.service';
 import {
   CanvasAssignmentDto,
   CanvasCourseDto,
@@ -48,11 +47,10 @@ export class CanvasProcessorService {
     private readonly academicYearService: AcademicYearService,
     private readonly userService: UsersService,
     private readonly teacherService: TeacherService,
-    private readonly teacherSchoolYearEnrollmentService: TeacherSchoolYearEnrollmentService,
+    private readonly teacherEnrollmentService: TeacherEnrollmentService,
     private readonly studentLPEnrollmentService: StudentLPEnrollmentService,
     private readonly studentLPEnrollmentAssignmentService: StudentLPEnrollmentAssignmentService,
     private readonly sampleService: SampleService,
-    private readonly errorService: ErrorService,
     private readonly courseService: CourseService,
     private readonly courseAssignmentService: CourseAssignmentService,
   ) {}
@@ -257,12 +255,13 @@ export class CanvasProcessorService {
     tenant: TenantEntity,
     currentAcademicYear: AcademicYearEntity,
   ) {
-    const setOfTeacherEnrolemts: Map<
-      number,
-      TeacherSchoolYearEnrollmentEntity[]
-    > = new Map();
-    const allTeacherEnrolemts = tenant.schools.flatMap(
-      (school) => school.teacher_school_year_enrollments,
+    const setOfTeacherEnrolemts: Map<number, TeacherEnrollmentEntity[]> =
+      new Map();
+    const allTeacherEnrolemts = tenant.teachers.flatMap((teacher) =>
+      teacher.teacher_enrollments.map((enrolemnt) => ({
+        ...enrolemnt,
+        teacher,
+      })),
     );
 
     for (const teacher of teachers) {
@@ -279,11 +278,11 @@ export class CanvasProcessorService {
       } else {
         setOfTeacherEnrolemts.set(teacher.id, [
           ...(setOfTeacherEnrolemts.get(teacher.id) || []),
-          ...(await this.createTeacherAndEnrolemt(
+          await this.createTeacherAndEnrollment(
             teacher,
             tenant,
             currentAcademicYear,
-          )),
+          ),
         ]);
       }
     }
@@ -291,11 +290,11 @@ export class CanvasProcessorService {
     return Array.from(setOfTeacherEnrolemts.values()).flat();
   }
 
-  protected async createTeacherAndEnrolemt(
+  protected async createTeacherAndEnrollment(
     teacher: CanvasUserDto,
     tenant: TenantEntity,
     currentAcademicYear: AcademicYearEntity,
-  ): Promise<TeacherSchoolYearEnrollmentEntity[]> {
+  ): Promise<TeacherEnrollmentEntity> {
     try {
       const user = await this.userService.findOneBy(
         {
@@ -303,44 +302,16 @@ export class CanvasProcessorService {
         },
         {
           teacher: {
-            teacher_school_year_enrollments: true,
+            teacher_enrollments: true,
           },
         },
       );
 
-      if (user.teacher.teacher_school_year_enrollments.length > 0) {
-        const schools = new Set(
-          user.teacher.teacher_school_year_enrollments.map(
-            (enrolemt) => enrolemt.school_id,
-          ),
-        );
-
-        const newEnrolemts = Promise.all(
-          tenant.schools
-            .filter((school) => schools.has(school.id))
-            .map((school) =>
-              this.teacherSchoolYearEnrollmentService.create({
-                school,
-                teacher: user.teacher,
-                academic_year: currentAcademicYear,
-              }),
-            ),
-        );
-
-        return newEnrolemts;
-      } else {
-        const newTeacherEnrolemts = await Promise.all(
-          tenant.schools.map((school) =>
-            this.teacherSchoolYearEnrollmentService.create({
-              school,
-              teacher: user.teacher,
-              academic_year: currentAcademicYear,
-            } as DeepPartial<TeacherSchoolYearEnrollmentEntity>),
-          ),
-        );
-
-        return newTeacherEnrolemts;
-      }
+      const newEnrollment = await this.teacherEnrollmentService.create({
+        teacher: user.teacher,
+        academic_year: currentAcademicYear,
+      });
+      return newEnrollment;
     } catch (error) {
       if (error instanceof NotFoundException) {
         const user = await this.userService.create({
@@ -361,17 +332,12 @@ export class CanvasProcessorService {
           user,
         });
 
-        const newTeacherEnrolemts = await Promise.all(
-          tenant.schools.map((school) =>
-            this.teacherSchoolYearEnrollmentService.create({
-              school,
-              teacher: newTeacher,
-              academic_year: currentAcademicYear,
-            } as DeepPartial<TeacherSchoolYearEnrollmentEntity>),
-          ),
-        );
+        const newEnrollment = await this.teacherEnrollmentService.create({
+          teacher: newTeacher,
+          academic_year: currentAcademicYear,
+        } as DeepPartial<TeacherEnrollmentEntity>);
 
-        return newTeacherEnrolemts;
+        return newEnrollment;
       } else {
         throw error;
       }
@@ -383,14 +349,15 @@ export class CanvasProcessorService {
     canvasAssignments: CanvasAssignmentDto[],
     learningPeriods: TrackLearningPeriodEntity[],
     students: CanvasUserDto[],
-    teacher_school_enrollment: TeacherSchoolYearEnrollmentEntity[],
+    teacher_school_enrollment: TeacherEnrollmentEntity[],
   ) {
     const studentLPEnrollmentPeriods: StudentLPEnrollmentEntity[] = [];
     const studentLPEnrollmentAssignments: StudentLPEnrollmentEntity['assignments'] =
       [];
     const db_students = await this.getAndCreateStudents(
       students,
-      teacher_school_enrollment[0].school_id,
+      0,
+      // teacher_school_enrollment[0].school_id,
     );
 
     for (const person of students) {
@@ -432,7 +399,7 @@ export class CanvasProcessorService {
             completed: false,
             percentage: 0,
             student_grade: `Grade ${student.user.canvas_additional_info.grade}`,
-            teacher_school_year_enrollments: teacher_school_enrollment,
+            teacher_enrollments: teacher_school_enrollment,
             assignments: assignments,
           } as StudentLPEnrollmentEntity);
         }
@@ -562,8 +529,8 @@ export class CanvasProcessorService {
 
     const tenant = await this.tenantService.findOneBy(
       {
-        schools: {
-          teacher_school_year_enrollments: {
+        teachers: {
+          teacher_enrollments: {
             academic_year: {
               id: currentAcademicYear[0].id,
             },
@@ -578,13 +545,12 @@ export class CanvasProcessorService {
       },
       {
         key: true,
-        schools: {
-          teacher_school_year_enrollments: {
-            teacher: {
-              user: true,
-            },
+        schools: true,
+        teachers: {
+          teacher_enrollments: {
             academic_year: true,
           },
+          user: true,
         },
         tracks: {
           learningPeriods: true,
@@ -595,14 +561,11 @@ export class CanvasProcessorService {
     return { tenant, currentAcademicYear: currentAcademicYear[0] };
   }
 
-  public async logError({ tenant, domain, event, error }: ProcessErrorDto) {
-    const savedError = await this.errorService.create({
-      tenant,
-      message: `Error processing canvas event: domain ${domain}, error: ${error.message}, event: ${JSON.stringify(
-        event,
-      )}`,
-    });
-    this.logger.error(JSON.stringify(savedError.message, null, 2));
+  public async logError({ domain, event, error }: ProcessErrorDto) {
+    const errorMessage = `Error processing canvas event: domain ${domain}, error: ${error.message}, event: ${JSON.stringify(
+      event,
+    )}`;
+    this.logger.error(errorMessage);
   }
 
   protected isAssignmentValid(assignment: CanvasAssignmentDto): boolean {

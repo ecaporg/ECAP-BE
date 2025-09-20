@@ -15,23 +15,22 @@ import { StudentLPEnrollmentAssignmentEntity } from '../../../domain/enrollment/
 const FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'learning_period_id',
   ACADEMY_ID: 'student.academy_id',
-  SCHOOL_ID: 'teacher_school_year_enrollments.school_id',
+  SCHOOL_ID: 'student.school_id',
   TRACK_ID: 'learning_period.track_id',
   STUDENT_GRADE: 'student_grade',
   COMPLETED: 'completed',
-  TEACHER_ID: 'teacher_school_year_enrollments.teacher_id',
+  TEACHER_ID: 'teacher_enrollments.teacher_id',
   STATUS: 'assignments.sample.status',
   STUDENT_ID: 'student_id',
   DONE_BY_ID: 'assignments.sample.done_by_id',
-  ACADEMIC_YEAR: 'teacher_school_year_enrollments.academic_year_id',
+  ACADEMIC_YEAR: 'teacher_enrollments.academic_year_id',
   SEMESTER_ID: 'learning_period.track.semesters.id',
   SUBJECT_ID: 'assignments.assignment.course_id',
 } satisfies RecordStringAndDotNotation<StudentLPEnrollmentEntity>;
 
 const ASSIGNMENT_FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'student_lp_enrollment.learning_period_id',
-  ACADEMIC_YEAR:
-    'student_lp_enrollment.teacher_school_year_enrollments.academic_year_id',
+  ACADEMIC_YEAR: 'student_lp_enrollment.teacher_enrollments.academic_year_id',
   SEMESTER_ID: 'student_lp_enrollment.learning_period.track.semesters.id',
   STATUS: 'sample.status',
   STUDENT_ID: 'student_lp_enrollment.student_id',
@@ -39,12 +38,11 @@ const ASSIGNMENT_FILTER_KEYS = {
   SUBJECT_ID: 'assignment.course_id',
 
   ACADEMY_ID: 'student_lp_enrollment.student.academy_id',
-  SCHOOL_ID: 'student_lp_enrollment.teacher_school_year_enrollments.school_id',
+  SCHOOL_ID: 'student_lp_enrollment.student.school_id',
   TRACK_ID: 'student_lp_enrollment.learning_period.track_id',
   STUDENT_GRADE: 'student_lp_enrollment.student_grade',
   COMPLETED: 'student_lp_enrollment.completed',
-  TEACHER_ID:
-    'student_lp_enrollment.teacher_school_year_enrollments.teacher_id',
+  TEACHER_ID: 'student_lp_enrollment.teacher_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<StudentLPEnrollmentAssignmentEntity>;
 
 export const filterMapping = getFilterMappingRecord(FILTER_KEYS);

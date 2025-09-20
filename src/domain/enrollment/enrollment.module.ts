@@ -6,15 +6,15 @@ import { TrackModule } from '../track/track.module';
 
 import { StudentLPEnrollmentEntity } from './entities/student-enrollment.entity';
 import { StudentLPEnrollmentAssignmentEntity } from './entities/student-enrollment-assignment.entity';
-import { TeacherSchoolYearEnrollmentEntity } from './entities/teacher-enrollment.entity';
+import { TeacherEnrollmentEntity } from './entities/teacher-enrollment.entity';
 import { StudentLPEnrollmentService } from './services/student-enrollment.service';
 import { StudentLPEnrollmentAssignmentService } from './services/student-enrollment-assignment.service';
-import { TeacherSchoolYearEnrollmentService } from './services/teacher-enrollment.service';
+import { TeacherEnrollmentService } from './services/teacher-enrollment.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      TeacherSchoolYearEnrollmentEntity,
+      TeacherEnrollmentEntity,
       StudentLPEnrollmentEntity,
       StudentLPEnrollmentAssignmentEntity,
     ]),
@@ -22,12 +22,12 @@ import { TeacherSchoolYearEnrollmentService } from './services/teacher-enrollmen
     TrackModule,
   ],
   providers: [
-    TeacherSchoolYearEnrollmentService,
+    TeacherEnrollmentService,
     StudentLPEnrollmentService,
     StudentLPEnrollmentAssignmentService,
   ],
   exports: [
-    TeacherSchoolYearEnrollmentService,
+    TeacherEnrollmentService,
     StudentLPEnrollmentService,
     StudentLPEnrollmentAssignmentService,
   ],

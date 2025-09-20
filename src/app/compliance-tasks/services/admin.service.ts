@@ -57,10 +57,7 @@ export class AdminComplianceService {
         `(COUNT(CASE WHEN sample.status = '${SampleStatus.COMPLETED}' THEN sample.id END)::float / COUNT(student_lp_enrollment.student_id)::float) * 100 as completion_percentage`,
       ])
       .leftJoin('assignments.student_lp_enrollment', 'student_lp_enrollment')
-      .leftJoin(
-        'student_lp_enrollment.teacher_school_year_enrollments',
-        't_s_y_e',
-      )
+      .leftJoin('student_lp_enrollment.teacher_enrollments', 't_s_y_e')
       .leftJoin('t_s_y_e.teacher', 'teacher')
       .leftJoin('teacher.user', 'user')
       .leftJoin('t_s_y_e.school', 'school')
@@ -132,7 +129,11 @@ export class AdminComplianceService {
   async searchTeachers(user: AuthUser, search: string) {
     const whereInSchool = {
       tenant: {
-        [user.role === RolesEnum.DIRECTOR ? 'directors' : 'admins']: {
+        [user.role === RolesEnum.DIRECTOR
+          ? 'directors'
+          : user.role === RolesEnum.ADMIN
+            ? 'admins'
+            : 'teachers']: {
           user: {
             id: user.id,
           },
@@ -147,11 +148,7 @@ export class AdminComplianceService {
           user: {
             ...property,
           },
-          teacher_school_year_enrollments: {
-            school: {
-              ...whereInSchool,
-            },
-          },
+          ...whereInSchool,
         })),
       take: 10,
     });
@@ -165,7 +162,7 @@ export class AdminComplianceService {
   ) {
     const academicYear = getAndDeleteField(
       filters,
-      'student_lp_enrollment.teacher_school_year_enrollments.academic_year_id',
+      'student_lp_enrollment.teacher_enrollments.academic_year_id',
     );
     const learningPeriod = getAndDeleteField(
       filters,
@@ -179,7 +176,7 @@ export class AdminComplianceService {
 
     const school = getAndDeleteField(
       filters,
-      'student_lp_enrollment.teacher_school_year_enrollments.school_id',
+      'student_lp_enrollment.student.school_id',
     );
     const track = getAndDeleteField(
       filters,

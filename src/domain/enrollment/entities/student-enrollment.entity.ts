@@ -13,7 +13,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '../../../core';
-import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
+import { TeacherEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-period.entity';
 
@@ -65,14 +65,12 @@ export class StudentLPEnrollmentEntity
     type: () => Object,
   })
   @ManyToMany(
-    () => TeacherSchoolYearEnrollmentEntity,
+    () => TeacherEnrollmentEntity,
     (teacherSchoolYearEnrollment) =>
       teacherSchoolYearEnrollment.student_lp_enrollments,
   )
   @JoinTable()
-  teacher_school_year_enrollments: Relation<
-    TeacherSchoolYearEnrollmentEntity[]
-  >;
+  teacher_enrollments: Relation<TeacherEnrollmentEntity[]>;
 
   @ApiProperty({
     description: 'Student associated with this enrollment',

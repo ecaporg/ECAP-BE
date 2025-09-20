@@ -7,7 +7,7 @@
 // import { Submission } from 'migrations/elite-data/submitions';
 // import { StudentLPEnrollmentEntity } from 'src/domain/enrollment/entities/student-enrollment.entity';
 // import { StudentLPEnrollmentAssignmentEntity } from 'src/domain/enrollment/entities/student-enrollment-assignment.entity';
-// import { TeacherSchoolYearEnrollmentEntity } from 'src/domain/enrollment/entities/teacher-enrollment.entity';
+// import { TeacherEnrollmentEntity } from 'src/domain/enrollment/entities/teacher-enrollment.entity';
 // import { AcademyEntity } from 'src/domain/school/entities/academy.entity';
 // import { SchoolEntity } from 'src/domain/school/entities/school.entity';
 // import {
@@ -111,7 +111,7 @@
 //       `TRUNCATE TABLE "teachers" RESTART IDENTITY CASCADE`,
 //     );
 //     await queryRunner.query(
-//       `TRUNCATE TABLE "teacher_school_year_enrollments" RESTART IDENTITY CASCADE`,
+//       `TRUNCATE TABLE "teacher_enrollments" RESTART IDENTITY CASCADE`,
 //     );
 //     await queryRunner.query(
 //       `TRUNCATE TABLE "student_lp_enrollments" RESTART IDENTITY CASCADE`,
@@ -290,7 +290,7 @@
 //     schools: SchoolEntity[],
 //     academicYears: AcademicYearEntity[],
 //   ) {
-//     const enrollments = [] as TeacherSchoolYearEnrollmentEntity[];
+//     const enrollments = [] as TeacherEnrollmentEntity[];
 //     const peoples = JSON.parse(
 //       readFileSync('migrations/elite-data/teachers.json', 'utf8'),
 //     ) as People[];
@@ -338,7 +338,7 @@
 //             school,
 //             teacher,
 //             academic_year: academicYear,
-//           } as TeacherSchoolYearEnrollmentEntity);
+//           } as TeacherEnrollmentEntity);
 
 //           //   if (
 //           //     person?.sis &&
@@ -350,7 +350,7 @@
 //     }
 
 //     await queryRunner.manager.save(
-//       TeacherSchoolYearEnrollmentEntity,
+//       TeacherEnrollmentEntity,
 //       enrollments,
 //     );
 
@@ -575,7 +575,7 @@
 //     queryRunner: QueryRunner,
 //     learningPeriods: TrackLearningPeriodEntity[],
 //     students: StudentEntity[],
-//     enrollments: TeacherSchoolYearEnrollmentEntity[],
+//     enrollments: TeacherEnrollmentEntity[],
 //     track: TrackEntity,
 //     academicYear: AcademicYearEntity,
 //     canvasCoursesWithAssignments: CourseEntity[],
@@ -664,7 +664,7 @@
 //           student_grade: student.user.canvas_additional_info.grade
 //             ? `Grade ${student.user.canvas_additional_info.grade}`
 //             : '',
-//           teacher_school_year_enrollments: teacher_school_enrollment.filter(
+//           teacher_enrollments: teacher_school_enrollment.filter(
 //             (enrollment) =>
 //               enrollment.school_id == student.school_id &&
 //               teacher_ids.has(

@@ -14,7 +14,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { UserEntity } from '../../../auth/entities/user.entity';
 import { DatedGenericEntity } from '../../../core';
-import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
+import { TeacherEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
@@ -42,12 +42,27 @@ export class TeacherEntity extends StaffEntity implements ITeacher {
     type: () => [{}],
   })
   @OneToMany(
-    () => TeacherSchoolYearEnrollmentEntity,
-    (teacher_school_year_enrollment) => teacher_school_year_enrollment.teacher,
+    () => TeacherEnrollmentEntity,
+    (teacher_enrollment) => teacher_enrollment.teacher,
   )
-  teacher_school_year_enrollments: Relation<
-    TeacherSchoolYearEnrollmentEntity[]
-  >;
+  teacher_enrollments: Relation<TeacherEnrollmentEntity[]>;
+
+  @ApiProperty({
+    description: 'Tenant ID associated with this admin/superadmin',
+  })
+  @PrimaryColumn()
+  tenant_id: number;
+
+  @ApiProperty({
+    description: 'Tenant associated with this admin/superadmin',
+    type: () => TenantEntity,
+  })
+  @ManyToOne(() => TenantEntity, (tenant) => tenant.teachers, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Relation<TenantEntity>;
 }
 
 @Entity({

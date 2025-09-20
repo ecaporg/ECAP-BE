@@ -1,4 +1,4 @@
-﻿import { ITeacherSchoolYearEnrollment } from 'ecap-lib/dist/domain';
+﻿import { ITeacherEnrollment } from 'ecap-lib/dist/domain';
 import {
   Column,
   Entity,
@@ -12,18 +12,17 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
-import { SchoolEntity } from '../../school/entities/school.entity';
 import { TeacherEntity } from '../../staff/entities/staff.entity';
 import { AcademicYearEntity } from '../../track/entities/academic-year.entity';
 
-@Entity({ name: 'teacher_school_year_enrollments' })
-export class TeacherSchoolYearEnrollmentEntity
+@Entity({ name: 'teacher_enrollments' })
+export class TeacherEnrollmentEntity
   extends GenericEntity
-  implements ITeacherSchoolYearEnrollment
+  implements ITeacherEnrollment
 {
-  @ApiProperty({ description: 'School ID associated with this enrollment' })
-  @Column()
-  school_id: number;
+  // @ApiProperty({ description: 'School ID associated with this enrollment' })
+  // @Column()
+  // school_id: number;
 
   @ApiProperty({ description: 'Teacher ID associated with this enrollment' })
   @Column()
@@ -35,16 +34,16 @@ export class TeacherSchoolYearEnrollmentEntity
   @Column()
   academic_year_id: number;
 
-  @ApiProperty({
-    description: 'School associated with this enrollment',
-    type: () => Object,
-  })
-  @ManyToOne(() => SchoolEntity, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'school_id' })
-  school: Relation<SchoolEntity>;
+  // @ApiProperty({
+  //   description: 'School associated with this enrollment',
+  //   type: () => Object,
+  // })
+  // @ManyToOne(() => SchoolEntity, {
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE',
+  // })
+  // @JoinColumn({ name: 'school_id' })
+  // school: Relation<SchoolEntity>;
 
   @ApiProperty({
     description: 'Teacher associated with this enrollment',
@@ -74,8 +73,7 @@ export class TeacherSchoolYearEnrollmentEntity
   })
   @ManyToMany(
     () => StudentLPEnrollmentEntity,
-    (student_lp_enrollment) =>
-      student_lp_enrollment.teacher_school_year_enrollments,
+    (student_lp_enrollment) => student_lp_enrollment.teacher_enrollments,
   )
   student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }

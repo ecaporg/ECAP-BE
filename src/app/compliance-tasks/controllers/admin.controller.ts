@@ -12,7 +12,7 @@ import {
   QueryParamMapperInterceptor,
   Roles,
 } from '../../../core';
-import { TeacherSchoolYearEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
+import { TeacherEnrollmentEntity } from '../../../domain/enrollment/entities/teacher-enrollment.entity';
 import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import {
@@ -36,7 +36,7 @@ export class AdminComplianceController {
     } as Partial<{ [key in keyof TeachersTableFilterDto]: any }> as any),
   )
   @ApiOperation({ summary: 'Get table with teachers' })
-  @ApiPaginatedCrudResponse(TeacherSchoolYearEnrollmentEntity)
+  @ApiPaginatedCrudResponse(TeacherEnrollmentEntity)
   async getTeachers(
     @Query() filters: TeachersTableFilterDto,
     @CurrentUser() user: AuthUser,

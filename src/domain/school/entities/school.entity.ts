@@ -11,7 +11,6 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { TenantGenericEntity } from '../../../core';
-import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
@@ -39,12 +38,10 @@ export class SchoolEntity extends TenantGenericEntity implements ISchool {
   @OneToMany(() => StudentEntity, (student) => student.school)
   students: Relation<StudentEntity[]>;
 
-  @ApiProperty({
-    description: 'Teacher school year enrollments in this school',
-    type: () => [{}],
-  })
-  @OneToMany(() => TeacherSchoolYearEnrollmentEntity, (course) => course.school)
-  teacher_school_year_enrollments: Relation<
-    TeacherSchoolYearEnrollmentEntity[]
-  >;
+  // @ApiProperty({
+  //   description: 'Teacher school year enrollments in this school',
+  //   type: () => [{}],
+  // })
+  // @OneToMany(() => TeacherEnrollmentEntity, (course) => course.school)
+  // teacher_enrollments: Relation<TeacherEnrollmentEntity[]>;
 }

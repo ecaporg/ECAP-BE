@@ -6,11 +6,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GenericEntity } from '../../../core';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
-import { AdminEntity, DirectorEntity } from '../../staff/entities/staff.entity';
+import {
+  AdminEntity,
+  DirectorEntity,
+  TeacherEntity,
+} from '../../staff/entities/staff.entity';
 import { CourseEntity } from '../../subject/entities/course.entity';
 import { TrackEntity } from '../../track/entities/track.entity';
 
-import { ErrorEntity } from './error.entity';
 import { KeyEntity } from './key.entity';
 
 @Entity({ name: 'tenants' })
@@ -34,6 +37,13 @@ export class TenantEntity extends GenericEntity implements ITenant {
   admins: Relation<AdminEntity[]>;
 
   @ApiProperty({
+    description: 'Teachers associated with this tenant',
+    type: () => [{}],
+  })
+  @OneToMany(() => TeacherEntity, (teacher) => teacher.tenant)
+  teachers: Relation<TeacherEntity[]>;
+
+  @ApiProperty({
     description: 'Academies associated with this tenant',
     type: () => [{}],
   })
@@ -53,13 +63,6 @@ export class TenantEntity extends GenericEntity implements ITenant {
   })
   @OneToMany(() => DirectorEntity, (director) => director.tenant)
   directors: Relation<DirectorEntity[]>;
-
-  @ApiProperty({
-    description: 'Errors associated with this tenant',
-    type: () => [{}],
-  })
-  @OneToMany(() => ErrorEntity, (error) => error.tenant)
-  errors: Relation<ErrorEntity[]>;
 
   @ApiProperty({
     description: 'Keys associated with this tenant',

@@ -1,11 +1,13 @@
 import { Type } from '@nestjs/common';
 
+// User entities
+import { UserEntity } from '../../auth/entities/user.entity';
 // Auth models
 import { AuthUser } from '../../auth/types/auth-user';
 // Enrollment entities
 import { StudentLPEnrollmentEntity } from '../../domain/enrollment/entities/student-enrollment.entity';
 import { StudentLPEnrollmentAssignmentEntity } from '../../domain/enrollment/entities/student-enrollment-assignment.entity';
-import { TeacherSchoolYearEnrollmentEntity } from '../../domain/enrollment/entities/teacher-enrollment.entity';
+import { TeacherEnrollmentEntity } from '../../domain/enrollment/entities/teacher-enrollment.entity';
 // School entities
 import { AcademyEntity } from '../../domain/school/entities/academy.entity';
 import { SchoolEntity } from '../../domain/school/entities/school.entity';
@@ -28,7 +30,6 @@ import { StudentEntity } from '../../domain/students/entities/student.entity';
 import { AssignmentEntity } from '../../domain/subject/entities/assignment.entity';
 import { CourseEntity } from '../../domain/subject/entities/course.entity';
 // Tenant entities
-import { ErrorEntity } from '../../domain/tenant/entities/error.entity';
 import { KeyEntity } from '../../domain/tenant/entities/key.entity';
 import { TenantEntity } from '../../domain/tenant/entities/tenant.entity';
 // Track entities
@@ -37,8 +38,6 @@ import { SemesterEntity } from '../../domain/track/entities/semester.entity';
 import { TrackEntity } from '../../domain/track/entities/track.entity';
 import { TrackCalendarEntity } from '../../domain/track/entities/track-calendar.entity';
 import { TrackLearningPeriodEntity } from '../../domain/track/entities/track-learning-period.entity';
-// User entities
-import { UserEntity } from '../../auth/entities/user.entity';
 // Core models
 import { ErrorResponseDto } from '../dto/error-response.dto';
 
@@ -63,7 +62,6 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   // Tenant
   TenantEntity,
   KeyEntity,
-  ErrorEntity,
 
   // Track
   AcademicYearEntity,
@@ -73,7 +71,7 @@ export const SWAGGER_API_MODELS: Type<any>[] = [
   TrackEntity,
 
   // Enrollment
-  TeacherSchoolYearEnrollmentEntity,
+  TeacherEnrollmentEntity,
   StudentLPEnrollmentEntity,
   StudentLPEnrollmentAssignmentEntity,
 

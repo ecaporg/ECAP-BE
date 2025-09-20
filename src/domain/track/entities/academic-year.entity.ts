@@ -4,7 +4,7 @@ import { Column, Entity, OneToMany, Relation } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { GenericEntity } from '../../../core';
-import { TeacherSchoolYearEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
+import { TeacherEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { TrackEntity } from '../../track/entities/track.entity';
 
 @Entity({ name: 'academic_years' })
@@ -32,14 +32,12 @@ export class AcademicYearEntity extends GenericEntity implements IAcademicYear {
 
   @ApiProperty({
     description: 'Teacher school year enrollments in this academic year',
-    type: () => [TeacherSchoolYearEnrollmentEntity],
+    type: () => [TeacherEnrollmentEntity],
   })
   @OneToMany(
-    () => TeacherSchoolYearEnrollmentEntity,
+    () => TeacherEnrollmentEntity,
     (teacher_school_year_enrollment) =>
       teacher_school_year_enrollment.academic_year,
   )
-  teacher_school_year_enrollments: Relation<
-    TeacherSchoolYearEnrollmentEntity[]
-  >;
+  teacher_enrollments: Relation<TeacherEnrollmentEntity[]>;
 }

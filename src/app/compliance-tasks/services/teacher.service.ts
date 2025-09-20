@@ -92,7 +92,7 @@ export class TeacherComplianceTaskService {
           ...property,
         },
         student_lp_enrollments: {
-          teacher_school_year_enrollments: {
+          teacher_enrollments: {
             teacher: {
               user: {
                 id: user.id,
@@ -127,8 +127,8 @@ export class TeacherComplianceTaskService {
       const academicYears =
         await this.academicYearService.findCurrentAcademicYears();
       query.schools = {
-        teacher_school_year_enrollments: {
-          teacher: { user: { id: user.id } },
+        tenant: {
+          teachers: { id: user.id },
         },
       };
       query.tracks = {
