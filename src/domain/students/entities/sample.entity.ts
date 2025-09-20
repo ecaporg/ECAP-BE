@@ -1,4 +1,5 @@
 ﻿import { SampleFlagCategory, SampleStatus } from 'ecap-lib/dist/constants';
+import { ISample } from 'ecap-lib/dist/domain';
 import {
   Column,
   Entity,
@@ -20,7 +21,6 @@ import {
   SampleFlagMissingWorkEntity,
   SampleFlagRejectedEntity,
 } from './sample-flag.entity';
-import { ISample } from 'ecap-lib/dist/domain';
 export { SampleStatus, SampleFlagCategory };
 
 /**

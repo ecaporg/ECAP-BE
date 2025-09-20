@@ -44,14 +44,14 @@ export class AdminComplianceService {
       .getRepository()
       .createQueryBuilder('assignments')
       .select([
-        't_s_y_e.id as teacher_school_year_enrollment_id',
+        't_s_y_e.academic_year_id as teacher_school_year_enrollment_id',
         'teacher.id as teacher_id',
         'user.name as teacher_name',
         'academy.id as academy_id',
         'academy.name as academy_name',
         'COUNT(DISTINCT student_lp_enrollment.student_id) as student_count',
         `COUNT(CASE WHEN sample.status = '${SampleStatus.COMPLETED}' THEN sample.id END) as completed_count`,
-        `COUNT(CASE WHEN sample.flag_category IN ('${SampleFlagCategory.ERROR_IN_SAMPLE}', '${SampleFlagCategory.MISSING_SAMPLE}', '${SampleFlagCategory.REASON_REJECTED}') THEN sample.id END) as flagged_count`,
+        `COUNT(CASE WHEN sample.flag_category IN ('${SampleFlagCategory.ERROR_IN_SAMPLE}', '${SampleFlagCategory.MISSING_SAMPLE}', '${SampleFlagCategory.REASON_REJECTED}') and sample.status <> '${SampleStatus.COMPLETED}' THEN sample.id END) as flagged_count`,
         `COUNT(CASE WHEN sample.status IN ('${SampleStatus.PENDING}', '${SampleStatus.ERRORS_FOUND}', '${SampleStatus.MISSING_SAMPLE}') THEN sample.id END) as incompleted_count`,
         `BOOL_AND(sample.status = '${SampleStatus.COMPLETED}') as is_complated`,
         `(COUNT(CASE WHEN sample.status = '${SampleStatus.COMPLETED}' THEN sample.id END)::float / COUNT(student_lp_enrollment.student_id)::float) * 100 as completion_percentage`,
@@ -68,7 +68,7 @@ export class AdminComplianceService {
       .leftJoin('assignments.sample', 'sample')
       .leftJoin('student_lp_enrollment.student', 'student')
       .leftJoin('student.academy', 'academy')
-      .groupBy('t_s_y_e.id')
+      .groupBy('t_s_y_e.academic_year_id')
       .addGroupBy('teacher.id')
       .addGroupBy('user.name')
       .addGroupBy('academy.id')

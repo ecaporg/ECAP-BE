@@ -1,4 +1,5 @@
-﻿import {
+﻿import { IStudent } from 'ecap-lib/dist/domain';
+import {
   Column,
   Entity,
   JoinColumn,
@@ -11,21 +12,16 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
+import { UserEntity } from '../../../auth/entities/user.entity';
 import { DatedGenericEntity } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
-import { UserEntity } from '../../../auth/entities/user.entity';
-import { IStudent } from 'ecap-lib/dist/domain';
 
 // TODO: move track_id, academy_id, and school_id to student_enrollment_entity
 
-
 @Entity({ name: 'students' })
-export class StudentEntity
-  extends DatedGenericEntity
-  implements IStudent
-{
+export class StudentEntity extends DatedGenericEntity implements IStudent {
   @ApiProperty({ description: 'User ID associated with this student' })
   @PrimaryColumn()
   id: number;
