@@ -1,4 +1,5 @@
-// import { redisStore } from 'cache-manager-redis-yet';
+import { redisStore } from 'cache-manager-redis-store';
+
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -11,13 +12,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         const isProduction = configService.get('NODE_ENV') === 'production';
         const redisUrl = configService.get('REDIS_URL');
 
-        // if (isProduction && redisUrl) {
-        //   return {
-        //     store: redisStore,
-        //     url: redisUrl,
-        //     ttl: configService.get('REDIS_TTL', 300) * 1000, // 5 хвилин
-        //   };
-        // }
+        if (isProduction && redisUrl) {
+          return {
+            store: redisStore,
+            url: redisUrl,
+            ttl: configService.get('REDIS_TTL', 300) * 1000, // 5 хвилин
+          };
+        }
 
         return {
           ttl: configService.get('CACHE_TTL', 300) * 1000, // 5 хвилин
