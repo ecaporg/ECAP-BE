@@ -12,9 +12,9 @@ import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module
 import { AppController } from './app.controller';
 @Module({
   imports: [
-    // CoreModule,
-    // AuthModule,
-    // UsersModule,
+    CoreModule,
+    AuthModule,
+    UsersModule,
     // SchoolModule,
     // ComplianceTasksModule,
     // DashboardModule,
