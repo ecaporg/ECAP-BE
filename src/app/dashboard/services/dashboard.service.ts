@@ -2,12 +2,12 @@ import { In } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 
+import { UserEntity } from '../../../auth/entities/user.entity';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { extractPaginationOptions } from '../../../core';
 import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
 import { TrackLearningPeriodService } from '../../../domain/track/services/track-learning-period.service';
-import { UserEntity } from '../../../auth/entities/user.entity';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   AcademyStatItemDto,
   DashboardStatsResponseDto,

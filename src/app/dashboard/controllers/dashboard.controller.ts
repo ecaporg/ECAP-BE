@@ -1,14 +1,14 @@
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { UserEntity } from '../../../auth/entities/user.entity';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   ApiCrudResponse,
   AttachUserIdInterceptor,
   CurrentUser,
   Roles,
 } from '../../../core';
-import { UserEntity } from '../../../auth/entities/user.entity';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
 import { DashboardFilterDto } from '../dto/filters.dto';
 import { DashboardService } from '../services/dashboard.service';

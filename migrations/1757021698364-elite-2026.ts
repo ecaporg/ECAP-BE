@@ -36,10 +36,10 @@ import { TrackCalendarEntity } from 'src/domain/track/entities/track-calendar.en
 import { TrackLearningPeriodEntity } from 'src/domain/track/entities/track-learning-period.entity';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-// const schoolToScope = {
-//   'Mountain Empire': 'mountainelite',
-//   Lucerne: 'lucerne',
-// };
+const schoolToScope = {
+  'Mountain Empire': 'mountainelite',
+  Lucerne: 'lucerne',
+};
 
 export class Elite20261757021698364 implements MigrationInterface {
   private password: string;
@@ -722,9 +722,9 @@ export class Elite20261757021698364 implements MigrationInterface {
   }
 
   private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
-    const cheredia = await queryRunner.manager.findOne(UserEntity, {
-      where: { email: 'catherine@primeedsolutions.org' },
-    });
+    const adminsData = JSON.parse(
+      readFileSync('migrations/elite-data/admins.json', 'utf8'),
+    ) as People[];
     const admin = await queryRunner.manager.save(UserEntity, [
       {
         email: 'admin@test.com',
@@ -734,18 +734,21 @@ export class Elite20261757021698364 implements MigrationInterface {
         emailVerified: true,
         role: RolesEnum.SUPER_ADMIN,
       },
-      {
-        email: 'rgonzalez@eliteacademic.com',
-        password: await argon2.hash('password'),
-        name: 'Rachel Gonzalez',
-        isActive: true,
-        emailVerified: true,
-        role: RolesEnum.ADMIN,
-      },
-      {
-        ...cheredia,
-        role: RolesEnum.ADMIN,
-      },
+      ...adminsData.map(
+        (admin) =>
+          ({
+            email: admin.email,
+            password: this.password,
+            name: admin.name,
+            isActive: true,
+            emailVerified: true,
+            role: RolesEnum.ADMIN,
+            canvas_additional_info: {
+              canvas_id: admin?.id,
+              avatar_url: admin.avatar_url,
+            } as Record<string, any>,
+          }) as UserEntity,
+      ),
     ]);
 
     await queryRunner.manager.save(
@@ -785,7 +788,6 @@ export class Elite20261757021698364 implements MigrationInterface {
     SET
       percentage = assignment_stats.calculated_percentage,
       completed = assignment_stats.is_completed,
-      "updatedAt" = NOW()
     FROM assignment_stats
     WHERE student_lp_enrollments.id = assignment_stats.id;
         `,
