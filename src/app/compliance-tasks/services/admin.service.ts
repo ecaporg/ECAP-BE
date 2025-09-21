@@ -75,8 +75,8 @@ export class AdminComplianceService {
     const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
 
     // Log the generated SQL for debugging
-    // console.log('Generated subquery SQL:', subQuerySql);
-    // console.log('Query parameters:', subQueryParams);
+    console.log('Generated subquery SQL:', subQuerySql);
+    console.log('Query parameters:', subQueryParams);
 
     const completedQuery =
       completed && completed.length > 0
@@ -194,17 +194,17 @@ export class AdminComplianceService {
     const status = getAndDeleteField(filters, 'sample.status');
 
     // Log filters for debugging
-    // console.log('Applied filters:', {
-    //   academicYear,
-    //   learningPeriod,
-    //   academy,
-    //   school,
-    //   track,
-    //   semesters,
-    //   subject,
-    //   gradeSpan,
-    //   status,
-    // });
+    console.log('Applied filters:', {
+      academicYear,
+      learningPeriod,
+      academy,
+      school,
+      track,
+      semesters,
+      subject,
+      gradeSpan,
+      status,
+    });
 
     if (user.role === RolesEnum.DIRECTOR) {
       query.leftJoin('academy.directors', 'directors');

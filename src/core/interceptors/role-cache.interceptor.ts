@@ -1,4 +1,4 @@
-// import { Cache } from 'cache-manager';
+import { Cache } from 'cache-manager';
 
 import { CACHE_MANAGER, CacheInterceptor } from '@nestjs/cache-manager';
 import { ExecutionContext, Inject, Injectable } from '@nestjs/common';
@@ -7,7 +7,7 @@ import { Reflector } from '@nestjs/core';
 @Injectable()
 export class RoleCacheInterceptor extends CacheInterceptor {
   constructor(
-    @Inject(CACHE_MANAGER) cacheManager: any, //Cache,
+    @Inject(CACHE_MANAGER) cacheManager: Cache,
     reflector: Reflector,
   ) {
     super(cacheManager, reflector);
