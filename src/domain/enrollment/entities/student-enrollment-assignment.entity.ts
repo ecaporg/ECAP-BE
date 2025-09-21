@@ -1,5 +1,4 @@
 ﻿import { IStudentLPEnrollmentAssignment } from 'ecap-lib/dist/domain';
-import { IDIntGenericEntity } from 'src/core';
 import {
   Column,
   Entity,
