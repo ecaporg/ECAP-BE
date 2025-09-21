@@ -20,10 +20,10 @@ import { AppService } from './app.service';
     // ComplianceTasksModule,
     // DashboardModule,
     // CanvasEventsModule,
-    // ConfigModule.forRoot({
-    //   envFilePath: '.env',
-    //   isGlobal: true,
-    // }),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
     // TypeOrmModule.forRootAsync({
     //   imports: [ConfigModule],
     //   useFactory: (configService: ConfigService) => ({
