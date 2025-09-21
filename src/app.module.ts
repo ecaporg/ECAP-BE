@@ -18,7 +18,7 @@ import { AppController } from './app.controller';
     SchoolModule,
     ComplianceTasksModule,
     DashboardModule,
-    // CanvasEventsModule,
+    CanvasEventsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,

@@ -1,4 +1,3 @@
-// Інші імпорти
 import { useContainer } from 'class-validator';
 
 // import { DataSource } from 'typeorm';
