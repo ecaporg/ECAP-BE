@@ -13,11 +13,11 @@ import { AppController } from './app.controller';
 @Module({
   imports: [
     CoreModule,
-    AuthModule,
-    UsersModule,
-    SchoolModule,
-    ComplianceTasksModule,
-    DashboardModule,
+    // AuthModule,
+    // UsersModule,
+    // SchoolModule,
+    // ComplianceTasksModule,
+    // DashboardModule,
     // CanvasEventsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
