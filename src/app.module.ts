@@ -22,7 +22,7 @@ import { AppController } from './app.controller';
     SchoolModule,
     ComplianceTasksModule,
     DashboardModule,
-    // CanvasEventsModule,
+    CanvasEventsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

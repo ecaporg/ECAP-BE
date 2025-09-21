@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { Injectable } from '@nestjs/common';
 
-import { BadRequestException } from '../../../core';
 import {
   CanvasAssignmentEventDto,
   CanvasCourseEventDto,
