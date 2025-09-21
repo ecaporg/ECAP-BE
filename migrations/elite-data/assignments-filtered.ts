@@ -133,7 +133,8 @@ function getTwoAssigmentPerPeriod() {
       !assignment.due_at ||
       !assignment.published ||
       assignment.anonymize_students ||
-      assignment.anonymous_submissions
+      assignment.anonymous_submissions ||
+      assignment.submission_types.includes('external_tool')
     ) {
       continue;
     }

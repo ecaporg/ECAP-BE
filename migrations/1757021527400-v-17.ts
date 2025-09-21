@@ -188,7 +188,7 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "directors" ADD CONSTRAINT "FK_8368997d5eb9dba3523df0add32" FOREIGN KEY ("academy_id") REFERENCES "academies"("id") ON DELETE SET NULL ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "teacher_enrollments" ADD CONSTRAINT "FK_01f08aa2a358b6884f5fd677465" FOREIGN KEY ("teacher_id") REFERENCES "teachers"("id") ON DELETE SET NULL ON UPDATE CASCADE`,
+      `ALTER TABLE "teacher_enrollments" ADD CONSTRAINT "FK_01f08aa2a358b6884f5fd677465" FOREIGN KEY ("teacher_id") REFERENCES "teachers"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
       `ALTER TABLE "teacher_enrollments" ADD CONSTRAINT "FK_61eeb6ae68cffb574b544ba0199" FOREIGN KEY ("academic_year_id") REFERENCES "academic_years"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -206,7 +206,7 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ADD CONSTRAINT "FK_bccb184d83ef0849d2a867dc0d7" FOREIGN KEY ("studentLpEnrollmentsId") REFERENCES "student_lp_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ADD CONSTRAINT "FK_ad4c50c1bcba0b114e5a2b7a93c" FOREIGN KEY ("teacherEnrollmentsId") REFERENCES "teacher_enrollments"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+      `ALTER TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ADD CONSTRAINT "FK_ad4c50c1bcba0b114e5a2b7a93c" FOREIGN KEY ("teacherEnrollmentsId") REFERENCES "teacher_enrollments"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
   }
 

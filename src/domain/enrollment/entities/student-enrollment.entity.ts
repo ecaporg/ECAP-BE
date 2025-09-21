@@ -68,6 +68,9 @@ export class StudentLPEnrollmentEntity
     () => TeacherEnrollmentEntity,
     (teacherSchoolYearEnrollment) =>
       teacherSchoolYearEnrollment.student_lp_enrollments,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   @JoinTable()
   teacher_enrollments: Relation<TeacherEnrollmentEntity[]>;

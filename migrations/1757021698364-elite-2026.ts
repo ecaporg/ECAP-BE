@@ -103,9 +103,6 @@ export class Elite20261757021698364 implements MigrationInterface {
     // truncate all tables and reset sequences
     await queryRunner.manager.delete(TenantEntity, {
       name: 'Elite',
-      key: {
-        url: 'https://eliteaa.instructure.com',
-      },
     });
   }
 

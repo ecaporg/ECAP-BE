@@ -50,7 +50,7 @@ export class TeacherEnrollmentEntity
     type: () => Object,
   })
   @ManyToOne(() => TeacherEntity, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'teacher_id' })
@@ -74,6 +74,9 @@ export class TeacherEnrollmentEntity
   @ManyToMany(
     () => StudentLPEnrollmentEntity,
     (student_lp_enrollment) => student_lp_enrollment.teacher_enrollments,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   student_lp_enrollments: Relation<StudentLPEnrollmentEntity[]>;
 }
