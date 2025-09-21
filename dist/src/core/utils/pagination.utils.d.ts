@@ -1,0 +1,10 @@
+import { SortDirectionEnum } from '../constants';
+import { BaseFilterDto } from '../dto/base-filter.dto';
+import { PaginationOptions } from '../interfaces';
+type BaseFilterType = BaseFilterDto;
+export declare function extractPaginationOptions<T extends BaseFilterType>(options: T): PaginationOptions<any>;
+export declare function createSearchCondition(searchTerm: string, fields: string[]): Record<string, any>;
+export declare function createOrderCondition(sortBy: string[], sortDirection: SortDirectionEnum[], createNested?: boolean): Record<string, any>;
+export declare function getAndDeleteField<T, K extends keyof T>(obj: T, field: K): T[K] | undefined;
+export declare function assignFilterValue(filtersObject: Record<string, any>, key: string, value: any): void;
+export {};
