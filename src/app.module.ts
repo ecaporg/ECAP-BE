@@ -9,7 +9,7 @@ import { UsersModule } from './auth/users.module';
 import { CoreModule } from './core/core.module';
 import { SchoolModule } from './domain/school/school.module';
 import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module';
-import { AppController } from './app.controller';
+// import { AppController } from './app.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,7 +41,7 @@ import { AppController } from './app.controller';
       inject: [ConfigService],
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}
