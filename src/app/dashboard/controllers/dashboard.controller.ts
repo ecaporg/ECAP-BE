@@ -50,8 +50,8 @@ export class DashboardController {
   @ApiOperation({ summary: 'Get entity by ID' })
   @ApiCrudResponse(DashboardStatsResponseDto)
   @UseInterceptors(interceptor)
-  @RoleCache()
-  @CacheTTL(60 * 60 * 6) // Cache for 6 hours
+  // @RoleCache()
+  // @CacheTTL(60 * 60 * 6) // Cache for 6 hours
   async getDashboardStats(
     @Query() options: DashboardFilterDto,
     @CurrentUser() user: UserEntity,
