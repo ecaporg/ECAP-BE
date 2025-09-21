@@ -9,7 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     CacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const isProduction = configService.get('NODE_ENV') === 'production';
+        const isProduction = false; //configService.get('NODE_ENV') === 'production';
         const redisUrl = configService.get('REDIS_URL');
 
         if (isProduction && redisUrl) {
