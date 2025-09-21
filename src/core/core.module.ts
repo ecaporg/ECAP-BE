@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
+import { DefaultController } from './controllers/default.controller';
 // import { RedisModule } from './cache/redis.module';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
@@ -14,6 +15,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Global()
 @Module({
+  controllers: [DefaultController],
   imports: [
     // RedisModule
   ],
