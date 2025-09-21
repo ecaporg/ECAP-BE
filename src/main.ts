@@ -12,10 +12,7 @@ import { setupSwagger } from './core/config/swagger.setup';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger:
-      process.env.NODE_ENV === 'production' ? ['error', 'warn'] : undefined,
-  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.setGlobalPrefix('api');
 
