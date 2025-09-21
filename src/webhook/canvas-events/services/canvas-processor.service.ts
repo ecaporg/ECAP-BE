@@ -525,41 +525,48 @@ export class CanvasProcessorService {
   }
 
   public async findTenantByDomain(domain: string) {
-    const currentAcademicYear =
-      await this.academicYearService.findCurrentAcademicYears();
+    try {
+      const currentAcademicYear =
+        await this.academicYearService.findCurrentAcademicYears();
 
-    const tenant = await this.tenantService.findOneBy(
-      {
-        teachers: {
-          teacher_enrollments: {
-            academic_year: {
-              id: currentAcademicYear[0].id,
+      const tenant = await this.tenantService.findOneBy(
+        {
+          teachers: {
+            teacher_enrollments: {
+              academic_year: {
+                id: currentAcademicYear[0].id,
+              },
             },
           },
-        },
-        tracks: {
-          academic_year_id: currentAcademicYear[0].id,
-        },
-        key: {
-          url: ILike(`%${domain}%`),
-        },
-      },
-      {
-        key: true,
-        schools: true,
-        teachers: {
-          teacher_enrollments: {
-            academic_year: true,
+          tracks: {
+            academic_year_id: currentAcademicYear[0].id,
           },
-          user: true,
+          key: {
+            url: ILike(`%${domain}%`),
+          },
         },
-        tracks: {
-          learningPeriods: true,
+        {
+          key: true,
+          schools: true,
+          teachers: {
+            teacher_enrollments: {
+              academic_year: true,
+            },
+            user: true,
+          },
+          tracks: {
+            learningPeriods: true,
+          },
         },
-      },
-    );
+      );
 
-    return { tenant, currentAcademicYear: currentAcademicYear[0] };
+      return { tenant, currentAcademicYear: currentAcademicYear[0] };
+    } catch (error) {
+      return {
+        tenant: null,
+        currentAcademicYear: null,
+      };
+    }
   }
 
   public async logError({ domain, event, error }: ProcessErrorDto) {

@@ -53,7 +53,7 @@ export class CanvasEventService {
 
         // Log error
       } catch (error) {
-        this.processor.logError({ tenant, domain, event, error });
+        this.processor.logError({ domain, event, error });
       }
     }
   }
@@ -73,7 +73,7 @@ export class CanvasEventService {
 
       // Log error
     } catch (error) {
-      this.processor.logError({ tenant, domain, event, error });
+      this.processor.logError({ domain, event, error });
     }
   }
 
@@ -128,7 +128,7 @@ export class CanvasEventService {
 
       // Log error
     } catch (error) {
-      this.processor.logError({ tenant, domain, event, error });
+      this.processor.logError({ domain, event, error });
     }
   }
 
@@ -169,7 +169,7 @@ export class CanvasEventService {
           assignments,
         });
       } catch (error) {
-        this.processor.logError({ tenant, domain, event, error });
+        this.processor.logError({ domain, event, error });
       }
     }
   }
