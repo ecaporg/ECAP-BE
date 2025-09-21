@@ -56,7 +56,6 @@ export class DashboardController {
     @Query() options: DashboardFilterDto,
     @CurrentUser() user: UserEntity,
   ): Promise<DashboardStatsResponseDto> {
-    await new Promise((resolve) => setTimeout(resolve, 10000));
     return this.dashboardService.getDashboardStats(options, user);
   }
 }
