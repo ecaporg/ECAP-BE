@@ -2,7 +2,7 @@
 export * from './core.module';
 
 // Cache
-// export * from './cache/redis.module';
+export * from './cache/redis.module';
 
 // Base entities
 export * from './entity/generic-entity';
@@ -19,7 +19,7 @@ export * from './interceptors/transform.interceptor';
 export * from './interceptors/attach-user-id.interceptor';
 export * from './interceptors/attach-to-body.interceptor';
 export * from './interceptors/query-param-mapper.interceptor';
-// export * from './interceptors/role-cache.interceptor';
+export * from './interceptors/role-cache.interceptor';
 
 // Middlewares
 export * from './middleware/logger.middleware';
@@ -35,7 +35,7 @@ export * from './decorators/current-user.decorator';
 export * from './decorators/roles.decorator';
 export * from './decorators/filter-dto.decorators';
 export * from './decorators/extract-base-url.decorator';
-// export * from './decorators/cache.decorator';
+export * from './decorators/cache.decorator';
 
 // Guards
 export * from './guards/role.guard';

@@ -7,16 +7,14 @@ import {
 } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
-// import { RedisModule } from './cache/redis.module';
+import { RedisModule } from './cache/redis.module';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Global()
 @Module({
-  imports: [
-    // RedisModule
-  ],
+  imports: [RedisModule],
   providers: [
     {
       provide: APP_FILTER,
@@ -38,9 +36,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
       }),
     },
   ],
-  exports: [
-    // RedisModule
-  ],
+  exports: [RedisModule],
 })
 export class CoreModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
