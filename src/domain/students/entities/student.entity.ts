@@ -13,7 +13,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { UserEntity } from '../../../auth/entities/user.entity';
-import { IDGenericEntity } from '../../../core';
+import { IDIntGenericEntity } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
@@ -21,7 +21,7 @@ import { SchoolEntity } from '../../school/entities/school.entity';
 // TODO: move track_id, academy_id, and school_id to student_enrollment_entity
 
 @Entity({ name: 'students' })
-export class StudentEntity extends IDGenericEntity implements IStudent {
+export class StudentEntity extends IDIntGenericEntity implements IStudent {
   @ApiProperty({ description: 'User ID associated with this student' })
   @PrimaryColumn()
   id: number;

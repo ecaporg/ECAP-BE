@@ -5,7 +5,7 @@ export class V171757021527400 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "schools" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "tenant_id" integer NOT NULL, "name" character varying(250) NOT NULL, CONSTRAINT "PK_95b932e47ac129dd8e23a0db548" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "schools" ("id" SERIAL NOT NULL, "tenant_id" integer NOT NULL, "name" character varying(250) NOT NULL, CONSTRAINT "PK_95b932e47ac129dd8e23a0db548" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "sample_flag_errors" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "user_id" integer, "comment" character varying NOT NULL, CONSTRAINT "PK_0caf047533b0399cd4bc26b980b" PRIMARY KEY ("id"))`,
@@ -32,70 +32,67 @@ export class V171757021527400 implements MigrationInterface {
       `CREATE TABLE "student_lp_enrollment_assignments" ("student_lp_enrollment_id" integer NOT NULL, "assignment_id" integer NOT NULL, "sample_id" integer, CONSTRAINT "REL_edf36f799cdeb1a5938c821835" UNIQUE ("sample_id"), CONSTRAINT "PK_79b09591dbfc7b27cc78401885b" PRIMARY KEY ("student_lp_enrollment_id", "assignment_id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "assignments" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "canvas_id" character varying(20), "course_id" integer NOT NULL, "name" character varying(250) NOT NULL, "due_at" date NOT NULL, CONSTRAINT "PK_c54ca359535e0012b04dcbd80ee" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "assignments" ("id" SERIAL NOT NULL, "canvas_id" character varying(20), "course_id" integer NOT NULL, "name" character varying(250) NOT NULL, "due_at" date NOT NULL, CONSTRAINT "PK_c54ca359535e0012b04dcbd80ee" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "courses" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "canvas_id" character varying(20), "name" character varying(250) NOT NULL, "tenant_id" integer NOT NULL, CONSTRAINT "PK_3f70a487cc718ad8eda4e6d58c9" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "courses" ("id" SERIAL NOT NULL, "canvas_id" character varying(20), "name" character varying(250) NOT NULL, "tenant_id" integer NOT NULL, CONSTRAINT "PK_3f70a487cc718ad8eda4e6d58c9" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "academic_years" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "from" integer NOT NULL, "to" integer NOT NULL, CONSTRAINT "PK_2021b90bfbfa6c9da7df34ca1cf" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "academic_years" ("id" SERIAL NOT NULL, "from" integer NOT NULL, "to" integer NOT NULL, CONSTRAINT "PK_2021b90bfbfa6c9da7df34ca1cf" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "semesters" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "track_id" integer NOT NULL, "name" character varying(250) NOT NULL, "start_date" date NOT NULL, "end_date" date NOT NULL, CONSTRAINT "PK_25c393e2e76b3e32e87a79b1dc2" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "semesters" ("id" SERIAL NOT NULL, "track_id" integer NOT NULL, "name" character varying(250) NOT NULL, "start_date" date NOT NULL, "end_date" date NOT NULL, CONSTRAINT "PK_25c393e2e76b3e32e87a79b1dc2" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "track_calendar" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "days" json NOT NULL, CONSTRAINT "PK_b2f2a7e02e6192f4ada71624864" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "track_calendar" ("id" SERIAL NOT NULL, "days" json NOT NULL, CONSTRAINT "PK_b2f2a7e02e6192f4ada71624864" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "track_learning_periods" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "track_id" integer NOT NULL, "name" character varying(250) NOT NULL, "start_date" date NOT NULL, "end_date" date NOT NULL, CONSTRAINT "PK_d829f156a60ce0e53880b5ff78a" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "tracks" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "tenant_id" integer NOT NULL, "name" character varying(250) NOT NULL, "start_date" date NOT NULL, "end_date" date NOT NULL, "academic_year_id" integer NOT NULL, CONSTRAINT "PK_242a37ffc7870380f0e611986e8" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "errors" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "tenant_id" integer NOT NULL, "message" text NOT NULL, CONSTRAINT "PK_f1ab2df89a11cd21f48ff90febb" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "tracks" ("id" SERIAL NOT NULL, "tenant_id" integer NOT NULL, "name" character varying(250) NOT NULL, "start_date" date NOT NULL, "end_date" date NOT NULL, "academic_year_id" integer NOT NULL, CONSTRAINT "PK_242a37ffc7870380f0e611986e8" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "keys" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "access_token" character varying(512), "session_token" character varying(1024), "url" character varying(512), CONSTRAINT "PK_e63d5d51e0192635ab79aa49644" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "tenants" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "name" character varying(250), CONSTRAINT "PK_53be67a04681c66b87ee27c9321" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "tenants" ("id" SERIAL NOT NULL, "name" character varying(250), CONSTRAINT "PK_53be67a04681c66b87ee27c9321" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "academies" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "tenant_id" integer NOT NULL, "name" character varying(250) NOT NULL, CONSTRAINT "PK_abce78680fbad7d56c23118f9e0" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "academies" ("id" SERIAL NOT NULL, "tenant_id" integer NOT NULL, "name" character varying(250) NOT NULL, CONSTRAINT "PK_abce78680fbad7d56c23118f9e0" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "students" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "school_id" integer, "academy_id" integer, CONSTRAINT "PK_7d7f07271ad4ce999880713f05e" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "students" ("id" integer NOT NULL, "school_id" integer, "academy_id" integer, CONSTRAINT "PK_7d7f07271ad4ce999880713f05e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "student_lp_enrollments" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "student_id" integer NOT NULL, "student_grade" character varying(40) NOT NULL DEFAULT 'Unknown', "learning_period_id" integer NOT NULL, "completed" boolean NOT NULL DEFAULT false, "percentage" numeric(5,2) NOT NULL DEFAULT '0', CONSTRAINT "PK_2ba9006efea9f1fbf4ee7aff87a" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "users" ("id" SERIAL NOT NULL, "email" character varying NOT NULL, "name" character varying NOT NULL, "password" character varying NOT NULL, "isActive" boolean NOT NULL DEFAULT true, "emailVerified" boolean NOT NULL DEFAULT false, "refreshToken" character varying, "role" character varying, "canvas_additional_info" json, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "teacher_school_year_enrollments" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "school_id" integer NOT NULL, "teacher_id" integer NOT NULL, "academic_year_id" integer NOT NULL, CONSTRAINT "PK_23cb2da4ad8eb829080396fa39e" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "teachers" ("id" integer NOT NULL, "tenant_id" integer NOT NULL, CONSTRAINT "PK_a8d4f83be3abe4c687b0a0093c8" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "teachers" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, CONSTRAINT "PK_a8d4f83be3abe4c687b0a0093c8" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "admins" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "tenant_id" integer NOT NULL, CONSTRAINT "PK_0708655218ae3adbbc7e971beae" PRIMARY KEY ("id", "tenant_id"))`,
+      `CREATE TABLE "admins" ("id" integer NOT NULL, "tenant_id" integer NOT NULL, CONSTRAINT "PK_e3b38270c97a854c48d2e80874e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `COMMENT ON TABLE "admins" IS 'Admins and superadmins table'`,
     );
     await queryRunner.query(
-      `CREATE TABLE "directors" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" integer NOT NULL, "tenant_id" integer NOT NULL, "academy_id" integer NOT NULL, CONSTRAINT "PK_c219ccc6571c077c8ef8b86563e" PRIMARY KEY ("id", "tenant_id"))`,
+      `CREATE TABLE "directors" ("id" integer NOT NULL, "tenant_id" integer NOT NULL, "academy_id" integer NOT NULL, CONSTRAINT "PK_a9ae28f00c93801aa034a2c1773" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "users" ("updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "id" SERIAL NOT NULL, "email" character varying NOT NULL, "name" character varying NOT NULL, "password" character varying NOT NULL, "isActive" boolean NOT NULL DEFAULT true, "emailVerified" boolean NOT NULL DEFAULT false, "refreshToken" character varying, "role" character varying, "canvas_additional_info" json, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "teacher_enrollments" ("id" SERIAL NOT NULL, "teacher_id" integer NOT NULL, "academic_year_id" integer NOT NULL, CONSTRAINT "PK_8f14f0e852cf3a250886a70fe67" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr" ("studentLpEnrollmentsId" integer NOT NULL, "teacherSchoolYearEnrollmentsId" integer NOT NULL, CONSTRAINT "PK_0d6d7294a41f2dcab8504fef22f" PRIMARY KEY ("studentLpEnrollmentsId", "teacherSchoolYearEnrollmentsId"))`,
+      `CREATE TABLE "student_lp_enrollments" ("id" SERIAL NOT NULL, "student_id" integer NOT NULL, "student_grade" character varying(40) NOT NULL DEFAULT 'Unknown', "learning_period_id" integer NOT NULL, "completed" boolean NOT NULL DEFAULT false, "percentage" numeric(5,2) NOT NULL DEFAULT '0', CONSTRAINT "PK_2ba9006efea9f1fbf4ee7aff87a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_29734c3be43837b8b899781f13" ON "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr" ("studentLpEnrollmentsId") `,
+      `CREATE TABLE "track_learning_periods" ("id" SERIAL NOT NULL, "track_id" integer NOT NULL, "name" character varying(250) NOT NULL, "start_date" date NOT NULL, "end_date" date NOT NULL, CONSTRAINT "PK_d829f156a60ce0e53880b5ff78a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_b3ee10ce056348959ce79bee13" ON "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr" ("teacherSchoolYearEnrollmentsId") `,
+      `CREATE TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ("studentLpEnrollmentsId" integer NOT NULL, "teacherEnrollmentsId" integer NOT NULL, CONSTRAINT "PK_6ff20bd70e099938d4f20a615ff" PRIMARY KEY ("studentLpEnrollmentsId", "teacherEnrollmentsId"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_bccb184d83ef0849d2a867dc0d" ON "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ("studentLpEnrollmentsId") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_ad4c50c1bcba0b114e5a2b7a93" ON "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ("teacherEnrollmentsId") `,
     );
     await queryRunner.query(
       `ALTER TABLE "schools" ADD CONSTRAINT "FK_cf7fc9b8bccbe84cf907d79d420" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -134,7 +131,7 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "student_lp_enrollment_assignments" ADD CONSTRAINT "FK_edf36f799cdeb1a5938c8218357" FOREIGN KEY ("sample_id") REFERENCES "samples"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "student_lp_enrollment_assignments" ADD CONSTRAINT "FK_699c02e0bd0fe731402c98d86bb" FOREIGN KEY ("student_lp_enrollment_id") REFERENCES "student_lp_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "student_lp_enrollment_assignments" ADD CONSTRAINT "FK_699c02e0bd0fe731402c98d86bb" FOREIGN KEY ("student_lp_enrollment_id") REFERENCES "student_lp_enrollments"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "assignments" ADD CONSTRAINT "FK_33f833f305070d2d4e6305d8a0c" FOREIGN KEY ("course_id") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -149,16 +146,10 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "track_calendar" ADD CONSTRAINT "FK_b2f2a7e02e6192f4ada71624864" FOREIGN KEY ("id") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "track_learning_periods" ADD CONSTRAINT "FK_21cce0b7c46b5687e745d07b838" FOREIGN KEY ("track_id") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "tracks" ADD CONSTRAINT "FK_d02972348fb06895fa5b580a031" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
       `ALTER TABLE "tracks" ADD CONSTRAINT "FK_2a4957dd7a6de6855b587b06280" FOREIGN KEY ("academic_year_id") REFERENCES "academic_years"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "errors" ADD CONSTRAINT "FK_ba462d8fc830a194d8a0f94e6b8" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
       `ALTER TABLE "keys" ADD CONSTRAINT "FK_e63d5d51e0192635ab79aa49644" FOREIGN KEY ("id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -176,22 +167,10 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "students" ADD CONSTRAINT "FK_686c602a46701b052bddcbc6ba8" FOREIGN KEY ("academy_id") REFERENCES "academies"("id") ON DELETE SET NULL ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "student_lp_enrollments" ADD CONSTRAINT "FK_f7258e4d6f49c0e2fef4fd109ae" FOREIGN KEY ("learning_period_id") REFERENCES "track_learning_periods"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "student_lp_enrollments" ADD CONSTRAINT "FK_37a28c9b6e409febabbd437670b" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "teacher_school_year_enrollments" ADD CONSTRAINT "FK_91d55a0d56fb766ae820b9da2db" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "teacher_school_year_enrollments" ADD CONSTRAINT "FK_7e7f633e5e6af67353f728c0b16" FOREIGN KEY ("teacher_id") REFERENCES "teachers"("id") ON DELETE SET NULL ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "teacher_school_year_enrollments" ADD CONSTRAINT "FK_196e4e2e1db4568d1c4ebca6624" FOREIGN KEY ("academic_year_id") REFERENCES "academic_years"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "teachers" ADD CONSTRAINT "FK_a8d4f83be3abe4c687b0a0093c8" FOREIGN KEY ("id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "teachers" ADD CONSTRAINT "FK_8b2981d62fb0165dc2719af0f0f" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
       `ALTER TABLE "admins" ADD CONSTRAINT "FK_e3b38270c97a854c48d2e80874e" FOREIGN KEY ("id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -209,19 +188,49 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "directors" ADD CONSTRAINT "FK_8368997d5eb9dba3523df0add32" FOREIGN KEY ("academy_id") REFERENCES "academies"("id") ON DELETE SET NULL ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr" ADD CONSTRAINT "FK_29734c3be43837b8b899781f13e" FOREIGN KEY ("studentLpEnrollmentsId") REFERENCES "student_lp_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "teacher_enrollments" ADD CONSTRAINT "FK_01f08aa2a358b6884f5fd677465" FOREIGN KEY ("teacher_id") REFERENCES "teachers"("id") ON DELETE SET NULL ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr" ADD CONSTRAINT "FK_b3ee10ce056348959ce79bee133" FOREIGN KEY ("teacherSchoolYearEnrollmentsId") REFERENCES "teacher_school_year_enrollments"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+      `ALTER TABLE "teacher_enrollments" ADD CONSTRAINT "FK_61eeb6ae68cffb574b544ba0199" FOREIGN KEY ("academic_year_id") REFERENCES "academic_years"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "student_lp_enrollments" ADD CONSTRAINT "FK_f7258e4d6f49c0e2fef4fd109ae" FOREIGN KEY ("learning_period_id") REFERENCES "track_learning_periods"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "student_lp_enrollments" ADD CONSTRAINT "FK_37a28c9b6e409febabbd437670b" FOREIGN KEY ("student_id") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "track_learning_periods" ADD CONSTRAINT "FK_21cce0b7c46b5687e745d07b838" FOREIGN KEY ("track_id") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ADD CONSTRAINT "FK_bccb184d83ef0849d2a867dc0d7" FOREIGN KEY ("studentLpEnrollmentsId") REFERENCES "student_lp_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" ADD CONSTRAINT "FK_ad4c50c1bcba0b114e5a2b7a93c" FOREIGN KEY ("teacherEnrollmentsId") REFERENCES "teacher_enrollments"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr" DROP CONSTRAINT "FK_b3ee10ce056348959ce79bee133"`,
+      `ALTER TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" DROP CONSTRAINT "FK_ad4c50c1bcba0b114e5a2b7a93c"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr" DROP CONSTRAINT "FK_29734c3be43837b8b899781f13e"`,
+      `ALTER TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments" DROP CONSTRAINT "FK_bccb184d83ef0849d2a867dc0d7"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "track_learning_periods" DROP CONSTRAINT "FK_21cce0b7c46b5687e745d07b838"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "student_lp_enrollments" DROP CONSTRAINT "FK_37a28c9b6e409febabbd437670b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "student_lp_enrollments" DROP CONSTRAINT "FK_f7258e4d6f49c0e2fef4fd109ae"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "teacher_enrollments" DROP CONSTRAINT "FK_61eeb6ae68cffb574b544ba0199"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "teacher_enrollments" DROP CONSTRAINT "FK_01f08aa2a358b6884f5fd677465"`,
     );
     await queryRunner.query(
       `ALTER TABLE "directors" DROP CONSTRAINT "FK_8368997d5eb9dba3523df0add32"`,
@@ -239,22 +248,10 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "admins" DROP CONSTRAINT "FK_e3b38270c97a854c48d2e80874e"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "teachers" DROP CONSTRAINT "FK_8b2981d62fb0165dc2719af0f0f"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "teachers" DROP CONSTRAINT "FK_a8d4f83be3abe4c687b0a0093c8"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "teacher_school_year_enrollments" DROP CONSTRAINT "FK_196e4e2e1db4568d1c4ebca6624"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "teacher_school_year_enrollments" DROP CONSTRAINT "FK_7e7f633e5e6af67353f728c0b16"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "teacher_school_year_enrollments" DROP CONSTRAINT "FK_91d55a0d56fb766ae820b9da2db"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "student_lp_enrollments" DROP CONSTRAINT "FK_37a28c9b6e409febabbd437670b"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "student_lp_enrollments" DROP CONSTRAINT "FK_f7258e4d6f49c0e2fef4fd109ae"`,
     );
     await queryRunner.query(
       `ALTER TABLE "students" DROP CONSTRAINT "FK_686c602a46701b052bddcbc6ba8"`,
@@ -272,16 +269,10 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "keys" DROP CONSTRAINT "FK_e63d5d51e0192635ab79aa49644"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "errors" DROP CONSTRAINT "FK_ba462d8fc830a194d8a0f94e6b8"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "tracks" DROP CONSTRAINT "FK_2a4957dd7a6de6855b587b06280"`,
     );
     await queryRunner.query(
       `ALTER TABLE "tracks" DROP CONSTRAINT "FK_d02972348fb06895fa5b580a031"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "track_learning_periods" DROP CONSTRAINT "FK_21cce0b7c46b5687e745d07b838"`,
     );
     await queryRunner.query(
       `ALTER TABLE "track_calendar" DROP CONSTRAINT "FK_b2f2a7e02e6192f4ada71624864"`,
@@ -335,28 +326,27 @@ export class V171757021527400 implements MigrationInterface {
       `ALTER TABLE "schools" DROP CONSTRAINT "FK_cf7fc9b8bccbe84cf907d79d420"`,
     );
     await queryRunner.query(
-      `DROP INDEX "public"."IDX_b3ee10ce056348959ce79bee13"`,
+      `DROP INDEX "public"."IDX_ad4c50c1bcba0b114e5a2b7a93"`,
     );
     await queryRunner.query(
-      `DROP INDEX "public"."IDX_29734c3be43837b8b899781f13"`,
+      `DROP INDEX "public"."IDX_bccb184d83ef0849d2a867dc0d"`,
     );
     await queryRunner.query(
-      `DROP TABLE "stu_lp_enr_tea_sch_yea_enr_tea_sch_yea_enr"`,
+      `DROP TABLE "student_lp_enrollments_teacher_enrollments_teacher_enrollments"`,
     );
-    await queryRunner.query(`DROP TABLE "users"`);
+    await queryRunner.query(`DROP TABLE "track_learning_periods"`);
+    await queryRunner.query(`DROP TABLE "student_lp_enrollments"`);
+    await queryRunner.query(`DROP TABLE "teacher_enrollments"`);
     await queryRunner.query(`DROP TABLE "directors"`);
     await queryRunner.query(`COMMENT ON TABLE "admins" IS NULL`);
     await queryRunner.query(`DROP TABLE "admins"`);
     await queryRunner.query(`DROP TABLE "teachers"`);
-    await queryRunner.query(`DROP TABLE "teacher_school_year_enrollments"`);
-    await queryRunner.query(`DROP TABLE "student_lp_enrollments"`);
+    await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TABLE "students"`);
     await queryRunner.query(`DROP TABLE "academies"`);
     await queryRunner.query(`DROP TABLE "tenants"`);
     await queryRunner.query(`DROP TABLE "keys"`);
-    await queryRunner.query(`DROP TABLE "errors"`);
     await queryRunner.query(`DROP TABLE "tracks"`);
-    await queryRunner.query(`DROP TABLE "track_learning_periods"`);
     await queryRunner.query(`DROP TABLE "track_calendar"`);
     await queryRunner.query(`DROP TABLE "semesters"`);
     await queryRunner.query(`DROP TABLE "academic_years"`);

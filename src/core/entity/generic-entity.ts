@@ -15,6 +15,10 @@ import {
 
 export { EntityId, EntityKey } from 'ecap-lib/dist/types';
 
+export abstract class IDIntGenericEntity implements IIDGeneric {
+  id: number;
+}
+
 export abstract class IDGenericEntity implements IIDGeneric {
   @PrimaryGeneratedColumn()
   id: number;

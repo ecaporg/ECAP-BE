@@ -13,15 +13,12 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { UserEntity } from '../../../auth/entities/user.entity';
-import { TenantGenericEntity } from '../../../core';
+import { IDIntGenericEntity } from '../../../core';
 import { TeacherEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
-export abstract class StaffEntity
-  extends TenantGenericEntity
-  implements IStaff
-{
+export abstract class StaffEntity extends IDIntGenericEntity implements IStaff {
   @ApiProperty({ description: 'User ID associated with this staff member' })
   @PrimaryColumn()
   id: number;
@@ -36,6 +33,9 @@ export abstract class StaffEntity
   })
   @JoinColumn({ name: 'id' })
   user: Relation<UserEntity>;
+
+  @Column()
+  tenant_id: number;
 }
 
 @Entity({ name: 'teachers' })
