@@ -3,11 +3,8 @@
   "builds": [
     {
       "src": "src/main.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": "src/**",
-        "helpers": false
-      }
+      "use": "@vercel/node"
+      
     }
   ],
   "routes": [
@@ -26,8 +23,5 @@
         "TRACE"
       ]
     }
-  ],
-  "env": {
-    "NODEJS_HELPERS": "0"
-  }
+  ]
 }
