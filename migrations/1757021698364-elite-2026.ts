@@ -787,7 +787,7 @@ export class Elite20261757021698364 implements MigrationInterface {
     UPDATE student_lp_enrollments
     SET
       percentage = assignment_stats.calculated_percentage,
-      completed = assignment_stats.is_completed,
+      completed = assignment_stats.is_completed
     FROM assignment_stats
     WHERE student_lp_enrollments.id = assignment_stats.id;
         `,

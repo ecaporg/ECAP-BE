@@ -7,6 +7,7 @@ import {
   ApiCrudResponse,
   AttachUserIdInterceptor,
   CurrentUser,
+  RoleCache,
   Roles,
 } from '../../../core';
 import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
@@ -48,10 +49,12 @@ export class DashboardController {
   @ApiOperation({ summary: 'Get entity by ID' })
   @ApiCrudResponse(DashboardStatsResponseDto)
   @UseInterceptors(interceptor)
+  @RoleCache()
   async getDashboardStats(
     @Query() options: DashboardFilterDto,
     @CurrentUser() user: UserEntity,
   ): Promise<DashboardStatsResponseDto> {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
     return this.dashboardService.getDashboardStats(options, user);
   }
 }

@@ -9,14 +9,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     CacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const isProduction = configService.get('NODE_ENV') === 'production';
+        const isProduction = true; //configService.get('NODE_ENV') === 'production';
         const redisUrl = configService.get('REDIS_URL');
 
         if (isProduction && redisUrl) {
           return {
             store: redisStore,
             url: redisUrl,
-            ttl: configService.get('REDIS_TTL', 300) * 1000,
+            ttl: configService.get('REDIS_TTL', 300) * 1000, // 5 хвилин
           };
         }
 

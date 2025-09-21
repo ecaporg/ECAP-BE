@@ -11,8 +11,8 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { ErrorResponseDto } from '../dto/error-response.dto';
 import { SortDirectionEnum } from '../constants';
+import { ErrorResponseDto } from '../dto/error-response.dto';
 
 /**
  * Interface for API responses options
