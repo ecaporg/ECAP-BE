@@ -7,7 +7,7 @@ import {
   OneToOne,
   PrimaryColumn,
   Relation,
-  VirtualColumn,
+  // VirtualColumn,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -21,10 +21,10 @@ import { StudentLPEnrollmentEntity } from './student-enrollment.entity';
 export class StudentLPEnrollmentAssignmentEntity
   implements IStudentLPEnrollmentAssignment
 {
-  @VirtualColumn('string', {
-    query: (alias) =>
-      `CONCAT(${alias}.student_lp_enrollment_id, '-', ${alias}.assignment_id)`,
-  })
+  // @VirtualColumn('string', {
+  //   query: (alias) =>
+  //     `CONCAT(${alias}.student_lp_enrollment_id, '-', ${alias}.assignment_id)`,
+  // })
   id: string;
 
   @ApiProperty({
