@@ -18,7 +18,7 @@ import { AppController } from './app.controller';
     }),
     CoreModule,
     UsersModule,
-    AuthModule,
+    // AuthModule,
     // SchoolModule,
     // ComplianceTasksModule,
     // DashboardModule,
