@@ -18,7 +18,7 @@ import { AppController } from './app.controller';
     SchoolModule,
     ComplianceTasksModule,
     DashboardModule,
-    CanvasEventsModule,
+    // CanvasEventsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
@@ -41,7 +41,7 @@ import { AppController } from './app.controller';
       inject: [ConfigService],
     }),
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
