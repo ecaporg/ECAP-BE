@@ -10,14 +10,14 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { IDGenericEntity } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 
 import { TrackEntity } from './track.entity';
 
 @Entity({ name: 'track_learning_periods' })
 export class TrackLearningPeriodEntity
-  extends GenericEntity
+  extends IDGenericEntity
   implements ITrackLearningPeriod
 {
   @ApiProperty({ description: 'Track ID associated with this learning period' })

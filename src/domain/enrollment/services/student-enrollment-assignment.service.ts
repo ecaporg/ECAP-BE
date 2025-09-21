@@ -9,8 +9,7 @@ import { StudentLPEnrollmentAssignmentEntity } from '../entities/student-enrollm
 
 @Injectable()
 export class StudentLPEnrollmentAssignmentService extends BaseService<
-  // StudentLPEnrollmentAssignmentEntity,
-  any,
+  StudentLPEnrollmentAssignmentEntity,
   'assignment_id' | 'student_lp_enrollment_id'
 > {
   constructor(

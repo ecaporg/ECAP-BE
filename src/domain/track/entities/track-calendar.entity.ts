@@ -10,7 +10,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { DatedGenericEntity } from '../../../core';
+import { IDGenericEntity } from '../../../core';
 
 import { TrackEntity } from './track.entity';
 
@@ -21,7 +21,7 @@ export interface CalendarDay {
 
 @Entity({ name: 'track_calendar' })
 export class TrackCalendarEntity
-  extends DatedGenericEntity
+  extends IDGenericEntity
   implements ITrackCalendar
 {
   @ApiProperty({ description: 'Track ID associated with this calendar entry' })

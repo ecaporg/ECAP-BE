@@ -13,12 +13,15 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { UserEntity } from '../../../auth/entities/user.entity';
-import { DatedGenericEntity } from '../../../core';
+import { TenantGenericEntity } from '../../../core';
 import { TeacherEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
-export abstract class StaffEntity extends DatedGenericEntity implements IStaff {
+export abstract class StaffEntity
+  extends TenantGenericEntity
+  implements IStaff
+{
   @ApiProperty({ description: 'User ID associated with this staff member' })
   @PrimaryColumn()
   id: number;

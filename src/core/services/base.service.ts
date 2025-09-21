@@ -1,3 +1,4 @@
+import { IIDGeneric } from 'ecap-lib/dist/types';
 import {
   DeepPartial,
   FindManyOptions,
@@ -13,7 +14,6 @@ import {
   PaginationOptions,
   SortDirectionEnum,
 } from '../../core';
-import { DatedGenericEntity } from '../entity/generic-entity';
 import {
   createOrderCondition,
   createSearchCondition,
@@ -28,7 +28,7 @@ export type BaseServiceOptions<T, IDKey> = {
 };
 
 export class BaseService<
-  T extends DatedGenericEntity,
+  T extends IIDGeneric<unknown>,
   IDKey extends keyof T = any,
 > {
   protected readonly primaryKeys: IDKey[];
@@ -44,7 +44,7 @@ export class BaseService<
     this.primaryKeys = options.primaryKeys || ['id' as IDKey];
     this.defaultRelations = options.defaultRelations || [];
     this.defaultSortByOptions = options.defaultSortByOptions || {
-      updatedAt: SortDirectionEnum.ASC,
+      id: SortDirectionEnum.ASC,
     };
   }
 

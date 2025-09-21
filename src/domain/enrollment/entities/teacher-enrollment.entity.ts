@@ -10,14 +10,14 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { IDGenericEntity } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../enrollment/entities/student-enrollment.entity';
 import { TeacherEntity } from '../../staff/entities/staff.entity';
 import { AcademicYearEntity } from '../../track/entities/academic-year.entity';
 
 @Entity({ name: 'teacher_enrollments' })
 export class TeacherEnrollmentEntity
-  extends GenericEntity
+  extends IDGenericEntity
   implements ITeacherEnrollment
 {
   // @ApiProperty({ description: 'School ID associated with this enrollment' })

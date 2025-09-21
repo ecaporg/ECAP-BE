@@ -115,6 +115,7 @@ export class CanvasProcessorService {
       learningPeriods,
       data.students,
       filteredTeachers,
+      data.tenant.schools[0],
     );
   }
 
@@ -350,14 +351,14 @@ export class CanvasProcessorService {
     learningPeriods: TrackLearningPeriodEntity[],
     students: CanvasUserDto[],
     teacher_school_enrollment: TeacherEnrollmentEntity[],
+    defaultSchool: TenantEntity['schools'][0],
   ) {
     const studentLPEnrollmentPeriods: StudentLPEnrollmentEntity[] = [];
     const studentLPEnrollmentAssignments: StudentLPEnrollmentEntity['assignments'] =
       [];
     const db_students = await this.getAndCreateStudents(
       students,
-      0,
-      // teacher_school_enrollment[0].school_id,
+      defaultSchool.id,
     );
 
     for (const person of students) {

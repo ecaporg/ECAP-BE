@@ -44,7 +44,7 @@ export class AdminComplianceService {
       .getRepository()
       .createQueryBuilder('assignments')
       .select([
-        't_s_y_e.academic_year_id as teacher_school_year_enrollment_id',
+        't_s_y_e.id as teacher_enrollment_id',
         'teacher.id as teacher_id',
         'user.name as teacher_name',
         'academy.id as academy_id',
@@ -60,12 +60,11 @@ export class AdminComplianceService {
       .leftJoin('student_lp_enrollment.teacher_enrollments', 't_s_y_e')
       .leftJoin('t_s_y_e.teacher', 'teacher')
       .leftJoin('teacher.user', 'user')
-      .leftJoin('t_s_y_e.school', 'school')
       .leftJoin('t_s_y_e.academic_year', 'academic_year')
       .leftJoin('assignments.sample', 'sample')
       .leftJoin('student_lp_enrollment.student', 'student')
       .leftJoin('student.academy', 'academy')
-      .groupBy('t_s_y_e.academic_year_id')
+      .groupBy('t_s_y_e.id')
       .addGroupBy('teacher.id')
       .addGroupBy('user.name')
       .addGroupBy('academy.id')
@@ -213,7 +212,7 @@ export class AdminComplianceService {
         id: user.id,
       });
     } else if (user.role === RolesEnum.ADMIN) {
-      query.leftJoin('school.tenant', 'tenant');
+      query.leftJoin('teacher.tenant', 'tenant');
       query.leftJoin('tenant.admins', 'admins');
       query.leftJoin('admins.user', 'admin_user');
       query.andWhere('admin_user.id = :id', {
@@ -262,7 +261,8 @@ export class AdminComplianceService {
     }
 
     if (school) {
-      addInOrEqualsCondition(query, 'school.id', school);
+      const [condition, params] = formInOrEqualsCondition('school.id', school);
+      query.innerJoin('student.school', 'school', condition, params);
     }
 
     if (semesters) {

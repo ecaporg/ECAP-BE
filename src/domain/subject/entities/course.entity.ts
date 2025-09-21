@@ -10,13 +10,13 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { CanvasGenericEntity } from '../../../core';
+import { IDCanvasGenericEntity } from '../../../core';
 import { TenantEntity } from '../../tenant/entities/tenant.entity';
 
 import { AssignmentEntity } from './assignment.entity';
 
 @Entity({ name: 'courses' })
-export class CourseEntity extends CanvasGenericEntity implements ICourse {
+export class CourseEntity extends IDCanvasGenericEntity implements ICourse {
   @ApiProperty({ description: 'Course name', maxLength: 250 })
   @Column({ length: 250 })
   name: string;

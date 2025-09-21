@@ -10,14 +10,14 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { CanvasGenericEntity } from '../../../core';
+import { IDCanvasGenericEntity } from '../../../core';
 import { StudentLPEnrollmentAssignmentEntity } from '../../enrollment/entities/student-enrollment-assignment.entity';
 
 import { CourseEntity } from './course.entity';
 
 @Entity({ name: 'assignments' })
 export class AssignmentEntity
-  extends CanvasGenericEntity
+  extends IDCanvasGenericEntity
   implements IAssignment
 {
   @ApiProperty({ description: 'Course ID' })

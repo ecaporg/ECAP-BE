@@ -19,15 +19,13 @@ import {
   ApiPaginationQueries,
   BaseService,
   EntityId,
-  GenericEntity,
+  IDGenericEntity,
   PaginatedResult,
   PaginationOptions,
 } from '../../core';
 
-class GenericEntityClass implements GenericEntity {
+class GenericEntityClass implements IDGenericEntity {
   id: number;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 /**
@@ -61,23 +59,23 @@ export class TemplateController {
   @ApiPaginatedCrudResponse(GenericEntityClass)
   async findAll(
     @Query() options?: PaginationOptions,
-  ): Promise<PaginatedResult<GenericEntity>> {
+  ): Promise<PaginatedResult<IDGenericEntity>> {
     return this.service.findAll(options);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get entity by ID' })
   @ApiCrudResponse(GenericEntityClass)
-  async findOne(@Param('id') id: EntityId): Promise<GenericEntity> {
+  async findOne(@Param('id') id: EntityId): Promise<IDGenericEntity> {
     return this.service.findOne(id);
   }
 
   @Post()
   @ApiOperation({ summary: 'Create a new entity' })
   @ApiCrudResponse(GenericEntityClass, 'created')
-  async create(@Body() createDto: any): Promise<GenericEntity> {
+  async create(@Body() createDto: any): Promise<IDGenericEntity> {
     return this.service.create(
-      createDto as unknown as DeepPartial<GenericEntity>,
+      createDto as unknown as DeepPartial<IDGenericEntity>,
     );
   }
 
@@ -87,10 +85,10 @@ export class TemplateController {
   async patch(
     @Param('id') id: EntityId,
     @Body() updateDto: any,
-  ): Promise<GenericEntity> {
+  ): Promise<IDGenericEntity> {
     return this.service.update(
       id,
-      updateDto as unknown as DeepPartial<GenericEntity>,
+      updateDto as unknown as DeepPartial<IDGenericEntity>,
     );
   }
 
@@ -100,10 +98,10 @@ export class TemplateController {
   async put(
     @Param('id') id: EntityId,
     @Body() updateDto: any,
-  ): Promise<GenericEntity> {
+  ): Promise<IDGenericEntity> {
     return this.service.update(
       id,
-      updateDto as unknown as DeepPartial<GenericEntity>,
+      updateDto as unknown as DeepPartial<IDGenericEntity>,
     );
   }
 

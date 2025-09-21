@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { IDGenericEntity } from '../../../core';
 import { AcademyEntity } from '../../school/entities/academy.entity';
 import { SchoolEntity } from '../../school/entities/school.entity';
 import {
@@ -17,7 +17,7 @@ import { TrackEntity } from '../../track/entities/track.entity';
 import { KeyEntity } from './key.entity';
 
 @Entity({ name: 'tenants' })
-export class TenantEntity extends GenericEntity implements ITenant {
+export class TenantEntity extends IDGenericEntity implements ITenant {
   @ApiProperty({ description: 'Tenant name', maxLength: 250, nullable: true })
   @Column({ length: 250, nullable: true, default: null })
   name: string;

@@ -3,12 +3,15 @@ import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { IDGenericEntity } from '../../../core';
 import { TeacherEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { TrackEntity } from '../../track/entities/track.entity';
 
 @Entity({ name: 'academic_years' })
-export class AcademicYearEntity extends GenericEntity implements IAcademicYear {
+export class AcademicYearEntity
+  extends IDGenericEntity
+  implements IAcademicYear
+{
   @ApiProperty({
     description: 'Start year of the academic year',
     type: 'integer',

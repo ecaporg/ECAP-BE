@@ -3,7 +3,7 @@ import { Column, Entity, OneToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../core';
+import { IDGenericEntity } from '../../core';
 import {
   AdminEntity,
   DirectorEntity,
@@ -13,7 +13,7 @@ import { StudentEntity } from '../../domain/students/entities/student.entity';
 import { RolesEnum } from '../enums/roles.enum';
 
 @Entity({ name: 'users' })
-export class UserEntity extends GenericEntity implements IUser {
+export class UserEntity extends IDGenericEntity implements IUser {
   @ApiProperty({ description: 'User email address', uniqueItems: true })
   @Column({ unique: true })
   email: string;

@@ -3,12 +3,12 @@ import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { IDGenericEntity } from '../../../core';
 
 import { TrackEntity } from './track.entity';
 
 @Entity({ name: 'semesters' })
-export class SemesterEntity extends GenericEntity implements ISemester {
+export class SemesterEntity extends IDGenericEntity implements ISemester {
   @ApiProperty({ description: 'Track ID associated with this semester' })
   @Column()
   track_id: number;

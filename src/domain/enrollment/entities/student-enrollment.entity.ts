@@ -12,7 +12,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { GenericEntity } from '../../../core';
+import { IDGenericEntity } from '../../../core';
 import { TeacherEnrollmentEntity } from '../../enrollment/entities/teacher-enrollment.entity';
 import { StudentEntity } from '../../students/entities/student.entity';
 import { TrackLearningPeriodEntity } from '../../track/entities/track-learning-period.entity';
@@ -21,7 +21,7 @@ import { StudentLPEnrollmentAssignmentEntity } from './student-enrollment-assign
 
 @Entity('student_lp_enrollments')
 export class StudentLPEnrollmentEntity
-  extends GenericEntity
+  extends IDGenericEntity
   implements IStudentLPEnrollment
 {
   @ApiProperty({

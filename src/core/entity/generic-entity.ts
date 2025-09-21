@@ -2,6 +2,8 @@ import {
   ICanvasGeneric,
   IDatedGeneric,
   IGeneric,
+  IIDCanvasGeneric,
+  IIDGeneric,
   ITenantGeneric,
 } from 'ecap-lib/dist/types';
 import {
@@ -13,6 +15,11 @@ import {
 
 export { EntityId, EntityKey } from 'ecap-lib/dist/types';
 
+export abstract class IDGenericEntity implements IIDGeneric {
+  @PrimaryGeneratedColumn()
+  id: number;
+}
+
 export abstract class DatedGenericEntity implements IDatedGeneric {
   @UpdateDateColumn()
   updatedAt: Date;
@@ -20,6 +27,7 @@ export abstract class DatedGenericEntity implements IDatedGeneric {
   @CreateDateColumn()
   createdAt: Date;
 }
+
 export abstract class GenericEntity
   extends DatedGenericEntity
   implements IGeneric
@@ -36,8 +44,16 @@ export abstract class CanvasGenericEntity
   canvas_id?: string;
 }
 
+export abstract class IDCanvasGenericEntity
+  extends IDGenericEntity
+  implements IIDCanvasGeneric
+{
+  @Column({ nullable: true, length: 20 })
+  canvas_id?: string;
+}
+
 export abstract class TenantGenericEntity
-  extends GenericEntity
+  extends IDGenericEntity
   implements ITenantGeneric
 {
   @Column()

@@ -1,14 +1,15 @@
+import { IIDGeneric } from 'ecap-lib/dist/types';
+
 import { Injectable } from '@nestjs/common';
 
 import { FILTER_SEPARATOR_FOR_MULTIPLE_VALUES } from '../constants';
-import { DatedGenericEntity } from '../entity/generic-entity';
 import { NestedObjectToDotNotation } from '../utils/types';
 
 import { QueryParamMapperInterceptor } from './query-param-mapper.interceptor';
 
 @Injectable()
 export class AttachASearchFieldsInterceptor<
-  T extends DatedGenericEntity = any,
+  T extends IIDGeneric = any,
 > extends QueryParamMapperInterceptor<{
   searchFields: string;
 }> {

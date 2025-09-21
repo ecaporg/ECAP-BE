@@ -15,6 +15,7 @@ import {
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   ApiCrudResponse,
   ApiErrorResponses,
@@ -30,7 +31,6 @@ import {
   Roles,
 } from '../../../core';
 import { AttachASearchFieldsInterceptor } from '../../../core/interceptors/attach-search_fields.interceptor';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { TeachersFilterDto } from '../dto/filters.dto';
 import { TeacherEntity } from '../entities/staff.entity';
 import { TeacherFilterInterceptor } from '../interceptors/teacher-filter.interceptor';
@@ -58,9 +58,7 @@ export class TeacherController {
   @ApiOperation({ summary: 'Get all entities with pagination' })
   @ApiPaginationQueries()
   @ApiPaginatedCrudResponse(TeacherEntity)
-  async findAll(
-    @Query() options?: TeachersFilterDto,
-  ): Promise<PaginatedResult<GenericEntity>> {
+  async findAll(@Query() options?: TeachersFilterDto) {
     return this.service.findAll(options, { user: true });
   }
 
