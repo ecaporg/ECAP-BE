@@ -31,4 +31,4 @@
 //   ],
 //   exports: [CacheModule],
 // })
-// export class RedisModule {}
+export class RedisModule {}
