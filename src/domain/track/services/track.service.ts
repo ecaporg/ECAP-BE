@@ -3,10 +3,10 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { UserEntity } from '../../../auth/entities/user.entity';
 import { BaseService } from '../../../core';
 import { AdminService } from '../../staff/services/staff.service';
 import { AcademicYearService } from '../../track/services/academic-year.service';
-import { UserEntity } from '../../../auth/entities/user.entity';
 import { AcademicYearEntity } from '../entities/academic-year.entity';
 import { TrackEntity } from '../entities/track.entity';
 

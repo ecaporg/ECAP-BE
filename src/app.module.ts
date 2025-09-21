@@ -18,7 +18,7 @@ import { AppService } from './app.service';
     UsersModule,
     // SchoolModule,
     // ComplianceTasksModule,
-    // DashboardModule,
+    DashboardModule,
     // CanvasEventsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',

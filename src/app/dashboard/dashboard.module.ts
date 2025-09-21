@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 
-import { SchoolModule } from '../../domain/school/school.module';
+import { TrackModule } from '../../domain/track/track.module';
 
 import { DashboardController } from './controllers/dashboard.controller';
 import { DashboardService } from './services/dashboard.service';
 
 @Module({
-  imports: [SchoolModule],
+  imports: [TrackModule],
   controllers: [DashboardController],
   providers: [DashboardService],
   exports: [DashboardService],
