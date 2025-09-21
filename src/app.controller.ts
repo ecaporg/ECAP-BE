@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 
 import { All, Controller, Req, Res } from '@nestjs/common';
 
-import { AppService } from './app.service';
-
 @Controller()
 export class AppController {
   @All('*')

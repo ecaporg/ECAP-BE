@@ -10,14 +10,13 @@ import { CoreModule } from './core/core.module';
 import { SchoolModule } from './domain/school/school.module';
 import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 @Module({
   imports: [
     CoreModule,
     AuthModule,
     UsersModule,
     // SchoolModule,
-    // ComplianceTasksModule,
+    ComplianceTasksModule,
     DashboardModule,
     // CanvasEventsModule,
     ConfigModule.forRoot({
@@ -43,6 +42,6 @@ import { AppService } from './app.service';
     }),
   ],
   controllers: [],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
