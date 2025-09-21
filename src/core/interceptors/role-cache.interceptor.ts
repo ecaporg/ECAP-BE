@@ -20,4 +20,3 @@
 //     return userId && res ? `${res}:userId=${userId}` : res;
 //   }
 // }
-export {};

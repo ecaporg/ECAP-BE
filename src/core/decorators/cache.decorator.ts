@@ -2,4 +2,3 @@
 
 // import { RoleCacheInterceptor } from '../interceptors/role-cache.interceptor';
 // export const RoleCache = () => UseInterceptors(RoleCacheInterceptor);
-export {};
