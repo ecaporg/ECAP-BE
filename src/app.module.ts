@@ -12,17 +12,17 @@ import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module
 import { AppController } from './app.controller';
 @Module({
   imports: [
-    // CoreModule,
-    // AuthModule,
-    // UsersModule,
-    // SchoolModule,
-    // ComplianceTasksModule,
-    // DashboardModule,
-    // CanvasEventsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     }),
+    CoreModule,
+    UsersModule,
+    AuthModule,
+    // SchoolModule,
+    // ComplianceTasksModule,
+    // DashboardModule,
+    // CanvasEventsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
