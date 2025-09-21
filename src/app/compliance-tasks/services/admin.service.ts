@@ -74,10 +74,6 @@ export class AdminComplianceService {
     this.buildTeacherFilters(filters, user, subQuery);
     const [subQuerySql, subQueryParams] = subQuery.getQueryAndParameters();
 
-    // Log the generated SQL for debugging
-    console.log('Generated subquery SQL:', subQuerySql);
-    console.log('Query parameters:', subQueryParams);
-
     const completedQuery =
       completed && completed.length > 0
         ? `WHERE is_complated IN (${completed.join(',')})`
@@ -192,19 +188,6 @@ export class AdminComplianceService {
       'student_lp_enrollment.student_grade',
     );
     const status = getAndDeleteField(filters, 'sample.status');
-
-    // Log filters for debugging
-    console.log('Applied filters:', {
-      academicYear,
-      learningPeriod,
-      academy,
-      school,
-      track,
-      semesters,
-      subject,
-      gradeSpan,
-      status,
-    });
 
     if (user.role === RolesEnum.DIRECTOR) {
       query.leftJoin('academy.directors', 'directors');

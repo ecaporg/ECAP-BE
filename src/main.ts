@@ -19,9 +19,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // setupSwagger(app);
+  setupSwagger(app);
 
-  // useContainer(app.select(AuthModule), { fallbackOnErrors: true });
+  useContainer(app.select(AuthModule), { fallbackOnErrors: true });
 
   const configService = app.get(ConfigService);
 
