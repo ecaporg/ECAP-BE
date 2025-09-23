@@ -264,7 +264,8 @@ export class DashboardService {
           avg.academy_id == academyId,
       )
       .map(({ percentage }) => percentage)
-      .filter((percentage) => percentage != null);
+      .filter((percentage) => percentage != null)
+      .map((percentage) => Number(percentage));
 
     return (
       percentages.reduce((acc, curr) => acc + curr, 0) / percentages.length

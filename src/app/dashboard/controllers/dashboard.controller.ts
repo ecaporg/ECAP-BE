@@ -1,4 +1,4 @@
-// import { CacheTTL } from '@nestjs/cache-manager';
+import { CacheTTL } from '@nestjs/cache-manager';
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -8,7 +8,7 @@ import {
   ApiCrudResponse,
   AttachUserIdInterceptor,
   CurrentUser,
-  // RoleCache,
+  RoleCache,
   Roles,
 } from '../../../core';
 import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
@@ -50,8 +50,8 @@ export class DashboardController {
   @ApiOperation({ summary: 'Get entity by ID' })
   @ApiCrudResponse(DashboardStatsResponseDto)
   @UseInterceptors(interceptor)
-  // @RoleCache()
-  // @CacheTTL(60 * 60 * 6) // Cache for 6 hours
+  @RoleCache()
+  @CacheTTL(60 * 60 * 6) // Cache for 6 hours
   async getDashboardStats(
     @Query() options: DashboardFilterDto,
     @CurrentUser() user: UserEntity,
