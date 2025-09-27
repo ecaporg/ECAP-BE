@@ -16,9 +16,9 @@ export class QueryParamMapperInterceptor<T extends QueryParamMapping>
   implements NestInterceptor<T, any>
 {
   private paramMapping: T;
-  private defaultValues: T;
+  private defaultValues: Partial<T>;
 
-  constructor(paramMapping: T, defaultValues: T = {} as T) {
+  constructor(paramMapping: T, defaultValues: Partial<T> = {} as T) {
     this.paramMapping = paramMapping;
     this.defaultValues = defaultValues;
   }

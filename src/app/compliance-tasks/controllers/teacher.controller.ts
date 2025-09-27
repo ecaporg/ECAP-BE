@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { AuthUser } from '../../../auth/types/auth-user';
 import {
   ApiArrayResponse,
@@ -14,7 +15,6 @@ import {
 import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
 import { StudentEntity } from '../../../domain/students/entities/student.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   filterMapping,
   StudentSamplesFilterDto,
@@ -39,7 +39,9 @@ export class TeacherComplianceTaskController {
   @Get()
   @UseInterceptors(
     TeacherFilterInterceptor,
-    new QueryParamMapperInterceptor(filterMapping),
+    new QueryParamMapperInterceptor(filterMapping, {
+      sortBy: 'student.user.name',
+    } as any),
   )
   @ApiOperation({ summary: 'Get table with students' })
   @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)
@@ -57,7 +59,9 @@ export class TeacherComplianceTaskController {
   @Get('subjects')
   @UseInterceptors(
     TeacherFilterInterceptor,
-    new QueryParamMapperInterceptor(filterMapping),
+    new QueryParamMapperInterceptor(filterMapping, {
+      sortBy: 'assignments.assignment.course.name',
+    } as any),
   )
   @ApiOperation({ summary: 'Get table with student samples' })
   @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)
