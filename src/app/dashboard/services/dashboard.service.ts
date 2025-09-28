@@ -349,8 +349,6 @@ export class DashboardService {
       )`,
     );
 
-    console.log('QUERY', queryBuilder.getSql());
-
     return queryBuilder.getRawMany().then((results) =>
       results.map((result) => ({
         ...result,
