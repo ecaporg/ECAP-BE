@@ -15,7 +15,7 @@ interface QueryParamMapping {
 
 interface ExtendedQueryParamMapping {
   sortBy?: string;
-  sortOrder?: SortDirectionEnum;
+  sortDirection?: SortDirectionEnum;
 }
 
 @Injectable()

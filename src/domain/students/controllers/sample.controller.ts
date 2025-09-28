@@ -83,7 +83,7 @@ export class SampleController {
     ]),
     new QueryParamMapperInterceptor(filterMapping, {
       sortBy: 'updatedAt',
-      sortOrder: SortDirectionEnum.ASC,
+      sortDirection: SortDirectionEnum.DESC,
     }),
   )
   @Get('flagged')
