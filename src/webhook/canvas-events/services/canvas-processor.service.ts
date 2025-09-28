@@ -268,6 +268,9 @@ export class CanvasProcessorService {
             email: In(teachers.map((teacher) => teacher.email)),
           },
         },
+        academic_year: {
+          id: currentAcademicYear[0].id,
+        },
       },
       relations: {
         teacher: {
