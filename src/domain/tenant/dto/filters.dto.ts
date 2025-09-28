@@ -13,7 +13,7 @@ const FILTER_KEYS = {
   TEACHER_ID: 'teachers.id',
 } satisfies RecordStringAndDotNotation<TenantEntity>;
 
-export class TenantKeyFilterDto extends BaseFilterDto {
+export class TenantKeyFilterDto extends BaseFilterDto<TenantEntity> {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   [FILTER_KEYS.ADMIN_ID]: number[];

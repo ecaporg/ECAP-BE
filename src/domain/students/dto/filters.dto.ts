@@ -26,7 +26,7 @@ const FILTER_KEYS = {
 
 export const filterMapping = getFilterMappingRecord(FILTER_KEYS);
 
-export class FlaggedSamplesFilterDto extends BaseFilterDto {
+export class FlaggedSamplesFilterDto extends BaseFilterDto<SampleEntity> {
   @ApiProperty({
     required: false,
     description: 'Filter by learning period ID',

@@ -1,6 +1,6 @@
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 import {
   BaseFilterDto,
@@ -11,6 +11,8 @@ import {
 } from '../../../core';
 import { StudentLPEnrollmentEntity } from '../../../domain/enrollment/entities/student-enrollment.entity';
 import { StudentLPEnrollmentAssignmentEntity } from '../../../domain/enrollment/entities/student-enrollment-assignment.entity';
+import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
+import { StudentEntity } from '../../../domain/students/entities/student.entity';
 
 const FILTER_KEYS = {
   LEARNING_PERIOD_ID: 'learning_period_id',
@@ -50,7 +52,7 @@ export const assignmentFilterMapping = getFilterMappingRecord(
   ASSIGNMENT_FILTER_KEYS,
 );
 
-export class StudentsTableFilterDto extends BaseFilterDto {
+export class StudentsTableFilterDto extends BaseFilterDto<StudentLPEnrollmentEntity> {
   @ApiProperty({
     required: true,
     description: 'Filter by learning period ID',
@@ -122,7 +124,7 @@ export class StudentsTableFilterDto extends BaseFilterDto {
   [FILTER_KEYS.TEACHER_ID]?: number;
 }
 
-export class StudentSamplesFilterDto extends BaseFilterDto {
+export class StudentSamplesFilterDto extends BaseFilterDto<StudentLPEnrollmentEntity> {
   @ApiProperty({
     required: true,
     description: 'Filter by learning period ID',
@@ -184,7 +186,7 @@ export class StudentSamplesFilterDto extends BaseFilterDto {
   [FILTER_KEYS.ACADEMY_ID]?: number[];
 }
 
-export class TeachersTableFilterDto extends BaseFilterDto {
+export class TeachersTableFilterDto extends BaseFilterDto<StudentLPEnrollmentAssignmentEntity> {
   @ApiProperty({
     required: false,
     description: 'Filter by academy ID',
@@ -294,4 +296,44 @@ export class TeachersTableFilterDto extends BaseFilterDto {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   [ASSIGNMENT_FILTER_KEYS.SUBJECT_ID]?: number[];
+}
+
+const FILTER_STUDENT_SEARCH_KEYS = {
+  ADMIN_ID: 'school.tenant.admins.id',
+  DIRECTOR_ID: 'school.tenant.directors.id',
+  TEACHER_ID: 'school.tenant.teachers.id',
+} satisfies RecordStringAndDotNotation<StudentEntity>;
+
+export class StudentSearchFilterDto extends BaseFilterDto<StudentEntity> {
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  [FILTER_STUDENT_SEARCH_KEYS.ADMIN_ID]: number[];
+
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  [FILTER_STUDENT_SEARCH_KEYS.DIRECTOR_ID]: number[];
+
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  [FILTER_STUDENT_SEARCH_KEYS.TEACHER_ID]: number[];
+}
+
+const FILTER_TEACHER_SEARCH_KEYS = {
+  ADMIN_ID: 'tenant.admins.id',
+  DIRECTOR_ID: 'tenant.directors.id',
+  TEACHER_ID: 'tenant.teachers.id',
+} satisfies RecordStringAndDotNotation<TeacherEntity>;
+
+export class TeacherSearchFilterDto extends BaseFilterDto<TeacherEntity> {
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  [FILTER_TEACHER_SEARCH_KEYS.ADMIN_ID]: number[];
+
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  [FILTER_TEACHER_SEARCH_KEYS.DIRECTOR_ID]: number[];
+
+  @IdDecorator(Number)
+  @IsNumber({}, { each: true })
+  [FILTER_TEACHER_SEARCH_KEYS.TEACHER_ID]: number[];
 }

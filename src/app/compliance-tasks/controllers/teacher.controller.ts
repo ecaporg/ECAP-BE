@@ -18,8 +18,10 @@ import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import {
   filterMapping,
   StudentSamplesFilterDto,
+  StudentSearchFilterDto,
   StudentsTableFilterDto,
 } from '../dto/filters.dto';
+import { StudentSearchFilterInterceptor } from '../interceptors/student-search-filter.interceptor';
 import { TeacherFilterInterceptor } from '../interceptors/teacher-filter.interceptor';
 import { TeacherComplianceTaskService } from '../services/teacher.service';
 
@@ -70,13 +72,14 @@ export class TeacherComplianceTaskController {
   }
 
   @Get('students/:search')
+  @UseInterceptors(StudentSearchFilterInterceptor)
   @ApiOperation({ summary: 'Search students' })
   @ApiErrorResponses()
   @ApiArrayResponse(StudentEntity)
   async searchStudents(
-    @CurrentUser() user: AuthUser,
     @Param('search') search: string,
+    @Query() filters: StudentSearchFilterDto,
   ) {
-    return this.teacherComplianceTaskService.searchStudents(user, search);
+    return this.teacherComplianceTaskService.searchStudents(search, filters);
   }
 }

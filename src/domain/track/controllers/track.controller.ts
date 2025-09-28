@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { UserEntity } from '../../../auth/entities/user.entity';
+import { RolesEnum } from '../../../auth/enums/roles.enum';
 import {
   ApiCrudResponse,
   ApiErrorResponses,
@@ -22,8 +24,6 @@ import {
   PaginatedResult,
   Roles,
 } from '../../../core';
-import { UserEntity } from '../../../auth/entities/user.entity';
-import { RolesEnum } from '../../../auth/enums/roles.enum';
 import { TrackFilterDto } from '../dto/filters.dto'; // Using TrackFilterDto
 import { CreateTrackDto, UpdateTrackDto } from '../dto/track.dto';
 import { TrackEntity } from '../entities/track.entity';

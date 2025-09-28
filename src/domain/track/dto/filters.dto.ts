@@ -16,7 +16,7 @@ const FILTER_TRACK_KEYS = {
   TEACHER_ID: 'tenant.teachers.id',
 } satisfies RecordStringAndDotNotation<TrackEntity>;
 
-export class TrackFilterDto extends BaseFilterDto {
+export class TrackFilterDto extends BaseFilterDto<TrackEntity> {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   [FILTER_TRACK_KEYS.ADMIN_ID]: number[];
@@ -36,7 +36,7 @@ const FILTER_TRACK_CALENDAR_KEYS = {
   TEACHER_ID: 'track.tenant.teachers.id',
 } satisfies RecordStringAndDotNotation<TrackCalendarEntity>;
 
-export class TrackCalendarFilterDto extends BaseFilterDto {
+export class TrackCalendarFilterDto extends BaseFilterDto<TrackCalendarEntity> {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   [FILTER_TRACK_CALENDAR_KEYS.ADMIN_ID]: number[];

@@ -16,7 +16,7 @@ const FILTER_SCHOOL_KEYS = {
   TEACHER_ID: 'tenant.teachers.id',
 } satisfies RecordStringAndDotNotation<SchoolEntity>;
 
-export class SchoolFilterDto extends BaseFilterDto {
+export class SchoolFilterDto extends BaseFilterDto<SchoolEntity> {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   [FILTER_SCHOOL_KEYS.ADMIN_ID]: number[];
@@ -36,7 +36,7 @@ const FILTER_ACADEMY_KEYS = {
   TEACHER_ID: 'tenant.teachers.id',
 } satisfies RecordStringAndDotNotation<AcademyEntity>;
 
-export class AcademyFilterDto extends BaseFilterDto {
+export class AcademyFilterDto extends BaseFilterDto<AcademyEntity> {
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
   [FILTER_ACADEMY_KEYS.ADMIN_ID]: number[];

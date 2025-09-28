@@ -16,7 +16,7 @@ import {
 } from '../constants';
 import { IdDecorator } from '../decorators/filter-dto.decorators';
 
-export class BaseFilterDto {
+export class BaseFilterDto<T> {
   @ApiProperty({ required: false, default: 1, minimum: 1 })
   @IsOptional()
   @Type(() => Number)
@@ -60,4 +60,6 @@ export class BaseFilterDto {
   @IdDecorator()
   @IsString({ each: true })
   searchFields?: string[];
+
+  __typename?: T;
 }

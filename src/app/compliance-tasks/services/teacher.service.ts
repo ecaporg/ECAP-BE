@@ -13,6 +13,7 @@ import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
 import {
   StudentSamplesFilterDto,
+  StudentSearchFilterDto,
   StudentsTableFilterDto,
 } from '../dto/filters.dto';
 
@@ -85,21 +86,14 @@ export class TeacherComplianceTaskService {
     return tenant;
   }
 
-  async searchStudents(user: AuthUser, search: string) {
+  async searchStudents(search: string, options: StudentSearchFilterDto) {
+    const filters = extractPaginationOptions(options).filters;
     const students = await this.studentService.findBy({
       where: this.getUserSearchFields(search).map((property) => ({
         user: {
           ...property,
         },
-        student_lp_enrollments: {
-          teacher_enrollments: {
-            teacher: {
-              user: {
-                id: user.id,
-              },
-            },
-          },
-        },
+        ...filters,
       })),
       take: 10,
     });

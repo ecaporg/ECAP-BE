@@ -4,17 +4,17 @@ import { SortDirectionEnum } from '../constants';
 import { BaseFilterDto } from '../dto/base-filter.dto';
 import { PaginationOptions } from '../interfaces';
 
-type BaseFilterType = BaseFilterDto;
+// Helper type to extract entity type from BaseFilterDto
+type ExtractEntityType<T> = T extends BaseFilterDto<infer E> ? E : never;
 
 /**
  * Extract pagination parameters from request query
- * @param request Express request object
- * @param searchFields Array of fields to search in
+ * @param options BaseFilterDto instance or its subclass
  * @returns Pagination options object
  */
-export function extractPaginationOptions<T extends BaseFilterType>(
+export function extractPaginationOptions<T extends BaseFilterDto<any>>(
   options: T,
-): PaginationOptions<any> {
+): PaginationOptions<ExtractEntityType<T>> {
   const {
     page,
     limit,
@@ -84,7 +84,7 @@ export function extractPaginationOptions<T extends BaseFilterType>(
     limit: limit,
     sortBy: sortByArray,
     sortDirection: sortDirectionArray,
-    filters: filtersObject,
+    filters: filtersObject as ExtractEntityType<T>,
   };
 }
 

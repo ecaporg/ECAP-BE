@@ -9,7 +9,7 @@ const FILTER_KEYS = {
   TEACHER: 'student_lp_enrollments.teacher_enrollments.teacher_id',
 } satisfies RecordStringAndDotNotation<TrackLearningPeriodEntity>;
 
-export class DashboardFilterDto extends BaseFilterDto {
+export class DashboardFilterDto extends BaseFilterDto<TrackLearningPeriodEntity> {
   @IsOptional()
   @IsNumber()
   [FILTER_KEYS.DIRECTOR]?: number;

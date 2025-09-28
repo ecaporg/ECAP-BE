@@ -7,6 +7,7 @@ import { AuthUser } from '../../../auth/types/auth-user';
 import {
   addInOrEqualsCondition,
   createOrderCondition,
+  extractPaginationOptions,
   formInOrEqualsCondition,
   getAndDeleteField,
 } from '../../../core';
@@ -17,7 +18,10 @@ import {
   SampleFlagCategory,
   SampleStatus,
 } from '../../../domain/students/entities/sample.entity';
-import { TeachersTableFilterDto } from '../dto/filters.dto';
+import {
+  TeacherSearchFilterDto,
+  TeachersTableFilterDto,
+} from '../dto/filters.dto';
 
 import { TeacherComplianceTaskService } from './teacher.service';
 
@@ -121,20 +125,8 @@ export class AdminComplianceService {
     return this.teacherComplianceTaskService.getFilters(user);
   }
 
-  async searchTeachers(user: AuthUser, search: string) {
-    const whereInSchool = {
-      tenant: {
-        [user.role === RolesEnum.DIRECTOR
-          ? 'directors'
-          : user.role === RolesEnum.ADMIN
-            ? 'admins'
-            : 'teachers']: {
-          user: {
-            id: user.id,
-          },
-        },
-      },
-    };
+  async searchTeachers(search: string, options: TeacherSearchFilterDto) {
+    const filters = extractPaginationOptions(options).filters;
 
     const teachers = await this.teacherService.findBy({
       where: this.teacherComplianceTaskService
@@ -143,7 +135,7 @@ export class AdminComplianceService {
           user: {
             ...property,
           },
-          ...whereInSchool,
+          ...filters,
         })),
       take: 10,
     });

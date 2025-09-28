@@ -17,9 +17,11 @@ import { TeacherEntity } from '../../../domain/staff/entities/staff.entity';
 import { TenantEntity } from '../../../domain/tenant/entities/tenant.entity';
 import {
   assignmentFilterMapping,
+  TeacherSearchFilterDto,
   TeachersTableFilterDto,
 } from '../dto/filters.dto';
 import { AdminComplianceService } from '../services/admin.service';
+import { TeacherSearchFilterInterceptor } from '../interceptors/teacher-search-filter.interceptor';
 
 @ApiTags('Admin Compliance Tasks')
 @Controller('teachers-table')
@@ -52,13 +54,14 @@ export class AdminComplianceController {
   }
 
   @Get('teachers/:search')
+  @UseInterceptors(TeacherSearchFilterInterceptor)
   @ApiOperation({ summary: 'Search teachers' })
   @ApiErrorResponses()
   @ApiArrayResponse(TeacherEntity)
   async searchTeachers(
-    @CurrentUser() user: AuthUser,
     @Param('search') search: string,
+    @Query() filters: TeacherSearchFilterDto,
   ) {
-    return this.adminComplianceService.searchTeachers(user, search);
+    return this.adminComplianceService.searchTeachers(search, filters);
   }
 }

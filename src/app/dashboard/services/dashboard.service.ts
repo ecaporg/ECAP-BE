@@ -69,8 +69,7 @@ export class DashboardService {
   private async getTeacherStats(
     options: DashboardFilterDto,
   ): Promise<DashboardStatsWithGroups> {
-    const filters =
-      extractPaginationOptions<DashboardFilterDto>(options).filters;
+    const filters = extractPaginationOptions(options).filters;
     const currentAcademicYears =
       await this.academicYearService.findCurrentAcademicYears();
 
@@ -127,7 +126,7 @@ export class DashboardService {
             : currentPeriodIndex + 1,
         )
         .flatMap(([, periods]) => periods),
-      filters,
+      options,
     );
 
     const periodStats = this.calculatePeriodStats(
