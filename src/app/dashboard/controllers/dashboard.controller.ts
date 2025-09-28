@@ -11,27 +11,28 @@ import {
   RoleCache,
   Roles,
 } from '../../../core';
+import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { DashboardStatsResponseDto } from '../dto/dashboard-stats.dto';
 import { DashboardFilterDto } from '../dto/filters.dto';
 import { DashboardService } from '../services/dashboard.service';
 
-const interceptor = new AttachUserIdInterceptor<DashboardFilterDto>([
+const interceptor = new AttachUserIdInterceptor<TrackLearningPeriodEntity>([
   {
     role: RolesEnum.TEACHER,
-    path: 'student_lp_enrollments.teacher_school_year_enrollment.teacher_id' as keyof DashboardFilterDto,
+    path: 'student_lp_enrollments.teacher_enrollments.teacher_id',
   },
   {
     role: RolesEnum.DIRECTOR,
-    path: 'student_lp_enrollments.student.academy_id' as keyof DashboardFilterDto,
+    path: 'student_lp_enrollments.student.academy_id',
     map: (user) => user.director?.academy?.id,
   },
   {
     role: RolesEnum.ADMIN,
-    path: 'track.tenant.admins.id' as keyof DashboardFilterDto,
+    path: 'track.tenant.admins.id',
   },
   {
     role: RolesEnum.SUPER_ADMIN,
-    path: 'track.tenant.admins.id' as keyof DashboardFilterDto,
+    path: 'track.tenant.admins.id',
   },
 ]);
 

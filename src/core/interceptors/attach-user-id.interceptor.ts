@@ -7,9 +7,9 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 
-import { NestedObjectToDotNotation } from '../../core';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { RolesEnum } from '../../auth/enums/roles.enum';
+import { NestedObjectToDotNotation } from '../../core';
 
 interface RolePathMapping<T extends object> {
   role: RolesEnum;
