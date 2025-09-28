@@ -28,28 +28,24 @@ import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module
     CanvasEventsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const dataSourceOptions = {
-          type: 'postgres' as const,
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          url: configService.get('POSTGRES_URL'),
-          synchronize: false,
-          dropSchema: false,
-          ssl: false,
-          logging: false,
-          logger: 'advanced-console' as const,
-          subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
-          autoLoadEntities: true,
-          cache: { duration: 60000 },
-        };
-
-        // Add transactional support
-        const dataSource = new DataSource(dataSourceOptions);
-        addTransactionalDataSource(dataSource);
-
-        return dataSourceOptions;
-      },
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        url: configService.get('POSTGRES_URL'),
+        synchronize: false,
+        dropSchema: false,
+        ssl: false,
+        logging: false,
+        logger: 'advanced-console',
+        subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
+        autoLoadEntities: true,
+        cache: { duration: 60000 },
+      }),
       inject: [ConfigService],
+      async dataSourceFactory(option) {
+        if (!option) throw new Error('Invalid options passed');
+        return addTransactionalDataSource(new DataSource(option));
+      },
     }),
   ],
   controllers: [],
