@@ -65,6 +65,7 @@ export class SampleService extends BaseService<SampleEntity> {
     return this.sampleRepository.update(id, data);
   }
 
+  @Transactional({ isolationLevel: IsolationLevel.READ_COMMITTED })
   async flagError(
     id: number,
     user_id: number,

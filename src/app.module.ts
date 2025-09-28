@@ -1,3 +1,6 @@
+import { DataSource } from 'typeorm';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,19 +28,27 @@ import { CanvasEventsModule } from './webhook/canvas-events/canvas-events.module
     CanvasEventsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        url: configService.get('POSTGRES_URL'),
-        synchronize: false,
-        dropSchema: false,
-        ssl: false,
-        logging: false,
-        logger: 'advanced-console',
-        subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
-        autoLoadEntities: true,
-        cache: { duration: 60000 },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const dataSourceOptions = {
+          type: 'postgres' as const,
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          url: configService.get('POSTGRES_URL'),
+          synchronize: false,
+          dropSchema: false,
+          ssl: false,
+          logging: false,
+          logger: 'advanced-console' as const,
+          subscribers: [__dirname + '/**/*.subscriber{.ts,.js}'],
+          autoLoadEntities: true,
+          cache: { duration: 60000 },
+        };
+
+        // Add transactional support
+        const dataSource = new DataSource(dataSourceOptions);
+        addTransactionalDataSource(dataSource);
+
+        return dataSourceOptions;
+      },
       inject: [ConfigService],
     }),
   ],

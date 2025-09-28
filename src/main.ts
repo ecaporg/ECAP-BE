@@ -1,4 +1,5 @@
 import { useContainer } from 'class-validator';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 // import { DataSource } from 'typeorm';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
@@ -11,6 +12,9 @@ import { setupSwagger } from './core/config/swagger.setup';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  // Initialize transactional context before creating the app
+  initializeTransactionalContext();
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger:
       process.env.NODE_ENV === 'production' ? ['error', 'warn'] : undefined,
