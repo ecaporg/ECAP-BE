@@ -92,39 +92,44 @@ export class SampleSubscriber
       for (const studentLPEnrollment of [
         sample.student_lp_enrollment_assignment.student_lp_enrollment,
       ]) {
-        const samples = await queryRunner.manager.find(SampleEntity, {
-          where: {
-            student_lp_enrollment_assignment: {
-              student_lp_enrollment: {
-                id: studentLPEnrollment.id,
-              },
-            },
-          },
-        });
-        const totalSamples = samples.length;
-        const completedSamples = samples.filter(
-          (sample) => sample.status === SampleStatus.COMPLETED,
-        ).length;
-        const percentage =
-          totalSamples > 0
-            ? parseFloat(((completedSamples * 100.0) / totalSamples).toFixed(2))
-            : 0;
-        const completed = totalSamples > 0 && completedSamples === totalSamples;
-        studentLPEnrollment.percentage = percentage;
-        studentLPEnrollment.completed = completed;
-        this.logger.log(
-          `Stats calculated for Student LP enrollment ${studentLPEnrollment.id}: completed=${completed}, percentage=${percentage}`,
+        await queryRunner.query(
+          `
+          WITH assignment_stats AS (
+            SELECT
+              sle.id,
+              COUNT(slea.student_lp_enrollment_id) as total_assignments,
+              COUNT(CASE WHEN s.status = 'COMPLETED' THEN 1 END) as completed_assignments,
+              CASE
+                WHEN COUNT(slea.student_lp_enrollment_id) > 0 THEN
+                  (COUNT(CASE WHEN s.status = 'COMPLETED' THEN 1 END)::decimal / COUNT(slea.student_lp_enrollment_id)::decimal) * 100
+                ELSE 0
+              END as calculated_percentage,
+              CASE
+                WHEN COUNT(slea.student_lp_enrollment_id) = 0 THEN false
+                WHEN COUNT(slea.student_lp_enrollment_id) = COUNT(CASE WHEN s.status = 'COMPLETED' THEN 1 END) THEN true
+                ELSE false
+              END as is_completed
+            FROM student_lp_enrollments sle
+            LEFT JOIN student_lp_enrollment_assignments slea ON slea.student_lp_enrollment_id = sle.id
+            LEFT JOIN samples s ON s.id = slea.sample_id
+            WHERE sle.id = $1
+            GROUP BY sle.id
+          )
+        UPDATE student_lp_enrollments
+        SET
+          percentage = assignment_stats.calculated_percentage,
+          completed = assignment_stats.is_completed
+        FROM assignment_stats
+        WHERE student_lp_enrollments.id = assignment_stats.id;`,
+          [studentLPEnrollment.id],
         );
-      }
-      await queryRunner.manager.save(
-        StudentLPEnrollmentEntity,
-        sample.student_lp_enrollment_assignment.student_lp_enrollment,
-      );
-      this.logger.log(
-        `Successfully updated stats for Student LP enrollment where sample id: ${sampleId}`,
-      );
-      if (startedTransaction) {
-        await queryRunner.commitTransaction();
+
+        this.logger.log(
+          `Successfully updated stats for Student LP enrollment where sample id: ${sampleId}`,
+        );
+        if (startedTransaction) {
+          await queryRunner.commitTransaction();
+        }
       }
     } catch (error) {
       if (startedTransaction) {

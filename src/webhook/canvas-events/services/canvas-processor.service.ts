@@ -512,13 +512,6 @@ export class CanvasProcessorService {
       sample.flag_errors = {
         comment: 'Errors found in work sample',
       } as any;
-    } else if (
-      sample.status === SampleStatus.MISSING_SAMPLE &&
-      !sample.flag_missing_work
-    ) {
-      sample.flag_missing_work = {
-        reason: 'Missing work',
-      } as any;
     }
 
     return this.sampleService.save(sample);

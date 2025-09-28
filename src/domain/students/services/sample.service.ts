@@ -1,4 +1,5 @@
 import { DeepPartial, Repository } from 'typeorm';
+import { IsolationLevel, Transactional } from 'typeorm-transactional';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -59,6 +60,7 @@ export class SampleService extends BaseService<SampleEntity> {
     });
   }
 
+  @Transactional({ isolationLevel: IsolationLevel.READ_COMMITTED })
   async updateSample(id: number, data: DeepPartial<SampleEntity>) {
     return this.sampleRepository.update(id, data);
   }
@@ -79,6 +81,7 @@ export class SampleService extends BaseService<SampleEntity> {
     });
   }
 
+  @Transactional({ isolationLevel: IsolationLevel.READ_COMMITTED })
   async flagMissingWork(
     id: number,
     user_id: number,
@@ -95,6 +98,7 @@ export class SampleService extends BaseService<SampleEntity> {
     });
   }
 
+  @Transactional({ isolationLevel: IsolationLevel.READ_COMMITTED })
   async flagRejected(
     id: number,
     user_id: number,
@@ -111,6 +115,7 @@ export class SampleService extends BaseService<SampleEntity> {
     });
   }
 
+  @Transactional({ isolationLevel: IsolationLevel.READ_COMMITTED })
   async flagCompleted(
     id: number,
     user_id: number,

@@ -710,10 +710,6 @@
 //       samples.flag_errors = {
 //         comment: 'Errors found in work sample',
 //       } as SampleFlagErrorEntity;
-//     } else if (samples.status === SampleStatus.MISSING_SAMPLE) {
-//       samples.flag_missing_work = {
-//         reason: 'Missing work',
-//       } as SampleFlagMissingWorkEntity;
 //     }
 //     return samples;
 //   }

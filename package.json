@@ -59,7 +59,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.27"
+    "typeorm": "^0.3.27",
+    "typeorm-transactional": "^0.5.0"
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
