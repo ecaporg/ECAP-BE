@@ -26,6 +26,7 @@ import { TenantService } from '../../../domain/tenant/services/tenant.service';
 import { AcademicYearEntity } from '../../../domain/track/entities/academic-year.entity';
 import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
+import { TrackLearningPeriodService } from '../../../domain/track/services/track-learning-period.service';
 import {
   CanvasAssignmentDto,
   CanvasCourseDto,
@@ -53,6 +54,7 @@ export class CanvasProcessorService {
     private readonly sampleService: SampleService,
     private readonly courseService: CourseService,
     private readonly courseAssignmentService: CourseAssignmentService,
+    private readonly trackLearningPeriodsService: TrackLearningPeriodService,
   ) {}
 
   public async updateCourse(data: ProcessCourseDto) {
@@ -67,13 +69,12 @@ export class CanvasProcessorService {
       )
       .catch(() => null);
 
-    const [assignments, learningPeriods] = this.filterAssignmentsWithDueDate(
-      data.tenant.tracks.flatMap((track) =>
-        track.learningPeriods.map((lp) => ({ ...lp, track })),
-      ),
-      data.assignments,
-      data.course,
-    );
+    const [assignments, learningPeriods] =
+      await this.filterAssignmentsWithDueDate(
+        data.currentAcademicYear.id,
+        data.assignments,
+        data.course,
+      );
 
     if (course && course.assignments && course.assignments.length > 0) {
       this.courseService.save({
@@ -105,7 +106,6 @@ export class CanvasProcessorService {
 
     const filteredTeachers = await this.getOrCreateTeachersEnrolemts(
       data.teachers,
-      data.tenant,
       data.currentAcademicYear,
     );
 
@@ -199,11 +199,11 @@ export class CanvasProcessorService {
     );
   }
 
-  protected filterAssignmentsWithDueDate(
-    learning_periods: TrackLearningPeriodEntity[],
+  protected async filterAssignmentsWithDueDate(
+    academic_year_id: number,
     assignments: CanvasAssignmentDto[],
     course: CanvasCourseDto,
-  ): [CanvasAssignmentDto[], TrackLearningPeriodEntity[]] {
+  ): Promise<[CanvasAssignmentDto[], TrackLearningPeriodEntity[]]> {
     const courseTrackMatch = course.name.match(
       /\b\d*([A-C])\b|[\(\[]([A-C])[\)\]]/,
     );
@@ -211,14 +211,18 @@ export class CanvasProcessorService {
       ? courseTrackMatch[1] || courseTrackMatch[2]
       : 'A';
 
-    const filteredLearningPeriods = learning_periods.filter((lp) =>
-      lp.track.name.match(
-        new RegExp(
-          `\\b\\d*${trackLetter}\\b|[\\(\\[]${trackLetter}[\\)\\]]`,
-          'g',
-        ),
-      ),
-    );
+    const filteredLearningPeriods =
+      await this.trackLearningPeriodsService.findBy({
+        where: {
+          track: {
+            name: Like(`%${trackLetter}%`),
+            academic_year_id,
+          },
+        },
+        relations: {
+          track: true,
+        },
+      });
 
     assignments = assignments.filter(this.isAssignmentValid).sort((a, b) => {
       return new Date(b.due_at).getTime() - new Date(a.due_at).getTime();
@@ -253,17 +257,24 @@ export class CanvasProcessorService {
 
   protected async getOrCreateTeachersEnrolemts(
     teachers: CanvasUserDto[],
-    tenant: TenantEntity,
     currentAcademicYear: AcademicYearEntity,
   ) {
     const setOfTeacherEnrolemts: Map<number, TeacherEnrollmentEntity[]> =
       new Map();
-    const allTeacherEnrolemts = tenant.teachers.flatMap((teacher) =>
-      teacher.teacher_enrollments.map((enrolemnt) => ({
-        ...enrolemnt,
-        teacher,
-      })),
-    );
+    const allTeacherEnrolemts = await this.teacherEnrollmentService.findBy({
+      where: {
+        teacher: {
+          user: {
+            email: In(teachers.map((teacher) => teacher.email)),
+          },
+        },
+      },
+      relations: {
+        teacher: {
+          user: true,
+        },
+      },
+    });
 
     for (const teacher of teachers) {
       const teacherEnrolemt = allTeacherEnrolemts.filter(
@@ -279,11 +290,7 @@ export class CanvasProcessorService {
       } else {
         setOfTeacherEnrolemts.set(teacher.id, [
           ...(setOfTeacherEnrolemts.get(teacher.id) || []),
-          await this.createTeacherAndEnrollment(
-            teacher,
-            tenant,
-            currentAcademicYear,
-          ),
+          await this.createTeacherAndEnrollment(teacher, currentAcademicYear),
         ]);
       }
     }
@@ -293,7 +300,6 @@ export class CanvasProcessorService {
 
   protected async createTeacherAndEnrollment(
     teacher: CanvasUserDto,
-    tenant: TenantEntity,
     currentAcademicYear: AcademicYearEntity,
   ): Promise<TeacherEnrollmentEntity> {
     try {
@@ -524,16 +530,16 @@ export class CanvasProcessorService {
 
       const tenant = await this.tenantService.findOneBy(
         {
-          teachers: {
-            teacher_enrollments: {
-              academic_year: {
-                id: currentAcademicYear[0].id,
-              },
-            },
-          },
-          tracks: {
-            academic_year_id: currentAcademicYear[0].id,
-          },
+          // teachers: {
+          //   teacher_enrollments: {
+          //     academic_year: {
+          //       id: currentAcademicYear[0].id,
+          //     },
+          //   },
+          // },
+          // tracks: {
+          //   academic_year_id: currentAcademicYear[0].id,
+          // },
           key: {
             url: ILike(`%${domain}%`),
           },
@@ -541,15 +547,15 @@ export class CanvasProcessorService {
         {
           key: true,
           schools: true,
-          teachers: {
-            teacher_enrollments: {
-              academic_year: true,
-            },
-            user: true,
-          },
-          tracks: {
-            learningPeriods: true,
-          },
+          // teachers: {
+          //   teacher_enrollments: {
+          //     academic_year: true,
+          //   },
+          //   user: true,
+          // },
+          // tracks: {
+          //   learningPeriods: true,
+          // },
         },
       );
 

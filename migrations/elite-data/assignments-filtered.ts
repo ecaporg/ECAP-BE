@@ -134,7 +134,7 @@ function getTwoAssigmentPerPeriod() {
       !assignment.published ||
       assignment.anonymize_students ||
       assignment.anonymous_submissions ||
-      assignment.submission_types.includes('external_tool')
+      !assignment.submission_types.includes('online_quiz')
     ) {
       continue;
     }

@@ -114,7 +114,6 @@ export class CanvasEventService {
         ]);
 
       await this.processor.updateSubmission({
-        tenant,
         currentAcademicYear,
         assignment,
         course,

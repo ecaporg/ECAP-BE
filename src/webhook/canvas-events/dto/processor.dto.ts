@@ -22,7 +22,6 @@ export class ProcessErrorDto {
 }
 
 export class ProcessSubmissionDto {
-  tenant: TenantEntity;
   currentAcademicYear: AcademicYearEntity;
   assignment: CanvasAssignmentDto;
   course: CanvasCourseDto;
