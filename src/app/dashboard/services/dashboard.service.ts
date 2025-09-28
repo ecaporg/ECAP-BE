@@ -4,7 +4,12 @@ import { Injectable } from '@nestjs/common';
 
 import { UserEntity } from '../../../auth/entities/user.entity';
 import { RolesEnum } from '../../../auth/enums/roles.enum';
-import { extractPaginationOptions } from '../../../core';
+import {
+  addInOrEqualsCondition,
+  extractPaginationOptions,
+  formInOrEqualsCondition,
+  getAndDeleteField,
+} from '../../../core';
 import { TrackLearningPeriodEntity } from '../../../domain/track/entities/track-learning-period.entity';
 import { AcademicYearService } from '../../../domain/track/services/academic-year.service';
 import { TrackLearningPeriodService } from '../../../domain/track/services/track-learning-period.service';
@@ -75,8 +80,10 @@ export class DashboardService {
 
     if (currentAcademicYears.length)
       filters.track = {
-        ...(filters.track as any),
-        academic_year_id: In(currentAcademicYears.map((year) => year.id)),
+        ...filters.track,
+        academic_year_id: In(
+          currentAcademicYears.map((year) => year.id),
+        ) as unknown as number,
       };
 
     const now = new Date();
@@ -319,15 +326,15 @@ export class DashboardService {
         academy.name as academy_name
         `,
       )
-      .leftJoin('track_learning_periods.track', 'track')
-      .leftJoin(
+      .innerJoin('track_learning_periods.track', 'track')
+      .innerJoin(
         'track_learning_periods.student_lp_enrollments',
         'student_lp_enrollments',
       )
-      .leftJoin('student_lp_enrollments.student', 'student')
-      .leftJoin('student.academy', 'academy')
-      .where('track_learning_periods.id IN (:...ids)', {
-        ids: periods.map((period) => period.id),
+      .innerJoin('student_lp_enrollments.student', 'student')
+      .innerJoin('student.academy', 'academy')
+      .where('track_learning_periods.id IN (:...track_learning_periods_id)', {
+        track_learning_periods_id: periods.map((period) => period.id),
       });
 
     this.applyFilters(queryBuilder, filters);
@@ -342,6 +349,8 @@ export class DashboardService {
       )`,
     );
 
+    console.log('QUERY', queryBuilder.getSql());
+
     return queryBuilder.getRawMany().then((results) =>
       results.map((result) => ({
         ...result,
@@ -354,33 +363,39 @@ export class DashboardService {
   }
 
   private applyFilters(queryBuilder: any, filters: DashboardFilterDto) {
-    if (filters['track.tenant.admins.id']) {
-      queryBuilder.andWhere('track.tenant.admins.id = :adminId', {
-        adminId: filters['track.tenant.admins.id'],
-      });
+    const admins = getAndDeleteField(filters, 'track.tenant.admins.id');
+    const academy = getAndDeleteField(
+      filters,
+      'student_lp_enrollments.student.academy_id',
+    );
+    const teacher = getAndDeleteField(
+      filters,
+      'student_lp_enrollments.teacher_enrollments.teacher_id',
+    );
+
+    if (admins || admins === 0) {
+      const [condition, params] = formInOrEqualsCondition('admins.id', [
+        admins,
+      ]);
+      queryBuilder.innerJoin('track.tenant', 'tenant');
+      queryBuilder.innerJoin('tenant.admins', 'admins', condition, params);
     }
-    if (filters['student_lp_enrollments.student.academy_id']) {
-      queryBuilder.andWhere('student.academy_id = :academyId', {
-        academyId: filters['student_lp_enrollments.student.academy_id'],
-      });
+
+    if (academy || academy === 0) {
+      addInOrEqualsCondition(queryBuilder, 'student.academy_id', [academy]);
     }
-    if (
-      filters[
-        'student_lp_enrollments.teacher_school_year_enrollment.teacher.id'
-      ]
-    ) {
-      queryBuilder
-        .leftJoin(
-          'student_lp_enrollments.teacher_school_year_enrollment',
-          'teacher_school_year_enrollment',
-        )
-        .leftJoin('teacher_school_year_enrollment.teacher', 'teacher')
-        .andWhere('teacher.id = :teacherId', {
-          teacherId:
-            filters[
-              'student_lp_enrollments.teacher_school_year_enrollment.teacher.id'
-            ],
-        });
+
+    if (teacher || teacher === 0) {
+      const [condition, params] = formInOrEqualsCondition(
+        'teacher_enrollments.teacher_id',
+        [teacher],
+      );
+      queryBuilder.innerJoin(
+        'student_lp_enrollments.teacher_enrollments',
+        'teacher_enrollments',
+        condition,
+        params,
+      );
     }
   }
 
