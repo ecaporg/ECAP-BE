@@ -20,8 +20,8 @@ import {
   TeacherSearchFilterDto,
   TeachersTableFilterDto,
 } from '../dto/filters.dto';
-import { AdminComplianceService } from '../services/admin.service';
 import { TeacherSearchFilterInterceptor } from '../interceptors/teacher-search-filter.interceptor';
+import { AdminComplianceService } from '../services/admin.service';
 
 @ApiTags('Admin Compliance Tasks')
 @Controller('teachers-table')
@@ -35,7 +35,7 @@ export class AdminComplianceController {
   @UseInterceptors(
     new QueryParamMapperInterceptor(assignmentFilterMapping, {
       sortBy: 'teacher_name',
-    } as Partial<{ [key in keyof TeachersTableFilterDto]: any }> as any),
+    }),
   )
   @ApiOperation({ summary: 'Get table with teachers' })
   @ApiPaginatedCrudResponse(TeacherEnrollmentEntity)

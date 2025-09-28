@@ -43,7 +43,7 @@ export class TeacherComplianceTaskController {
     TeacherFilterInterceptor,
     new QueryParamMapperInterceptor(filterMapping, {
       sortBy: 'student.user.name',
-    } as any),
+    }),
   )
   @ApiOperation({ summary: 'Get table with students' })
   @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)
@@ -63,7 +63,7 @@ export class TeacherComplianceTaskController {
     TeacherFilterInterceptor,
     new QueryParamMapperInterceptor(filterMapping, {
       sortBy: 'assignments.assignment.course.name',
-    } as any),
+    }),
   )
   @ApiOperation({ summary: 'Get table with student samples' })
   @ApiPaginatedCrudResponse(StudentLPEnrollmentEntity)

@@ -7,8 +7,15 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 
+import { SortDirectionEnum } from '../constants';
+
 interface QueryParamMapping {
   [sourceParam: string]: string;
+}
+
+interface ExtendedQueryParamMapping {
+  sortBy?: string;
+  sortOrder?: SortDirectionEnum;
 }
 
 @Injectable()
@@ -16,9 +23,12 @@ export class QueryParamMapperInterceptor<T extends QueryParamMapping>
   implements NestInterceptor<T, any>
 {
   private paramMapping: T;
-  private defaultValues: Partial<T>;
+  private defaultValues: Partial<T & ExtendedQueryParamMapping>;
 
-  constructor(paramMapping: T, defaultValues: Partial<T> = {} as T) {
+  constructor(
+    paramMapping: T,
+    defaultValues: Partial<T & ExtendedQueryParamMapping> = {},
+  ) {
     this.paramMapping = paramMapping;
     this.defaultValues = defaultValues;
   }

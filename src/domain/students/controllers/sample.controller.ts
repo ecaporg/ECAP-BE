@@ -24,6 +24,7 @@ import {
   PaginationOptions,
   QueryParamMapperInterceptor,
   Roles,
+  SortDirectionEnum,
 } from '../../../core';
 import { UserEntity } from '../../../auth/entities/user.entity';
 import { RolesEnum } from '../../../auth/enums/roles.enum';
@@ -80,7 +81,10 @@ export class SampleController {
         path: 'student_lp_enrollment_assignment.student_lp_enrollment.teacher_enrollments.teacher_id',
       },
     ]),
-    new QueryParamMapperInterceptor(filterMapping),
+    new QueryParamMapperInterceptor(filterMapping, {
+      sortBy: 'updatedAt',
+      sortOrder: SortDirectionEnum.ASC,
+    }),
   )
   @Get('flagged')
   @ApiOperation({ summary: 'Get all flagged samples' })
