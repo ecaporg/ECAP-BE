@@ -700,18 +700,7 @@
 //       canvas_id: s?.id,
 //     } as SampleEntity;
 
-//     this.createSampleFlags(sample);
-
 //     return sample;
-//   }
-
-//   private async createSampleFlags(samples: SampleEntity) {
-//     if (samples.status === SampleStatus.ERRORS_FOUND) {
-//       samples.flag_errors = {
-//         comment: 'Errors found in work sample',
-//       } as SampleFlagErrorEntity;
-//     }
-//     return samples;
 //   }
 
 //   private async createAdmin(queryRunner: QueryRunner, tenant: TenantEntity) {
