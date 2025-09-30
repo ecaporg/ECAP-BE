@@ -24,7 +24,7 @@ const FILTER_KEYS = {
   TEACHER_ID: 'teacher_enrollments.teacher_id',
   STATUS: 'assignments.sample.status',
   STUDENT_ID: 'student_id',
-  DONE_BY_ID: 'assignments.sample.done_by_id',
+  DONE_BY: 'assignments.sample.done_by_id',
   ACADEMIC_YEAR: 'teacher_enrollments.academic_year_id',
   SEMESTER_ID: 'learning_period.track.semesters.id',
   SUBJECT_ID: 'assignments.assignment.course_id',
@@ -36,7 +36,7 @@ const ASSIGNMENT_FILTER_KEYS = {
   SEMESTER_ID: 'student_lp_enrollment.learning_period.track.semesters.id',
   STATUS: 'sample.status',
   STUDENT_ID: 'student_lp_enrollment.student_id',
-  DONE_BY_ID: 'sample.done_by_id',
+  DONE_BY: 'sample.done_by_id',
   SUBJECT_ID: 'assignment.course_id',
 
   ACADEMY_ID: 'student_lp_enrollment.student.academy_id',
@@ -173,7 +173,7 @@ export class StudentSamplesFilterDto extends BaseFilterDto<StudentLPEnrollmentEn
   })
   @IdDecorator(Number)
   @IsNumber({}, { each: true })
-  [FILTER_KEYS.DONE_BY_ID]?: number[];
+  [FILTER_KEYS.DONE_BY]?: number[];
 
   @ApiProperty({
     required: false,
