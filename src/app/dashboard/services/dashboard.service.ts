@@ -1,3 +1,4 @@
+import { getCurrentLearningPeriod } from 'ecap-lib/dist/utils';
 import { In } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -86,7 +87,6 @@ export class DashboardService {
         ) as unknown as number,
       };
 
-    const now = new Date();
     const learningPeriods = await this.trackLearningPeriodService.findBy({
       where: { ...filters },
     });
@@ -122,7 +122,7 @@ export class DashboardService {
     }
 
     const periodGroups = this.groupLearningPeriods(learningPeriods);
-    const currentPeriodIndex = this.findCurrentPeriodIndex(periodGroups, now);
+    const currentPeriodIndex = this.findCurrentPeriodIndex(periodGroups);
 
     const periodAverages = await this.calculatePeriodAverages(
       periodGroups
@@ -136,11 +136,7 @@ export class DashboardService {
       options,
     );
 
-    const periodStats = this.calculatePeriodStats(
-      periodGroups,
-      now,
-      periodAverages,
-    );
+    const periodStats = this.calculatePeriodStats(periodGroups, periodAverages);
 
     return {
       groups: periodGroups,
@@ -174,21 +170,23 @@ export class DashboardService {
     };
   }
 
-  private findCurrentPeriodIndex(
-    groups: LearningPeriodGroup[],
-    now: Date,
-  ): number {
+  private findCurrentPeriodIndex(groups: LearningPeriodGroup[]): number {
+    const currentPeriod = getCurrentLearningPeriod(
+      groups.flatMap(([, periods]) => periods),
+    );
+
     return groups.findIndex(
-      ([key]) => key.start_date <= now && key.end_date >= now,
+      ([key]) =>
+        key.start_date <= currentPeriod.start_date &&
+        key.end_date >= currentPeriod.end_date,
     );
   }
 
   private calculatePeriodStats(
     groups: LearningPeriodGroup[],
-    now: Date,
     averages: DashboardStatsWithGroups['periodAverages'],
   ) {
-    const currentIndex = this.findCurrentPeriodIndex(groups, now);
+    const currentIndex = this.findCurrentPeriodIndex(groups);
 
     return [
       groups[currentIndex - 2],
