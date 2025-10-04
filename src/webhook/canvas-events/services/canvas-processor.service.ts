@@ -154,9 +154,12 @@ export class CanvasProcessorService {
 
   public async updateSubmission(data: ProcessSubmissionDto) {
     const sample = await this.sampleService
-      .findOneBy({
-        canvas_id: data.submission.id.toString(),
-      })
+      .findOneBy(
+        {
+          canvas_id: data.submission.id.toString(),
+        },
+        {},
+      )
       .catch(() => null);
 
     if (sample) {
@@ -514,13 +517,6 @@ export class CanvasProcessorService {
 
         sample.done_by_id = teacher ? teacher.id : undefined;
       }
-    } else if (
-      sample.status === SampleStatus.ERRORS_FOUND &&
-      !sample.flag_errors
-    ) {
-      sample.flag_errors = {
-        comment: 'Errors found in work sample',
-      } as any;
     }
 
     return this.sampleService.save(sample);
