@@ -175,10 +175,8 @@ export class DashboardService {
       groups.flatMap(([, periods]) => periods),
     );
 
-    return groups.findIndex(
-      ([key]) =>
-        key.start_date <= currentPeriod.start_date &&
-        key.end_date >= currentPeriod.end_date,
+    return groups.findIndex(([, periods]) =>
+      periods.some((period) => period.id === currentPeriod?.id),
     );
   }
 
