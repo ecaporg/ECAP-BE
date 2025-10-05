@@ -496,28 +496,28 @@ export class CanvasProcessorService {
         : !submission.grade || !assignment?.name
           ? SampleStatus.ERRORS_FOUND
           : submission.workflow_state === 'graded'
-            ? SampleStatus.COMPLETED
+            ? SampleStatus.PENDING
             : SampleStatus.PENDING;
     sample.grade = submission.grade;
     sample.date = submission.submitted_at
       ? new Date(submission.submitted_at)
       : undefined;
     sample.preview_url = submission.preview_url;
-    if (!sample.done_by_id && sample.status == SampleStatus.COMPLETED) {
-      const teacherDto = teachers.find(
-        (teacher) => teacher.id == submission.user_id,
-      );
+    // if (!sample.done_by_id && sample.status == SampleStatus.COMPLETED) {
+    //   const teacherDto = teachers.find(
+    //     (teacher) => teacher.id == submission.user_id,
+    //   );
 
-      if (teacherDto) {
-        const teacher = await this.userService
-          .findOneBy({
-            email: teacherDto.email,
-          })
-          .catch(() => null);
+    //   if (teacherDto) {
+    //     const teacher = await this.userService
+    //       .findOneBy({
+    //         email: teacherDto.email,
+    //       })
+    //       .catch(() => null);
 
-        sample.done_by_id = teacher ? teacher.id : undefined;
-      }
-    }
+    //     sample.done_by_id = teacher ? teacher.id : undefined;
+    //   }
+    // }
 
     return this.sampleService.save(sample);
   }
