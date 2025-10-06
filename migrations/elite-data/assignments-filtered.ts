@@ -131,10 +131,18 @@ function getTwoAssigmentPerPeriod() {
     if (
       !assignment.course_id ||
       !assignment.due_at ||
-      !assignment.published ||
+      (!assignment.published && !assignment.unlock_at) ||
       assignment.anonymize_students ||
       assignment.anonymous_submissions ||
-      !assignment.submission_types.includes('online_quiz')
+      assignment.submission_types.find((type) =>
+        [
+          'online_upload',
+          'media_recording',
+          'external_tool',
+          'none',
+          'on_paper',
+        ].includes(type),
+      )
     ) {
       continue;
     }
@@ -163,27 +171,70 @@ function getTwoAssigmentPerPeriod() {
       ? learningPeriods_B
       : learningPeriods_A;
 
+    // for (const period of learningPeriods) {
+    //   const firstAssignment = sortedAssignments.find((assignment) => {
+    //     return new Date(assignment.due_at) <= period.end_date;
+    //   });
+
+    //   const secondAssignment = sortedAssignments.find((assignment) => {
+    //     return (
+    //       new Date(assignment.due_at) <= period.end_date &&
+    //       assignment.id !== firstAssignment?.id
+    //     );
+    //   });
+
+    //   if (!firstAssignment || !secondAssignment) {
+    //     console.log(
+    //       'Not found assignments for period:',
+    //       period.end_date,
+    //       'And course_id:',
+    //       course_id,
+    //     );
+    //     continue;
+    //   }
+    //   firstAssignment['learning_period'] = period as any;
+    //   secondAssignment['learning_period'] = period as any;
+
+    //   twoAssignmentsPerPeriodPerCourse.push(firstAssignment, secondAssignment);
+    // }
     for (const period of learningPeriods) {
-      const firstAssignment = sortedAssignments.find((assignment) => {
-        return new Date(assignment.due_at) <= period.end_date;
-      });
+      let firstAssignment: Assignment | null = null;
+      let secondAssignment: Assignment | null = null;
+      const severalAssignmentsPerPeriod = sortedAssignments.filter(
+        (assignment) => {
+          return new Date(assignment.due_at) <= period.end_date;
+        },
+      );
 
-      const secondAssignment = sortedAssignments.find((assignment) => {
-        return (
-          new Date(assignment.due_at) <= period.end_date &&
-          assignment.id !== firstAssignment?.id
-        );
-      });
-
-      if (!firstAssignment || !secondAssignment) {
+      if (severalAssignmentsPerPeriod.length < 2) {
         console.log(
-          'Not found assignments for period:',
+          'Not found enough assignments for period:',
           period.end_date,
           'And course_id:',
           course_id,
         );
         continue;
       }
+
+      const online_quizes = severalAssignmentsPerPeriod.filter((assignment) => {
+        return assignment.submission_types.includes('online_quiz');
+      });
+
+      if (online_quizes.length < 2) {
+        if (online_quizes.length === 1) {
+          firstAssignment = online_quizes[0];
+          secondAssignment = severalAssignmentsPerPeriod.find((assignment) => {
+            return assignment.id !== firstAssignment?.id;
+          });
+        } else {
+          firstAssignment = severalAssignmentsPerPeriod[0];
+          secondAssignment = severalAssignmentsPerPeriod[1];
+        }
+      } else {
+        firstAssignment = online_quizes[0];
+        secondAssignment = online_quizes[1];
+      }
+
       firstAssignment['learning_period'] = period as any;
       secondAssignment['learning_period'] = period as any;
 

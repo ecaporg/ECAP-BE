@@ -234,20 +234,42 @@ export class CanvasProcessorService {
     const twoAssignmentsPerPeriodPerCourse: CanvasAssignmentDto[] = [];
     const usedLPs: TrackLearningPeriodEntity[] = [];
     for (const period of filteredLearningPeriods) {
-      const firstAssignment = assignments.find((assignment) => {
+      let firstAssignment: CanvasAssignmentDto | undefined;
+      let secondAssignment: CanvasAssignmentDto | undefined;
+
+      const severalAssignmentsPerPeriod = assignments.filter((assignment) => {
         return new Date(assignment.due_at) <= new Date(period.end_date);
       });
 
-      const secondAssignment = assignments.find((assignment) => {
-        return (
-          new Date(assignment.due_at) <= new Date(period.end_date) &&
-          assignment.id !== firstAssignment?.id
+      if (severalAssignmentsPerPeriod.length < 2) {
+        console.log(
+          'Not found enough assignments for period:',
+          period.end_date,
+          'And course_id:',
+          course.id,
         );
-      });
-
-      if (!firstAssignment || !secondAssignment) {
         continue;
       }
+
+      const online_quizes = severalAssignmentsPerPeriod.filter((assignment) => {
+        return assignment.submission_types.includes('online_quiz');
+      });
+
+      if (online_quizes.length < 2) {
+        if (online_quizes.length === 1) {
+          firstAssignment = online_quizes[0];
+          secondAssignment = severalAssignmentsPerPeriod.find((assignment) => {
+            return assignment.id !== firstAssignment?.id;
+          });
+        } else {
+          firstAssignment = severalAssignmentsPerPeriod[0];
+          secondAssignment = severalAssignmentsPerPeriod[1];
+        }
+      } else {
+        firstAssignment = online_quizes[0];
+        secondAssignment = online_quizes[1];
+      }
+
       firstAssignment['learning_period'] = period as any;
       secondAssignment['learning_period'] = period as any;
 
@@ -577,11 +599,19 @@ export class CanvasProcessorService {
   }
 
   protected isAssignmentValid(assignment: CanvasAssignmentDto): boolean {
-    return (
-      !!assignment.due_at &&
-      assignment.published &&
-      !assignment.anonymize_students &&
-      !assignment.anonymous_submissions
+    return Boolean(
+      (!assignment.published && !assignment.unlock_at) ||
+        assignment.anonymize_students ||
+        assignment.anonymous_submissions ||
+        assignment.submission_types.find((type) =>
+          [
+            'online_upload',
+            'media_recording',
+            'external_tool',
+            'none',
+            'on_paper',
+          ].includes(type),
+        ),
     );
   }
 
