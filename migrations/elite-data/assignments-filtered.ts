@@ -202,7 +202,10 @@ function getTwoAssigmentPerPeriod() {
       let secondAssignment: Assignment | null = null;
       const severalAssignmentsPerPeriod = sortedAssignments.filter(
         (assignment) => {
-          return new Date(assignment.due_at) <= period.end_date;
+          return (
+            new Date(assignment.due_at) >= period.start_date &&
+            new Date(assignment.due_at) <= period.end_date
+          );
         },
       );
 

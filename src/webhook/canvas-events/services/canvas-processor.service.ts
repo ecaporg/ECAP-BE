@@ -238,7 +238,10 @@ export class CanvasProcessorService {
       let secondAssignment: CanvasAssignmentDto | undefined;
 
       const severalAssignmentsPerPeriod = assignments.filter((assignment) => {
-        return new Date(assignment.due_at) <= new Date(period.end_date);
+        return (
+          new Date(assignment.due_at) >= new Date(period.start_date) &&
+          new Date(assignment.due_at) <= new Date(period.end_date)
+        );
       });
 
       if (severalAssignmentsPerPeriod.length < 2) {
