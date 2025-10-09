@@ -368,9 +368,11 @@ export class DashboardService {
     );
 
     if (admins || admins === 0) {
-      const [condition, params] = formInOrEqualsCondition('admins.id', [
-        admins,
-      ]);
+      const [condition, params] = formInOrEqualsCondition(
+        'admins.id',
+        [admins],
+        'admin_ids',
+      );
       queryBuilder.innerJoin('track.tenant', 'tenant');
       queryBuilder.innerJoin('tenant.admins', 'admins', condition, params);
     }
@@ -383,6 +385,7 @@ export class DashboardService {
       const [condition, params] = formInOrEqualsCondition(
         'teacher_enrollments.teacher_id',
         [teacher],
+        'teacher_ids',
       );
       queryBuilder.innerJoin(
         'student_lp_enrollments.teacher_enrollments',

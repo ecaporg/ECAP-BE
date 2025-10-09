@@ -204,6 +204,7 @@ export class AdminComplianceService {
         const [condition, params] = formInOrEqualsCondition(
           'learning_period.id',
           learningPeriod,
+          'learning_period_ids',
         );
         query.innerJoin(
           'student_lp_enrollment.learning_period',
@@ -236,7 +237,7 @@ export class AdminComplianceService {
     }
 
     if (school) {
-      const [condition, params] = formInOrEqualsCondition('school.id', school);
+      const [condition, params] = formInOrEqualsCondition('school.id', school, 'school_ids');
       query.innerJoin('student.school', 'school', condition, params);
     }
 

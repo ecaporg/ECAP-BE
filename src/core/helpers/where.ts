@@ -18,8 +18,11 @@ export function addInOrEqualsCondition<T>(
 export function formInOrEqualsCondition(
   field: string,
   value: (string | number)[],
-  idsAlias: string = 'ids',
+  idsAlias?: string,
 ): [string, Record<string, any>] {
+  if (!idsAlias) {
+    idsAlias = field.replace('.', '_') + '_ids';
+  }
   if (value.length > 1) {
     return [`${field} IN (:...${idsAlias})`, { [idsAlias]: value }];
   } else if (value.length === 1) {
