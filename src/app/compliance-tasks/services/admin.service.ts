@@ -237,7 +237,11 @@ export class AdminComplianceService {
     }
 
     if (school) {
-      const [condition, params] = formInOrEqualsCondition('school.id', school, 'school_ids');
+      const [condition, params] = formInOrEqualsCondition(
+        'school.id',
+        school,
+        'school_ids',
+      );
       query.innerJoin('student.school', 'school', condition, params);
     }
 

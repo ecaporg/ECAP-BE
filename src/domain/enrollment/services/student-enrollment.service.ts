@@ -1,4 +1,4 @@
-import { In, Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,14 +21,11 @@ export class StudentLPEnrollmentService extends BaseService<StudentLPEnrollmentE
   ) {
     const assignmentPeriods = await this.findAll(options, relations);
     const where = {
-      completed: In([true]),
+      completed: Equal(true),
       ...options.filters,
     } as any;
 
-    if (
-      where.completed.value.length === 1 &&
-      where.completed.value[0] === false
-    ) {
+    if (where.completed.value === false) {
       (assignmentPeriods.meta as any).completedCount = 0;
       return assignmentPeriods;
     }
